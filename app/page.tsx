@@ -1,70 +1,11 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1 className={styles.title}>
-            To get started, edit the{" "}
-            <code className={styles.code}>
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className={styles.description}>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-              className={styles.link}
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-              className={styles.link}
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.actions}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.brandIcon}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+import {Suspense} from "react";
+import {connection} from "next/server";
+import {listArtworks} from "@/lib/api/artworks";
+import {ArtworkCard} from "@/components/ArtworkCard";
+import {FreshLink} from "@/components/FreshLink";
+import styles from "@/components/Artwork.module.css";
+async function Catalog({searchParams}:{searchParams:Promise<{cursor?:string|string[]}>}){
+  await connection();const {cursor}=await searchParams;if(Array.isArray(cursor))throw new Error("invalid_catalog_query");const page=await listArtworks(cursor);
+  return <><h1>Œuvres</h1>{page.restarted&&<p role="status">La sélection a changé. Le catalogue reprend à la première page.</p>}{page.items.length?<ul className={styles.grid}>{page.items.map((art,index)=><ArtworkCard key={art.id} art={art} eager={index<3}/>)}</ul>:<p>Aucune œuvre publiée pour le moment.</p>}{page.nextCursor&&<FreshLink href={"/?cursor="+encodeURIComponent(page.nextCursor)} className="button">Voir la suite</FreshLink>}</>;
 }
+export default function Page(props:{searchParams:Promise<{cursor?:string|string[]}>}){return <Suspense fallback={<p role="status">Chargement des œuvres…</p>}><Catalog {...props}/></Suspense>;}

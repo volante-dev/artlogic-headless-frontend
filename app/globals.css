@@ -1,44 +1,19 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  height: 100%;
-  line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+ :root { color-scheme: light; --background: #f8f8f5; --foreground: #202924; --muted: #546158; --surface: #eaede6; --accent: #265b4b; }
+* { box-sizing: border-box; }
+html { min-height: 100%; line-height: 1.5; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
+header,main { width: min(1200px,100%); margin: auto; padding: 32px; }
+header { border-bottom: 1px solid #d7ddd5; }
+header a { font-size: 1.1rem; font-weight: 600; text-decoration: none; display: inline-flex; min-height: 44px; align-items: center; }
+main { padding-block: 48px 80px; }
+h1 { font-size: clamp(1.8rem,4vw,2.8rem); line-height: 1.2; font-weight: 500; margin: 0 0 24px; max-width: 28ch; text-wrap: balance; overflow-wrap: anywhere; }
+p { line-height: 1.65; max-width: 70ch; }
+a { color: inherit; text-underline-offset: 4px; }
+button,.button { font: inherit; color: #fff; background: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 12px 18px; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; }
+button:hover,.button:hover { background: #1e473b; } button:disabled { cursor: wait; opacity: .65; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+::selection { background: #d4e5d6; color: var(--foreground); }
+.back { display: inline-flex; min-height: 44px; align-items: center; margin-bottom: 20px; }
+.skip { position: absolute; top: -100px; left: 12px; z-index: 10; background: var(--background); padding: 12px; }
+.skip:focus { top: 12px; }
+@media(max-width:600px) { header,main { padding-inline: 20px; } header { padding-block: 16px; } main { padding-block: 32px 56px; } }

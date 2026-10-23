@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Reusable boilerplate configuration and test artefacts
+!.env.example
+/dist/
+/playwright-report/
+/test-results/
+.runtime/
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
