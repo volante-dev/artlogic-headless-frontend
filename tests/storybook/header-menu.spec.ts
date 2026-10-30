@@ -1,0 +1,79 @@
+import {test,expect,type Page} from "@playwright/test";
+import {mkdir} from "node:fs/promises";
+import {createRequire} from "node:module";
+import {dirname} from "node:path";
+const require=createRequire(import.meta.url);
+const axePath=require.resolve("axe-core/axe.min.js",{paths:[dirname(require.resolve("@storybook/addon-a11y/package.json"))]});
+async function visit(page:Page,width=390,height=844,story="default",theme="projection",locale="fr"){
+ await page.setViewportSize({width,height});
+ await page.goto(`/iframe.html?id=components-siteheader--${story}&viewMode=story&globals=theme:${theme};locale:${locale};width:${width}`);
+ await expect(page.locator("[data-catalog-ready]")).toBeVisible();
+ await expect(page.locator(".sb-errordisplay")).not.toBeVisible();
+}
+const toggle=(page:Page)=>page.locator('button[aria-controls="site-navigation"]');
+async function settled(page:Page){await expect.poll(()=>page.locator("header").evaluate(node=>node.getAnimations({subtree:true}).length)).toBe(0);}
+async function capture(page:Page,name:string){await mkdir(".impeccable/review/mobile-menu",{recursive:true});await page.screenshot({path:`.impeccable/review/mobile-menu/${name}-${test.info().project.name}.png`,scale:"css"});}
+
+test("two lines morph into a cross; keyboard and background stay inside the open menu",async({page})=>{
+ const errors:string[]=[];page.on("pageerror",error=>errors.push(error.message));await visit(page);
+ const trigger=toggle(page),nav=page.locator("#site-navigation");
+ await expect(trigger).toHaveAccessibleName("Ouvrir le menu");await expect(trigger.locator("span span")).toHaveCount(2);
+ await expect(trigger).toHaveText("");expect(await trigger.boundingBox()).toMatchObject({width:48,height:48});
+ await expect(nav).toBeHidden();await capture(page,"closed-390");
+ await trigger.focus();await page.keyboard.press("Enter");await expect(trigger).toHaveAttribute("aria-expanded","true");
+ await expect(page.getByRole("dialog",{name:"Navigation principale"})).toBeVisible();
+ await expect.poll(()=>page.locator("main").evaluate(node=>(node as HTMLElement).inert)).toBe(true);
+ await expect(page.locator("html")).toHaveCSS("overflow","hidden");
+ await page.keyboard.press("Tab");await expect(page.getByRole("link",{name:"Actualités",exact:true})).toBeFocused();
+ const english=page.getByRole("link",{name:"English",exact:true});await english.focus();await page.keyboard.press("Tab");await expect(page.getByRole("link",{name:/Retour à l’accueil/})).toBeFocused();
+ await page.keyboard.press("Shift+Tab");await expect(english).toBeFocused();await settled(page);await capture(page,"open-390");
+ const transforms=await trigger.locator("span span").evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).transform));expect(transforms[0]).not.toBe(transforms[1]);expect(transforms.every(value=>value.includes("0.707"))).toBe(true);
+ await page.addScriptTag({path:axePath});
+ const violations=await page.evaluate(async()=>{
+  const axe=(window as unknown as {axe:{run:(selector:string,options:unknown)=>Promise<{violations:unknown[]}>}}).axe;
+  return (await axe.run('[role="dialog"]',{runOnly:{type:"tag",values:["wcag2a","wcag2aa","wcag21aa"]}})).violations;
+ });expect(violations).toEqual([]);
+ await page.keyboard.press("Escape");await expect(trigger).toBeFocused();await expect(page.locator("header")).toHaveAttribute("data-menu-state","closing");
+ await capture(page,"closing-390");await expect(nav).toBeHidden();await expect(page.getByRole("dialog")).toHaveCount(0);
+ await expect.poll(()=>page.locator("main").evaluate(node=>(node as HTMLElement).inert)).toBe(false);await expect(page.locator("html")).not.toHaveCSS("overflow","hidden");expect(errors).toEqual([]);
+});
+
+test("opening and closing can reverse without leaving a scroll lock or hidden links",async({page})=>{
+ await visit(page);const trigger=toggle(page);
+ await trigger.click();await page.waitForTimeout(120);await capture(page,"opening-390");
+ await trigger.click();await page.waitForTimeout(80);await trigger.click();await settled(page);
+ await expect(trigger).toHaveAttribute("aria-expanded","true");await expect(page.getByRole("navigation",{name:"Navigation principale"}).getByRole("link")).toHaveCount(6);
+ await trigger.click();await expect(page.locator("#site-navigation")).toBeHidden();await expect(page.locator("header")).toHaveAttribute("data-menu-state","closed");
+});
+
+test("mobile sizes, landscape, long identity and the inverse header retain usable menus",async({page})=>{
+ for(const variant of [{width:320,height:740,story:"long",theme:"projection",locale:"fr"},{width:844,height:390,story:"default",theme:"projection",locale:"fr"},{width:768,height:1024,story:"default",theme:"editorial",locale:"en"},{width:390,height:844,story:"immersive",theme:"projection",locale:"fr"}]){
+  await visit(page,variant.width,variant.height,variant.story,variant.theme,variant.locale);
+  await toggle(page).click();await settled(page);
+  const nav=page.getByRole("navigation",{name:variant.locale==="fr"?"Navigation principale":"Main navigation"});
+  await expect(nav.getByRole("link")).toHaveCount(6);for(const link of await nav.getByRole("link").all()){await link.scrollIntoViewIfNeeded();await expect(link).toBeInViewport();}
+  await page.getByRole("link",{name:"English",exact:true}).scrollIntoViewIfNeeded();await expect(page.getByRole("link",{name:"English",exact:true})).toBeInViewport();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.locator("#site-navigation").evaluate(node=>node.scrollTop=0);await capture(page,`open-${variant.width}-${variant.height}-${variant.story}`);
+  await page.keyboard.press("Escape");await expect(page.locator("#site-navigation")).toBeHidden();
+ }
+});
+
+test("reduced motion removes spatial choreography and resizing restores desktop navigation",async({page})=>{
+ await page.emulateMedia({reducedMotion:"reduce"});await visit(page);await toggle(page).click();await settled(page);
+ await expect(page.getByRole("link",{name:"Actualités",exact:true})).toHaveCSS("transform","none");
+ await page.keyboard.press("Escape");await expect(page.locator("header")).toHaveAttribute("data-menu-state","closed");
+ await page.setViewportSize({width:1440,height:900});await page.locator("[data-catalog-ready]").evaluate(node=>(node as HTMLElement).style.maxWidth="none");await expect(toggle(page)).toBeHidden();
+ await expect(page.getByRole("navigation",{name:"Navigation principale"})).toBeVisible();await settled(page);await capture(page,"desktop-1440");
+ await page.getByRole("link",{name:"Contact",exact:true}).focus();await page.setViewportSize({width:390,height:844});
+ await expect(toggle(page)).toBeFocused();await expect(page.locator("#site-navigation")).toBeHidden();
+ await toggle(page).click();await page.setViewportSize({width:1440,height:900});await expect(page.getByRole("navigation",{name:"Navigation principale"})).toBeVisible();
+ await expect.poll(()=>page.locator("main").evaluate(node=>(node as HTMLElement).inert)).toBe(false);
+});
+
+test("choosing a destination lets the exit finish before leaving the document",async({page})=>{
+ await visit(page);await toggle(page).click();await settled(page);
+ let requestedAt=0;await page.route("**/contact",async route=>{requestedAt=Date.now();await route.fulfill({status:200,contentType:"text/html",body:"<title>Contact destination</title><main>Contact</main>"});});
+ const selectedAt=Date.now();await page.getByRole("link",{name:"Contact",exact:true}).click();
+ await expect(page).toHaveTitle("Contact destination");expect(requestedAt-selectedAt).toBeGreaterThanOrEqual(320);
+});
