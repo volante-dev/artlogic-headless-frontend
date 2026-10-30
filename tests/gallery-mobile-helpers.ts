@@ -1,0 +1,5 @@
+import {expect,type Page} from "@playwright/test";
+import {readFileSync} from "node:fs";
+export const mobileSite=()=>JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,"utf8")).sites[0] as {siteOrigin:string;mobileArtworkId:string;controlUrl:string;controlKey:string};
+export async function openMobile(page:Page){const site=mobileSite();if(!site.mobileArtworkId)throw new Error("mobile_fixture_required");await page.goto("/artworks/"+site.mobileArtworkId);const scene=page.getByTestId("artwork-experience");await expect(scene).toHaveAttribute("data-artwork-layout","mobile");await expect(scene).toHaveAttribute("data-artwork-opening-phase","complete");return scene;}
+export async function swipe(page:Page,direction=1){const box=(await page.getByTestId("artwork-frame").boundingBox())!;const x=box.x+box.width*.45,y=box.y+box.height*.45;await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x,y-direction*60,{steps:5});await page.mouse.up();await expect(page.getByTestId("artwork-experience")).toHaveAttribute("data-mobile-transition","idle");}

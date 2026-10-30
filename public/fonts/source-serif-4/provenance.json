@@ -1,0 +1,178 @@
+{
+  "package": "@fontsource/source-serif-4",
+  "version": "5.3.1",
+  "source": "https://registry.npmjs.org/@fontsource/source-serif-4/-/source-serif-4-5.3.1.tgz",
+  "integrity": "sha512-cWcTCXjYYrgF9A67fThVir1VSc0lPEYmwQ6jA4pPt01s2MSCi/maINUcZoCzaqnU8fyUReDO97eGcBUkHgOeug==",
+  "files": [
+    {
+      "file": "LICENSE",
+      "sha256": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3",
+      "bytes": 4314
+    },
+    {
+      "file": "metadata.json",
+      "sha256": "e9df0b218b6bad71618c81765b8f01963daf511362c0041c5ce32fdb92ac66f3",
+      "bytes": 777
+    },
+    {
+      "file": "source-serif-4-latin-200-italic.woff2",
+      "sha256": "2ff84ac35fd7ea21eac49f19460e51f493983e2d34b25124c45ea91d918c03c2",
+      "bytes": 19940
+    },
+    {
+      "file": "source-serif-4-latin-200-normal.woff2",
+      "sha256": "4ece92233b890b765727e0512275255b35ad8398284428fd83187e88e0f794f9",
+      "bytes": 19696
+    },
+    {
+      "file": "source-serif-4-latin-300-italic.woff2",
+      "sha256": "0f33b8242aa22d67c3afb1480ba2ba1afa460f4ccc19ff65eafa221dcb54e3d4",
+      "bytes": 21304
+    },
+    {
+      "file": "source-serif-4-latin-300-normal.woff2",
+      "sha256": "4643b116b3cff93fe315f7f8b849e36ef7e68e050ee4c52d6d60f183fc92c870",
+      "bytes": 21068
+    },
+    {
+      "file": "source-serif-4-latin-400-italic.woff2",
+      "sha256": "882b7c150c29f29d4f8daae6b8dcae8662aac7f28ca34b34615305154136ecfd",
+      "bytes": 20092
+    },
+    {
+      "file": "source-serif-4-latin-400-normal.woff2",
+      "sha256": "02194deb92d3975dd30e11a3824a1f1db32b48c93654e60560cb81ce8e7b5f95",
+      "bytes": 20088
+    },
+    {
+      "file": "source-serif-4-latin-500-italic.woff2",
+      "sha256": "df3dca6c4e58f28f1f3d81b0640afb100dad7bef4d6a0ecd719c0a94da082fa3",
+      "bytes": 21444
+    },
+    {
+      "file": "source-serif-4-latin-500-normal.woff2",
+      "sha256": "d3e119de0b756d9fa6d368de570f7168bb74eedf3289aaeae22dd97b900918d1",
+      "bytes": 21528
+    },
+    {
+      "file": "source-serif-4-latin-600-italic.woff2",
+      "sha256": "cdee523b89692709393643e25fdc066be137d5b0b9782548779e8382c3c11ce7",
+      "bytes": 21588
+    },
+    {
+      "file": "source-serif-4-latin-600-normal.woff2",
+      "sha256": "f2b7e1cf1d277b7608231868135648f8ad8e2b58d8e97ca088bee15dc357bee7",
+      "bytes": 21532
+    },
+    {
+      "file": "source-serif-4-latin-700-italic.woff2",
+      "sha256": "700a80f147fe1cf69dac97c3fe0245efbbff8b46fc41d2d46d6ef0b0a4ab22d8",
+      "bytes": 21484
+    },
+    {
+      "file": "source-serif-4-latin-700-normal.woff2",
+      "sha256": "7691c51bc286a9014db0048277d2c3f2ad0a90b533dc8adfb16cb22a95390d39",
+      "bytes": 21716
+    },
+    {
+      "file": "source-serif-4-latin-800-italic.woff2",
+      "sha256": "06a1127f4e6fa67ff32c4ababe243260b5d20f17fb344d851bb6645684ccc50d",
+      "bytes": 21592
+    },
+    {
+      "file": "source-serif-4-latin-800-normal.woff2",
+      "sha256": "96c9b28d61407078182d1d11ce2838ae99e035c44e9c29471ecf1148914ba16b",
+      "bytes": 21572
+    },
+    {
+      "file": "source-serif-4-latin-900-italic.woff2",
+      "sha256": "1344d45a95cb1b2b06230b09b55fde610dc4aea5eaeacaa9d0af8fab4503948e",
+      "bytes": 20648
+    },
+    {
+      "file": "source-serif-4-latin-900-normal.woff2",
+      "sha256": "386810b1b84e593720558cff87346c661f412e0b75346bb12f290c381232c7a4",
+      "bytes": 20704
+    },
+    {
+      "file": "source-serif-4-latin-ext-200-italic.woff2",
+      "sha256": "dea7f50cfa3d3c5e3b3af513f2a66f72b3112b63356d05f891d8f66712a6d5d1",
+      "bytes": 18272
+    },
+    {
+      "file": "source-serif-4-latin-ext-200-normal.woff2",
+      "sha256": "c93d278b20e56a66305b9499dbf0fa0cf4f0fedf2321a0cbb0ad0aa154d4679f",
+      "bytes": 17548
+    },
+    {
+      "file": "source-serif-4-latin-ext-300-italic.woff2",
+      "sha256": "0ef01c49291a93a08e1cb8ebdcd6d43ab8c73ca335790cc41845be2b5e38fecb",
+      "bytes": 18704
+    },
+    {
+      "file": "source-serif-4-latin-ext-300-normal.woff2",
+      "sha256": "dfb9da2f280010a7fe09dac25afc331490acd17d8ad79a201adb5d624aacd8ce",
+      "bytes": 17988
+    },
+    {
+      "file": "source-serif-4-latin-ext-400-italic.woff2",
+      "sha256": "d06253118f11f443e5799217c5ecaf55f68a1681115fa3a1d947e8ca288e7b8c",
+      "bytes": 18452
+    },
+    {
+      "file": "source-serif-4-latin-ext-400-normal.woff2",
+      "sha256": "78ff74ea29d0cc5594ff9efd5c0a30911691b89e9021e7bcf118b95e285e007f",
+      "bytes": 17844
+    },
+    {
+      "file": "source-serif-4-latin-ext-500-italic.woff2",
+      "sha256": "c18a4a2f6470cf7bc1a6a9a7d8d5ccfb7299dd051ffb399e490353b78b04837d",
+      "bytes": 19000
+    },
+    {
+      "file": "source-serif-4-latin-ext-500-normal.woff2",
+      "sha256": "f33db9495e4f8e7fa818a181950c50448a6e505d33689507f7ad8e28149fc140",
+      "bytes": 18380
+    },
+    {
+      "file": "source-serif-4-latin-ext-600-italic.woff2",
+      "sha256": "8518444dbc13488faf0ac5787f5608d0a9649fcb5684b84ef482c251c8e57cb7",
+      "bytes": 19056
+    },
+    {
+      "file": "source-serif-4-latin-ext-600-normal.woff2",
+      "sha256": "ba70bfd7a5f52800fb9abedfe1926db2b1b614b10cb8ac1e5798a14fb06a02d4",
+      "bytes": 18332
+    },
+    {
+      "file": "source-serif-4-latin-ext-700-italic.woff2",
+      "sha256": "295d03b2c1d548460fde7b883da9afb68735bce1896ff01968ad9b422430565c",
+      "bytes": 19156
+    },
+    {
+      "file": "source-serif-4-latin-ext-700-normal.woff2",
+      "sha256": "06e2c39d92b45e61e0988b141fdc61632f77e5e7d793e225ee7eb9e307333308",
+      "bytes": 18468
+    },
+    {
+      "file": "source-serif-4-latin-ext-800-italic.woff2",
+      "sha256": "af9ee7a3a630dec0af12ace88e3b8d20e33c73c53a33c25eab78e94830b711ba",
+      "bytes": 19216
+    },
+    {
+      "file": "source-serif-4-latin-ext-800-normal.woff2",
+      "sha256": "7c3e338268ad3c40db5d60cf555a81f18e28fbb601db0878133238485082baea",
+      "bytes": 18500
+    },
+    {
+      "file": "source-serif-4-latin-ext-900-italic.woff2",
+      "sha256": "53962f226640b3a1e9c14b2dd28d194b497bfd8f2cc4bd290d3b8d94602f36ad",
+      "bytes": 18808
+    },
+    {
+      "file": "source-serif-4-latin-ext-900-normal.woff2",
+      "sha256": "9ba844b7f0f0a4032400466c6587a12a5793a5fa2179f17e2f6938c7b29638ee",
+      "bytes": 18052
+    }
+  ]
+}

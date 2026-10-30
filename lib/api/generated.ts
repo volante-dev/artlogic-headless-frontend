@@ -324,6 +324,1386 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/public/site-content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lire les textes résolus et le logo courant.
+         * @description Projection publique seule, sans auteurs, traductions brutes, candidats ou données Artlogic. 503 si non provisionné ou politique incohérente ; repli embarqué géré par le frontend. Référence complète et tous les textes garantis pour une réponse 200.
+         */
+        get: operations["getPublicSiteContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/site-content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lire les contributions et leur état de repli.
+         * @description Une définition par clé active, un couple brut/résolu par clé et langue configurée, sans langues désactivées. Aucun auteur ou chemin Storage dans le DTO. Politique divergente : 503.
+         */
+        get: operations["getAdminSiteContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Enregistrer les textes modifiés et le choix de logo atomiquement.
+         * @description Limite du corps 262144 octets, maximum 64 couples. Auth/CSRF avant parsing ; If-Match absent → 428, mal formé → 400. Après validation structurelle bornée : transaction, comparaison de politique (503), puis ETag (412), puis validation métier des clés/langues/doublons/référence/limites propres aux clés (400). Un corps structurellement valide visant une langue retirée avec ancien ETag reçoit 412 ; avec ETag courant, 400 validation_error / unsupported_locale. Toute erreur annule les changements. Aucun retry automatique avec nouvel ETag. No-op avec version courante sans incrément. Le BFF conserve statuts/codes/détails autorisés selon configuration-and-ui.md, dont 413/415 et version_conflict.
+         */
+        patch: operations["updateSiteContent"];
+        trace?: never;
+    };
+    "/v1/admin/site-logos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Préparer un candidat logo sans l’activer.
+         * @description Corps brut ≤ 2097152 octets, jamais base64 ni multipart. JPEG/PNG/WebP réels, une frame, ≤ 4 millions de pixels. WebP normalisé ≤ 1024 × 1024 sans agrandissement, ≤ 2 MiB. Réservation avant Storage puis état ready avant 201. Expire à création + 24 h ; le logo courant demeure inchangé. Quota partagé appliqué avant décodage.
+         */
+        post: operations["uploadSiteLogo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/site-logos/{logoId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Prévisualiser le logo courant ou son propre candidat prêt.
+         * @description Candidat prêt/non expiré appartenant au sujet courant, ou logo courant quel que soit son auteur. Tout autre cas est un 404 indifférencié.
+         */
+        get: operations["getAdminSiteLogo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/site-logos/{logoId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lire uniquement le logo actuellement actif.
+         * @description Contrôle site + pointeur courant avant lecture Storage à chaque requête. Candidat/ancien/étranger/absent : 404 ; objet courant indisponible : 503, frontend utilisant le nom textuel.
+         */
+        get: operations["getPublicSiteLogo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPresentationCapabilities
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationCapabilities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPresentationDraft
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationDraft"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/pages/{pageKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPresentationDraftPage
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationDraftPage"];
+        /**
+         * savePresentationPage
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        put: operations["savePresentationPage"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/theme": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * savePresentationTheme
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        put: operations["savePresentationTheme"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/validation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * validatePresentation
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        post: operations["validatePresentation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/publications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * listPresentationPublications
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["listPresentationPublications"];
+        put?: never;
+        /**
+         * publishPresentation
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        post: operations["publishPresentation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/publications/{releaseId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * restorePresentation
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        post: operations["restorePresentation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * listPresentationAssets
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["listPresentationAssets"];
+        put?: never;
+        /**
+         * createPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        post: operations["createPresentationAsset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets/{assetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationAsset"];
+        put?: never;
+        post?: never;
+        /**
+         * deletePresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        delete: operations["deletePresentationAsset"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets/{assetId}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getAdminPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getAdminPresentationAsset"];
+        /**
+         * uploadPresentationAsset
+         * @description Legacy image/font binary upload. Video uploads require a direct signed upload (409 direct_upload_required).
+         */
+        put: operations["uploadPresentationAsset"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        /**
+         * headAdminPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        head: operations["headAdminPresentationAsset"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/presentation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPublicPresentation
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPublicPresentation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/previews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * createPresentationPreview
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        post: operations["createPresentationPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/preview/exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * exchangePresentationPreview
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        post: operations["exchangePresentationPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPresentationPreviewSession
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationPreviewSession"];
+        put?: never;
+        post?: never;
+        /**
+         * closePresentationPreview
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        delete: operations["closePresentationPreview"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/presentation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPreviewPresentation
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPreviewPresentation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/presentation-assets/{assetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPublicPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPublicPresentationAsset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        /**
+         * headPublicPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        head: operations["headPublicPresentationAsset"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/assets/{assetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPreviewPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPreviewPresentationAsset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        /**
+         * headPreviewPresentationAsset
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        head: operations["headPreviewPresentationAsset"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets/{assetId}/upload-attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * createPresentationUploadAttempt
+         * @description Transfert direct privé : session, site, CSRF et révision vérifiés. Aucun binaire via API/BFF. Jeton signé émis une seule fois, non journalisé.
+         */
+        post: operations["createPresentationUploadAttempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets/{assetId}/upload-attempts/{attemptId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * getPresentationUploadAttempt
+         * @description Transfert direct privé : session, site, CSRF et révision vérifiés. Aucun binaire via API/BFF. Jeton signé émis une seule fois, non journalisé.
+         */
+        get: operations["getPresentationUploadAttempt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets/{assetId}/upload-attempts/{attemptId}/finalize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * finalizePresentationUploadAttempt
+         * @description Transfert direct privé : session, site, CSRF et révision vérifiés. Aucun binaire via API/BFF. Jeton signé émis une seule fois, non journalisé.
+         */
+        post: operations["finalizePresentationUploadAttempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/presentation-assets/{assetId}/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * authorizePublicPresentationAsset
+         * @description Autorisation de lecture vérifiée à chaque requête. Retourne uniquement un lien signé final valable 60 secondes maximum. Les octets déjà transmis ne sont pas révocables ; un lien déjà émis reste utilisable jusqu’à expiration.
+         */
+        get: operations["authorizePublicPresentationAsset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/assets/{assetId}/content/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * authorizeAdminPresentationAsset
+         * @description Autorisation de lecture vérifiée à chaque requête. Retourne uniquement un lien signé final valable 60 secondes maximum. Les octets déjà transmis ne sont pas révocables ; un lien déjà émis reste utilisable jusqu’à expiration.
+         */
+        get: operations["authorizeAdminPresentationAsset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/assets/{assetId}/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * authorizePreviewPresentationAsset
+         * @description Autorisation de lecture vérifiée à chaque requête. Retourne uniquement un lien signé final valable 60 secondes maximum. Les octets déjà transmis ne sont pas révocables ; un lien déjà émis reste utilisable jusqu’à expiration.
+         */
+        get: operations["authorizePreviewPresentationAsset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/contact/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Configuration publique filtrée via relais */
+        get: operations["getContactConfiguration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/contact/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enregistrer une intention de contact */
+        post: operations["submitContactInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/contact/receipt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retrouver la seule prise en compte par preuve */
+        post: operations["recoverContactReceipt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste privée du site */
+        get: operations["listContactInquiries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/inquiries/{inquiryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Détail et historique privés */
+        get: operations["readContactInquiry"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/inquiries/{inquiryId}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirmer une tentative manuelle */
+        post: operations["retryContactInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/artwork-catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search the complete current public catalogue using numbered pagination
+         * @description Normative semantics, compatibility, limits and status/code allowlists are in README.md.
+         */
+        get: operations["listGalleryArtworks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/artwork-experiences/{artworkRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Resolve an exact public slug or legacy UUID and read published editorial content
+         * @description Normative semantics, compatibility, limits and status/code allowlists are in README.md.
+         */
+        get: operations["getGalleryArtworkExperience"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/artworks/{artworkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read an artwork editorial draft and shared presentation ETag
+         * @description Normative semantics, compatibility, limits and status/code allowlists are in README.md.
+         */
+        get: operations["getGalleryArtworkEditorial"];
+        /**
+         * Save active-locale description changes without publishing
+         * @description Normative semantics, compatibility, limits and status/code allowlists are in README.md.
+         */
+        put: operations["updateGalleryArtworkEditorial"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/preview/artwork-experience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read only the artwork, locale and frozen editorial snapshot bound to the preview session
+         * @description Normative semantics, compatibility, limits and status/code allowlists are in README.md.
+         */
+        get: operations["getGalleryPreviewArtworkExperience"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialCapabilities */
+        get: operations["getEditorialCapabilities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listEditorialArticles */
+        get: operations["listEditorialArticles"];
+        put?: never;
+        /** createEditorialArticle */
+        post: operations["createEditorialArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialArticle */
+        get: operations["getEditorialArticle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** saveEditorialDraft */
+        put: operations["saveEditorialDraft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/validation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** validateEditorialArticle */
+        post: operations["validateEditorialArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listEditorialVersions */
+        get: operations["listEditorialVersions"];
+        put?: never;
+        /** createEditorialVersion */
+        post: operations["createEditorialVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/versions/{versionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialVersion */
+        get: operations["getEditorialVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** renameEditorialVersion */
+        patch: operations["renameEditorialVersion"];
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/versions/{versionId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** restoreEditorialVersion */
+        post: operations["restoreEditorialVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** publishEditorialArticle */
+        post: operations["publishEditorialArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** scheduleEditorialArticle */
+        post: operations["scheduleEditorialArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/schedules/{scheduleId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** cancelEditorialSchedule */
+        post: operations["cancelEditorialSchedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/lifecycle": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** changeEditorialLifecycle */
+        post: operations["changeEditorialLifecycle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** duplicateEditorialArticle */
+        post: operations["duplicateEditorialArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/previews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** createEditorialPreview */
+        post: operations["createEditorialPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/related-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialRelatedSuggestions */
+        get: operations["getEditorialRelatedSuggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/reference-issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialReferenceIssues */
+        get: operations["getEditorialReferenceIssues"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/article-batches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** batchEditorialLifecycle */
+        post: operations["batchEditorialLifecycle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/vocabularies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listEditorialVocabularies */
+        get: operations["listEditorialVocabularies"];
+        put?: never;
+        /** createEditorialVocabulary */
+        post: operations["createEditorialVocabulary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/vocabularies/{vocabularyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialVocabulary */
+        get: operations["getEditorialVocabulary"];
+        put?: never;
+        post?: never;
+        /** deleteEditorialVocabulary */
+        delete: operations["deleteEditorialVocabulary"];
+        options?: never;
+        head?: never;
+        /** updateEditorialVocabulary */
+        patch: operations["updateEditorialVocabulary"];
+        trace?: never;
+    };
+    "/v1/admin/editorial/vocabularies/{vocabularyId}/terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listEditorialTerms */
+        get: operations["listEditorialTerms"];
+        put?: never;
+        /** createEditorialTerm */
+        post: operations["createEditorialTerm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/vocabularies/{vocabularyId}/terms/{termId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialTerm */
+        get: operations["getEditorialTerm"];
+        put?: never;
+        post?: never;
+        /** deleteEditorialTerm */
+        delete: operations["deleteEditorialTerm"];
+        options?: never;
+        head?: never;
+        /** updateEditorialTerm */
+        patch: operations["updateEditorialTerm"];
+        trace?: never;
+    };
+    "/v1/admin/editorial/vocabularies/{vocabularyId}/terms/{termId}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** mergeEditorialTerms */
+        post: operations["mergeEditorialTerms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialSettings */
+        get: operations["getEditorialSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** updateEditorialSettings */
+        patch: operations["updateEditorialSettings"];
+        trace?: never;
+    };
+    "/v1/admin/editorial/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listEditorialTemplates */
+        get: operations["listEditorialTemplates"];
+        put?: never;
+        /** createEditorialTemplate */
+        post: operations["createEditorialTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/templates/{templateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialTemplate */
+        get: operations["getEditorialTemplate"];
+        /** updateEditorialTemplate */
+        put: operations["updateEditorialTemplate"];
+        post?: never;
+        /** deleteEditorialTemplate */
+        delete: operations["deleteEditorialTemplate"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{id}/apply-template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** applyEditorialTemplate */
+        post: operations["applyEditorialTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/artworks/{artworkId}/editorial-usages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialArtworkUsages */
+        get: operations["getEditorialArtworkUsages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/editorial/articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listPublicEditorialArticles */
+        get: operations["listPublicEditorialArticles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/editorial/articles/{kind}/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getPublicEditorialArticle */
+        get: operations["getPublicEditorialArticle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/editorial/article-addresses/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getPublicEditorialAddress */
+        get: operations["getPublicEditorialAddress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/editorial/media/{assetId}/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** authorizePublicEditorialMedia */
+        get: operations["authorizePublicEditorialMedia"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/editorial/snapshots/{snapshotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getEditorialPreview */
+        get: operations["getEditorialPreview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/editorial/snapshots/{snapshotId}/media/{assetId}/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** authorizeEditorialPreviewMedia */
+        get: operations["authorizeEditorialPreviewMedia"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/editorial/filters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read eligible vocabularies and paginated currently-public terms
+         * @description Only enabled filter vocabularies and terms used by a current public article of this kind. No draft-only terms. Literal search and stable revision-bound pagination.
+         */
+        get: operations["getPublicEditorialFilters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -586,6 +1966,1938 @@ export interface components {
             /** @enum {string} */
             status: "ok";
         };
+        SiteLocale: {
+            code: string;
+            label: string;
+        };
+        SiteLocalePolicy: {
+            defaultLocale: string;
+            locales: components["schemas"]["SiteLocale"][];
+            fingerprint: string;
+        };
+        SiteLogo: {
+            /** Format: uuid */
+            id: string;
+            width: number;
+            height: number;
+            byteSize: number;
+            /** @enum {string} */
+            mimeType: "image/webp";
+        };
+        SiteLogoCandidate: {
+            /** Format: uuid */
+            id: string;
+            width: number;
+            height: number;
+            byteSize: number;
+            /** @enum {string} */
+            mimeType: "image/webp";
+            /** Format: date-time */
+            expiresAt: string;
+            previewPath: string;
+        };
+        SiteMessages: {
+            "nav.news": string;
+            "nav.artworks": string;
+            "nav.exhibitions": string;
+            "nav.publications": string;
+            "nav.expertise": string;
+            "nav.contact": string;
+            "header.homeLabel": string;
+            "header.navigationLabel": string;
+            "header.openMenu": string;
+            "header.closeMenu": string;
+            "header.languageLabel": string;
+            "header.skipToContent": string;
+            "page.home.title": string;
+            "page.news.title": string;
+            "page.news.empty": string;
+            "page.artworks.title": string;
+            "page.exhibitions.title": string;
+            "page.exhibitions.empty": string;
+            "page.publications.title": string;
+            "page.publications.empty": string;
+            "page.expertise.title": string;
+            "page.expertise.empty": string;
+            "page.contact.title": string;
+            "page.contact.empty": string;
+            "catalog.loading": string;
+            "catalog.empty": string;
+            "catalog.restarted": string;
+            "catalog.next": string;
+            "catalog.errorTitle": string;
+            "catalog.errorMessage": string;
+            "catalog.retry": string;
+            "catalog.unavailableTitle": string;
+            "artwork.loading": string;
+            "artwork.back": string;
+            "artwork.untitled": string;
+            "artwork.unknownArtist": string;
+            "artwork.artist": string;
+            "artwork.year": string;
+            "artwork.medium": string;
+            "artwork.dimensions": string;
+            "artwork.unspecified": string;
+            "artwork.imageUnavailable": string;
+            "artwork.imageAlt": string;
+            "error.artworkNotFoundTitle": string;
+            "error.artworkNotFoundMessage": string;
+            "error.pageNotFoundTitle": string;
+            "error.pageNotFoundMessage": string;
+            "error.viewArtworks": string;
+            "video.play": string;
+            "video.pause": string;
+            "video.unavailable": string;
+            "video.reducedMotion": string;
+            "presentation.discover": string;
+            "presentation.readMore": string;
+            "presentation.galleryLabel": string;
+            "presentation.previous": string;
+            "presentation.next": string;
+            "presentation.empty": string;
+            "error.presentationTitle": string;
+            "error.presentationMessage": string;
+            "preview.title": string;
+            "preview.notice": string;
+            "preview.desktop": string;
+            "preview.mobile": string;
+            "preview.close": string;
+            "preview.expired": string;
+            "preview.unavailable": string;
+            "preview.checking": string;
+            "preview.backToAdmin": string;
+            "video.playLabel": string;
+            "video.pauseLabel": string;
+            "presentation.explore": string;
+            "presentation.demonstration": string;
+            "contact.name": string;
+            "contact.email": string;
+            "contact.subject": string;
+            "contact.message": string;
+            "contact.required": string;
+            "contact.limits": string;
+            "contact.privacy": string;
+            "contact.privacyLink": string;
+            "contact.submit": string;
+            "contact.sending": string;
+            "contact.confirmed": string;
+            "contact.confirmationHelp": string;
+            "contact.reference": string;
+            "contact.disabled": string;
+            "contact.unavailable": string;
+            "contact.invalid": string;
+            "contact.requiredError": string;
+            "contact.invalidEmail": string;
+            "contact.tooLong": string;
+            "contact.rateLimited": string;
+            "contact.retryAfter": string;
+            "contact.recover": string;
+            "contact.recovering": string;
+            "contact.unknownReceipt": string;
+            "contact.conflict": string;
+            "contact.newEnquiry": string;
+            "contact.newConfirm": string;
+            "contact.artworkCta": string;
+            "contact.artworkHeading": string;
+            "contact.artworkSubject": string;
+            "contact.artworkUnavailable": string;
+            "contact.general": string;
+            "contact.backArtwork": string;
+            "contact.leaveConfirm": string;
+            "contact.demonstration": string;
+            "contact.notificationHeading": string;
+            "contact.notificationGallery": string;
+            "contact.notificationLocale": string;
+            "contact.notificationArtwork": string;
+            "contact.load": string;
+            "contact.sentCopy": string;
+            "contact.notificationType": string;
+            "contact.notificationGeneral": string;
+            "gallery.searchLabel": string;
+            "gallery.searchSubmit": string;
+            "gallery.searchClear": string;
+            "gallery.noResults": string;
+            "gallery.paginationLabel": string;
+            "gallery.previousPage": string;
+            "gallery.nextPage": string;
+            "gallery.page": string;
+            "gallery.of": string;
+            "gallery.closeArtwork": string;
+            "gallery.opening": string;
+            "gallery.unavailable": string;
+            "gallery.progressLabel": string;
+            "gallery.view": string;
+            "gallery.presentation": string;
+            "gallery.description": string;
+            "gallery.revalidate": string;
+            "gallery.restart": string;
+            "gallery.zoomIn": string;
+            "gallery.zoomOut": string;
+            "gallery.zoomHelp": string;
+            "gallery.openInformation": string;
+            "gallery.backToImages": string;
+            "gallery.viewWholeImage": string;
+            "gallery.mobileGestureHelp": string;
+            "gallery.panHelp": string;
+        };
+        SiteMessageDefinition: {
+            /** @enum {string} */
+            key: "nav.news" | "nav.artworks" | "nav.exhibitions" | "nav.publications" | "nav.expertise" | "nav.contact" | "header.homeLabel" | "header.navigationLabel" | "header.openMenu" | "header.closeMenu" | "header.languageLabel" | "header.skipToContent" | "page.home.title" | "page.news.title" | "page.news.empty" | "page.artworks.title" | "page.exhibitions.title" | "page.exhibitions.empty" | "page.publications.title" | "page.publications.empty" | "page.expertise.title" | "page.expertise.empty" | "page.contact.title" | "page.contact.empty" | "catalog.loading" | "catalog.empty" | "catalog.restarted" | "catalog.next" | "catalog.errorTitle" | "catalog.errorMessage" | "catalog.retry" | "catalog.unavailableTitle" | "artwork.loading" | "artwork.back" | "artwork.untitled" | "artwork.unknownArtist" | "artwork.artist" | "artwork.year" | "artwork.medium" | "artwork.dimensions" | "artwork.unspecified" | "artwork.imageUnavailable" | "artwork.imageAlt" | "error.artworkNotFoundTitle" | "error.artworkNotFoundMessage" | "error.pageNotFoundTitle" | "error.pageNotFoundMessage" | "error.viewArtworks" | "video.play" | "video.pause" | "video.unavailable" | "video.reducedMotion" | "presentation.discover" | "presentation.readMore" | "presentation.galleryLabel" | "presentation.previous" | "presentation.next" | "presentation.empty" | "error.presentationTitle" | "error.presentationMessage" | "preview.title" | "preview.notice" | "preview.desktop" | "preview.mobile" | "preview.close" | "preview.expired" | "preview.unavailable" | "preview.checking" | "preview.backToAdmin" | "video.playLabel" | "video.pauseLabel" | "presentation.explore" | "presentation.demonstration" | "contact.name" | "contact.email" | "contact.subject" | "contact.message" | "contact.required" | "contact.limits" | "contact.privacy" | "contact.privacyLink" | "contact.submit" | "contact.sending" | "contact.confirmed" | "contact.confirmationHelp" | "contact.reference" | "contact.disabled" | "contact.unavailable" | "contact.invalid" | "contact.requiredError" | "contact.invalidEmail" | "contact.tooLong" | "contact.rateLimited" | "contact.retryAfter" | "contact.recover" | "contact.recovering" | "contact.unknownReceipt" | "contact.conflict" | "contact.newEnquiry" | "contact.newConfirm" | "contact.artworkCta" | "contact.artworkHeading" | "contact.artworkSubject" | "contact.artworkUnavailable" | "contact.general" | "contact.backArtwork" | "contact.leaveConfirm" | "contact.demonstration" | "contact.notificationHeading" | "contact.notificationGallery" | "contact.notificationLocale" | "contact.notificationArtwork" | "contact.load" | "contact.sentCopy" | "contact.notificationType" | "contact.notificationGeneral" | "gallery.searchLabel" | "gallery.searchSubmit" | "gallery.searchClear" | "gallery.noResults" | "gallery.paginationLabel" | "gallery.previousPage" | "gallery.nextPage" | "gallery.page" | "gallery.of" | "gallery.closeArtwork" | "gallery.opening" | "gallery.unavailable" | "gallery.progressLabel" | "gallery.view" | "gallery.presentation" | "gallery.description" | "gallery.revalidate" | "gallery.restart" | "gallery.zoomIn" | "gallery.zoomOut" | "gallery.zoomHelp" | "gallery.openInformation" | "gallery.backToImages" | "gallery.viewWholeImage" | "gallery.mobileGestureHelp" | "gallery.panHelp";
+            /** @enum {string} */
+            group: "navigation" | "header" | "pages" | "catalog" | "artwork" | "errors" | "video" | "presentation" | "preview" | "contact" | "gallery";
+            label: string;
+            /** @enum {integer} */
+            maxLength: 80 | 500;
+        };
+        SiteTranslation: {
+            /** @enum {string} */
+            key: "nav.news" | "nav.artworks" | "nav.exhibitions" | "nav.publications" | "nav.expertise" | "nav.contact" | "header.homeLabel" | "header.navigationLabel" | "header.openMenu" | "header.closeMenu" | "header.languageLabel" | "header.skipToContent" | "page.home.title" | "page.news.title" | "page.news.empty" | "page.artworks.title" | "page.exhibitions.title" | "page.exhibitions.empty" | "page.publications.title" | "page.publications.empty" | "page.expertise.title" | "page.expertise.empty" | "page.contact.title" | "page.contact.empty" | "catalog.loading" | "catalog.empty" | "catalog.restarted" | "catalog.next" | "catalog.errorTitle" | "catalog.errorMessage" | "catalog.retry" | "catalog.unavailableTitle" | "artwork.loading" | "artwork.back" | "artwork.untitled" | "artwork.unknownArtist" | "artwork.artist" | "artwork.year" | "artwork.medium" | "artwork.dimensions" | "artwork.unspecified" | "artwork.imageUnavailable" | "artwork.imageAlt" | "error.artworkNotFoundTitle" | "error.artworkNotFoundMessage" | "error.pageNotFoundTitle" | "error.pageNotFoundMessage" | "error.viewArtworks" | "video.play" | "video.pause" | "video.unavailable" | "video.reducedMotion" | "presentation.discover" | "presentation.readMore" | "presentation.galleryLabel" | "presentation.previous" | "presentation.next" | "presentation.empty" | "error.presentationTitle" | "error.presentationMessage" | "preview.title" | "preview.notice" | "preview.desktop" | "preview.mobile" | "preview.close" | "preview.expired" | "preview.unavailable" | "preview.checking" | "preview.backToAdmin" | "video.playLabel" | "video.pauseLabel" | "presentation.explore" | "presentation.demonstration" | "contact.name" | "contact.email" | "contact.subject" | "contact.message" | "contact.required" | "contact.limits" | "contact.privacy" | "contact.privacyLink" | "contact.submit" | "contact.sending" | "contact.confirmed" | "contact.confirmationHelp" | "contact.reference" | "contact.disabled" | "contact.unavailable" | "contact.invalid" | "contact.requiredError" | "contact.invalidEmail" | "contact.tooLong" | "contact.rateLimited" | "contact.retryAfter" | "contact.recover" | "contact.recovering" | "contact.unknownReceipt" | "contact.conflict" | "contact.newEnquiry" | "contact.newConfirm" | "contact.artworkCta" | "contact.artworkHeading" | "contact.artworkSubject" | "contact.artworkUnavailable" | "contact.general" | "contact.backArtwork" | "contact.leaveConfirm" | "contact.demonstration" | "contact.notificationHeading" | "contact.notificationGallery" | "contact.notificationLocale" | "contact.notificationArtwork" | "contact.load" | "contact.sentCopy" | "contact.notificationType" | "contact.notificationGeneral" | "gallery.searchLabel" | "gallery.searchSubmit" | "gallery.searchClear" | "gallery.noResults" | "gallery.paginationLabel" | "gallery.previousPage" | "gallery.nextPage" | "gallery.page" | "gallery.of" | "gallery.closeArtwork" | "gallery.opening" | "gallery.unavailable" | "gallery.progressLabel" | "gallery.view" | "gallery.presentation" | "gallery.description" | "gallery.revalidate" | "gallery.restart" | "gallery.zoomIn" | "gallery.zoomOut" | "gallery.zoomHelp" | "gallery.openInformation" | "gallery.backToImages" | "gallery.viewWholeImage" | "gallery.mobileGestureHelp" | "gallery.panHelp";
+            locale: string;
+            value: string | null;
+            resolvedValue: string;
+            fallback: boolean;
+        };
+        SiteContentPublic: {
+            revision: number;
+            locale: string;
+            policy: components["schemas"]["SiteLocalePolicy"];
+            messages: components["schemas"]["SiteMessages"];
+            logo: components["schemas"]["SiteLogo"] | null;
+        };
+        SiteContentAdmin: {
+            revision: number;
+            policy: components["schemas"]["SiteLocalePolicy"];
+            groups: {
+                id: string;
+                label: string;
+            }[];
+            definitions: components["schemas"]["SiteMessageDefinition"][];
+            translations: components["schemas"]["SiteTranslation"][];
+            logo: components["schemas"]["SiteLogo"] | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SiteTranslationChange: {
+            /** @description Syntaxe seulement avant transaction ; appartenance au registre vérifiée après politique et ETag, afin de préserver la priorité du conflit de version. */
+            key: string;
+            locale: string;
+            value: string | null;
+        };
+        /** @description PATCH atomique des seuls champs fournis. Gardes, If-Match requis et validation structurelle bornée avant transaction ; puis politique (503), ETag (412), puis validation métier. Avec version courante : doublon (key,locale), clé inconnue, langue non configurée, longueur propre à la clé ou référence vide → 400 validation_error avec détails bornés. Langue retirée + ancien ETag + corps structurellement valide → 412 ; avec ETag courant → 400 unsupported_locale. Valeur secondaire vide/espaces → NULL. logoId absent conserve ; NULL retire ; UUID active un candidat prêt/non expiré appartenant au sujet courant ou conserve le logo courant. Aucun site, URL ou clé Storage fourni par le client. */
+        SiteContentPatch: {
+            translations?: components["schemas"]["SiteTranslationChange"][];
+            /** Format: uuid */
+            logoId?: string | null;
+        };
+        /** @description Détails du PATCH uniquement : positions 0–63 dans le corps soumis, raisons fermées, aucune valeur contributive ni chemin libre. Le BFF vérifie à nouveau cette liste et produit ses propres messages français. */
+        SiteContentValidationError: components["schemas"]["Error"] & {
+            error?: {
+                /** @constant */
+                code?: "validation_error";
+                details?: ({
+                    /** @constant */
+                    field: "body";
+                    /** @enum {string} */
+                    reason: "required" | "invalid_type" | "unknown_field";
+                } | {
+                    /** @constant */
+                    field: "translations";
+                    /** @enum {string} */
+                    reason: "required" | "invalid_type" | "too_many_changes";
+                } | {
+                    field: string;
+                    /** @enum {string} */
+                    reason: "required" | "invalid_type" | "unknown_key" | "duplicate_translation";
+                } | {
+                    field: string;
+                    /** @enum {string} */
+                    reason: "required" | "invalid_type" | "unsupported_locale";
+                } | {
+                    field: string;
+                    /** @enum {string} */
+                    reason: "required" | "invalid_type" | "reference_required" | "max_length";
+                } | {
+                    /** @constant */
+                    field: "logoId";
+                    /** @enum {string} */
+                    reason: "invalid_type";
+                })[];
+            };
+        };
+        SiteLogoValidationError: components["schemas"]["Error"] & {
+            error?: {
+                /** @constant */
+                code?: "invalid_logo";
+                details?: {
+                    /** @constant */
+                    field: "file";
+                    /** @enum {string} */
+                    reason: "invalid_image" | "mime_mismatch" | "animated_image" | "pixel_limit" | "output_too_large";
+                }[];
+            };
+        };
+        /** @enum {string} */
+        PresentationPageKey: "home" | "news" | "artworks" | "exhibitions" | "publications" | "expertise" | "contact" | "artworkDetail";
+        PresentationLink: {
+            /** @constant */
+            kind: "page";
+            pageKey: components["schemas"]["PresentationPageKey"];
+            /** Format: uuid */
+            artworkId?: string;
+        } | {
+            /** @constant */
+            kind: "external";
+            /** Format: uri */
+            url: string;
+        } | {
+            /** @constant */
+            kind: "email";
+            /** Format: email */
+            value: string;
+        } | {
+            /** @constant */
+            kind: "phone";
+            value: string;
+        };
+        PresentationFocalPoint: {
+            x: number;
+            y: number;
+        };
+        PresentationColors: {
+            background: string;
+            surface: string;
+            mutedSurface: string;
+            inverseSurface: string;
+            text: string;
+            mutedText: string;
+            inverseText: string;
+            disabledText: string;
+            accent: string;
+            onAccent: string;
+            link: string;
+            linkHover: string;
+            border: string;
+            focus: string;
+            selection: string;
+            onSelection: string;
+            error: string;
+            onError: string;
+            success: string;
+            onSuccess: string;
+            warning: string;
+            onWarning: string;
+        };
+        PresentationColorOverrides: {
+            background?: string;
+            surface?: string;
+            mutedSurface?: string;
+            inverseSurface?: string;
+            text?: string;
+            mutedText?: string;
+            inverseText?: string;
+            disabledText?: string;
+            accent?: string;
+            onAccent?: string;
+            link?: string;
+            linkHover?: string;
+            border?: string;
+            focus?: string;
+            selection?: string;
+            onSelection?: string;
+            error?: string;
+            onError?: string;
+            success?: string;
+            onSuccess?: string;
+            warning?: string;
+            onWarning?: string;
+        };
+        PresentationTypographyRole: {
+            familyId: string;
+            /** @enum {integer} */
+            weight: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+            /** @enum {string} */
+            style: "normal" | "italic";
+            minSizeRem: number;
+            maxSizeRem: number;
+            lineHeight: number;
+            letterSpacingEm: number;
+        };
+        PresentationTypographyRoleOverride: {
+            familyId?: string;
+            /** @enum {integer} */
+            weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+            /** @enum {string} */
+            style?: "normal" | "italic";
+            minSizeRem?: number;
+            maxSizeRem?: number;
+            lineHeight?: number;
+            letterSpacingEm?: number;
+        };
+        PresentationFontFamily: {
+            /** Format: uuid */
+            id: string;
+            label: string;
+            faces: {
+                /** Format: uuid */
+                assetId: string;
+            }[];
+        };
+        PresentationTheme: {
+            colors: components["schemas"]["PresentationColors"];
+            typography: {
+                h1: components["schemas"]["PresentationTypographyRole"];
+                h2: components["schemas"]["PresentationTypographyRole"];
+                h3: components["schemas"]["PresentationTypographyRole"];
+                body: components["schemas"]["PresentationTypographyRole"];
+                caption: components["schemas"]["PresentationTypographyRole"];
+                navigation: components["schemas"]["PresentationTypographyRole"];
+                button: components["schemas"]["PresentationTypographyRole"];
+            };
+            fonts: components["schemas"]["PresentationFontFamily"][];
+        };
+        PresentationThemeOverrides: {
+            colors?: components["schemas"]["PresentationColorOverrides"];
+            typography?: {
+                h1?: components["schemas"]["PresentationTypographyRoleOverride"];
+                h2?: components["schemas"]["PresentationTypographyRoleOverride"];
+                h3?: components["schemas"]["PresentationTypographyRoleOverride"];
+                body?: components["schemas"]["PresentationTypographyRoleOverride"];
+                caption?: components["schemas"]["PresentationTypographyRoleOverride"];
+                navigation?: components["schemas"]["PresentationTypographyRoleOverride"];
+                button?: components["schemas"]["PresentationTypographyRoleOverride"];
+            };
+            fonts?: components["schemas"]["PresentationFontFamily"][];
+        };
+        PresentationFontDescriptor: {
+            /** Format: uuid */
+            familyId: string;
+            /** @enum {integer} */
+            weight: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+            /** @enum {string} */
+            style: "normal" | "italic";
+        };
+        PresentationPublicAsset: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "image" | "video" | "font";
+            path: string;
+            mimeType: string;
+            byteSize: number;
+            width?: number;
+            height?: number;
+            font?: components["schemas"]["PresentationFontDescriptor"];
+            variants?: {
+                /** @enum {string} */
+                variant: "w640" | "w1280" | "w1920";
+                path: string;
+                width: number;
+                height: number;
+            }[];
+        } & unknown;
+        PresentationHeroMediaSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "heroMedia";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "immersive" | "centered";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                introduction?: {
+                    [key: string]: string | null;
+                };
+                link?: components["schemas"]["PresentationLink"];
+                linkLabel?: {
+                    [key: string]: string | null;
+                };
+                posterId?: string | null;
+                videoId?: string | null;
+                mobileVideoId?: string | null;
+                focalPoint?: components["schemas"]["PresentationFocalPoint"];
+            };
+        };
+        ResolvedPresentationHeroMediaSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "heroMedia";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "immersive" | "centered";
+            props: {
+                heading?: string;
+                introduction?: string;
+                link?: components["schemas"]["PresentationLink"];
+                linkLabel?: string;
+                focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                poster?: components["schemas"]["PresentationPublicAsset"] | null;
+                video?: components["schemas"]["PresentationPublicAsset"] | null;
+                mobileVideo?: components["schemas"]["PresentationPublicAsset"] | null;
+            };
+        };
+        PresentationTextSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "text";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "standard" | "narrow";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                body?: {
+                    [key: string]: string | null;
+                };
+                link?: components["schemas"]["PresentationLink"];
+                linkLabel?: {
+                    [key: string]: string | null;
+                };
+            };
+        };
+        ResolvedPresentationTextSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "text";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "standard" | "narrow";
+            props: {
+                heading?: string;
+                body?: string;
+                link?: components["schemas"]["PresentationLink"];
+                linkLabel?: string;
+            };
+        };
+        PresentationTextImageSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "textImage";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "imageLeft" | "imageRight";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                body?: {
+                    [key: string]: string | null;
+                };
+                link?: components["schemas"]["PresentationLink"];
+                linkLabel?: {
+                    [key: string]: string | null;
+                };
+                imageId?: string | null;
+                alt?: {
+                    [key: string]: string | null;
+                };
+                caption?: {
+                    [key: string]: string | null;
+                };
+                decorative?: boolean;
+                focalPoint?: components["schemas"]["PresentationFocalPoint"];
+            };
+        };
+        ResolvedPresentationTextImageSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "textImage";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "imageLeft" | "imageRight";
+            props: {
+                heading?: string;
+                body?: string;
+                link?: components["schemas"]["PresentationLink"];
+                linkLabel?: string;
+                alt?: string;
+                caption?: string;
+                decorative?: boolean;
+                focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                image?: components["schemas"]["PresentationPublicAsset"] | null;
+            };
+        };
+        PresentationArtworkSelectionSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "artworkSelection";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "strip";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                introduction?: {
+                    [key: string]: string | null;
+                };
+                artworkIds?: string[];
+            };
+        };
+        ResolvedPresentationArtworkSelectionSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "artworkSelection";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "strip";
+            props: {
+                heading?: string;
+                introduction?: string;
+                artworks?: components["schemas"]["PublicArtwork"][];
+            };
+        };
+        PresentationEditorialCardsSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "editorialCards";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "list";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                introduction?: {
+                    [key: string]: string | null;
+                };
+                items?: {
+                    /** Format: uuid */
+                    id: string;
+                    heading?: {
+                        [key: string]: string | null;
+                    };
+                    excerpt?: {
+                        [key: string]: string | null;
+                    };
+                    link?: components["schemas"]["PresentationLink"];
+                    imageId?: string | null;
+                    alt?: {
+                        [key: string]: string | null;
+                    };
+                    caption?: {
+                        [key: string]: string | null;
+                    };
+                    decorative?: boolean;
+                    focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                }[];
+            };
+        };
+        ResolvedPresentationEditorialCardsSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "editorialCards";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "list";
+            props: {
+                heading?: string;
+                introduction?: string;
+                items?: {
+                    /** Format: uuid */
+                    id: string;
+                    heading?: string;
+                    excerpt?: string;
+                    link?: components["schemas"]["PresentationLink"];
+                    alt?: string;
+                    caption?: string;
+                    decorative?: boolean;
+                    focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                    image?: components["schemas"]["PresentationPublicAsset"] | null;
+                }[];
+            };
+        };
+        PresentationImageGallerySection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "imageGallery";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "strip";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                items?: {
+                    /** Format: uuid */
+                    id: string;
+                    imageId?: string | null;
+                    alt?: {
+                        [key: string]: string | null;
+                    };
+                    caption?: {
+                        [key: string]: string | null;
+                    };
+                    decorative?: boolean;
+                    focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                }[];
+            };
+        };
+        ResolvedPresentationImageGallerySection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "imageGallery";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "strip";
+            props: {
+                heading?: string;
+                items?: {
+                    /** Format: uuid */
+                    id: string;
+                    alt?: string;
+                    caption?: string;
+                    decorative?: boolean;
+                    focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                    image?: components["schemas"]["PresentationPublicAsset"] | null;
+                }[];
+            };
+        };
+        PresentationContactSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "contact";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "compact" | "split";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                body?: {
+                    [key: string]: string | null;
+                };
+                links?: {
+                    /** Format: uuid */
+                    id: string;
+                    label: {
+                        [key: string]: string | null;
+                    };
+                    destination: components["schemas"]["PresentationLink"];
+                }[];
+            };
+        };
+        ResolvedPresentationContactSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "contact";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "compact" | "split";
+            props: {
+                heading?: string;
+                body?: string;
+                links?: {
+                    /** Format: uuid */
+                    id: string;
+                    label: string;
+                    destination: components["schemas"]["PresentationLink"];
+                }[];
+            };
+        };
+        PresentationArtworkCatalogSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "artworkCatalog";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid";
+            hidden: boolean;
+            props: {
+                columns?: number;
+            };
+        };
+        ResolvedPresentationArtworkCatalogSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "artworkCatalog";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid";
+            props: {
+                columns?: number;
+            };
+        };
+        PresentationArtworkDetailsSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "artworkDetails";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "standard";
+            hidden: boolean;
+            props: Record<string, never>;
+        };
+        ResolvedPresentationArtworkDetailsSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "artworkDetails";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "standard";
+            props: Record<string, never>;
+        };
+        PresentationSection: components["schemas"]["PresentationHeroMediaSection"] | components["schemas"]["PresentationTextSection"] | components["schemas"]["PresentationTextImageSection"] | components["schemas"]["PresentationArtworkSelectionSection"] | components["schemas"]["PresentationEditorialCardsSection"] | components["schemas"]["PresentationImageGallerySection"] | components["schemas"]["PresentationContactSection"] | components["schemas"]["PresentationArtworkCatalogSection"] | components["schemas"]["PresentationArtworkDetailsSection"];
+        ResolvedPresentationSection: components["schemas"]["ResolvedPresentationHeroMediaSection"] | components["schemas"]["ResolvedPresentationTextSection"] | components["schemas"]["ResolvedPresentationTextImageSection"] | components["schemas"]["ResolvedPresentationArtworkSelectionSection"] | components["schemas"]["ResolvedPresentationEditorialCardsSection"] | components["schemas"]["ResolvedPresentationImageGallerySection"] | components["schemas"]["ResolvedPresentationContactSection"] | components["schemas"]["ResolvedPresentationArtworkCatalogSection"] | components["schemas"]["ResolvedPresentationArtworkDetailsSection"];
+        PresentationPage: {
+            pageKey: components["schemas"]["PresentationPageKey"];
+            sections: components["schemas"]["PresentationSection"][];
+        };
+        PresentationDiagnostic: {
+            field: string;
+            /** @enum {string} */
+            reason: "required" | "unsupported_locale" | "unsupported_variant" | "incompatible_schema" | "duplicate_id" | "missing_required_block" | "invalid_placement" | "invalid_link" | "asset_not_ready" | "asset_not_found" | "poster_required" | "font_weight_missing" | "font_glyph_missing" | "contrast_insufficient" | "artwork_unavailable" | "aggregate_too_large";
+            /** @enum {string} */
+            severity: "error" | "warning";
+        };
+        PresentationValidation: {
+            revision: string;
+            publishable: boolean;
+            diagnostics: components["schemas"]["PresentationDiagnostic"][];
+        };
+        PresentationDraft: {
+            revision: string;
+            /** @constant */
+            schemaVersion: 1;
+            profileId: string;
+            manifestFingerprint: string;
+            policyFingerprint: string;
+            themeOverrides: components["schemas"]["PresentationThemeOverrides"];
+            effectiveTheme: components["schemas"]["PresentationTheme"];
+            valueOrigins: {
+                [key: string]: "base" | "profile" | "admin";
+            };
+            pageKeys: components["schemas"]["PresentationPageKey"][];
+            activeReleaseId: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        PresentationDraftPage: {
+            revision: string;
+            page: components["schemas"]["PresentationPage"];
+            diagnostics: components["schemas"]["PresentationDiagnostic"][];
+        };
+        PresentationWriteResult: {
+            revision: string;
+            changed: boolean;
+            diagnostics: components["schemas"]["PresentationDiagnostic"][];
+        };
+        PresentationRelease: {
+            /** Format: uuid */
+            id: string;
+            sequence: string;
+            sourceRevision: string;
+            /** Format: date-time */
+            createdAt: string;
+            authorLabel: string;
+            active: boolean;
+            compatible: boolean;
+            restoredFromId: string | null;
+        };
+        PresentationReleaseList: {
+            items: components["schemas"]["PresentationRelease"][];
+        };
+        PresentationPublic: {
+            /** Format: uuid */
+            releaseId: string;
+            /** @constant */
+            schemaVersion: 1;
+            profileId: string;
+            manifestFingerprint: string;
+            locale: string;
+            pageKey: components["schemas"]["PresentationPageKey"];
+            theme: components["schemas"]["PresentationTheme"];
+            fontFiles: components["schemas"]["PresentationPublicAsset"][];
+            sections: components["schemas"]["ResolvedPresentationSection"][];
+        };
+        PresentationAssetCreate: {
+            /** @enum {string} */
+            kind: "image" | "video" | "font";
+            /** @constant */
+            rightsConfirmed: true;
+            font?: {
+                /** Format: uuid */
+                familyId: string;
+                label: string;
+                /** @enum {integer} */
+                weight: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+                /** @enum {string} */
+                style: "normal" | "italic";
+            };
+        };
+        PresentationAssetMetadata: {
+            /** @constant */
+            kind: "image";
+            width: number;
+            height: number;
+        } | {
+            /** @constant */
+            kind: "video";
+            width?: number;
+            height?: number;
+            durationSeconds?: number;
+            fps?: number;
+        } | {
+            /** @constant */
+            kind: "font";
+            font: components["schemas"]["PresentationFontDescriptor"];
+            familyName: string;
+            glyphCount: number;
+            missingRequiredGlyphs: string[];
+            /** @description Sorted inclusive Unicode coverage ranges derived from the parsed binary. Absent legacy coverage requires reimport before publication. */
+            unicodeRanges?: number[][];
+        };
+        PresentationAsset: {
+            /** Format: uuid */
+            id: string;
+            revision: string;
+            /** @enum {string} */
+            kind: "image" | "video" | "font";
+            /** @enum {string} */
+            state: "awaiting_upload" | "preparing" | "ready" | "failed" | "deleting";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            failureCode: string | null;
+            metadata: components["schemas"]["PresentationAssetMetadata"] | null;
+            files: {
+                variant: string;
+                mimeType: string;
+                byteSize: number;
+                width?: number;
+                height?: number;
+            }[];
+            usageCount: number;
+        };
+        PresentationAssetList: {
+            items: components["schemas"]["PresentationAsset"][];
+            nextCursor: string | null;
+        };
+        PresentationCapabilities: {
+            profileId: string;
+            manifestFingerprint: string;
+            policyFingerprint: string;
+            /** @constant */
+            schemaVersion: 1;
+            /** @description Manifeste livré par le développement, conforme au vocabulaire fermé et borné de components-and-configuration.md ; jamais du code contributif. */
+            manifest: Record<string, never>;
+            limits: {
+                /** @constant */
+                maxSections: 30;
+                /** @constant */
+                maxItems: 12;
+                /** @constant */
+                pageBytes: 8388608;
+                /** @constant */
+                themeBytes: 262144;
+                /** @constant */
+                aggregateBytes: 67108864;
+                /** @constant */
+                videoBytes: 20971520;
+                /** @constant */
+                imageBytes: 10485760;
+                /** @constant */
+                fontBytes: 2097152;
+            };
+        };
+        PresentationPreviewInput: {
+            pageKey: components["schemas"]["PresentationPageKey"];
+            locale: string;
+            /** Format: uuid */
+            artworkId?: string;
+        };
+        PresentationPreviewGrant: {
+            exchangeCode: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** Format: uri */
+            exchangeUrl: string;
+        };
+        PresentationPreviewExchange: {
+            previewSessionToken: string;
+            previewCsrfToken: string;
+            /** Format: date-time */
+            expiresAt: string;
+            revision: string;
+            pageKey: components["schemas"]["PresentationPageKey"];
+            locale: string;
+            /** Format: uuid */
+            artworkId?: string;
+        };
+        PresentationPreviewStatus: {
+            revision: string;
+            /** Format: date-time */
+            expiresAt: string;
+            pageKey: components["schemas"]["PresentationPageKey"];
+            locale: string;
+            /**
+             * Format: uuid
+             * @description Œuvre publique choisie pour la fiche d’aperçu ; aucune autorité d’accès.
+             */
+            artworkId?: string;
+        };
+        PresentationPreview: {
+            /** @constant */
+            schemaVersion: 1;
+            profileId: string;
+            manifestFingerprint: string;
+            locale: string;
+            pageKey: components["schemas"]["PresentationPageKey"];
+            theme: components["schemas"]["PresentationTheme"];
+            fontFiles: components["schemas"]["PresentationPublicAsset"][];
+            sections: components["schemas"]["ResolvedPresentationSection"][];
+            /** Format: uuid */
+            snapshotId: string;
+            revision: string;
+        };
+        PresentationUploadAttempt: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            assetId: string;
+            /** @enum {string} */
+            state: "reserved" | "finalizing" | "ready" | "failed" | "expired";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            errorCode?: string | null;
+        };
+        PresentationUploadIntent: {
+            byteSize: number;
+            mimeType: string;
+        };
+        PresentationUploadReservation: {
+            attempt: components["schemas"]["PresentationUploadAttempt"];
+            upload: {
+                /** Format: uri */
+                url: string;
+                /** @constant */
+                method: "PUT";
+                headers: {
+                    [key: string]: string;
+                };
+            };
+        };
+        PresentationUploadStatus: {
+            attempt: components["schemas"]["PresentationUploadAttempt"];
+            asset: components["schemas"]["PresentationAsset"];
+        };
+        PresentationMediaAuthorization: {
+            /** Format: uri */
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        ContactError: {
+            error: {
+                /** @enum {string} */
+                code: "validation_error" | "contact_disabled" | "contact_unavailable" | "not_found" | "forbidden" | "unauthorized" | "rate_limited" | "idempotency_conflict" | "version_conflict" | "invalid_retry_state" | "payload_too_large" | "unsupported_media_type" | "configuration_changed" | "precondition_required" | "invalid_request" | "invalid_cursor" | "csrf_invalid";
+                /** Format: uuid */
+                requestId: string;
+                details?: {
+                    /** @enum {string} */
+                    field: "name" | "email" | "subject" | "message" | "locale" | "artworkId" | "proof" | "website" | "acknowledgeUncertain";
+                    /** @enum {string} */
+                    reason: "required" | "invalid" | "too_long" | "unsupported" | "conflict";
+                }[];
+                message: string;
+            };
+        };
+        ContactConfig: {
+            enabled: boolean;
+            privacyUrl: string | null;
+            /** @constant */
+            proofTtlSeconds: 86400;
+            limits: {
+                /** @constant */
+                name: 120;
+                /** @constant */
+                email: 254;
+                /** @constant */
+                subject: 160;
+                /** @constant */
+                message: 5000;
+            };
+        };
+        ContactSubmission: {
+            proof: string;
+            name: string;
+            /** Format: email */
+            email: string;
+            subject: string;
+            message: string;
+            locale: string;
+            /** Format: uuid */
+            artworkId?: string;
+            website: string;
+        };
+        ContactReceiptRequest: {
+            proof: string;
+        };
+        ContactReceipt: {
+            /** @constant */
+            accepted: true;
+            /** Format: uuid */
+            reference: string;
+        };
+        ContactSummary: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            reference: string;
+            /** @enum {string} */
+            kind: "general" | "artwork";
+            /** Format: date-time */
+            receivedAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** @enum {string} */
+            state: "pending" | "sending" | "sent" | "failed" | "uncertain";
+            revision: number;
+        };
+        ContactPublicArtworkContext: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            publicReference: string | null;
+            /** Format: uri */
+            url: string;
+        };
+        ContactAttempt: {
+            attemptNo: number;
+            cycle: number;
+            /** @enum {string} */
+            mode: "automatic" | "manual";
+            /** Format: date-time */
+            armedAt: string;
+            completedAt: string | null;
+            /** @enum {string} */
+            outcome: "sending" | "accepted" | "temporary_rejection" | "permanent_rejection" | "uncertain";
+            /** @enum {string} */
+            reason: "none" | "temporary_rejection" | "permanent_rejection" | "connection_before_send" | "delivery_uncertain" | "attempts_exhausted" | "configuration_changed" | "expired" | "transport_unavailable";
+        };
+        ContactDetail: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            reference: string;
+            /** @enum {string} */
+            kind: "general" | "artwork";
+            /** Format: date-time */
+            receivedAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** @enum {string} */
+            state: "pending" | "sending" | "sent" | "failed" | "uncertain";
+            revision: number;
+            name: string;
+            /** Format: email */
+            email: string;
+            subject: string;
+            message: string;
+            locale: string;
+            artwork: components["schemas"]["ContactPublicArtworkContext"] | null;
+            attempts: components["schemas"]["ContactAttempt"][];
+            attemptsNextCursor: string | null;
+        };
+        ContactList: {
+            items: components["schemas"]["ContactSummary"][];
+            nextCursor: string | null;
+        };
+        ContactRetry: {
+            acknowledgeUncertain: boolean;
+        };
+        ContactRetryAccepted: {
+            /** Format: uuid */
+            reference: string;
+            cycle: number;
+            /** @constant */
+            state: "pending";
+        };
+        /**
+         * @description New gallery projection; legacy PublicArtwork remains unchanged. Slug is assigned once, independent of the UUID identity.
+         * @example {
+         *       "id": "11111111-1111-4111-8111-111111111111",
+         *       "title": "Étude 01",
+         *       "artist": "Artiste de démonstration",
+         *       "year": "2026",
+         *       "medium": "Encre sur papier",
+         *       "dimensions": "30 × 40 cm",
+         *       "media": [
+         *         {
+         *           "id": "22222222-2222-4222-8222-222222222222",
+         *           "alt": "Étude abstraite de démonstration",
+         *           "width": 800,
+         *           "height": 600,
+         *           "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+         *         }
+         *       ],
+         *       "slug": "etude-01-11111111111141118111111111111111"
+         *     }
+         */
+        GalleryArtwork: {
+            /** Format: uuid */
+            id: string;
+            title: string | null;
+            artist: string | null;
+            year: string | null;
+            medium: string | null;
+            dimensions: string | null;
+            media: components["schemas"]["PublicMedia"][];
+            slug: string;
+        };
+        GalleryCatalog: {
+            items: components["schemas"]["GalleryArtwork"][];
+            query: string;
+            page: number;
+            pageSize: number;
+            totalItems: number;
+            pageCount: number;
+            catalogRevision: number;
+        };
+        GalleryExperience: {
+            /** @constant */
+            scope: "public";
+            artwork: components["schemas"]["GalleryArtwork"];
+            locale: string;
+            description: string | null;
+            descriptionLocale: string | null;
+            /** Format: uuid */
+            presentationReleaseId: string | null;
+            catalogRevision: number;
+        };
+        GalleryPreviewExperience: {
+            /** @constant */
+            scope: "preview";
+            artwork: components["schemas"]["GalleryArtwork"];
+            locale: string;
+            description: string | null;
+            descriptionLocale: string | null;
+            catalogRevision: number;
+            /** Format: uuid */
+            snapshotId: string;
+            revision: string;
+        };
+        GalleryEditorialDraft: {
+            /** Format: uuid */
+            artworkId: string;
+            /** @constant */
+            schemaVersion: 1;
+            description: {
+                [key: string]: string | null;
+            };
+            revision: string;
+        };
+        GalleryEditorialUpdate: {
+            description: {
+                [key: string]: string | null;
+            };
+        };
+        EditorialLocalizedText: {
+            [key: string]: string;
+        };
+        EditorialRichMark: {
+            /** @enum {unknown} */
+            type: "bold" | "italic";
+        } | {
+            /** @constant */
+            type: "link";
+            attrs: {
+                href: string;
+            };
+        };
+        EditorialRichNode: {
+            /** @constant */
+            type: "text";
+            text: string;
+            marks?: components["schemas"]["EditorialRichMark"][];
+        } | {
+            /** @constant */
+            type: "heading";
+            attrs: {
+                /** @enum {unknown} */
+                level: 2 | 3;
+            };
+            content?: components["schemas"]["EditorialRichNode"][];
+        } | {
+            /** @enum {unknown} */
+            type: "paragraph" | "bulletList" | "orderedList" | "listItem" | "blockquote";
+            content?: components["schemas"]["EditorialRichNode"][];
+        } | {
+            /** @constant */
+            type: "hardBreak";
+        };
+        EditorialRichText: {
+            /** @constant */
+            type: "doc";
+            content: components["schemas"]["EditorialRichNode"][];
+        };
+        EditorialLocalizedRichText: {
+            [key: string]: components["schemas"]["EditorialRichText"];
+        };
+        EditorialRender: {
+            /** @enum {unknown} */
+            aspect: "natural" | "square" | "landscape" | "portrait" | "fullscreen";
+            /** @enum {unknown} */
+            fit: "contain" | "cover";
+            focalPoint: {
+                x: number;
+                y: number;
+            };
+            enlarge: boolean;
+        };
+        EditorialSource: {
+            /** @enum {unknown} */
+            kind: "image" | "video";
+            /** Format: uuid */
+            assetId: string;
+        } | {
+            /** @constant */
+            kind: "artwork";
+            /** Format: uuid */
+            artworkId: string;
+            /** Format: uuid */
+            mediaId: string;
+        } | {
+            /** @constant */
+            kind: "youtube";
+            videoId: string;
+        } | {
+            /** @constant */
+            kind: "vimeo";
+            videoId: string;
+            privacyHash?: string | null;
+        };
+        EditorialCta: {
+            /** @constant */
+            kind: "artwork";
+            label: components["schemas"]["EditorialLocalizedText"];
+        } | {
+            /** @constant */
+            kind: "link";
+            label: components["schemas"]["EditorialLocalizedText"];
+            href: string;
+        };
+        EditorialMedia: {
+            /** Format: uuid */
+            id: string;
+            source: components["schemas"]["EditorialSource"];
+            alt: components["schemas"]["EditorialLocalizedText"];
+            subtext: components["schemas"]["EditorialLocalizedRichText"] | null;
+            showArtworkInfo: boolean;
+            render: {
+                desktop: components["schemas"]["EditorialRender"];
+                mobile: components["schemas"]["EditorialRender"];
+            };
+            cta: components["schemas"]["EditorialCta"] | null;
+            video?: {
+                autoplay: boolean;
+                showSoundControl: boolean;
+                posterAssetId: string | null;
+            };
+        };
+        EditorialBlock: {
+            /** Format: uuid */
+            id: string;
+            visible: boolean;
+            variant: string;
+            /** @constant */
+            type: "text";
+            text: components["schemas"]["EditorialLocalizedRichText"];
+        } | {
+            /** Format: uuid */
+            id: string;
+            visible: boolean;
+            variant: string;
+            /** @constant */
+            type: "media";
+            media: components["schemas"]["EditorialMedia"];
+        } | {
+            /** Format: uuid */
+            id: string;
+            visible: boolean;
+            variant: string;
+            /** @constant */
+            type: "textMedia";
+            text: components["schemas"]["EditorialLocalizedRichText"];
+            media: components["schemas"]["EditorialMedia"];
+            /** @enum {unknown} */
+            layout: "split" | "successive";
+            /** @enum {unknown} */
+            desktopMediaSide: "left" | "right";
+            /** @enum {unknown} */
+            mobileMediaOrder: "before" | "after";
+        } | ({
+            /** Format: uuid */
+            id: string;
+            visible: boolean;
+            variant: string;
+            /** @constant */
+            type: "carousel";
+            automatic: boolean;
+            intervalSeconds: number;
+            slides: {
+                /** Format: uuid */
+                id: string;
+                media: components["schemas"]["EditorialMedia"];
+            }[];
+        } & unknown);
+        EditorialArticleTranslation: {
+            title: string;
+            slug: string;
+            summary: string | null;
+        };
+        EditorialArticleDocument: {
+            /** @constant */
+            schemaVersion: 1;
+            editorialDate: string | null;
+            translations: {
+                [key: string]: components["schemas"]["EditorialArticleTranslation"];
+            };
+            cover: {
+                /** Format: uuid */
+                assetId: string;
+                alt: components["schemas"]["EditorialLocalizedText"];
+            } | null;
+            authorIds: string[];
+            categoryIds: string[];
+            primaryCategoryId: string | null;
+            tagIds: string[];
+            taxonomyAssignments: {
+                /** Format: uuid */
+                vocabularyId: string;
+                termIds: string[];
+            }[];
+            relatedArticleIds: string[];
+            blocks: components["schemas"]["EditorialBlock"][];
+        };
+        EditorialIssue: {
+            field: string;
+            reason: string;
+        };
+        EditorialLocale: {
+            code: string;
+            label: string;
+        };
+        EditorialValidation: {
+            valid: boolean;
+            issues: components["schemas"]["EditorialIssue"][];
+            policyRevision: string;
+        };
+        EditorialCapabilities: {
+            activeLocales: components["schemas"]["EditorialLocale"][];
+            preparingLocales: components["schemas"]["EditorialLocale"][];
+            defaultLocale: string;
+            limits: {
+                /** @constant */
+                documentBytes: 1048576;
+                requestBytes: number;
+                responseBytes: number;
+                /** @constant */
+                maxBlocks: 100;
+                /** @constant */
+                maxSlides: 30;
+                versionLimit: number;
+                trashDays: number;
+            };
+            vimeoCustomControlsAllowed: boolean;
+            formats: {
+                blocks: ("text" | "media" | "textMedia" | "carousel")[];
+                mediaSources: ("image" | "video" | "artwork" | "youtube" | "vimeo")[];
+                richNodes: ("doc" | "paragraph" | "text" | "heading" | "bulletList" | "orderedList" | "listItem" | "blockquote" | "hardBreak")[];
+                richMarks: ("bold" | "italic" | "link")[];
+            };
+            players: ("native" | "youtube" | "vimeo")[];
+            vocabularies: components["schemas"]["EditorialVocabulary"][];
+            timeZone: string;
+        };
+        EditorialCommandResult: {
+            /** Format: uuid */
+            commandId: string;
+            /** Format: uuid */
+            articleId: string;
+            revision: string;
+            changed: boolean;
+            result: {
+                /** Format: uuid */
+                versionId?: string;
+                /** Format: uuid */
+                activationId?: string;
+                /** Format: uuid */
+                scheduleId?: string;
+            };
+        };
+        EditorialScheduleSummary: {
+            /** Format: uuid */
+            id: string;
+            versionId: string | null;
+            /** Format: uuid */
+            originalVersionId: string;
+            /** Format: date-time */
+            startsAt: string;
+            endsAt: string | null;
+            timeZone: string;
+            /** @enum {string} */
+            status: "pending" | "activated" | "completed" | "cancelled" | "superseded" | "failed" | "missed";
+            diagnostics: components["schemas"]["EditorialIssue"][];
+        };
+        EditorialArticleSummary: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "publication" | "news";
+            revision: string;
+            /** @enum {string} */
+            lifecycle: "editable" | "archived" | "trashed";
+            title: string;
+            isPublished: boolean;
+            hasDraftChanges: boolean;
+            publishedVersionId: string | null;
+            pendingSchedule: components["schemas"]["EditorialScheduleSummary"] | null;
+            /** Format: date-time */
+            updatedAt: string;
+            editorialDate: string | null;
+            completeness: {
+                [key: string]: {
+                    complete: boolean;
+                    issuesCount: number;
+                };
+            };
+        };
+        EditorialArticleAdmin: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "publication" | "news";
+            revision: string;
+            /** @enum {string} */
+            lifecycle: "editable" | "archived" | "trashed";
+            title: string;
+            isPublished: boolean;
+            hasDraftChanges: boolean;
+            publishedVersionId: string | null;
+            pendingSchedule: components["schemas"]["EditorialScheduleSummary"] | null;
+            /** Format: date-time */
+            updatedAt: string;
+            editorialDate: string | null;
+            completeness: {
+                [key: string]: {
+                    complete: boolean;
+                    issuesCount: number;
+                };
+            };
+            document: components["schemas"]["EditorialArticleDocument"];
+            diagnostics: components["schemas"]["EditorialIssue"][];
+        };
+        EditorialAdminPage: {
+            items: components["schemas"]["EditorialArticleSummary"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            catalogRevision: string;
+        };
+        EditorialVersionSummary: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            origin: "manual" | "publication" | "recovery";
+            name: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            createdBy: string;
+            isPublic: boolean;
+            isScheduled: boolean;
+            isProtected: boolean;
+        };
+        EditorialVersionPage: {
+            items: components["schemas"]["EditorialVersionSummary"][];
+            total: number;
+            page: number;
+        };
+        EditorialVersionDetail: {
+            version: components["schemas"]["EditorialVersionSummary"];
+            document: components["schemas"]["EditorialArticleDocument"];
+            commonRevision: string;
+            diagnostics: components["schemas"]["EditorialIssue"][];
+        };
+        EditorialAuthorInput: {
+            name: string;
+            portraitAssetId: string | null;
+            bio: components["schemas"]["EditorialLocalizedText"] | null;
+            link: string | null;
+        };
+        EditorialVocabularyInput: {
+            key: string;
+            /** @constant */
+            kind: "custom";
+            labels: components["schemas"]["EditorialLocalizedText"];
+            hierarchical: boolean;
+            allowedArticleKinds: ("publication" | "news")[];
+            position: number;
+            inlineCreationLocked: boolean;
+            publicFilter: boolean;
+            includeChildren: boolean;
+        };
+        EditorialVocabularyPatch: {
+            labels?: components["schemas"]["EditorialLocalizedText"];
+            hierarchical?: boolean;
+            allowedArticleKinds?: ("publication" | "news")[];
+            position?: number;
+            inlineCreationLocked?: boolean;
+            publicFilter?: boolean;
+            includeChildren?: boolean;
+        };
+        EditorialVocabulary: {
+            key: string;
+            /** @enum {string} */
+            kind: "category" | "tag" | "author" | "custom";
+            labels: components["schemas"]["EditorialLocalizedText"];
+            hierarchical: boolean;
+            allowedArticleKinds: ("publication" | "news")[];
+            position: number;
+            inlineCreationLocked: boolean;
+            publicFilter: boolean;
+            includeChildren: boolean;
+            /** Format: uuid */
+            id: string;
+            revision: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        EditorialTermInput: {
+            labels?: components["schemas"]["EditorialLocalizedText"];
+            parentId?: string | null;
+            position?: number;
+            author?: components["schemas"]["EditorialAuthorInput"] | null;
+        };
+        EditorialTerm: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            vocabularyId: string;
+            revision: string;
+            labels: components["schemas"]["EditorialLocalizedText"];
+            parentId: string | null;
+            position: number;
+            /** @enum {string} */
+            status: "active" | "tombstone";
+            author: components["schemas"]["EditorialAuthorInput"] | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        EditorialTermPage: {
+            items: components["schemas"]["EditorialTerm"][];
+            total: number;
+            page: number;
+        };
+        EditorialSettings: {
+            artworkInfoFields: ("title" | "artist" | "year" | "medium" | "dimensions")[];
+        };
+        EditorialTemplateInput: {
+            name: string;
+            /** @constant */
+            schemaVersion: 1;
+            blocks: components["schemas"]["EditorialBlock"][];
+        };
+        EditorialTemplate: {
+            name: string;
+            /** @constant */
+            schemaVersion: 1;
+            blocks: components["schemas"]["EditorialBlock"][];
+            /** Format: uuid */
+            id: string;
+            revision: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        EditorialTemplatePage: {
+            items: components["schemas"]["EditorialTemplate"][];
+            total: number;
+            page: number;
+        };
+        EditorialReferenceIssuePage: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                versionId: string | null;
+                originalVersionId: string | null;
+                path: string;
+                reason: string;
+                resolvedAt: string | null;
+            }[];
+            total: number;
+            page: number;
+        };
+        EditorialPublicMedia: {
+            /** Format: uuid */
+            id: string;
+            source: ({
+                /** @enum {string} */
+                kind: "image" | "video";
+                /** Format: uuid */
+                assetId: string;
+                srcPath: string;
+            } | {
+                /** @constant */
+                kind: "artwork";
+                /** Format: uuid */
+                artworkId: string;
+                /** Format: uuid */
+                mediaId: string;
+                srcPath: string;
+                href: string;
+            } | {
+                /** @constant */
+                kind: "youtube";
+                videoId: string;
+            } | {
+                /** @constant */
+                kind: "vimeo";
+                videoId: string;
+                privacyHash: string | null;
+            }) | null;
+            alt: string;
+            subtext: components["schemas"]["EditorialRichText"] | null;
+            artworkInfo: {
+                field: string;
+                label: string;
+                value: string;
+            }[];
+            render: {
+                desktop: components["schemas"]["EditorialRender"];
+                mobile: components["schemas"]["EditorialRender"];
+            };
+            cta: {
+                label: string;
+                href: string;
+            } | null;
+            video: {
+                autoplay: boolean;
+                showSoundControl: boolean;
+                posterPath: string | null;
+            } | null;
+        } & unknown;
+        EditorialPublicBlock: {
+            /** Format: uuid */
+            id: string;
+            variant: string;
+            /** @constant */
+            type: "text";
+            text: components["schemas"]["EditorialRichText"];
+        } | {
+            /** Format: uuid */
+            id: string;
+            variant: string;
+            /** @constant */
+            type: "media";
+            media: components["schemas"]["EditorialPublicMedia"];
+        } | {
+            /** Format: uuid */
+            id: string;
+            variant: string;
+            /** @constant */
+            type: "textMedia";
+            text: components["schemas"]["EditorialRichText"];
+            media: components["schemas"]["EditorialPublicMedia"];
+            /** @enum {string} */
+            layout: "split" | "successive";
+            /** @enum {string} */
+            desktopMediaSide: "left" | "right";
+            /** @enum {string} */
+            mobileMediaOrder: "before" | "after";
+        } | {
+            /** Format: uuid */
+            id: string;
+            variant: string;
+            /** @constant */
+            type: "carousel";
+            automatic: boolean;
+            intervalSeconds: number;
+            slides: {
+                /** Format: uuid */
+                id: string;
+                media: components["schemas"]["EditorialPublicMedia"];
+            }[];
+        };
+        EditorialAuthorCard: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            hasProfile: boolean;
+        };
+        EditorialPublicAuthor: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            hasProfile: boolean;
+            portraitPath: string | null;
+            bio: string | null;
+            link: string | null;
+        };
+        EditorialPublicTerm: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            vocabularyId: string;
+            label: string;
+        };
+        EditorialArticleCard: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "publication" | "news";
+            canonicalPath: string;
+            title: string;
+            summary: string | null;
+            /** Format: date */
+            editorialDate: string;
+            cover: {
+                srcPath: string;
+                alt: string;
+            } | null;
+            authors: components["schemas"]["EditorialAuthorCard"][];
+        };
+        EditorialArticleCardPage: {
+            items: components["schemas"]["EditorialArticleCard"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            catalogRevision: string;
+        };
+        EditorialPublicArticle: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "publication" | "news";
+            canonicalPath: string;
+            title: string;
+            summary: string | null;
+            /** Format: date */
+            editorialDate: string;
+            cover: {
+                srcPath: string;
+                alt: string;
+            } | null;
+            authors: components["schemas"]["EditorialPublicAuthor"][];
+            terms: components["schemas"]["EditorialPublicTerm"][];
+            alternatePaths: {
+                [key: string]: string;
+            };
+            blocks: components["schemas"]["EditorialPublicBlock"][];
+            relatedArticles: components["schemas"]["EditorialArticleCard"][];
+            publicRevision: string;
+            commonRevision: string;
+        };
+        EditorialArticleResolution: components["schemas"]["EditorialPublicArticle"] | {
+            /** @constant */
+            resolution: "redirect";
+            canonicalPath: string;
+        };
+        EditorialMediaAuthorization: {
+            /** Format: uri */
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        EditorialArtworkUsages: {
+            active: {
+                /** Format: uuid */
+                articleId: string;
+                /** @enum {string} */
+                kind: "publication" | "news";
+                title: string;
+                /** Format: uuid */
+                versionId: string;
+                /** @enum {string} */
+                usage: "public" | "scheduled";
+                path: string;
+                adminPath: string;
+            }[];
+            inactive: {
+                /** @enum {string} */
+                ownerKind: "draft" | "version" | "template" | "preview";
+                /** Format: uuid */
+                ownerId: string;
+                path: string;
+            }[];
+            totalActive: number;
+            page: number;
+        };
+        EditorialPublicFilters: {
+            vocabularies: {
+                /** Format: uuid */
+                id: string;
+                label: string;
+                includeChildren: boolean;
+            }[];
+            terms: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                vocabularyId: string;
+                parentId: string | null;
+                label: string;
+                position: number;
+            }[];
+            total: number;
+            page: number;
+            catalogRevision: string;
+            commonRevision: string;
+        };
+        EditorialDraftSaved: {
+            article: components["schemas"]["EditorialArticleAdmin"];
+            /** Format: uuid */
+            clientMutationId: string;
+            changed: boolean;
+        };
     };
     responses: {
         /** @description Dépendance indisponible, autorisation invérifiable ou service non prêt. */
@@ -683,6 +3995,170 @@ export interface components {
             headers: {
                 /** @description Identifiant de corrélation sans donnée personnelle. */
                 "X-Request-Id"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description If-Match éditorial requis. */
+        SiteContentPreconditionRequired: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "error": {
+                 *         "code": "precondition_required",
+                 *         "message": "If-Match éditorial requis.",
+                 *         "requestId": "33333333-3333-4333-8333-333333333333"
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Contenu modifié depuis la lecture ; conserver le brouillon et comparer avant nouvelle décision. Prioritaire sur la validation métier des langues/clés pour un corps structurellement valide ; un ancien formulaire visant une langue retirée reçoit aussi 412. */
+        SiteContentPreconditionFailed: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "error": {
+                 *         "code": "version_conflict",
+                 *         "message": "Contenu modifié depuis la lecture ; conserver le brouillon et comparer avant nouvelle décision.",
+                 *         "requestId": "33333333-3333-4333-8333-333333333333"
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Corps dépassant la limite propre à cette opération. */
+        SiteContentTooLarge: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "error": {
+                 *         "code": "payload_too_large",
+                 *         "message": "Corps dépassant la limite propre à cette opération.",
+                 *         "requestId": "33333333-3333-4333-8333-333333333333"
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Content-Type non accepté pour cette opération. */
+        SiteContentUnsupportedMedia: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "error": {
+                 *         "code": "unsupported_media_type",
+                 *         "message": "Content-Type non accepté pour cette opération.",
+                 *         "requestId": "33333333-3333-4333-8333-333333333333"
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Image invalide, animée, trop grande ou incompatible avec son MIME. */
+        SiteLogoInvalid: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["SiteLogoValidationError"] | (components["schemas"]["Error"] & {
+                    error?: {
+                        /** @constant */
+                        code?: "invalid_request";
+                    };
+                }) | (components["schemas"]["Error"] & {
+                    error?: {
+                        /** @constant */
+                        code?: "validation_error";
+                    };
+                });
+            };
+        };
+        /** @description Candidat absent, étranger, non prêt ou expiré ; aucune modification appliquée. */
+        SiteLogoUnavailable: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "error": {
+                 *         "code": "logo_candidate_unavailable",
+                 *         "message": "Candidat absent, étranger, non prêt ou expiré ; aucune modification appliquée.",
+                 *         "requestId": "33333333-3333-4333-8333-333333333333"
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Structure invalide, ou validation métier après contrôle réussi de politique et ETag. Détails bornés transmis au formulaire selon configuration-and-ui.md. */
+        SiteContentBadRequest: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["SiteContentValidationError"] | (components["schemas"]["Error"] & {
+                    error?: {
+                        /** @constant */
+                        code?: "invalid_request";
+                    };
+                });
+            };
+        };
+        /** @description Dépendance indisponible, site non prêt ou politique divergente. Le BFF conserve le code autorisé et ne reproduit aucun message/détail privé. */
+        SiteContentUnavailable: {
+            headers: {
+                /** @description Identifiant de corrélation. */
+                "X-Request-Id"?: string;
+                /** @description private, no-store ; aussi sur erreurs et images. */
+                "Cache-Control"?: string;
                 [name: string]: unknown;
             };
             content: {
@@ -1287,6 +4763,17519 @@ export interface operations {
             503: components["responses"]["Unavailable"];
         };
     };
+    getPublicSiteContent: {
+        parameters: {
+            query: {
+                /** @description Langue configurée ; autre code syntaxiquement valide → 404. */
+                locale: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description État courant du site. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "revision": 1,
+                     *       "locale": "en",
+                     *       "policy": {
+                     *         "defaultLocale": "fr",
+                     *         "locales": [
+                     *           {
+                     *             "code": "fr",
+                     *             "label": "Français"
+                     *           },
+                     *           {
+                     *             "code": "en",
+                     *             "label": "English"
+                     *           }
+                     *         ],
+                     *         "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     *       },
+                     *       "messages": {
+                     *         "nav.news": "News",
+                     *         "nav.artworks": "Artworks",
+                     *         "nav.exhibitions": "Exhibitions",
+                     *         "nav.publications": "Publications",
+                     *         "nav.expertise": "Request an appraisal",
+                     *         "nav.contact": "Contact",
+                     *         "header.homeLabel": "Back to home",
+                     *         "header.navigationLabel": "Main navigation",
+                     *         "header.openMenu": "Open menu",
+                     *         "header.closeMenu": "Close menu",
+                     *         "header.languageLabel": "Language",
+                     *         "header.skipToContent": "Skip to content",
+                     *         "page.home.title": "Home",
+                     *         "page.news.title": "News",
+                     *         "page.news.empty": "No news at the moment.",
+                     *         "page.artworks.title": "Artworks",
+                     *         "page.exhibitions.title": "Exhibitions",
+                     *         "page.exhibitions.empty": "No exhibitions at the moment.",
+                     *         "page.publications.title": "Publications",
+                     *         "page.publications.empty": "No publications at the moment.",
+                     *         "page.expertise.title": "Request an appraisal",
+                     *         "page.expertise.empty": "Information about requesting an appraisal will appear here.",
+                     *         "page.contact.title": "Contact",
+                     *         "page.contact.empty": "Contact information will appear here.",
+                     *         "catalog.loading": "Loading artworks…",
+                     *         "catalog.empty": "No artworks published at the moment.",
+                     *         "catalog.restarted": "The selection has changed. The catalogue has returned to the first page.",
+                     *         "catalog.next": "View more",
+                     *         "catalog.errorTitle": "Artworks could not be loaded",
+                     *         "catalog.errorMessage": "The catalogue is temporarily unavailable. Please try again shortly.",
+                     *         "catalog.retry": "Try again",
+                     *         "catalog.unavailableTitle": "Catalogue unavailable",
+                     *         "artwork.loading": "Loading artwork…",
+                     *         "artwork.back": "All artworks",
+                     *         "artwork.untitled": "Title not provided",
+                     *         "artwork.unknownArtist": "Artist not provided",
+                     *         "artwork.artist": "Artist",
+                     *         "artwork.year": "Year",
+                     *         "artwork.medium": "Medium",
+                     *         "artwork.dimensions": "Dimensions",
+                     *         "artwork.unspecified": "Not provided",
+                     *         "artwork.imageUnavailable": "Image unavailable",
+                     *         "artwork.imageAlt": "View of the artwork",
+                     *         "error.artworkNotFoundTitle": "Artwork not found",
+                     *         "error.artworkNotFoundMessage": "This artwork is not available on this site.",
+                     *         "error.pageNotFoundTitle": "Page not found",
+                     *         "error.pageNotFoundMessage": "This page does not exist on this site.",
+                     *         "error.viewArtworks": "View artworks",
+                     *         "video.play": "Play film",
+                     *         "video.pause": "Pause film",
+                     *         "video.unavailable": "The film is unavailable.",
+                     *         "video.reducedMotion": "The film is paused according to your motion preferences.",
+                     *         "presentation.discover": "Discover the gallery",
+                     *         "presentation.readMore": "Read more",
+                     *         "presentation.galleryLabel": "Image gallery",
+                     *         "presentation.previous": "Previous",
+                     *         "presentation.next": "Next",
+                     *         "presentation.empty": "Content for this page will be available soon.",
+                     *         "error.presentationTitle": "Presentation unavailable",
+                     *         "error.presentationMessage": "This page is temporarily unavailable. Please try again shortly.",
+                     *         "preview.title": "Private draft preview",
+                     *         "preview.notice": "This preview shows the saved draft. It is not published.",
+                     *         "preview.desktop": "Desktop view",
+                     *         "preview.mobile": "Mobile view",
+                     *         "preview.close": "Close preview",
+                     *         "preview.expired": "This preview has expired. Open a new preview from the admin panel.",
+                     *         "preview.unavailable": "The preview cannot be verified. Return to the admin panel to reopen it.",
+                     *         "preview.checking": "Checking preview access…",
+                     *         "preview.backToAdmin": "Back to admin",
+                     *         "video.playLabel": "Play",
+                     *         "video.pauseLabel": "Pause",
+                     *         "presentation.explore": "Explore",
+                     *         "presentation.demonstration": "Mockup — demonstration content",
+                     *         "contact.name": "Name",
+                     *         "contact.email": "Email address",
+                     *         "contact.subject": "Subject",
+                     *         "contact.message": "Message",
+                     *         "contact.required": "All fields are required.",
+                     *         "contact.limits": "Name:120 characters. Email:254. Subject:160. Message:5,000.",
+                     *         "contact.privacy": "Your contact details are used to reply to your enquiry.",
+                     *         "contact.privacyLink": "Privacy",
+                     *         "contact.submit": "Send enquiry",
+                     *         "contact.sending": "Saving your enquiry…",
+                     *         "contact.confirmed": "Your enquiry has been recorded.",
+                     *         "contact.confirmationHelp": "The gallery can reply to the email address you provided.",
+                     *         "contact.reference": "Enquiry reference",
+                     *         "contact.disabled": "The contact form is currently unavailable.",
+                     *         "contact.unavailable": "We could not confirm receipt. Keep your message and try again.",
+                     *         "contact.invalid": "Check the highlighted fields.",
+                     *         "contact.requiredError": "This field is required.",
+                     *         "contact.invalidEmail": "Enter a valid email address.",
+                     *         "contact.tooLong": "The maximum length has been exceeded.",
+                     *         "contact.rateLimited": "Too many requests. Wait for the indicated delay before trying again.",
+                     *         "contact.retryAfter": "Seconds before trying again",
+                     *         "contact.recover": "Check receipt",
+                     *         "contact.recovering": "Checking receipt…",
+                     *         "contact.unknownReceipt": "No confirmation found. No new enquiry has been sent automatically.",
+                     *         "contact.conflict": "This submission belongs to different content. Explicitly start a new enquiry.",
+                     *         "contact.newEnquiry": "Start a new enquiry",
+                     *         "contact.newConfirm": "Start a new enquiry? If a previous enquiry arrived without confirmation, a duplicate is possible.",
+                     *         "contact.artworkCta": "Enquire about this artwork",
+                     *         "contact.artworkHeading": "Artwork",
+                     *         "contact.artworkSubject": "Artwork enquiry",
+                     *         "contact.artworkUnavailable": "This artwork cannot be linked to your enquiry.",
+                     *         "contact.general": "Continue with a general enquiry",
+                     *         "contact.backArtwork": "Back to artwork",
+                     *         "contact.leaveConfirm": "Changing language will discard your unsent fields. Continue?",
+                     *         "contact.demonstration": "Demonstration: no enquiry will be sent.",
+                     *         "contact.notificationHeading": "New enquiry",
+                     *         "contact.notificationGallery": "Gallery",
+                     *         "contact.notificationLocale": "Visitor language",
+                     *         "contact.notificationArtwork": "Artwork",
+                     *         "contact.load": "Loading the form…",
+                     *         "contact.sentCopy": "Receipt is confirmed; it does not confirm email delivery.",
+                     *         "contact.notificationType": "Enquiry type",
+                     *         "contact.notificationGeneral": "General enquiry",
+                     *         "gallery.searchLabel": "Search by title or artist",
+                     *         "gallery.searchSubmit": "Search",
+                     *         "gallery.searchClear": "Clear search",
+                     *         "gallery.noResults": "No artworks match this search.",
+                     *         "gallery.paginationLabel": "Artwork pagination",
+                     *         "gallery.previousPage": "Previous page",
+                     *         "gallery.nextPage": "Next page",
+                     *         "gallery.page": "Page",
+                     *         "gallery.of": "of",
+                     *         "gallery.closeArtwork": "Close artwork",
+                     *         "gallery.opening": "Opening artwork…",
+                     *         "gallery.unavailable": "This artwork is no longer available.",
+                     *         "gallery.progressLabel": "Artwork views",
+                     *         "gallery.view": "View",
+                     *         "gallery.presentation": "Overview",
+                     *         "gallery.description": "Description",
+                     *         "gallery.revalidate": "Checking availability…",
+                     *         "gallery.restart": "Return to the first page",
+                     *         "gallery.zoomIn": "Zoom in ×2",
+                     *         "gallery.zoomOut": "Return to original size",
+                     *         "gallery.zoomHelp": "Move the mouse or use the arrow keys to explore the image. Escape exits zoom.",
+                     *         "gallery.openInformation": "View details",
+                     *         "gallery.backToImages": "Back to images",
+                     *         "gallery.viewWholeImage": "View full image",
+                     *         "gallery.mobileGestureHelp": "Swipe up or down to change views, or use the timeline controls.",
+                     *         "gallery.panHelp": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection."
+                     *       },
+                     *       "logo": null
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SiteContentPublic"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    getAdminSiteContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description État courant du site. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    /**
+                     * @description Précondition de la prochaine sauvegarde.
+                     * @example "site-content-1-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "revision": 1,
+                     *       "policy": {
+                     *         "defaultLocale": "fr",
+                     *         "locales": [
+                     *           {
+                     *             "code": "fr",
+                     *             "label": "Français"
+                     *           },
+                     *           {
+                     *             "code": "en",
+                     *             "label": "English"
+                     *           }
+                     *         ],
+                     *         "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     *       },
+                     *       "groups": [
+                     *         {
+                     *           "id": "navigation",
+                     *           "label": "Navigation"
+                     *         },
+                     *         {
+                     *           "id": "header",
+                     *           "label": "Header et accessibilité"
+                     *         },
+                     *         {
+                     *           "id": "pages",
+                     *           "label": "Pages"
+                     *         },
+                     *         {
+                     *           "id": "catalog",
+                     *           "label": "Catalogue"
+                     *         },
+                     *         {
+                     *           "id": "artwork",
+                     *           "label": "Fiche d’œuvre"
+                     *         },
+                     *         {
+                     *           "id": "errors",
+                     *           "label": "Erreurs"
+                     *         },
+                     *         {
+                     *           "id": "video",
+                     *           "label": "Film et médias"
+                     *         },
+                     *         {
+                     *           "id": "presentation",
+                     *           "label": "Présentation"
+                     *         },
+                     *         {
+                     *           "id": "preview",
+                     *           "label": "Aperçu privé"
+                     *         },
+                     *         {
+                     *           "id": "contact",
+                     *           "label": "Contact et demandes"
+                     *         },
+                     *         {
+                     *           "id": "gallery",
+                     *           "label": "Catalogue et fiche immersive"
+                     *         }
+                     *       ],
+                     *       "definitions": [
+                     *         {
+                     *           "key": "nav.news",
+                     *           "group": "navigation",
+                     *           "label": "Actualités",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.artworks",
+                     *           "group": "navigation",
+                     *           "label": "Œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.exhibitions",
+                     *           "group": "navigation",
+                     *           "label": "Expositions",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.publications",
+                     *           "group": "navigation",
+                     *           "label": "Publications",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.expertise",
+                     *           "group": "navigation",
+                     *           "label": "Demande d’expertise",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.contact",
+                     *           "group": "navigation",
+                     *           "label": "Contact",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.homeLabel",
+                     *           "group": "header",
+                     *           "label": "Retour à l’accueil",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.navigationLabel",
+                     *           "group": "header",
+                     *           "label": "Navigation principale",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.openMenu",
+                     *           "group": "header",
+                     *           "label": "Ouvrir le menu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.closeMenu",
+                     *           "group": "header",
+                     *           "label": "Fermer le menu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.languageLabel",
+                     *           "group": "header",
+                     *           "label": "Choix de langue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.skipToContent",
+                     *           "group": "header",
+                     *           "label": "Accès au contenu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.home.title",
+                     *           "group": "pages",
+                     *           "label": "Titre de l’accueil",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.news.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Actualités",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.news.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Actualités",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.artworks.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Expositions",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Expositions",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.publications.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Publications",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.publications.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Publications",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Demande d’expertise",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Demande d’expertise",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.contact.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Contact",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.contact.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Contact",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.loading",
+                     *           "group": "catalog",
+                     *           "label": "Chargement du catalogue",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.empty",
+                     *           "group": "catalog",
+                     *           "label": "Catalogue vide",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.restarted",
+                     *           "group": "catalog",
+                     *           "label": "Pagination réinitialisée",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.next",
+                     *           "group": "catalog",
+                     *           "label": "Page suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorTitle",
+                     *           "group": "catalog",
+                     *           "label": "Titre erreur catalogue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorMessage",
+                     *           "group": "catalog",
+                     *           "label": "Message erreur catalogue",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.retry",
+                     *           "group": "catalog",
+                     *           "label": "Réessayer",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "catalog.unavailableTitle",
+                     *           "group": "catalog",
+                     *           "label": "Titre de page indisponible",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.loading",
+                     *           "group": "artwork",
+                     *           "label": "Chargement de la fiche",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "artwork.back",
+                     *           "group": "artwork",
+                     *           "label": "Retour au catalogue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.untitled",
+                     *           "group": "artwork",
+                     *           "label": "Titre absent",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.unknownArtist",
+                     *           "group": "artwork",
+                     *           "label": "Artiste absent",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.artist",
+                     *           "group": "artwork",
+                     *           "label": "Libellé artiste",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.year",
+                     *           "group": "artwork",
+                     *           "label": "Libellé année",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.medium",
+                     *           "group": "artwork",
+                     *           "label": "Libellé technique",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.dimensions",
+                     *           "group": "artwork",
+                     *           "label": "Libellé dimensions",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.unspecified",
+                     *           "group": "artwork",
+                     *           "label": "Valeur absente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageUnavailable",
+                     *           "group": "artwork",
+                     *           "label": "Image indisponible",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageAlt",
+                     *           "group": "artwork",
+                     *           "label": "Texte alternatif de secours",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundTitle",
+                     *           "group": "errors",
+                     *           "label": "Titre œuvre introuvable",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundMessage",
+                     *           "group": "errors",
+                     *           "label": "Message œuvre introuvable",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundTitle",
+                     *           "group": "errors",
+                     *           "label": "Titre page introuvable",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundMessage",
+                     *           "group": "errors",
+                     *           "label": "Message page introuvable",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "error.viewArtworks",
+                     *           "group": "errors",
+                     *           "label": "Lien vers les œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.play",
+                     *           "group": "video",
+                     *           "label": "Lire le film",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.pause",
+                     *           "group": "video",
+                     *           "label": "Mettre le film en pause",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.unavailable",
+                     *           "group": "video",
+                     *           "label": "Film indisponible",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "video.reducedMotion",
+                     *           "group": "video",
+                     *           "label": "Mouvement réduit",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "presentation.discover",
+                     *           "group": "presentation",
+                     *           "label": "Découvrir la galerie",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.readMore",
+                     *           "group": "presentation",
+                     *           "label": "En savoir plus",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.galleryLabel",
+                     *           "group": "presentation",
+                     *           "label": "Galerie d’images",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.previous",
+                     *           "group": "presentation",
+                     *           "label": "Précédent",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.next",
+                     *           "group": "presentation",
+                     *           "label": "Suivant",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.empty",
+                     *           "group": "presentation",
+                     *           "label": "Page en attente de contenu",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "error.presentationTitle",
+                     *           "group": "errors",
+                     *           "label": "Présentation indisponible",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.presentationMessage",
+                     *           "group": "errors",
+                     *           "label": "Message de présentation indisponible",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.title",
+                     *           "group": "preview",
+                     *           "label": "Aperçu privé du brouillon",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.notice",
+                     *           "group": "preview",
+                     *           "label": "Mention de brouillon privé",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.desktop",
+                     *           "group": "preview",
+                     *           "label": "Vue ordinateur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.mobile",
+                     *           "group": "preview",
+                     *           "label": "Vue mobile",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.close",
+                     *           "group": "preview",
+                     *           "label": "Fermer l’aperçu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.expired",
+                     *           "group": "preview",
+                     *           "label": "Aperçu expiré",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.unavailable",
+                     *           "group": "preview",
+                     *           "label": "Vérification de l’aperçu impossible",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.checking",
+                     *           "group": "preview",
+                     *           "label": "Vérification de l’aperçu",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.backToAdmin",
+                     *           "group": "preview",
+                     *           "label": "Retour à l’administration",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.playLabel",
+                     *           "group": "video",
+                     *           "label": "Libellé court lecture",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.pauseLabel",
+                     *           "group": "video",
+                     *           "label": "Libellé court pause",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.explore",
+                     *           "group": "presentation",
+                     *           "label": "Descendre après le film",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.demonstration",
+                     *           "group": "presentation",
+                     *           "label": "Mention de démonstration",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.name",
+                     *           "group": "contact",
+                     *           "label": "Nom",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.email",
+                     *           "group": "contact",
+                     *           "label": "Adresse e-mail",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.subject",
+                     *           "group": "contact",
+                     *           "label": "Sujet",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.message",
+                     *           "group": "contact",
+                     *           "label": "Message",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.required",
+                     *           "group": "contact",
+                     *           "label": "Tous les champs sont obligatoires.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.limits",
+                     *           "group": "contact",
+                     *           "label": "Nom :120 caractères. E-mail :254. Sujet :160. Message :5 000.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.privacy",
+                     *           "group": "contact",
+                     *           "label": "Vos coordonnées servent à répondre à votre demande.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.privacyLink",
+                     *           "group": "contact",
+                     *           "label": "Confidentialité",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.submit",
+                     *           "group": "contact",
+                     *           "label": "Envoyer la demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.sending",
+                     *           "group": "contact",
+                     *           "label": "Enregistrement de votre demande…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmed",
+                     *           "group": "contact",
+                     *           "label": "Votre demande a été enregistrée.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmationHelp",
+                     *           "group": "contact",
+                     *           "label": "La galerie pourra vous répondre à l’adresse fournie.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.reference",
+                     *           "group": "contact",
+                     *           "label": "Référence de la demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.disabled",
+                     *           "group": "contact",
+                     *           "label": "Le formulaire de contact est momentanément indisponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.unavailable",
+                     *           "group": "contact",
+                     *           "label": "Impossible de confirmer l’enregistrement. Conservez votre saisie et réessayez.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.invalid",
+                     *           "group": "contact",
+                     *           "label": "Vérifiez les champs signalés.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.requiredError",
+                     *           "group": "contact",
+                     *           "label": "Ce champ est obligatoire.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.invalidEmail",
+                     *           "group": "contact",
+                     *           "label": "Saisissez une adresse e-mail valide.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.tooLong",
+                     *           "group": "contact",
+                     *           "label": "La longueur autorisée est dépassée.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.rateLimited",
+                     *           "group": "contact",
+                     *           "label": "Trop de demandes. Attendez le délai indiqué avant de réessayer.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.retryAfter",
+                     *           "group": "contact",
+                     *           "label": "Secondes avant nouvel essai",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.recover",
+                     *           "group": "contact",
+                     *           "label": "Vérifier la prise en compte",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.recovering",
+                     *           "group": "contact",
+                     *           "label": "Vérification de la prise en compte…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.unknownReceipt",
+                     *           "group": "contact",
+                     *           "label": "Aucune confirmation retrouvée. Aucun nouvel envoi automatique n’a été effectué.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.conflict",
+                     *           "group": "contact",
+                     *           "label": "Cette intention correspond à une autre saisie. Commencez une nouvelle demande ex",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "contact.newEnquiry",
+                     *           "group": "contact",
+                     *           "label": "Commencer une nouvelle demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.newConfirm",
+                     *           "group": "contact",
+                     *           "label": "Commencer une nouvelle demande ? Si une précédente a été reçue sans confirmation",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkCta",
+                     *           "group": "contact",
+                     *           "label": "Demander des informations",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkHeading",
+                     *           "group": "contact",
+                     *           "label": "Œuvre concernée",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkSubject",
+                     *           "group": "contact",
+                     *           "label": "Informations sur une œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkUnavailable",
+                     *           "group": "contact",
+                     *           "label": "Cette œuvre ne peut pas être associée à votre demande.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.general",
+                     *           "group": "contact",
+                     *           "label": "Continuer en contact général",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.backArtwork",
+                     *           "group": "contact",
+                     *           "label": "Revenir à l’œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.leaveConfirm",
+                     *           "group": "contact",
+                     *           "label": "Changer de langue abandonnera les champs non envoyés. Continuer ?",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.demonstration",
+                     *           "group": "contact",
+                     *           "label": "Démonstration : aucune demande ne sera envoyée.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationHeading",
+                     *           "group": "contact",
+                     *           "label": "Nouvelle demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGallery",
+                     *           "group": "contact",
+                     *           "label": "Galerie",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationLocale",
+                     *           "group": "contact",
+                     *           "label": "Langue du visiteur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationArtwork",
+                     *           "group": "contact",
+                     *           "label": "Œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.load",
+                     *           "group": "contact",
+                     *           "label": "Chargement du formulaire…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.sentCopy",
+                     *           "group": "contact",
+                     *           "label": "L’enregistrement est confirmé ; il ne constitue pas une confirmation de livraiso",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationType",
+                     *           "group": "contact",
+                     *           "label": "Type de demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGeneral",
+                     *           "group": "contact",
+                     *           "label": "Contact général",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchLabel",
+                     *           "group": "gallery",
+                     *           "label": "Rechercher par titre ou artiste",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchSubmit",
+                     *           "group": "gallery",
+                     *           "label": "Rechercher",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchClear",
+                     *           "group": "gallery",
+                     *           "label": "Effacer la recherche",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.noResults",
+                     *           "group": "gallery",
+                     *           "label": "Aucune œuvre ne correspond à cette recherche.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.paginationLabel",
+                     *           "group": "gallery",
+                     *           "label": "Pagination des œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.previousPage",
+                     *           "group": "gallery",
+                     *           "label": "Page précédente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.nextPage",
+                     *           "group": "gallery",
+                     *           "label": "Page suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.page",
+                     *           "group": "gallery",
+                     *           "label": "Page",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.of",
+                     *           "group": "gallery",
+                     *           "label": "sur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.closeArtwork",
+                     *           "group": "gallery",
+                     *           "label": "Fermer la fiche de l’œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.opening",
+                     *           "group": "gallery",
+                     *           "label": "Ouverture de l’œuvre…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.unavailable",
+                     *           "group": "gallery",
+                     *           "label": "Cette œuvre n’est plus disponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.progressLabel",
+                     *           "group": "gallery",
+                     *           "label": "Vues de l’œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.view",
+                     *           "group": "gallery",
+                     *           "label": "Vue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.presentation",
+                     *           "group": "gallery",
+                     *           "label": "Présentation",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.description",
+                     *           "group": "gallery",
+                     *           "label": "Description",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.revalidate",
+                     *           "group": "gallery",
+                     *           "label": "Vérification de la disponibilité…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.restart",
+                     *           "group": "gallery",
+                     *           "label": "Revenir à la première page",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomIn",
+                     *           "group": "gallery",
+                     *           "label": "Agrandir l’image ×2",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomOut",
+                     *           "group": "gallery",
+                     *           "label": "Revenir à la taille normale",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomHelp",
+                     *           "group": "gallery",
+                     *           "label": "Déplacement dans l’image agrandie",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "gallery.openInformation",
+                     *           "group": "gallery",
+                     *           "label": "Voir les informations",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.backToImages",
+                     *           "group": "gallery",
+                     *           "label": "Revenir aux images",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.viewWholeImage",
+                     *           "group": "gallery",
+                     *           "label": "Voir l’image entière",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.mobileGestureHelp",
+                     *           "group": "gallery",
+                     *           "label": "Navigation tactile entre les vues",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "gallery.panHelp",
+                     *           "group": "gallery",
+                     *           "label": "Déplacement dans l’image sur mobile",
+                     *           "maxLength": 500
+                     *         }
+                     *       ],
+                     *       "translations": [
+                     *         {
+                     *           "key": "nav.news",
+                     *           "locale": "fr",
+                     *           "value": "Actualités",
+                     *           "resolvedValue": "Actualités",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.news",
+                     *           "locale": "en",
+                     *           "value": "News",
+                     *           "resolvedValue": "News",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.artworks",
+                     *           "locale": "fr",
+                     *           "value": "Œuvres",
+                     *           "resolvedValue": "Œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.artworks",
+                     *           "locale": "en",
+                     *           "value": "Artworks",
+                     *           "resolvedValue": "Artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.exhibitions",
+                     *           "locale": "fr",
+                     *           "value": "Expositions",
+                     *           "resolvedValue": "Expositions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.exhibitions",
+                     *           "locale": "en",
+                     *           "value": "Exhibitions",
+                     *           "resolvedValue": "Exhibitions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.publications",
+                     *           "locale": "fr",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.publications",
+                     *           "locale": "en",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.expertise",
+                     *           "locale": "fr",
+                     *           "value": "Demande d’expertise",
+                     *           "resolvedValue": "Demande d’expertise",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.expertise",
+                     *           "locale": "en",
+                     *           "value": "Request an appraisal",
+                     *           "resolvedValue": "Request an appraisal",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.contact",
+                     *           "locale": "fr",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.contact",
+                     *           "locale": "en",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.homeLabel",
+                     *           "locale": "fr",
+                     *           "value": "Retour à l’accueil",
+                     *           "resolvedValue": "Retour à l’accueil",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.homeLabel",
+                     *           "locale": "en",
+                     *           "value": "Back to home",
+                     *           "resolvedValue": "Back to home",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.navigationLabel",
+                     *           "locale": "fr",
+                     *           "value": "Navigation principale",
+                     *           "resolvedValue": "Navigation principale",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.navigationLabel",
+                     *           "locale": "en",
+                     *           "value": "Main navigation",
+                     *           "resolvedValue": "Main navigation",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.openMenu",
+                     *           "locale": "fr",
+                     *           "value": "Ouvrir le menu",
+                     *           "resolvedValue": "Ouvrir le menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.openMenu",
+                     *           "locale": "en",
+                     *           "value": "Open menu",
+                     *           "resolvedValue": "Open menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.closeMenu",
+                     *           "locale": "fr",
+                     *           "value": "Fermer le menu",
+                     *           "resolvedValue": "Fermer le menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.closeMenu",
+                     *           "locale": "en",
+                     *           "value": "Close menu",
+                     *           "resolvedValue": "Close menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.languageLabel",
+                     *           "locale": "fr",
+                     *           "value": "Langue",
+                     *           "resolvedValue": "Langue",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.languageLabel",
+                     *           "locale": "en",
+                     *           "value": "Language",
+                     *           "resolvedValue": "Language",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.skipToContent",
+                     *           "locale": "fr",
+                     *           "value": "Aller au contenu",
+                     *           "resolvedValue": "Aller au contenu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.skipToContent",
+                     *           "locale": "en",
+                     *           "value": "Skip to content",
+                     *           "resolvedValue": "Skip to content",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.home.title",
+                     *           "locale": "fr",
+                     *           "value": "Accueil",
+                     *           "resolvedValue": "Accueil",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.home.title",
+                     *           "locale": "en",
+                     *           "value": "Home",
+                     *           "resolvedValue": "Home",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.title",
+                     *           "locale": "fr",
+                     *           "value": "Actualités",
+                     *           "resolvedValue": "Actualités",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.title",
+                     *           "locale": "en",
+                     *           "value": "News",
+                     *           "resolvedValue": "News",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune actualité pour le moment.",
+                     *           "resolvedValue": "Aucune actualité pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.empty",
+                     *           "locale": "en",
+                     *           "value": "No news at the moment.",
+                     *           "resolvedValue": "No news at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.artworks.title",
+                     *           "locale": "fr",
+                     *           "value": "Œuvres",
+                     *           "resolvedValue": "Œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.artworks.title",
+                     *           "locale": "en",
+                     *           "value": "Artworks",
+                     *           "resolvedValue": "Artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.title",
+                     *           "locale": "fr",
+                     *           "value": "Expositions",
+                     *           "resolvedValue": "Expositions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.title",
+                     *           "locale": "en",
+                     *           "value": "Exhibitions",
+                     *           "resolvedValue": "Exhibitions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune exposition pour le moment.",
+                     *           "resolvedValue": "Aucune exposition pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.empty",
+                     *           "locale": "en",
+                     *           "value": "No exhibitions at the moment.",
+                     *           "resolvedValue": "No exhibitions at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.title",
+                     *           "locale": "fr",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.title",
+                     *           "locale": "en",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune publication pour le moment.",
+                     *           "resolvedValue": "Aucune publication pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.empty",
+                     *           "locale": "en",
+                     *           "value": "No publications at the moment.",
+                     *           "resolvedValue": "No publications at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.title",
+                     *           "locale": "fr",
+                     *           "value": "Demande d’expertise",
+                     *           "resolvedValue": "Demande d’expertise",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.title",
+                     *           "locale": "en",
+                     *           "value": "Request an appraisal",
+                     *           "resolvedValue": "Request an appraisal",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.empty",
+                     *           "locale": "fr",
+                     *           "value": "Les modalités de demande d’expertise seront présentées ici.",
+                     *           "resolvedValue": "Les modalités de demande d’expertise seront présentées ici.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.empty",
+                     *           "locale": "en",
+                     *           "value": "Information about requesting an appraisal will appear here.",
+                     *           "resolvedValue": "Information about requesting an appraisal will appear here.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.title",
+                     *           "locale": "fr",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.title",
+                     *           "locale": "en",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.empty",
+                     *           "locale": "fr",
+                     *           "value": "Les informations de contact seront présentées ici.",
+                     *           "resolvedValue": "Les informations de contact seront présentées ici.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.empty",
+                     *           "locale": "en",
+                     *           "value": "Contact information will appear here.",
+                     *           "resolvedValue": "Contact information will appear here.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.loading",
+                     *           "locale": "fr",
+                     *           "value": "Chargement des œuvres…",
+                     *           "resolvedValue": "Chargement des œuvres…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.loading",
+                     *           "locale": "en",
+                     *           "value": "Loading artworks…",
+                     *           "resolvedValue": "Loading artworks…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune œuvre publiée pour le moment.",
+                     *           "resolvedValue": "Aucune œuvre publiée pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.empty",
+                     *           "locale": "en",
+                     *           "value": "No artworks published at the moment.",
+                     *           "resolvedValue": "No artworks published at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.restarted",
+                     *           "locale": "fr",
+                     *           "value": "La sélection a changé. Le catalogue reprend à la première page.",
+                     *           "resolvedValue": "La sélection a changé. Le catalogue reprend à la première page.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.restarted",
+                     *           "locale": "en",
+                     *           "value": "The selection has changed. The catalogue has returned to the first page.",
+                     *           "resolvedValue": "The selection has changed. The catalogue has returned to the first page.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.next",
+                     *           "locale": "fr",
+                     *           "value": "Voir la suite",
+                     *           "resolvedValue": "Voir la suite",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.next",
+                     *           "locale": "en",
+                     *           "value": "View more",
+                     *           "resolvedValue": "View more",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorTitle",
+                     *           "locale": "fr",
+                     *           "value": "Les œuvres ne peuvent pas être chargées",
+                     *           "resolvedValue": "Les œuvres ne peuvent pas être chargées",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorTitle",
+                     *           "locale": "en",
+                     *           "value": "Artworks could not be loaded",
+                     *           "resolvedValue": "Artworks could not be loaded",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorMessage",
+                     *           "locale": "fr",
+                     *           "value": "Le catalogue est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "resolvedValue": "Le catalogue est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorMessage",
+                     *           "locale": "en",
+                     *           "value": "The catalogue is temporarily unavailable. Please try again shortly.",
+                     *           "resolvedValue": "The catalogue is temporarily unavailable. Please try again shortly.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.retry",
+                     *           "locale": "fr",
+                     *           "value": "Réessayer",
+                     *           "resolvedValue": "Réessayer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.retry",
+                     *           "locale": "en",
+                     *           "value": "Try again",
+                     *           "resolvedValue": "Try again",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.unavailableTitle",
+                     *           "locale": "fr",
+                     *           "value": "Catalogue indisponible",
+                     *           "resolvedValue": "Catalogue indisponible",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.unavailableTitle",
+                     *           "locale": "en",
+                     *           "value": "Catalogue unavailable",
+                     *           "resolvedValue": "Catalogue unavailable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.loading",
+                     *           "locale": "fr",
+                     *           "value": "Chargement de l’œuvre…",
+                     *           "resolvedValue": "Chargement de l’œuvre…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.loading",
+                     *           "locale": "en",
+                     *           "value": "Loading artwork…",
+                     *           "resolvedValue": "Loading artwork…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.back",
+                     *           "locale": "fr",
+                     *           "value": "Toutes les œuvres",
+                     *           "resolvedValue": "Toutes les œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.back",
+                     *           "locale": "en",
+                     *           "value": "All artworks",
+                     *           "resolvedValue": "All artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.untitled",
+                     *           "locale": "fr",
+                     *           "value": "Titre non renseigné",
+                     *           "resolvedValue": "Titre non renseigné",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.untitled",
+                     *           "locale": "en",
+                     *           "value": "Title not provided",
+                     *           "resolvedValue": "Title not provided",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unknownArtist",
+                     *           "locale": "fr",
+                     *           "value": "Artiste non renseigné",
+                     *           "resolvedValue": "Artiste non renseigné",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unknownArtist",
+                     *           "locale": "en",
+                     *           "value": "Artist not provided",
+                     *           "resolvedValue": "Artist not provided",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.artist",
+                     *           "locale": "fr",
+                     *           "value": "Artiste",
+                     *           "resolvedValue": "Artiste",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.artist",
+                     *           "locale": "en",
+                     *           "value": "Artist",
+                     *           "resolvedValue": "Artist",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.year",
+                     *           "locale": "fr",
+                     *           "value": "Année",
+                     *           "resolvedValue": "Année",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.year",
+                     *           "locale": "en",
+                     *           "value": "Year",
+                     *           "resolvedValue": "Year",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.medium",
+                     *           "locale": "fr",
+                     *           "value": "Technique",
+                     *           "resolvedValue": "Technique",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.medium",
+                     *           "locale": "en",
+                     *           "value": "Medium",
+                     *           "resolvedValue": "Medium",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.dimensions",
+                     *           "locale": "fr",
+                     *           "value": "Dimensions",
+                     *           "resolvedValue": "Dimensions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.dimensions",
+                     *           "locale": "en",
+                     *           "value": "Dimensions",
+                     *           "resolvedValue": "Dimensions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unspecified",
+                     *           "locale": "fr",
+                     *           "value": "Non renseigné",
+                     *           "resolvedValue": "Non renseigné",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unspecified",
+                     *           "locale": "en",
+                     *           "value": "Not provided",
+                     *           "resolvedValue": "Not provided",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "Image non disponible",
+                     *           "resolvedValue": "Image non disponible",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageUnavailable",
+                     *           "locale": "en",
+                     *           "value": "Image unavailable",
+                     *           "resolvedValue": "Image unavailable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageAlt",
+                     *           "locale": "fr",
+                     *           "value": "Vue de l’œuvre",
+                     *           "resolvedValue": "Vue de l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageAlt",
+                     *           "locale": "en",
+                     *           "value": "View of the artwork",
+                     *           "resolvedValue": "View of the artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundTitle",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre introuvable",
+                     *           "resolvedValue": "Œuvre introuvable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundTitle",
+                     *           "locale": "en",
+                     *           "value": "Artwork not found",
+                     *           "resolvedValue": "Artwork not found",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundMessage",
+                     *           "locale": "fr",
+                     *           "value": "Cette œuvre n’est pas disponible sur ce site.",
+                     *           "resolvedValue": "Cette œuvre n’est pas disponible sur ce site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundMessage",
+                     *           "locale": "en",
+                     *           "value": "This artwork is not available on this site.",
+                     *           "resolvedValue": "This artwork is not available on this site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundTitle",
+                     *           "locale": "fr",
+                     *           "value": "Page introuvable",
+                     *           "resolvedValue": "Page introuvable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundTitle",
+                     *           "locale": "en",
+                     *           "value": "Page not found",
+                     *           "resolvedValue": "Page not found",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundMessage",
+                     *           "locale": "fr",
+                     *           "value": "Cette page n’existe pas sur ce site.",
+                     *           "resolvedValue": "Cette page n’existe pas sur ce site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundMessage",
+                     *           "locale": "en",
+                     *           "value": "This page does not exist on this site.",
+                     *           "resolvedValue": "This page does not exist on this site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.viewArtworks",
+                     *           "locale": "fr",
+                     *           "value": "Voir les œuvres",
+                     *           "resolvedValue": "Voir les œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.viewArtworks",
+                     *           "locale": "en",
+                     *           "value": "View artworks",
+                     *           "resolvedValue": "View artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.play",
+                     *           "locale": "fr",
+                     *           "value": "Lire le film",
+                     *           "resolvedValue": "Lire le film",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.play",
+                     *           "locale": "en",
+                     *           "value": "Play film",
+                     *           "resolvedValue": "Play film",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pause",
+                     *           "locale": "fr",
+                     *           "value": "Mettre le film en pause",
+                     *           "resolvedValue": "Mettre le film en pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pause",
+                     *           "locale": "en",
+                     *           "value": "Pause film",
+                     *           "resolvedValue": "Pause film",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "Le film est indisponible.",
+                     *           "resolvedValue": "Le film est indisponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.unavailable",
+                     *           "locale": "en",
+                     *           "value": "The film is unavailable.",
+                     *           "resolvedValue": "The film is unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.reducedMotion",
+                     *           "locale": "fr",
+                     *           "value": "Le film est arrêté selon vos préférences de mouvement.",
+                     *           "resolvedValue": "Le film est arrêté selon vos préférences de mouvement.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.reducedMotion",
+                     *           "locale": "en",
+                     *           "value": "The film is paused according to your motion preferences.",
+                     *           "resolvedValue": "The film is paused according to your motion preferences.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.discover",
+                     *           "locale": "fr",
+                     *           "value": "Découvrir la galerie",
+                     *           "resolvedValue": "Découvrir la galerie",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.discover",
+                     *           "locale": "en",
+                     *           "value": "Discover the gallery",
+                     *           "resolvedValue": "Discover the gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.readMore",
+                     *           "locale": "fr",
+                     *           "value": "En savoir plus",
+                     *           "resolvedValue": "En savoir plus",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.readMore",
+                     *           "locale": "en",
+                     *           "value": "Read more",
+                     *           "resolvedValue": "Read more",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.galleryLabel",
+                     *           "locale": "fr",
+                     *           "value": "Galerie d’images",
+                     *           "resolvedValue": "Galerie d’images",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.galleryLabel",
+                     *           "locale": "en",
+                     *           "value": "Image gallery",
+                     *           "resolvedValue": "Image gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.previous",
+                     *           "locale": "fr",
+                     *           "value": "Précédent",
+                     *           "resolvedValue": "Précédent",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.previous",
+                     *           "locale": "en",
+                     *           "value": "Previous",
+                     *           "resolvedValue": "Previous",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.next",
+                     *           "locale": "fr",
+                     *           "value": "Suivant",
+                     *           "resolvedValue": "Suivant",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.next",
+                     *           "locale": "en",
+                     *           "value": "Next",
+                     *           "resolvedValue": "Next",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.empty",
+                     *           "locale": "fr",
+                     *           "value": "Le contenu de cette page sera bientôt disponible.",
+                     *           "resolvedValue": "Le contenu de cette page sera bientôt disponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.empty",
+                     *           "locale": "en",
+                     *           "value": "Content for this page will be available soon.",
+                     *           "resolvedValue": "Content for this page will be available soon.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationTitle",
+                     *           "locale": "fr",
+                     *           "value": "Présentation indisponible",
+                     *           "resolvedValue": "Présentation indisponible",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationTitle",
+                     *           "locale": "en",
+                     *           "value": "Presentation unavailable",
+                     *           "resolvedValue": "Presentation unavailable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationMessage",
+                     *           "locale": "fr",
+                     *           "value": "Cette page est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "resolvedValue": "Cette page est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationMessage",
+                     *           "locale": "en",
+                     *           "value": "This page is temporarily unavailable. Please try again shortly.",
+                     *           "resolvedValue": "This page is temporarily unavailable. Please try again shortly.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.title",
+                     *           "locale": "fr",
+                     *           "value": "Aperçu privé du brouillon",
+                     *           "resolvedValue": "Aperçu privé du brouillon",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.title",
+                     *           "locale": "en",
+                     *           "value": "Private draft preview",
+                     *           "resolvedValue": "Private draft preview",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.notice",
+                     *           "locale": "fr",
+                     *           "value": "Cet aperçu présente le brouillon enregistré. Il n’est pas publié.",
+                     *           "resolvedValue": "Cet aperçu présente le brouillon enregistré. Il n’est pas publié.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.notice",
+                     *           "locale": "en",
+                     *           "value": "This preview shows the saved draft. It is not published.",
+                     *           "resolvedValue": "This preview shows the saved draft. It is not published.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.desktop",
+                     *           "locale": "fr",
+                     *           "value": "Vue ordinateur",
+                     *           "resolvedValue": "Vue ordinateur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.desktop",
+                     *           "locale": "en",
+                     *           "value": "Desktop view",
+                     *           "resolvedValue": "Desktop view",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.mobile",
+                     *           "locale": "fr",
+                     *           "value": "Vue mobile",
+                     *           "resolvedValue": "Vue mobile",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.mobile",
+                     *           "locale": "en",
+                     *           "value": "Mobile view",
+                     *           "resolvedValue": "Mobile view",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.close",
+                     *           "locale": "fr",
+                     *           "value": "Fermer l’aperçu",
+                     *           "resolvedValue": "Fermer l’aperçu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.close",
+                     *           "locale": "en",
+                     *           "value": "Close preview",
+                     *           "resolvedValue": "Close preview",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.expired",
+                     *           "locale": "fr",
+                     *           "value": "L’aperçu a expiré. Ouvrez un nouvel aperçu depuis l’administration.",
+                     *           "resolvedValue": "L’aperçu a expiré. Ouvrez un nouvel aperçu depuis l’administration.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.expired",
+                     *           "locale": "en",
+                     *           "value": "This preview has expired. Open a new preview from the admin panel.",
+                     *           "resolvedValue": "This preview has expired. Open a new preview from the admin panel.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "L’aperçu ne peut pas être vérifié. Retournez dans l’administration pour le rouvrir.",
+                     *           "resolvedValue": "L’aperçu ne peut pas être vérifié. Retournez dans l’administration pour le rouvrir.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.unavailable",
+                     *           "locale": "en",
+                     *           "value": "The preview cannot be verified. Return to the admin panel to reopen it.",
+                     *           "resolvedValue": "The preview cannot be verified. Return to the admin panel to reopen it.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.checking",
+                     *           "locale": "fr",
+                     *           "value": "Vérification de l’accès à l’aperçu…",
+                     *           "resolvedValue": "Vérification de l’accès à l’aperçu…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.checking",
+                     *           "locale": "en",
+                     *           "value": "Checking preview access…",
+                     *           "resolvedValue": "Checking preview access…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.backToAdmin",
+                     *           "locale": "fr",
+                     *           "value": "Retour à l’administration",
+                     *           "resolvedValue": "Retour à l’administration",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.backToAdmin",
+                     *           "locale": "en",
+                     *           "value": "Back to admin",
+                     *           "resolvedValue": "Back to admin",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.playLabel",
+                     *           "locale": "fr",
+                     *           "value": "Lecture",
+                     *           "resolvedValue": "Lecture",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.playLabel",
+                     *           "locale": "en",
+                     *           "value": "Play",
+                     *           "resolvedValue": "Play",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pauseLabel",
+                     *           "locale": "fr",
+                     *           "value": "Pause",
+                     *           "resolvedValue": "Pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pauseLabel",
+                     *           "locale": "en",
+                     *           "value": "Pause",
+                     *           "resolvedValue": "Pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.explore",
+                     *           "locale": "fr",
+                     *           "value": "Explorer",
+                     *           "resolvedValue": "Explorer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.explore",
+                     *           "locale": "en",
+                     *           "value": "Explore",
+                     *           "resolvedValue": "Explore",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.demonstration",
+                     *           "locale": "fr",
+                     *           "value": "Maquette — contenu de démonstration",
+                     *           "resolvedValue": "Maquette — contenu de démonstration",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.demonstration",
+                     *           "locale": "en",
+                     *           "value": "Mockup — demonstration content",
+                     *           "resolvedValue": "Mockup — demonstration content",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.name",
+                     *           "locale": "fr",
+                     *           "value": "Nom",
+                     *           "resolvedValue": "Nom",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.name",
+                     *           "locale": "en",
+                     *           "value": "Name",
+                     *           "resolvedValue": "Name",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.email",
+                     *           "locale": "fr",
+                     *           "value": "Adresse e-mail",
+                     *           "resolvedValue": "Adresse e-mail",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.email",
+                     *           "locale": "en",
+                     *           "value": "Email address",
+                     *           "resolvedValue": "Email address",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.subject",
+                     *           "locale": "fr",
+                     *           "value": "Sujet",
+                     *           "resolvedValue": "Sujet",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.subject",
+                     *           "locale": "en",
+                     *           "value": "Subject",
+                     *           "resolvedValue": "Subject",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.message",
+                     *           "locale": "fr",
+                     *           "value": "Message",
+                     *           "resolvedValue": "Message",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.message",
+                     *           "locale": "en",
+                     *           "value": "Message",
+                     *           "resolvedValue": "Message",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.required",
+                     *           "locale": "fr",
+                     *           "value": "Tous les champs sont obligatoires.",
+                     *           "resolvedValue": "Tous les champs sont obligatoires.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.required",
+                     *           "locale": "en",
+                     *           "value": "All fields are required.",
+                     *           "resolvedValue": "All fields are required.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.limits",
+                     *           "locale": "fr",
+                     *           "value": "Nom :120 caractères. E-mail :254. Sujet :160. Message :5 000.",
+                     *           "resolvedValue": "Nom :120 caractères. E-mail :254. Sujet :160. Message :5 000.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.limits",
+                     *           "locale": "en",
+                     *           "value": "Name:120 characters. Email:254. Subject:160. Message:5,000.",
+                     *           "resolvedValue": "Name:120 characters. Email:254. Subject:160. Message:5,000.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacy",
+                     *           "locale": "fr",
+                     *           "value": "Vos coordonnées servent à répondre à votre demande.",
+                     *           "resolvedValue": "Vos coordonnées servent à répondre à votre demande.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacy",
+                     *           "locale": "en",
+                     *           "value": "Your contact details are used to reply to your enquiry.",
+                     *           "resolvedValue": "Your contact details are used to reply to your enquiry.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacyLink",
+                     *           "locale": "fr",
+                     *           "value": "Confidentialité",
+                     *           "resolvedValue": "Confidentialité",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacyLink",
+                     *           "locale": "en",
+                     *           "value": "Privacy",
+                     *           "resolvedValue": "Privacy",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.submit",
+                     *           "locale": "fr",
+                     *           "value": "Envoyer la demande",
+                     *           "resolvedValue": "Envoyer la demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.submit",
+                     *           "locale": "en",
+                     *           "value": "Send enquiry",
+                     *           "resolvedValue": "Send enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sending",
+                     *           "locale": "fr",
+                     *           "value": "Enregistrement de votre demande…",
+                     *           "resolvedValue": "Enregistrement de votre demande…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sending",
+                     *           "locale": "en",
+                     *           "value": "Saving your enquiry…",
+                     *           "resolvedValue": "Saving your enquiry…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmed",
+                     *           "locale": "fr",
+                     *           "value": "Votre demande a été enregistrée.",
+                     *           "resolvedValue": "Votre demande a été enregistrée.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmed",
+                     *           "locale": "en",
+                     *           "value": "Your enquiry has been recorded.",
+                     *           "resolvedValue": "Your enquiry has been recorded.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmationHelp",
+                     *           "locale": "fr",
+                     *           "value": "La galerie pourra vous répondre à l’adresse fournie.",
+                     *           "resolvedValue": "La galerie pourra vous répondre à l’adresse fournie.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmationHelp",
+                     *           "locale": "en",
+                     *           "value": "The gallery can reply to the email address you provided.",
+                     *           "resolvedValue": "The gallery can reply to the email address you provided.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.reference",
+                     *           "locale": "fr",
+                     *           "value": "Référence de la demande",
+                     *           "resolvedValue": "Référence de la demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.reference",
+                     *           "locale": "en",
+                     *           "value": "Enquiry reference",
+                     *           "resolvedValue": "Enquiry reference",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.disabled",
+                     *           "locale": "fr",
+                     *           "value": "Le formulaire de contact est momentanément indisponible.",
+                     *           "resolvedValue": "Le formulaire de contact est momentanément indisponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.disabled",
+                     *           "locale": "en",
+                     *           "value": "The contact form is currently unavailable.",
+                     *           "resolvedValue": "The contact form is currently unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "Impossible de confirmer l’enregistrement. Conservez votre saisie et réessayez.",
+                     *           "resolvedValue": "Impossible de confirmer l’enregistrement. Conservez votre saisie et réessayez.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unavailable",
+                     *           "locale": "en",
+                     *           "value": "We could not confirm receipt. Keep your message and try again.",
+                     *           "resolvedValue": "We could not confirm receipt. Keep your message and try again.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalid",
+                     *           "locale": "fr",
+                     *           "value": "Vérifiez les champs signalés.",
+                     *           "resolvedValue": "Vérifiez les champs signalés.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalid",
+                     *           "locale": "en",
+                     *           "value": "Check the highlighted fields.",
+                     *           "resolvedValue": "Check the highlighted fields.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.requiredError",
+                     *           "locale": "fr",
+                     *           "value": "Ce champ est obligatoire.",
+                     *           "resolvedValue": "Ce champ est obligatoire.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.requiredError",
+                     *           "locale": "en",
+                     *           "value": "This field is required.",
+                     *           "resolvedValue": "This field is required.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalidEmail",
+                     *           "locale": "fr",
+                     *           "value": "Saisissez une adresse e-mail valide.",
+                     *           "resolvedValue": "Saisissez une adresse e-mail valide.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalidEmail",
+                     *           "locale": "en",
+                     *           "value": "Enter a valid email address.",
+                     *           "resolvedValue": "Enter a valid email address.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.tooLong",
+                     *           "locale": "fr",
+                     *           "value": "La longueur autorisée est dépassée.",
+                     *           "resolvedValue": "La longueur autorisée est dépassée.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.tooLong",
+                     *           "locale": "en",
+                     *           "value": "The maximum length has been exceeded.",
+                     *           "resolvedValue": "The maximum length has been exceeded.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.rateLimited",
+                     *           "locale": "fr",
+                     *           "value": "Trop de demandes. Attendez le délai indiqué avant de réessayer.",
+                     *           "resolvedValue": "Trop de demandes. Attendez le délai indiqué avant de réessayer.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.rateLimited",
+                     *           "locale": "en",
+                     *           "value": "Too many requests. Wait for the indicated delay before trying again.",
+                     *           "resolvedValue": "Too many requests. Wait for the indicated delay before trying again.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.retryAfter",
+                     *           "locale": "fr",
+                     *           "value": "Secondes avant nouvel essai",
+                     *           "resolvedValue": "Secondes avant nouvel essai",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.retryAfter",
+                     *           "locale": "en",
+                     *           "value": "Seconds before trying again",
+                     *           "resolvedValue": "Seconds before trying again",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recover",
+                     *           "locale": "fr",
+                     *           "value": "Vérifier la prise en compte",
+                     *           "resolvedValue": "Vérifier la prise en compte",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recover",
+                     *           "locale": "en",
+                     *           "value": "Check receipt",
+                     *           "resolvedValue": "Check receipt",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recovering",
+                     *           "locale": "fr",
+                     *           "value": "Vérification de la prise en compte…",
+                     *           "resolvedValue": "Vérification de la prise en compte…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recovering",
+                     *           "locale": "en",
+                     *           "value": "Checking receipt…",
+                     *           "resolvedValue": "Checking receipt…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unknownReceipt",
+                     *           "locale": "fr",
+                     *           "value": "Aucune confirmation retrouvée. Aucun nouvel envoi automatique n’a été effectué.",
+                     *           "resolvedValue": "Aucune confirmation retrouvée. Aucun nouvel envoi automatique n’a été effectué.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unknownReceipt",
+                     *           "locale": "en",
+                     *           "value": "No confirmation found. No new enquiry has been sent automatically.",
+                     *           "resolvedValue": "No confirmation found. No new enquiry has been sent automatically.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.conflict",
+                     *           "locale": "fr",
+                     *           "value": "Cette intention correspond à une autre saisie. Commencez une nouvelle demande explicitement.",
+                     *           "resolvedValue": "Cette intention correspond à une autre saisie. Commencez une nouvelle demande explicitement.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.conflict",
+                     *           "locale": "en",
+                     *           "value": "This submission belongs to different content. Explicitly start a new enquiry.",
+                     *           "resolvedValue": "This submission belongs to different content. Explicitly start a new enquiry.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newEnquiry",
+                     *           "locale": "fr",
+                     *           "value": "Commencer une nouvelle demande",
+                     *           "resolvedValue": "Commencer une nouvelle demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newEnquiry",
+                     *           "locale": "en",
+                     *           "value": "Start a new enquiry",
+                     *           "resolvedValue": "Start a new enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newConfirm",
+                     *           "locale": "fr",
+                     *           "value": "Commencer une nouvelle demande ? Si une précédente a été reçue sans confirmation, un doublon reste possible.",
+                     *           "resolvedValue": "Commencer une nouvelle demande ? Si une précédente a été reçue sans confirmation, un doublon reste possible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newConfirm",
+                     *           "locale": "en",
+                     *           "value": "Start a new enquiry? If a previous enquiry arrived without confirmation, a duplicate is possible.",
+                     *           "resolvedValue": "Start a new enquiry? If a previous enquiry arrived without confirmation, a duplicate is possible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkCta",
+                     *           "locale": "fr",
+                     *           "value": "Demander des informations",
+                     *           "resolvedValue": "Demander des informations",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkCta",
+                     *           "locale": "en",
+                     *           "value": "Enquire about this artwork",
+                     *           "resolvedValue": "Enquire about this artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkHeading",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre concernée",
+                     *           "resolvedValue": "Œuvre concernée",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkHeading",
+                     *           "locale": "en",
+                     *           "value": "Artwork",
+                     *           "resolvedValue": "Artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkSubject",
+                     *           "locale": "fr",
+                     *           "value": "Informations sur une œuvre",
+                     *           "resolvedValue": "Informations sur une œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkSubject",
+                     *           "locale": "en",
+                     *           "value": "Artwork enquiry",
+                     *           "resolvedValue": "Artwork enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "Cette œuvre ne peut pas être associée à votre demande.",
+                     *           "resolvedValue": "Cette œuvre ne peut pas être associée à votre demande.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkUnavailable",
+                     *           "locale": "en",
+                     *           "value": "This artwork cannot be linked to your enquiry.",
+                     *           "resolvedValue": "This artwork cannot be linked to your enquiry.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.general",
+                     *           "locale": "fr",
+                     *           "value": "Continuer en contact général",
+                     *           "resolvedValue": "Continuer en contact général",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.general",
+                     *           "locale": "en",
+                     *           "value": "Continue with a general enquiry",
+                     *           "resolvedValue": "Continue with a general enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.backArtwork",
+                     *           "locale": "fr",
+                     *           "value": "Revenir à l’œuvre",
+                     *           "resolvedValue": "Revenir à l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.backArtwork",
+                     *           "locale": "en",
+                     *           "value": "Back to artwork",
+                     *           "resolvedValue": "Back to artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.leaveConfirm",
+                     *           "locale": "fr",
+                     *           "value": "Changer de langue abandonnera les champs non envoyés. Continuer ?",
+                     *           "resolvedValue": "Changer de langue abandonnera les champs non envoyés. Continuer ?",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.leaveConfirm",
+                     *           "locale": "en",
+                     *           "value": "Changing language will discard your unsent fields. Continue?",
+                     *           "resolvedValue": "Changing language will discard your unsent fields. Continue?",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.demonstration",
+                     *           "locale": "fr",
+                     *           "value": "Démonstration : aucune demande ne sera envoyée.",
+                     *           "resolvedValue": "Démonstration : aucune demande ne sera envoyée.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.demonstration",
+                     *           "locale": "en",
+                     *           "value": "Demonstration: no enquiry will be sent.",
+                     *           "resolvedValue": "Demonstration: no enquiry will be sent.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationHeading",
+                     *           "locale": "fr",
+                     *           "value": "Nouvelle demande",
+                     *           "resolvedValue": "Nouvelle demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationHeading",
+                     *           "locale": "en",
+                     *           "value": "New enquiry",
+                     *           "resolvedValue": "New enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGallery",
+                     *           "locale": "fr",
+                     *           "value": "Galerie",
+                     *           "resolvedValue": "Galerie",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGallery",
+                     *           "locale": "en",
+                     *           "value": "Gallery",
+                     *           "resolvedValue": "Gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationLocale",
+                     *           "locale": "fr",
+                     *           "value": "Langue du visiteur",
+                     *           "resolvedValue": "Langue du visiteur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationLocale",
+                     *           "locale": "en",
+                     *           "value": "Visitor language",
+                     *           "resolvedValue": "Visitor language",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationArtwork",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre",
+                     *           "resolvedValue": "Œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationArtwork",
+                     *           "locale": "en",
+                     *           "value": "Artwork",
+                     *           "resolvedValue": "Artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.load",
+                     *           "locale": "fr",
+                     *           "value": "Chargement du formulaire…",
+                     *           "resolvedValue": "Chargement du formulaire…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.load",
+                     *           "locale": "en",
+                     *           "value": "Loading the form…",
+                     *           "resolvedValue": "Loading the form…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sentCopy",
+                     *           "locale": "fr",
+                     *           "value": "L’enregistrement est confirmé ; il ne constitue pas une confirmation de livraison d’e-mail.",
+                     *           "resolvedValue": "L’enregistrement est confirmé ; il ne constitue pas une confirmation de livraison d’e-mail.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sentCopy",
+                     *           "locale": "en",
+                     *           "value": "Receipt is confirmed; it does not confirm email delivery.",
+                     *           "resolvedValue": "Receipt is confirmed; it does not confirm email delivery.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationType",
+                     *           "locale": "fr",
+                     *           "value": "Type de demande",
+                     *           "resolvedValue": "Type de demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationType",
+                     *           "locale": "en",
+                     *           "value": "Enquiry type",
+                     *           "resolvedValue": "Enquiry type",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGeneral",
+                     *           "locale": "fr",
+                     *           "value": "Contact général",
+                     *           "resolvedValue": "Contact général",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGeneral",
+                     *           "locale": "en",
+                     *           "value": "General enquiry",
+                     *           "resolvedValue": "General enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchLabel",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher par titre ou artiste",
+                     *           "resolvedValue": "Rechercher par titre ou artiste",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchLabel",
+                     *           "locale": "en",
+                     *           "value": "Search by title or artist",
+                     *           "resolvedValue": "Search by title or artist",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchSubmit",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher",
+                     *           "resolvedValue": "Rechercher",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchSubmit",
+                     *           "locale": "en",
+                     *           "value": "Search",
+                     *           "resolvedValue": "Search",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchClear",
+                     *           "locale": "fr",
+                     *           "value": "Effacer la recherche",
+                     *           "resolvedValue": "Effacer la recherche",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchClear",
+                     *           "locale": "en",
+                     *           "value": "Clear search",
+                     *           "resolvedValue": "Clear search",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.noResults",
+                     *           "locale": "fr",
+                     *           "value": "Aucune œuvre ne correspond à cette recherche.",
+                     *           "resolvedValue": "Aucune œuvre ne correspond à cette recherche.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.noResults",
+                     *           "locale": "en",
+                     *           "value": "No artworks match this search.",
+                     *           "resolvedValue": "No artworks match this search.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.paginationLabel",
+                     *           "locale": "fr",
+                     *           "value": "Pagination des œuvres",
+                     *           "resolvedValue": "Pagination des œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.paginationLabel",
+                     *           "locale": "en",
+                     *           "value": "Artwork pagination",
+                     *           "resolvedValue": "Artwork pagination",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.previousPage",
+                     *           "locale": "fr",
+                     *           "value": "Page précédente",
+                     *           "resolvedValue": "Page précédente",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.previousPage",
+                     *           "locale": "en",
+                     *           "value": "Previous page",
+                     *           "resolvedValue": "Previous page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.nextPage",
+                     *           "locale": "fr",
+                     *           "value": "Page suivante",
+                     *           "resolvedValue": "Page suivante",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.nextPage",
+                     *           "locale": "en",
+                     *           "value": "Next page",
+                     *           "resolvedValue": "Next page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.page",
+                     *           "locale": "fr",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.page",
+                     *           "locale": "en",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.of",
+                     *           "locale": "fr",
+                     *           "value": "sur",
+                     *           "resolvedValue": "sur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.of",
+                     *           "locale": "en",
+                     *           "value": "of",
+                     *           "resolvedValue": "of",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.closeArtwork",
+                     *           "locale": "fr",
+                     *           "value": "Fermer la fiche de l’œuvre",
+                     *           "resolvedValue": "Fermer la fiche de l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.closeArtwork",
+                     *           "locale": "en",
+                     *           "value": "Close artwork",
+                     *           "resolvedValue": "Close artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.opening",
+                     *           "locale": "fr",
+                     *           "value": "Ouverture de l’œuvre…",
+                     *           "resolvedValue": "Ouverture de l’œuvre…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.opening",
+                     *           "locale": "en",
+                     *           "value": "Opening artwork…",
+                     *           "resolvedValue": "Opening artwork…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "Cette œuvre n’est plus disponible.",
+                     *           "resolvedValue": "Cette œuvre n’est plus disponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.unavailable",
+                     *           "locale": "en",
+                     *           "value": "This artwork is no longer available.",
+                     *           "resolvedValue": "This artwork is no longer available.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.progressLabel",
+                     *           "locale": "fr",
+                     *           "value": "Vues de l’œuvre",
+                     *           "resolvedValue": "Vues de l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.progressLabel",
+                     *           "locale": "en",
+                     *           "value": "Artwork views",
+                     *           "resolvedValue": "Artwork views",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.view",
+                     *           "locale": "fr",
+                     *           "value": "Vue",
+                     *           "resolvedValue": "Vue",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.view",
+                     *           "locale": "en",
+                     *           "value": "View",
+                     *           "resolvedValue": "View",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.presentation",
+                     *           "locale": "fr",
+                     *           "value": "Présentation",
+                     *           "resolvedValue": "Présentation",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.presentation",
+                     *           "locale": "en",
+                     *           "value": "Overview",
+                     *           "resolvedValue": "Overview",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.description",
+                     *           "locale": "fr",
+                     *           "value": "Description",
+                     *           "resolvedValue": "Description",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.description",
+                     *           "locale": "en",
+                     *           "value": "Description",
+                     *           "resolvedValue": "Description",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.revalidate",
+                     *           "locale": "fr",
+                     *           "value": "Vérification de la disponibilité…",
+                     *           "resolvedValue": "Vérification de la disponibilité…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.revalidate",
+                     *           "locale": "en",
+                     *           "value": "Checking availability…",
+                     *           "resolvedValue": "Checking availability…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.restart",
+                     *           "locale": "fr",
+                     *           "value": "Revenir à la première page",
+                     *           "resolvedValue": "Revenir à la première page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.restart",
+                     *           "locale": "en",
+                     *           "value": "Return to the first page",
+                     *           "resolvedValue": "Return to the first page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomIn",
+                     *           "locale": "fr",
+                     *           "value": "Agrandir l’image ×2",
+                     *           "resolvedValue": "Agrandir l’image ×2",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomIn",
+                     *           "locale": "en",
+                     *           "value": "Zoom in ×2",
+                     *           "resolvedValue": "Zoom in ×2",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomOut",
+                     *           "locale": "fr",
+                     *           "value": "Revenir à la taille normale",
+                     *           "resolvedValue": "Revenir à la taille normale",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomOut",
+                     *           "locale": "en",
+                     *           "value": "Return to original size",
+                     *           "resolvedValue": "Return to original size",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomHelp",
+                     *           "locale": "fr",
+                     *           "value": "Déplacez la souris ou utilisez les touches fléchées pour explorer l’image. Échap quitte le zoom.",
+                     *           "resolvedValue": "Déplacez la souris ou utilisez les touches fléchées pour explorer l’image. Échap quitte le zoom.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomHelp",
+                     *           "locale": "en",
+                     *           "value": "Move the mouse or use the arrow keys to explore the image. Escape exits zoom.",
+                     *           "resolvedValue": "Move the mouse or use the arrow keys to explore the image. Escape exits zoom.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.openInformation",
+                     *           "locale": "fr",
+                     *           "value": "Voir les informations",
+                     *           "resolvedValue": "Voir les informations",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.openInformation",
+                     *           "locale": "en",
+                     *           "value": "View details",
+                     *           "resolvedValue": "View details",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.backToImages",
+                     *           "locale": "fr",
+                     *           "value": "Revenir aux images",
+                     *           "resolvedValue": "Revenir aux images",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.backToImages",
+                     *           "locale": "en",
+                     *           "value": "Back to images",
+                     *           "resolvedValue": "Back to images",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.viewWholeImage",
+                     *           "locale": "fr",
+                     *           "value": "Voir l’image entière",
+                     *           "resolvedValue": "Voir l’image entière",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.viewWholeImage",
+                     *           "locale": "en",
+                     *           "value": "View full image",
+                     *           "resolvedValue": "View full image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.mobileGestureHelp",
+                     *           "locale": "fr",
+                     *           "value": "Glissez vers le haut ou le bas pour changer de vue, ou utilisez les repères de la timeline.",
+                     *           "resolvedValue": "Glissez vers le haut ou le bas pour changer de vue, ou utilisez les repères de la timeline.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.mobileGestureHelp",
+                     *           "locale": "en",
+                     *           "value": "Swipe up or down to change views, or use the timeline controls.",
+                     *           "resolvedValue": "Swipe up or down to change views, or use the timeline controls.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.panHelp",
+                     *           "locale": "fr",
+                     *           "value": "Glissez pour explorer l’image, ou utilisez les touches fléchées. Revenir aux images quitte l’examen.",
+                     *           "resolvedValue": "Glissez pour explorer l’image, ou utilisez les touches fléchées. Revenir aux images quitte l’examen.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.panHelp",
+                     *           "locale": "en",
+                     *           "value": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
+                     *           "resolvedValue": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
+                     *           "fallback": false
+                     *         }
+                     *       ],
+                     *       "logo": null,
+                     *       "updatedAt": "2026-10-26T10:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SiteContentAdmin"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    updateSiteContent: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Jeton lié à la session ; Origin contrôlé en plus par le BFF avant lecture du corps. */
+                "X-CSRF-Token": string;
+                /** @description ETag fort de GET admin ; pas de wildcard, liste ni ETag faible. */
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SiteContentPatch"];
+            };
+        };
+        responses: {
+            /** @description État enregistré ; exemple correspondant à la requête translations, avec nouvelle révision et repli anglais du message Contact. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    /**
+                     * @description Précondition de la prochaine sauvegarde.
+                     * @example "site-content-2-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "revision": 2,
+                     *       "policy": {
+                     *         "defaultLocale": "fr",
+                     *         "locales": [
+                     *           {
+                     *             "code": "fr",
+                     *             "label": "Français"
+                     *           },
+                     *           {
+                     *             "code": "en",
+                     *             "label": "English"
+                     *           }
+                     *         ],
+                     *         "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     *       },
+                     *       "groups": [
+                     *         {
+                     *           "id": "navigation",
+                     *           "label": "Navigation"
+                     *         },
+                     *         {
+                     *           "id": "header",
+                     *           "label": "Header et accessibilité"
+                     *         },
+                     *         {
+                     *           "id": "pages",
+                     *           "label": "Pages"
+                     *         },
+                     *         {
+                     *           "id": "catalog",
+                     *           "label": "Catalogue"
+                     *         },
+                     *         {
+                     *           "id": "artwork",
+                     *           "label": "Fiche d’œuvre"
+                     *         },
+                     *         {
+                     *           "id": "errors",
+                     *           "label": "Erreurs"
+                     *         },
+                     *         {
+                     *           "id": "video",
+                     *           "label": "Film et médias"
+                     *         },
+                     *         {
+                     *           "id": "presentation",
+                     *           "label": "Présentation"
+                     *         },
+                     *         {
+                     *           "id": "preview",
+                     *           "label": "Aperçu privé"
+                     *         },
+                     *         {
+                     *           "id": "contact",
+                     *           "label": "Contact et demandes"
+                     *         },
+                     *         {
+                     *           "id": "gallery",
+                     *           "label": "Catalogue et fiche immersive"
+                     *         }
+                     *       ],
+                     *       "definitions": [
+                     *         {
+                     *           "key": "nav.news",
+                     *           "group": "navigation",
+                     *           "label": "Actualités",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.artworks",
+                     *           "group": "navigation",
+                     *           "label": "Œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.exhibitions",
+                     *           "group": "navigation",
+                     *           "label": "Expositions",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.publications",
+                     *           "group": "navigation",
+                     *           "label": "Publications",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.expertise",
+                     *           "group": "navigation",
+                     *           "label": "Demande d’expertise",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "nav.contact",
+                     *           "group": "navigation",
+                     *           "label": "Contact",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.homeLabel",
+                     *           "group": "header",
+                     *           "label": "Retour à l’accueil",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.navigationLabel",
+                     *           "group": "header",
+                     *           "label": "Navigation principale",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.openMenu",
+                     *           "group": "header",
+                     *           "label": "Ouvrir le menu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.closeMenu",
+                     *           "group": "header",
+                     *           "label": "Fermer le menu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.languageLabel",
+                     *           "group": "header",
+                     *           "label": "Choix de langue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "header.skipToContent",
+                     *           "group": "header",
+                     *           "label": "Accès au contenu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.home.title",
+                     *           "group": "pages",
+                     *           "label": "Titre de l’accueil",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.news.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Actualités",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.news.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Actualités",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.artworks.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Expositions",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Expositions",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.publications.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Publications",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.publications.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Publications",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Demande d’expertise",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Demande d’expertise",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "page.contact.title",
+                     *           "group": "pages",
+                     *           "label": "Titre Contact",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "page.contact.empty",
+                     *           "group": "pages",
+                     *           "label": "Message Contact",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.loading",
+                     *           "group": "catalog",
+                     *           "label": "Chargement du catalogue",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.empty",
+                     *           "group": "catalog",
+                     *           "label": "Catalogue vide",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.restarted",
+                     *           "group": "catalog",
+                     *           "label": "Pagination réinitialisée",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.next",
+                     *           "group": "catalog",
+                     *           "label": "Page suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorTitle",
+                     *           "group": "catalog",
+                     *           "label": "Titre erreur catalogue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorMessage",
+                     *           "group": "catalog",
+                     *           "label": "Message erreur catalogue",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "catalog.retry",
+                     *           "group": "catalog",
+                     *           "label": "Réessayer",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "catalog.unavailableTitle",
+                     *           "group": "catalog",
+                     *           "label": "Titre de page indisponible",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.loading",
+                     *           "group": "artwork",
+                     *           "label": "Chargement de la fiche",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "artwork.back",
+                     *           "group": "artwork",
+                     *           "label": "Retour au catalogue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.untitled",
+                     *           "group": "artwork",
+                     *           "label": "Titre absent",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.unknownArtist",
+                     *           "group": "artwork",
+                     *           "label": "Artiste absent",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.artist",
+                     *           "group": "artwork",
+                     *           "label": "Libellé artiste",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.year",
+                     *           "group": "artwork",
+                     *           "label": "Libellé année",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.medium",
+                     *           "group": "artwork",
+                     *           "label": "Libellé technique",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.dimensions",
+                     *           "group": "artwork",
+                     *           "label": "Libellé dimensions",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.unspecified",
+                     *           "group": "artwork",
+                     *           "label": "Valeur absente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageUnavailable",
+                     *           "group": "artwork",
+                     *           "label": "Image indisponible",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageAlt",
+                     *           "group": "artwork",
+                     *           "label": "Texte alternatif de secours",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundTitle",
+                     *           "group": "errors",
+                     *           "label": "Titre œuvre introuvable",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundMessage",
+                     *           "group": "errors",
+                     *           "label": "Message œuvre introuvable",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundTitle",
+                     *           "group": "errors",
+                     *           "label": "Titre page introuvable",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundMessage",
+                     *           "group": "errors",
+                     *           "label": "Message page introuvable",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "error.viewArtworks",
+                     *           "group": "errors",
+                     *           "label": "Lien vers les œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.play",
+                     *           "group": "video",
+                     *           "label": "Lire le film",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.pause",
+                     *           "group": "video",
+                     *           "label": "Mettre le film en pause",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.unavailable",
+                     *           "group": "video",
+                     *           "label": "Film indisponible",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "video.reducedMotion",
+                     *           "group": "video",
+                     *           "label": "Mouvement réduit",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "presentation.discover",
+                     *           "group": "presentation",
+                     *           "label": "Découvrir la galerie",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.readMore",
+                     *           "group": "presentation",
+                     *           "label": "En savoir plus",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.galleryLabel",
+                     *           "group": "presentation",
+                     *           "label": "Galerie d’images",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.previous",
+                     *           "group": "presentation",
+                     *           "label": "Précédent",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.next",
+                     *           "group": "presentation",
+                     *           "label": "Suivant",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.empty",
+                     *           "group": "presentation",
+                     *           "label": "Page en attente de contenu",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "error.presentationTitle",
+                     *           "group": "errors",
+                     *           "label": "Présentation indisponible",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "error.presentationMessage",
+                     *           "group": "errors",
+                     *           "label": "Message de présentation indisponible",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.title",
+                     *           "group": "preview",
+                     *           "label": "Aperçu privé du brouillon",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.notice",
+                     *           "group": "preview",
+                     *           "label": "Mention de brouillon privé",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.desktop",
+                     *           "group": "preview",
+                     *           "label": "Vue ordinateur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.mobile",
+                     *           "group": "preview",
+                     *           "label": "Vue mobile",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.close",
+                     *           "group": "preview",
+                     *           "label": "Fermer l’aperçu",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "preview.expired",
+                     *           "group": "preview",
+                     *           "label": "Aperçu expiré",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.unavailable",
+                     *           "group": "preview",
+                     *           "label": "Vérification de l’aperçu impossible",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.checking",
+                     *           "group": "preview",
+                     *           "label": "Vérification de l’aperçu",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "preview.backToAdmin",
+                     *           "group": "preview",
+                     *           "label": "Retour à l’administration",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.playLabel",
+                     *           "group": "video",
+                     *           "label": "Libellé court lecture",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "video.pauseLabel",
+                     *           "group": "video",
+                     *           "label": "Libellé court pause",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.explore",
+                     *           "group": "presentation",
+                     *           "label": "Descendre après le film",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "presentation.demonstration",
+                     *           "group": "presentation",
+                     *           "label": "Mention de démonstration",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.name",
+                     *           "group": "contact",
+                     *           "label": "Nom",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.email",
+                     *           "group": "contact",
+                     *           "label": "Adresse e-mail",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.subject",
+                     *           "group": "contact",
+                     *           "label": "Sujet",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.message",
+                     *           "group": "contact",
+                     *           "label": "Message",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.required",
+                     *           "group": "contact",
+                     *           "label": "Tous les champs sont obligatoires.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.limits",
+                     *           "group": "contact",
+                     *           "label": "Nom :120 caractères. E-mail :254. Sujet :160. Message :5 000.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.privacy",
+                     *           "group": "contact",
+                     *           "label": "Vos coordonnées servent à répondre à votre demande.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.privacyLink",
+                     *           "group": "contact",
+                     *           "label": "Confidentialité",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.submit",
+                     *           "group": "contact",
+                     *           "label": "Envoyer la demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.sending",
+                     *           "group": "contact",
+                     *           "label": "Enregistrement de votre demande…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmed",
+                     *           "group": "contact",
+                     *           "label": "Votre demande a été enregistrée.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmationHelp",
+                     *           "group": "contact",
+                     *           "label": "La galerie pourra vous répondre à l’adresse fournie.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.reference",
+                     *           "group": "contact",
+                     *           "label": "Référence de la demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.disabled",
+                     *           "group": "contact",
+                     *           "label": "Le formulaire de contact est momentanément indisponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.unavailable",
+                     *           "group": "contact",
+                     *           "label": "Impossible de confirmer l’enregistrement. Conservez votre saisie et réessayez.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.invalid",
+                     *           "group": "contact",
+                     *           "label": "Vérifiez les champs signalés.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.requiredError",
+                     *           "group": "contact",
+                     *           "label": "Ce champ est obligatoire.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.invalidEmail",
+                     *           "group": "contact",
+                     *           "label": "Saisissez une adresse e-mail valide.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.tooLong",
+                     *           "group": "contact",
+                     *           "label": "La longueur autorisée est dépassée.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.rateLimited",
+                     *           "group": "contact",
+                     *           "label": "Trop de demandes. Attendez le délai indiqué avant de réessayer.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.retryAfter",
+                     *           "group": "contact",
+                     *           "label": "Secondes avant nouvel essai",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.recover",
+                     *           "group": "contact",
+                     *           "label": "Vérifier la prise en compte",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.recovering",
+                     *           "group": "contact",
+                     *           "label": "Vérification de la prise en compte…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.unknownReceipt",
+                     *           "group": "contact",
+                     *           "label": "Aucune confirmation retrouvée. Aucun nouvel envoi automatique n’a été effectué.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.conflict",
+                     *           "group": "contact",
+                     *           "label": "Cette intention correspond à une autre saisie. Commencez une nouvelle demande ex",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "contact.newEnquiry",
+                     *           "group": "contact",
+                     *           "label": "Commencer une nouvelle demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.newConfirm",
+                     *           "group": "contact",
+                     *           "label": "Commencer une nouvelle demande ? Si une précédente a été reçue sans confirmation",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkCta",
+                     *           "group": "contact",
+                     *           "label": "Demander des informations",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkHeading",
+                     *           "group": "contact",
+                     *           "label": "Œuvre concernée",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkSubject",
+                     *           "group": "contact",
+                     *           "label": "Informations sur une œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkUnavailable",
+                     *           "group": "contact",
+                     *           "label": "Cette œuvre ne peut pas être associée à votre demande.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.general",
+                     *           "group": "contact",
+                     *           "label": "Continuer en contact général",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.backArtwork",
+                     *           "group": "contact",
+                     *           "label": "Revenir à l’œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.leaveConfirm",
+                     *           "group": "contact",
+                     *           "label": "Changer de langue abandonnera les champs non envoyés. Continuer ?",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.demonstration",
+                     *           "group": "contact",
+                     *           "label": "Démonstration : aucune demande ne sera envoyée.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationHeading",
+                     *           "group": "contact",
+                     *           "label": "Nouvelle demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGallery",
+                     *           "group": "contact",
+                     *           "label": "Galerie",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationLocale",
+                     *           "group": "contact",
+                     *           "label": "Langue du visiteur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationArtwork",
+                     *           "group": "contact",
+                     *           "label": "Œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.load",
+                     *           "group": "contact",
+                     *           "label": "Chargement du formulaire…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.sentCopy",
+                     *           "group": "contact",
+                     *           "label": "L’enregistrement est confirmé ; il ne constitue pas une confirmation de livraiso",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationType",
+                     *           "group": "contact",
+                     *           "label": "Type de demande",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGeneral",
+                     *           "group": "contact",
+                     *           "label": "Contact général",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchLabel",
+                     *           "group": "gallery",
+                     *           "label": "Rechercher par titre ou artiste",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchSubmit",
+                     *           "group": "gallery",
+                     *           "label": "Rechercher",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchClear",
+                     *           "group": "gallery",
+                     *           "label": "Effacer la recherche",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.noResults",
+                     *           "group": "gallery",
+                     *           "label": "Aucune œuvre ne correspond à cette recherche.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.paginationLabel",
+                     *           "group": "gallery",
+                     *           "label": "Pagination des œuvres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.previousPage",
+                     *           "group": "gallery",
+                     *           "label": "Page précédente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.nextPage",
+                     *           "group": "gallery",
+                     *           "label": "Page suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.page",
+                     *           "group": "gallery",
+                     *           "label": "Page",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.of",
+                     *           "group": "gallery",
+                     *           "label": "sur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.closeArtwork",
+                     *           "group": "gallery",
+                     *           "label": "Fermer la fiche de l’œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.opening",
+                     *           "group": "gallery",
+                     *           "label": "Ouverture de l’œuvre…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.unavailable",
+                     *           "group": "gallery",
+                     *           "label": "Cette œuvre n’est plus disponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.progressLabel",
+                     *           "group": "gallery",
+                     *           "label": "Vues de l’œuvre",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.view",
+                     *           "group": "gallery",
+                     *           "label": "Vue",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.presentation",
+                     *           "group": "gallery",
+                     *           "label": "Présentation",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.description",
+                     *           "group": "gallery",
+                     *           "label": "Description",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.revalidate",
+                     *           "group": "gallery",
+                     *           "label": "Vérification de la disponibilité…",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.restart",
+                     *           "group": "gallery",
+                     *           "label": "Revenir à la première page",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomIn",
+                     *           "group": "gallery",
+                     *           "label": "Agrandir l’image ×2",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomOut",
+                     *           "group": "gallery",
+                     *           "label": "Revenir à la taille normale",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomHelp",
+                     *           "group": "gallery",
+                     *           "label": "Déplacement dans l’image agrandie",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "gallery.openInformation",
+                     *           "group": "gallery",
+                     *           "label": "Voir les informations",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.backToImages",
+                     *           "group": "gallery",
+                     *           "label": "Revenir aux images",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.viewWholeImage",
+                     *           "group": "gallery",
+                     *           "label": "Voir l’image entière",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "gallery.mobileGestureHelp",
+                     *           "group": "gallery",
+                     *           "label": "Navigation tactile entre les vues",
+                     *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "gallery.panHelp",
+                     *           "group": "gallery",
+                     *           "label": "Déplacement dans l’image sur mobile",
+                     *           "maxLength": 500
+                     *         }
+                     *       ],
+                     *       "translations": [
+                     *         {
+                     *           "key": "nav.news",
+                     *           "locale": "fr",
+                     *           "value": "Actualités",
+                     *           "resolvedValue": "Actualités",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.news",
+                     *           "locale": "en",
+                     *           "value": "News",
+                     *           "resolvedValue": "News",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.artworks",
+                     *           "locale": "fr",
+                     *           "value": "Œuvres",
+                     *           "resolvedValue": "Œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.artworks",
+                     *           "locale": "en",
+                     *           "value": "Works",
+                     *           "resolvedValue": "Works",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.exhibitions",
+                     *           "locale": "fr",
+                     *           "value": "Expositions",
+                     *           "resolvedValue": "Expositions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.exhibitions",
+                     *           "locale": "en",
+                     *           "value": "Exhibitions",
+                     *           "resolvedValue": "Exhibitions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.publications",
+                     *           "locale": "fr",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.publications",
+                     *           "locale": "en",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.expertise",
+                     *           "locale": "fr",
+                     *           "value": "Demande d’expertise",
+                     *           "resolvedValue": "Demande d’expertise",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.expertise",
+                     *           "locale": "en",
+                     *           "value": "Request an appraisal",
+                     *           "resolvedValue": "Request an appraisal",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.contact",
+                     *           "locale": "fr",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "nav.contact",
+                     *           "locale": "en",
+                     *           "value": null,
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": true
+                     *         },
+                     *         {
+                     *           "key": "header.homeLabel",
+                     *           "locale": "fr",
+                     *           "value": "Retour à l’accueil",
+                     *           "resolvedValue": "Retour à l’accueil",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.homeLabel",
+                     *           "locale": "en",
+                     *           "value": "Back to home",
+                     *           "resolvedValue": "Back to home",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.navigationLabel",
+                     *           "locale": "fr",
+                     *           "value": "Navigation principale",
+                     *           "resolvedValue": "Navigation principale",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.navigationLabel",
+                     *           "locale": "en",
+                     *           "value": "Main navigation",
+                     *           "resolvedValue": "Main navigation",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.openMenu",
+                     *           "locale": "fr",
+                     *           "value": "Ouvrir le menu",
+                     *           "resolvedValue": "Ouvrir le menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.openMenu",
+                     *           "locale": "en",
+                     *           "value": "Open menu",
+                     *           "resolvedValue": "Open menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.closeMenu",
+                     *           "locale": "fr",
+                     *           "value": "Fermer le menu",
+                     *           "resolvedValue": "Fermer le menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.closeMenu",
+                     *           "locale": "en",
+                     *           "value": "Close menu",
+                     *           "resolvedValue": "Close menu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.languageLabel",
+                     *           "locale": "fr",
+                     *           "value": "Langue",
+                     *           "resolvedValue": "Langue",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.languageLabel",
+                     *           "locale": "en",
+                     *           "value": "Language",
+                     *           "resolvedValue": "Language",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.skipToContent",
+                     *           "locale": "fr",
+                     *           "value": "Aller au contenu",
+                     *           "resolvedValue": "Aller au contenu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "header.skipToContent",
+                     *           "locale": "en",
+                     *           "value": "Skip to content",
+                     *           "resolvedValue": "Skip to content",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.home.title",
+                     *           "locale": "fr",
+                     *           "value": "Accueil",
+                     *           "resolvedValue": "Accueil",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.home.title",
+                     *           "locale": "en",
+                     *           "value": "Home",
+                     *           "resolvedValue": "Home",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.title",
+                     *           "locale": "fr",
+                     *           "value": "Actualités",
+                     *           "resolvedValue": "Actualités",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.title",
+                     *           "locale": "en",
+                     *           "value": "News",
+                     *           "resolvedValue": "News",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune actualité pour le moment.",
+                     *           "resolvedValue": "Aucune actualité pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.news.empty",
+                     *           "locale": "en",
+                     *           "value": "No news at the moment.",
+                     *           "resolvedValue": "No news at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.artworks.title",
+                     *           "locale": "fr",
+                     *           "value": "Œuvres",
+                     *           "resolvedValue": "Œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.artworks.title",
+                     *           "locale": "en",
+                     *           "value": "Artworks",
+                     *           "resolvedValue": "Artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.title",
+                     *           "locale": "fr",
+                     *           "value": "Expositions",
+                     *           "resolvedValue": "Expositions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.title",
+                     *           "locale": "en",
+                     *           "value": "Exhibitions",
+                     *           "resolvedValue": "Exhibitions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune exposition pour le moment.",
+                     *           "resolvedValue": "Aucune exposition pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.exhibitions.empty",
+                     *           "locale": "en",
+                     *           "value": "No exhibitions at the moment.",
+                     *           "resolvedValue": "No exhibitions at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.title",
+                     *           "locale": "fr",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.title",
+                     *           "locale": "en",
+                     *           "value": "Publications",
+                     *           "resolvedValue": "Publications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune publication pour le moment.",
+                     *           "resolvedValue": "Aucune publication pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.publications.empty",
+                     *           "locale": "en",
+                     *           "value": "No publications at the moment.",
+                     *           "resolvedValue": "No publications at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.title",
+                     *           "locale": "fr",
+                     *           "value": "Demande d’expertise",
+                     *           "resolvedValue": "Demande d’expertise",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.title",
+                     *           "locale": "en",
+                     *           "value": "Request an appraisal",
+                     *           "resolvedValue": "Request an appraisal",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.empty",
+                     *           "locale": "fr",
+                     *           "value": "Les modalités de demande d’expertise seront présentées ici.",
+                     *           "resolvedValue": "Les modalités de demande d’expertise seront présentées ici.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.expertise.empty",
+                     *           "locale": "en",
+                     *           "value": "Information about requesting an appraisal will appear here.",
+                     *           "resolvedValue": "Information about requesting an appraisal will appear here.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.title",
+                     *           "locale": "fr",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.title",
+                     *           "locale": "en",
+                     *           "value": "Contact",
+                     *           "resolvedValue": "Contact",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.empty",
+                     *           "locale": "fr",
+                     *           "value": "Les informations de contact seront présentées ici.",
+                     *           "resolvedValue": "Les informations de contact seront présentées ici.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "page.contact.empty",
+                     *           "locale": "en",
+                     *           "value": "Contact information will appear here.",
+                     *           "resolvedValue": "Contact information will appear here.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.loading",
+                     *           "locale": "fr",
+                     *           "value": "Chargement des œuvres…",
+                     *           "resolvedValue": "Chargement des œuvres…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.loading",
+                     *           "locale": "en",
+                     *           "value": "Loading artworks…",
+                     *           "resolvedValue": "Loading artworks…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.empty",
+                     *           "locale": "fr",
+                     *           "value": "Aucune œuvre publiée pour le moment.",
+                     *           "resolvedValue": "Aucune œuvre publiée pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.empty",
+                     *           "locale": "en",
+                     *           "value": "No artworks published at the moment.",
+                     *           "resolvedValue": "No artworks published at the moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.restarted",
+                     *           "locale": "fr",
+                     *           "value": "La sélection a changé. Le catalogue reprend à la première page.",
+                     *           "resolvedValue": "La sélection a changé. Le catalogue reprend à la première page.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.restarted",
+                     *           "locale": "en",
+                     *           "value": "The selection has changed. The catalogue has returned to the first page.",
+                     *           "resolvedValue": "The selection has changed. The catalogue has returned to the first page.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.next",
+                     *           "locale": "fr",
+                     *           "value": "Voir la suite",
+                     *           "resolvedValue": "Voir la suite",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.next",
+                     *           "locale": "en",
+                     *           "value": "View more",
+                     *           "resolvedValue": "View more",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorTitle",
+                     *           "locale": "fr",
+                     *           "value": "Les œuvres ne peuvent pas être chargées",
+                     *           "resolvedValue": "Les œuvres ne peuvent pas être chargées",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorTitle",
+                     *           "locale": "en",
+                     *           "value": "Artworks could not be loaded",
+                     *           "resolvedValue": "Artworks could not be loaded",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorMessage",
+                     *           "locale": "fr",
+                     *           "value": "Le catalogue est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "resolvedValue": "Le catalogue est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.errorMessage",
+                     *           "locale": "en",
+                     *           "value": "The catalogue is temporarily unavailable. Please try again shortly.",
+                     *           "resolvedValue": "The catalogue is temporarily unavailable. Please try again shortly.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.retry",
+                     *           "locale": "fr",
+                     *           "value": "Réessayer",
+                     *           "resolvedValue": "Réessayer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.retry",
+                     *           "locale": "en",
+                     *           "value": "Try again",
+                     *           "resolvedValue": "Try again",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.unavailableTitle",
+                     *           "locale": "fr",
+                     *           "value": "Catalogue indisponible",
+                     *           "resolvedValue": "Catalogue indisponible",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "catalog.unavailableTitle",
+                     *           "locale": "en",
+                     *           "value": "Catalogue unavailable",
+                     *           "resolvedValue": "Catalogue unavailable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.loading",
+                     *           "locale": "fr",
+                     *           "value": "Chargement de l’œuvre…",
+                     *           "resolvedValue": "Chargement de l’œuvre…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.loading",
+                     *           "locale": "en",
+                     *           "value": "Loading artwork…",
+                     *           "resolvedValue": "Loading artwork…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.back",
+                     *           "locale": "fr",
+                     *           "value": "Toutes les œuvres",
+                     *           "resolvedValue": "Toutes les œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.back",
+                     *           "locale": "en",
+                     *           "value": "All artworks",
+                     *           "resolvedValue": "All artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.untitled",
+                     *           "locale": "fr",
+                     *           "value": "Titre non renseigné",
+                     *           "resolvedValue": "Titre non renseigné",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.untitled",
+                     *           "locale": "en",
+                     *           "value": "Title not provided",
+                     *           "resolvedValue": "Title not provided",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unknownArtist",
+                     *           "locale": "fr",
+                     *           "value": "Artiste non renseigné",
+                     *           "resolvedValue": "Artiste non renseigné",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unknownArtist",
+                     *           "locale": "en",
+                     *           "value": "Artist not provided",
+                     *           "resolvedValue": "Artist not provided",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.artist",
+                     *           "locale": "fr",
+                     *           "value": "Artiste",
+                     *           "resolvedValue": "Artiste",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.artist",
+                     *           "locale": "en",
+                     *           "value": "Artist",
+                     *           "resolvedValue": "Artist",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.year",
+                     *           "locale": "fr",
+                     *           "value": "Année",
+                     *           "resolvedValue": "Année",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.year",
+                     *           "locale": "en",
+                     *           "value": "Year",
+                     *           "resolvedValue": "Year",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.medium",
+                     *           "locale": "fr",
+                     *           "value": "Technique",
+                     *           "resolvedValue": "Technique",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.medium",
+                     *           "locale": "en",
+                     *           "value": "Medium",
+                     *           "resolvedValue": "Medium",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.dimensions",
+                     *           "locale": "fr",
+                     *           "value": "Dimensions",
+                     *           "resolvedValue": "Dimensions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.dimensions",
+                     *           "locale": "en",
+                     *           "value": "Dimensions",
+                     *           "resolvedValue": "Dimensions",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unspecified",
+                     *           "locale": "fr",
+                     *           "value": "Non renseigné",
+                     *           "resolvedValue": "Non renseigné",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.unspecified",
+                     *           "locale": "en",
+                     *           "value": "Not provided",
+                     *           "resolvedValue": "Not provided",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "Image non disponible",
+                     *           "resolvedValue": "Image non disponible",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageUnavailable",
+                     *           "locale": "en",
+                     *           "value": "Image unavailable",
+                     *           "resolvedValue": "Image unavailable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageAlt",
+                     *           "locale": "fr",
+                     *           "value": "Vue de l’œuvre",
+                     *           "resolvedValue": "Vue de l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "artwork.imageAlt",
+                     *           "locale": "en",
+                     *           "value": "View of the artwork",
+                     *           "resolvedValue": "View of the artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundTitle",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre introuvable",
+                     *           "resolvedValue": "Œuvre introuvable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundTitle",
+                     *           "locale": "en",
+                     *           "value": "Artwork not found",
+                     *           "resolvedValue": "Artwork not found",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundMessage",
+                     *           "locale": "fr",
+                     *           "value": "Cette œuvre n’est pas disponible sur ce site.",
+                     *           "resolvedValue": "Cette œuvre n’est pas disponible sur ce site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.artworkNotFoundMessage",
+                     *           "locale": "en",
+                     *           "value": "This artwork is not available on this site.",
+                     *           "resolvedValue": "This artwork is not available on this site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundTitle",
+                     *           "locale": "fr",
+                     *           "value": "Page introuvable",
+                     *           "resolvedValue": "Page introuvable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundTitle",
+                     *           "locale": "en",
+                     *           "value": "Page not found",
+                     *           "resolvedValue": "Page not found",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundMessage",
+                     *           "locale": "fr",
+                     *           "value": "Cette page n’existe pas sur ce site.",
+                     *           "resolvedValue": "Cette page n’existe pas sur ce site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.pageNotFoundMessage",
+                     *           "locale": "en",
+                     *           "value": "This page does not exist on this site.",
+                     *           "resolvedValue": "This page does not exist on this site.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.viewArtworks",
+                     *           "locale": "fr",
+                     *           "value": "Voir les œuvres",
+                     *           "resolvedValue": "Voir les œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.viewArtworks",
+                     *           "locale": "en",
+                     *           "value": "View artworks",
+                     *           "resolvedValue": "View artworks",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.play",
+                     *           "locale": "fr",
+                     *           "value": "Lire le film",
+                     *           "resolvedValue": "Lire le film",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.play",
+                     *           "locale": "en",
+                     *           "value": "Play film",
+                     *           "resolvedValue": "Play film",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pause",
+                     *           "locale": "fr",
+                     *           "value": "Mettre le film en pause",
+                     *           "resolvedValue": "Mettre le film en pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pause",
+                     *           "locale": "en",
+                     *           "value": "Pause film",
+                     *           "resolvedValue": "Pause film",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "Le film est indisponible.",
+                     *           "resolvedValue": "Le film est indisponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.unavailable",
+                     *           "locale": "en",
+                     *           "value": "The film is unavailable.",
+                     *           "resolvedValue": "The film is unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.reducedMotion",
+                     *           "locale": "fr",
+                     *           "value": "Le film est arrêté selon vos préférences de mouvement.",
+                     *           "resolvedValue": "Le film est arrêté selon vos préférences de mouvement.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.reducedMotion",
+                     *           "locale": "en",
+                     *           "value": "The film is paused according to your motion preferences.",
+                     *           "resolvedValue": "The film is paused according to your motion preferences.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.discover",
+                     *           "locale": "fr",
+                     *           "value": "Découvrir la galerie",
+                     *           "resolvedValue": "Découvrir la galerie",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.discover",
+                     *           "locale": "en",
+                     *           "value": "Discover the gallery",
+                     *           "resolvedValue": "Discover the gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.readMore",
+                     *           "locale": "fr",
+                     *           "value": "En savoir plus",
+                     *           "resolvedValue": "En savoir plus",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.readMore",
+                     *           "locale": "en",
+                     *           "value": "Read more",
+                     *           "resolvedValue": "Read more",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.galleryLabel",
+                     *           "locale": "fr",
+                     *           "value": "Galerie d’images",
+                     *           "resolvedValue": "Galerie d’images",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.galleryLabel",
+                     *           "locale": "en",
+                     *           "value": "Image gallery",
+                     *           "resolvedValue": "Image gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.previous",
+                     *           "locale": "fr",
+                     *           "value": "Précédent",
+                     *           "resolvedValue": "Précédent",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.previous",
+                     *           "locale": "en",
+                     *           "value": "Previous",
+                     *           "resolvedValue": "Previous",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.next",
+                     *           "locale": "fr",
+                     *           "value": "Suivant",
+                     *           "resolvedValue": "Suivant",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.next",
+                     *           "locale": "en",
+                     *           "value": "Next",
+                     *           "resolvedValue": "Next",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.empty",
+                     *           "locale": "fr",
+                     *           "value": "Le contenu de cette page sera bientôt disponible.",
+                     *           "resolvedValue": "Le contenu de cette page sera bientôt disponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.empty",
+                     *           "locale": "en",
+                     *           "value": "Content for this page will be available soon.",
+                     *           "resolvedValue": "Content for this page will be available soon.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationTitle",
+                     *           "locale": "fr",
+                     *           "value": "Présentation indisponible",
+                     *           "resolvedValue": "Présentation indisponible",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationTitle",
+                     *           "locale": "en",
+                     *           "value": "Presentation unavailable",
+                     *           "resolvedValue": "Presentation unavailable",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationMessage",
+                     *           "locale": "fr",
+                     *           "value": "Cette page est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "resolvedValue": "Cette page est momentanément indisponible. Réessayez dans quelques instants.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "error.presentationMessage",
+                     *           "locale": "en",
+                     *           "value": "This page is temporarily unavailable. Please try again shortly.",
+                     *           "resolvedValue": "This page is temporarily unavailable. Please try again shortly.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.title",
+                     *           "locale": "fr",
+                     *           "value": "Aperçu privé du brouillon",
+                     *           "resolvedValue": "Aperçu privé du brouillon",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.title",
+                     *           "locale": "en",
+                     *           "value": "Private draft preview",
+                     *           "resolvedValue": "Private draft preview",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.notice",
+                     *           "locale": "fr",
+                     *           "value": "Cet aperçu présente le brouillon enregistré. Il n’est pas publié.",
+                     *           "resolvedValue": "Cet aperçu présente le brouillon enregistré. Il n’est pas publié.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.notice",
+                     *           "locale": "en",
+                     *           "value": "This preview shows the saved draft. It is not published.",
+                     *           "resolvedValue": "This preview shows the saved draft. It is not published.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.desktop",
+                     *           "locale": "fr",
+                     *           "value": "Vue ordinateur",
+                     *           "resolvedValue": "Vue ordinateur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.desktop",
+                     *           "locale": "en",
+                     *           "value": "Desktop view",
+                     *           "resolvedValue": "Desktop view",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.mobile",
+                     *           "locale": "fr",
+                     *           "value": "Vue mobile",
+                     *           "resolvedValue": "Vue mobile",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.mobile",
+                     *           "locale": "en",
+                     *           "value": "Mobile view",
+                     *           "resolvedValue": "Mobile view",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.close",
+                     *           "locale": "fr",
+                     *           "value": "Fermer l’aperçu",
+                     *           "resolvedValue": "Fermer l’aperçu",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.close",
+                     *           "locale": "en",
+                     *           "value": "Close preview",
+                     *           "resolvedValue": "Close preview",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.expired",
+                     *           "locale": "fr",
+                     *           "value": "L’aperçu a expiré. Ouvrez un nouvel aperçu depuis l’administration.",
+                     *           "resolvedValue": "L’aperçu a expiré. Ouvrez un nouvel aperçu depuis l’administration.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.expired",
+                     *           "locale": "en",
+                     *           "value": "This preview has expired. Open a new preview from the admin panel.",
+                     *           "resolvedValue": "This preview has expired. Open a new preview from the admin panel.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "L’aperçu ne peut pas être vérifié. Retournez dans l’administration pour le rouvrir.",
+                     *           "resolvedValue": "L’aperçu ne peut pas être vérifié. Retournez dans l’administration pour le rouvrir.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.unavailable",
+                     *           "locale": "en",
+                     *           "value": "The preview cannot be verified. Return to the admin panel to reopen it.",
+                     *           "resolvedValue": "The preview cannot be verified. Return to the admin panel to reopen it.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.checking",
+                     *           "locale": "fr",
+                     *           "value": "Vérification de l’accès à l’aperçu…",
+                     *           "resolvedValue": "Vérification de l’accès à l’aperçu…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.checking",
+                     *           "locale": "en",
+                     *           "value": "Checking preview access…",
+                     *           "resolvedValue": "Checking preview access…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.backToAdmin",
+                     *           "locale": "fr",
+                     *           "value": "Retour à l’administration",
+                     *           "resolvedValue": "Retour à l’administration",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "preview.backToAdmin",
+                     *           "locale": "en",
+                     *           "value": "Back to admin",
+                     *           "resolvedValue": "Back to admin",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.playLabel",
+                     *           "locale": "fr",
+                     *           "value": "Lecture",
+                     *           "resolvedValue": "Lecture",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.playLabel",
+                     *           "locale": "en",
+                     *           "value": "Play",
+                     *           "resolvedValue": "Play",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pauseLabel",
+                     *           "locale": "fr",
+                     *           "value": "Pause",
+                     *           "resolvedValue": "Pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "video.pauseLabel",
+                     *           "locale": "en",
+                     *           "value": "Pause",
+                     *           "resolvedValue": "Pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.explore",
+                     *           "locale": "fr",
+                     *           "value": "Explorer",
+                     *           "resolvedValue": "Explorer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.explore",
+                     *           "locale": "en",
+                     *           "value": "Explore",
+                     *           "resolvedValue": "Explore",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.demonstration",
+                     *           "locale": "fr",
+                     *           "value": "Maquette — contenu de démonstration",
+                     *           "resolvedValue": "Maquette — contenu de démonstration",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "presentation.demonstration",
+                     *           "locale": "en",
+                     *           "value": "Mockup — demonstration content",
+                     *           "resolvedValue": "Mockup — demonstration content",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.name",
+                     *           "locale": "fr",
+                     *           "value": "Nom",
+                     *           "resolvedValue": "Nom",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.name",
+                     *           "locale": "en",
+                     *           "value": "Name",
+                     *           "resolvedValue": "Name",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.email",
+                     *           "locale": "fr",
+                     *           "value": "Adresse e-mail",
+                     *           "resolvedValue": "Adresse e-mail",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.email",
+                     *           "locale": "en",
+                     *           "value": "Email address",
+                     *           "resolvedValue": "Email address",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.subject",
+                     *           "locale": "fr",
+                     *           "value": "Sujet",
+                     *           "resolvedValue": "Sujet",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.subject",
+                     *           "locale": "en",
+                     *           "value": "Subject",
+                     *           "resolvedValue": "Subject",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.message",
+                     *           "locale": "fr",
+                     *           "value": "Message",
+                     *           "resolvedValue": "Message",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.message",
+                     *           "locale": "en",
+                     *           "value": "Message",
+                     *           "resolvedValue": "Message",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.required",
+                     *           "locale": "fr",
+                     *           "value": "Tous les champs sont obligatoires.",
+                     *           "resolvedValue": "Tous les champs sont obligatoires.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.required",
+                     *           "locale": "en",
+                     *           "value": "All fields are required.",
+                     *           "resolvedValue": "All fields are required.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.limits",
+                     *           "locale": "fr",
+                     *           "value": "Nom :120 caractères. E-mail :254. Sujet :160. Message :5 000.",
+                     *           "resolvedValue": "Nom :120 caractères. E-mail :254. Sujet :160. Message :5 000.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.limits",
+                     *           "locale": "en",
+                     *           "value": "Name:120 characters. Email:254. Subject:160. Message:5,000.",
+                     *           "resolvedValue": "Name:120 characters. Email:254. Subject:160. Message:5,000.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacy",
+                     *           "locale": "fr",
+                     *           "value": "Vos coordonnées servent à répondre à votre demande.",
+                     *           "resolvedValue": "Vos coordonnées servent à répondre à votre demande.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacy",
+                     *           "locale": "en",
+                     *           "value": "Your contact details are used to reply to your enquiry.",
+                     *           "resolvedValue": "Your contact details are used to reply to your enquiry.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacyLink",
+                     *           "locale": "fr",
+                     *           "value": "Confidentialité",
+                     *           "resolvedValue": "Confidentialité",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.privacyLink",
+                     *           "locale": "en",
+                     *           "value": "Privacy",
+                     *           "resolvedValue": "Privacy",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.submit",
+                     *           "locale": "fr",
+                     *           "value": "Envoyer la demande",
+                     *           "resolvedValue": "Envoyer la demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.submit",
+                     *           "locale": "en",
+                     *           "value": "Send enquiry",
+                     *           "resolvedValue": "Send enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sending",
+                     *           "locale": "fr",
+                     *           "value": "Enregistrement de votre demande…",
+                     *           "resolvedValue": "Enregistrement de votre demande…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sending",
+                     *           "locale": "en",
+                     *           "value": "Saving your enquiry…",
+                     *           "resolvedValue": "Saving your enquiry…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmed",
+                     *           "locale": "fr",
+                     *           "value": "Votre demande a été enregistrée.",
+                     *           "resolvedValue": "Votre demande a été enregistrée.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmed",
+                     *           "locale": "en",
+                     *           "value": "Your enquiry has been recorded.",
+                     *           "resolvedValue": "Your enquiry has been recorded.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmationHelp",
+                     *           "locale": "fr",
+                     *           "value": "La galerie pourra vous répondre à l’adresse fournie.",
+                     *           "resolvedValue": "La galerie pourra vous répondre à l’adresse fournie.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.confirmationHelp",
+                     *           "locale": "en",
+                     *           "value": "The gallery can reply to the email address you provided.",
+                     *           "resolvedValue": "The gallery can reply to the email address you provided.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.reference",
+                     *           "locale": "fr",
+                     *           "value": "Référence de la demande",
+                     *           "resolvedValue": "Référence de la demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.reference",
+                     *           "locale": "en",
+                     *           "value": "Enquiry reference",
+                     *           "resolvedValue": "Enquiry reference",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.disabled",
+                     *           "locale": "fr",
+                     *           "value": "Le formulaire de contact est momentanément indisponible.",
+                     *           "resolvedValue": "Le formulaire de contact est momentanément indisponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.disabled",
+                     *           "locale": "en",
+                     *           "value": "The contact form is currently unavailable.",
+                     *           "resolvedValue": "The contact form is currently unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "Impossible de confirmer l’enregistrement. Conservez votre saisie et réessayez.",
+                     *           "resolvedValue": "Impossible de confirmer l’enregistrement. Conservez votre saisie et réessayez.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unavailable",
+                     *           "locale": "en",
+                     *           "value": "We could not confirm receipt. Keep your message and try again.",
+                     *           "resolvedValue": "We could not confirm receipt. Keep your message and try again.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalid",
+                     *           "locale": "fr",
+                     *           "value": "Vérifiez les champs signalés.",
+                     *           "resolvedValue": "Vérifiez les champs signalés.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalid",
+                     *           "locale": "en",
+                     *           "value": "Check the highlighted fields.",
+                     *           "resolvedValue": "Check the highlighted fields.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.requiredError",
+                     *           "locale": "fr",
+                     *           "value": "Ce champ est obligatoire.",
+                     *           "resolvedValue": "Ce champ est obligatoire.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.requiredError",
+                     *           "locale": "en",
+                     *           "value": "This field is required.",
+                     *           "resolvedValue": "This field is required.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalidEmail",
+                     *           "locale": "fr",
+                     *           "value": "Saisissez une adresse e-mail valide.",
+                     *           "resolvedValue": "Saisissez une adresse e-mail valide.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.invalidEmail",
+                     *           "locale": "en",
+                     *           "value": "Enter a valid email address.",
+                     *           "resolvedValue": "Enter a valid email address.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.tooLong",
+                     *           "locale": "fr",
+                     *           "value": "La longueur autorisée est dépassée.",
+                     *           "resolvedValue": "La longueur autorisée est dépassée.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.tooLong",
+                     *           "locale": "en",
+                     *           "value": "The maximum length has been exceeded.",
+                     *           "resolvedValue": "The maximum length has been exceeded.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.rateLimited",
+                     *           "locale": "fr",
+                     *           "value": "Trop de demandes. Attendez le délai indiqué avant de réessayer.",
+                     *           "resolvedValue": "Trop de demandes. Attendez le délai indiqué avant de réessayer.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.rateLimited",
+                     *           "locale": "en",
+                     *           "value": "Too many requests. Wait for the indicated delay before trying again.",
+                     *           "resolvedValue": "Too many requests. Wait for the indicated delay before trying again.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.retryAfter",
+                     *           "locale": "fr",
+                     *           "value": "Secondes avant nouvel essai",
+                     *           "resolvedValue": "Secondes avant nouvel essai",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.retryAfter",
+                     *           "locale": "en",
+                     *           "value": "Seconds before trying again",
+                     *           "resolvedValue": "Seconds before trying again",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recover",
+                     *           "locale": "fr",
+                     *           "value": "Vérifier la prise en compte",
+                     *           "resolvedValue": "Vérifier la prise en compte",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recover",
+                     *           "locale": "en",
+                     *           "value": "Check receipt",
+                     *           "resolvedValue": "Check receipt",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recovering",
+                     *           "locale": "fr",
+                     *           "value": "Vérification de la prise en compte…",
+                     *           "resolvedValue": "Vérification de la prise en compte…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.recovering",
+                     *           "locale": "en",
+                     *           "value": "Checking receipt…",
+                     *           "resolvedValue": "Checking receipt…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unknownReceipt",
+                     *           "locale": "fr",
+                     *           "value": "Aucune confirmation retrouvée. Aucun nouvel envoi automatique n’a été effectué.",
+                     *           "resolvedValue": "Aucune confirmation retrouvée. Aucun nouvel envoi automatique n’a été effectué.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.unknownReceipt",
+                     *           "locale": "en",
+                     *           "value": "No confirmation found. No new enquiry has been sent automatically.",
+                     *           "resolvedValue": "No confirmation found. No new enquiry has been sent automatically.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.conflict",
+                     *           "locale": "fr",
+                     *           "value": "Cette intention correspond à une autre saisie. Commencez une nouvelle demande explicitement.",
+                     *           "resolvedValue": "Cette intention correspond à une autre saisie. Commencez une nouvelle demande explicitement.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.conflict",
+                     *           "locale": "en",
+                     *           "value": "This submission belongs to different content. Explicitly start a new enquiry.",
+                     *           "resolvedValue": "This submission belongs to different content. Explicitly start a new enquiry.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newEnquiry",
+                     *           "locale": "fr",
+                     *           "value": "Commencer une nouvelle demande",
+                     *           "resolvedValue": "Commencer une nouvelle demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newEnquiry",
+                     *           "locale": "en",
+                     *           "value": "Start a new enquiry",
+                     *           "resolvedValue": "Start a new enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newConfirm",
+                     *           "locale": "fr",
+                     *           "value": "Commencer une nouvelle demande ? Si une précédente a été reçue sans confirmation, un doublon reste possible.",
+                     *           "resolvedValue": "Commencer une nouvelle demande ? Si une précédente a été reçue sans confirmation, un doublon reste possible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.newConfirm",
+                     *           "locale": "en",
+                     *           "value": "Start a new enquiry? If a previous enquiry arrived without confirmation, a duplicate is possible.",
+                     *           "resolvedValue": "Start a new enquiry? If a previous enquiry arrived without confirmation, a duplicate is possible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkCta",
+                     *           "locale": "fr",
+                     *           "value": "Demander des informations",
+                     *           "resolvedValue": "Demander des informations",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkCta",
+                     *           "locale": "en",
+                     *           "value": "Enquire about this artwork",
+                     *           "resolvedValue": "Enquire about this artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkHeading",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre concernée",
+                     *           "resolvedValue": "Œuvre concernée",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkHeading",
+                     *           "locale": "en",
+                     *           "value": "Artwork",
+                     *           "resolvedValue": "Artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkSubject",
+                     *           "locale": "fr",
+                     *           "value": "Informations sur une œuvre",
+                     *           "resolvedValue": "Informations sur une œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkSubject",
+                     *           "locale": "en",
+                     *           "value": "Artwork enquiry",
+                     *           "resolvedValue": "Artwork enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "Cette œuvre ne peut pas être associée à votre demande.",
+                     *           "resolvedValue": "Cette œuvre ne peut pas être associée à votre demande.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.artworkUnavailable",
+                     *           "locale": "en",
+                     *           "value": "This artwork cannot be linked to your enquiry.",
+                     *           "resolvedValue": "This artwork cannot be linked to your enquiry.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.general",
+                     *           "locale": "fr",
+                     *           "value": "Continuer en contact général",
+                     *           "resolvedValue": "Continuer en contact général",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.general",
+                     *           "locale": "en",
+                     *           "value": "Continue with a general enquiry",
+                     *           "resolvedValue": "Continue with a general enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.backArtwork",
+                     *           "locale": "fr",
+                     *           "value": "Revenir à l’œuvre",
+                     *           "resolvedValue": "Revenir à l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.backArtwork",
+                     *           "locale": "en",
+                     *           "value": "Back to artwork",
+                     *           "resolvedValue": "Back to artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.leaveConfirm",
+                     *           "locale": "fr",
+                     *           "value": "Changer de langue abandonnera les champs non envoyés. Continuer ?",
+                     *           "resolvedValue": "Changer de langue abandonnera les champs non envoyés. Continuer ?",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.leaveConfirm",
+                     *           "locale": "en",
+                     *           "value": "Changing language will discard your unsent fields. Continue?",
+                     *           "resolvedValue": "Changing language will discard your unsent fields. Continue?",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.demonstration",
+                     *           "locale": "fr",
+                     *           "value": "Démonstration : aucune demande ne sera envoyée.",
+                     *           "resolvedValue": "Démonstration : aucune demande ne sera envoyée.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.demonstration",
+                     *           "locale": "en",
+                     *           "value": "Demonstration: no enquiry will be sent.",
+                     *           "resolvedValue": "Demonstration: no enquiry will be sent.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationHeading",
+                     *           "locale": "fr",
+                     *           "value": "Nouvelle demande",
+                     *           "resolvedValue": "Nouvelle demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationHeading",
+                     *           "locale": "en",
+                     *           "value": "New enquiry",
+                     *           "resolvedValue": "New enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGallery",
+                     *           "locale": "fr",
+                     *           "value": "Galerie",
+                     *           "resolvedValue": "Galerie",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGallery",
+                     *           "locale": "en",
+                     *           "value": "Gallery",
+                     *           "resolvedValue": "Gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationLocale",
+                     *           "locale": "fr",
+                     *           "value": "Langue du visiteur",
+                     *           "resolvedValue": "Langue du visiteur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationLocale",
+                     *           "locale": "en",
+                     *           "value": "Visitor language",
+                     *           "resolvedValue": "Visitor language",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationArtwork",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre",
+                     *           "resolvedValue": "Œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationArtwork",
+                     *           "locale": "en",
+                     *           "value": "Artwork",
+                     *           "resolvedValue": "Artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.load",
+                     *           "locale": "fr",
+                     *           "value": "Chargement du formulaire…",
+                     *           "resolvedValue": "Chargement du formulaire…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.load",
+                     *           "locale": "en",
+                     *           "value": "Loading the form…",
+                     *           "resolvedValue": "Loading the form…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sentCopy",
+                     *           "locale": "fr",
+                     *           "value": "L’enregistrement est confirmé ; il ne constitue pas une confirmation de livraison d’e-mail.",
+                     *           "resolvedValue": "L’enregistrement est confirmé ; il ne constitue pas une confirmation de livraison d’e-mail.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.sentCopy",
+                     *           "locale": "en",
+                     *           "value": "Receipt is confirmed; it does not confirm email delivery.",
+                     *           "resolvedValue": "Receipt is confirmed; it does not confirm email delivery.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationType",
+                     *           "locale": "fr",
+                     *           "value": "Type de demande",
+                     *           "resolvedValue": "Type de demande",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationType",
+                     *           "locale": "en",
+                     *           "value": "Enquiry type",
+                     *           "resolvedValue": "Enquiry type",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGeneral",
+                     *           "locale": "fr",
+                     *           "value": "Contact général",
+                     *           "resolvedValue": "Contact général",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "contact.notificationGeneral",
+                     *           "locale": "en",
+                     *           "value": "General enquiry",
+                     *           "resolvedValue": "General enquiry",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchLabel",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher par titre ou artiste",
+                     *           "resolvedValue": "Rechercher par titre ou artiste",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchLabel",
+                     *           "locale": "en",
+                     *           "value": "Search by title or artist",
+                     *           "resolvedValue": "Search by title or artist",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchSubmit",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher",
+                     *           "resolvedValue": "Rechercher",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchSubmit",
+                     *           "locale": "en",
+                     *           "value": "Search",
+                     *           "resolvedValue": "Search",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchClear",
+                     *           "locale": "fr",
+                     *           "value": "Effacer la recherche",
+                     *           "resolvedValue": "Effacer la recherche",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.searchClear",
+                     *           "locale": "en",
+                     *           "value": "Clear search",
+                     *           "resolvedValue": "Clear search",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.noResults",
+                     *           "locale": "fr",
+                     *           "value": "Aucune œuvre ne correspond à cette recherche.",
+                     *           "resolvedValue": "Aucune œuvre ne correspond à cette recherche.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.noResults",
+                     *           "locale": "en",
+                     *           "value": "No artworks match this search.",
+                     *           "resolvedValue": "No artworks match this search.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.paginationLabel",
+                     *           "locale": "fr",
+                     *           "value": "Pagination des œuvres",
+                     *           "resolvedValue": "Pagination des œuvres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.paginationLabel",
+                     *           "locale": "en",
+                     *           "value": "Artwork pagination",
+                     *           "resolvedValue": "Artwork pagination",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.previousPage",
+                     *           "locale": "fr",
+                     *           "value": "Page précédente",
+                     *           "resolvedValue": "Page précédente",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.previousPage",
+                     *           "locale": "en",
+                     *           "value": "Previous page",
+                     *           "resolvedValue": "Previous page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.nextPage",
+                     *           "locale": "fr",
+                     *           "value": "Page suivante",
+                     *           "resolvedValue": "Page suivante",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.nextPage",
+                     *           "locale": "en",
+                     *           "value": "Next page",
+                     *           "resolvedValue": "Next page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.page",
+                     *           "locale": "fr",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.page",
+                     *           "locale": "en",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.of",
+                     *           "locale": "fr",
+                     *           "value": "sur",
+                     *           "resolvedValue": "sur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.of",
+                     *           "locale": "en",
+                     *           "value": "of",
+                     *           "resolvedValue": "of",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.closeArtwork",
+                     *           "locale": "fr",
+                     *           "value": "Fermer la fiche de l’œuvre",
+                     *           "resolvedValue": "Fermer la fiche de l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.closeArtwork",
+                     *           "locale": "en",
+                     *           "value": "Close artwork",
+                     *           "resolvedValue": "Close artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.opening",
+                     *           "locale": "fr",
+                     *           "value": "Ouverture de l’œuvre…",
+                     *           "resolvedValue": "Ouverture de l’œuvre…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.opening",
+                     *           "locale": "en",
+                     *           "value": "Opening artwork…",
+                     *           "resolvedValue": "Opening artwork…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.unavailable",
+                     *           "locale": "fr",
+                     *           "value": "Cette œuvre n’est plus disponible.",
+                     *           "resolvedValue": "Cette œuvre n’est plus disponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.unavailable",
+                     *           "locale": "en",
+                     *           "value": "This artwork is no longer available.",
+                     *           "resolvedValue": "This artwork is no longer available.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.progressLabel",
+                     *           "locale": "fr",
+                     *           "value": "Vues de l’œuvre",
+                     *           "resolvedValue": "Vues de l’œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.progressLabel",
+                     *           "locale": "en",
+                     *           "value": "Artwork views",
+                     *           "resolvedValue": "Artwork views",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.view",
+                     *           "locale": "fr",
+                     *           "value": "Vue",
+                     *           "resolvedValue": "Vue",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.view",
+                     *           "locale": "en",
+                     *           "value": "View",
+                     *           "resolvedValue": "View",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.presentation",
+                     *           "locale": "fr",
+                     *           "value": "Présentation",
+                     *           "resolvedValue": "Présentation",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.presentation",
+                     *           "locale": "en",
+                     *           "value": "Overview",
+                     *           "resolvedValue": "Overview",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.description",
+                     *           "locale": "fr",
+                     *           "value": "Description",
+                     *           "resolvedValue": "Description",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.description",
+                     *           "locale": "en",
+                     *           "value": "Description",
+                     *           "resolvedValue": "Description",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.revalidate",
+                     *           "locale": "fr",
+                     *           "value": "Vérification de la disponibilité…",
+                     *           "resolvedValue": "Vérification de la disponibilité…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.revalidate",
+                     *           "locale": "en",
+                     *           "value": "Checking availability…",
+                     *           "resolvedValue": "Checking availability…",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.restart",
+                     *           "locale": "fr",
+                     *           "value": "Revenir à la première page",
+                     *           "resolvedValue": "Revenir à la première page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.restart",
+                     *           "locale": "en",
+                     *           "value": "Return to the first page",
+                     *           "resolvedValue": "Return to the first page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomIn",
+                     *           "locale": "fr",
+                     *           "value": "Agrandir l’image ×2",
+                     *           "resolvedValue": "Agrandir l’image ×2",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomIn",
+                     *           "locale": "en",
+                     *           "value": "Zoom in ×2",
+                     *           "resolvedValue": "Zoom in ×2",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomOut",
+                     *           "locale": "fr",
+                     *           "value": "Revenir à la taille normale",
+                     *           "resolvedValue": "Revenir à la taille normale",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomOut",
+                     *           "locale": "en",
+                     *           "value": "Return to original size",
+                     *           "resolvedValue": "Return to original size",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomHelp",
+                     *           "locale": "fr",
+                     *           "value": "Déplacez la souris ou utilisez les touches fléchées pour explorer l’image. Échap quitte le zoom.",
+                     *           "resolvedValue": "Déplacez la souris ou utilisez les touches fléchées pour explorer l’image. Échap quitte le zoom.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.zoomHelp",
+                     *           "locale": "en",
+                     *           "value": "Move the mouse or use the arrow keys to explore the image. Escape exits zoom.",
+                     *           "resolvedValue": "Move the mouse or use the arrow keys to explore the image. Escape exits zoom.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.openInformation",
+                     *           "locale": "fr",
+                     *           "value": "Voir les informations",
+                     *           "resolvedValue": "Voir les informations",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.openInformation",
+                     *           "locale": "en",
+                     *           "value": "View details",
+                     *           "resolvedValue": "View details",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.backToImages",
+                     *           "locale": "fr",
+                     *           "value": "Revenir aux images",
+                     *           "resolvedValue": "Revenir aux images",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.backToImages",
+                     *           "locale": "en",
+                     *           "value": "Back to images",
+                     *           "resolvedValue": "Back to images",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.viewWholeImage",
+                     *           "locale": "fr",
+                     *           "value": "Voir l’image entière",
+                     *           "resolvedValue": "Voir l’image entière",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.viewWholeImage",
+                     *           "locale": "en",
+                     *           "value": "View full image",
+                     *           "resolvedValue": "View full image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.mobileGestureHelp",
+                     *           "locale": "fr",
+                     *           "value": "Glissez vers le haut ou le bas pour changer de vue, ou utilisez les repères de la timeline.",
+                     *           "resolvedValue": "Glissez vers le haut ou le bas pour changer de vue, ou utilisez les repères de la timeline.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.mobileGestureHelp",
+                     *           "locale": "en",
+                     *           "value": "Swipe up or down to change views, or use the timeline controls.",
+                     *           "resolvedValue": "Swipe up or down to change views, or use the timeline controls.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.panHelp",
+                     *           "locale": "fr",
+                     *           "value": "Glissez pour explorer l’image, ou utilisez les touches fléchées. Revenir aux images quitte l’examen.",
+                     *           "resolvedValue": "Glissez pour explorer l’image, ou utilisez les touches fléchées. Revenir aux images quitte l’examen.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "gallery.panHelp",
+                     *           "locale": "en",
+                     *           "value": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
+                     *           "resolvedValue": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
+                     *           "fallback": false
+                     *         }
+                     *       ],
+                     *       "logo": null,
+                     *       "updatedAt": "2026-10-26T10:05:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SiteContentAdmin"];
+                };
+            };
+            400: components["responses"]["SiteContentBadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["SiteLogoUnavailable"];
+            412: components["responses"]["SiteContentPreconditionFailed"];
+            413: components["responses"]["SiteContentTooLarge"];
+            415: components["responses"]["SiteContentUnsupportedMedia"];
+            428: components["responses"]["SiteContentPreconditionRequired"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    uploadSiteLogo: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Jeton lié à la session ; Origin contrôlé en plus par le BFF avant lecture du corps. */
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/png": string;
+                "image/jpeg": string;
+                "image/webp": string;
+            };
+        };
+        responses: {
+            /** @description Candidat prêt ; preview authentifié et expiration. Activer ensuite via PATCH conditionnel. */
+            201: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "id": "55555555-5555-4555-8555-555555555555",
+                     *       "width": 400,
+                     *       "height": 120,
+                     *       "byteSize": 3420,
+                     *       "mimeType": "image/webp",
+                     *       "expiresAt": "2026-10-27T10:00:00Z",
+                     *       "previewPath": "/v1/admin/site-logos/55555555-5555-4555-8555-555555555555"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SiteLogoCandidate"];
+                };
+            };
+            400: components["responses"]["SiteLogoInvalid"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            413: components["responses"]["SiteContentTooLarge"];
+            415: components["responses"]["SiteContentUnsupportedMedia"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    getAdminSiteLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                logoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image privée servie après contrôle de visibilité ; aucun 304 ni exposition de la clé Storage. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    getPublicSiteLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                logoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image privée servie après contrôle de visibilité ; aucun 304 ni exposition de la clé Storage. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    getPresentationCapabilities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationCapabilities"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationDraft"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationDraftPage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pageKey: components["schemas"]["PresentationPageKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationDraftPage"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    savePresentationPage: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path: {
+                pageKey: components["schemas"]["PresentationPageKey"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationPage"];
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationWriteResult"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    savePresentationTheme: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationThemeOverrides"];
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationWriteResult"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    validatePresentation: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationValidation"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listPresentationPublications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationReleaseList"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    publishPresentation: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            201: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationRelease"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    restorePresentation: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path: {
+                releaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    replaceDraft: true;
+                };
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            201: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationRelease"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listPresentationAssets: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                kind?: "image" | "video" | "font";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationAssetList"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createPresentationAsset: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationAssetCreate"];
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            201: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag propre au candidat créé ; aucune précondition sur le brouillon. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationAsset"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationAsset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationAsset"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deletePresentationAsset: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            204: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getAdminPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: {
+                Range?: string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                    "video/mp4": string;
+                    "font/woff2": string;
+                };
+            };
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            206: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                    "video/mp4": string;
+                    "font/woff2": string;
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Range syntaxiquement valide mais impossible ou multiples non supportées ; vérification d’accès préalable. */
+            416: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    uploadPresentationAsset: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+                "image/webp": string;
+                "video/mp4": string;
+                "font/woff2": string;
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationAsset"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Asset state conflict or direct_upload_required for legacy video uploads. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    headAdminPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: {
+                Range?: string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            206: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Range syntaxiquement valide mais impossible ou multiples non supportées ; vérification d’accès préalable. */
+            416: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getPublicPresentation: {
+        parameters: {
+            query: {
+                pageKey: components["schemas"]["PresentationPageKey"];
+                locale: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPublic"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createPresentationPreview: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationPreviewInput"];
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            201: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPreviewGrant"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    exchangePresentationPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    code: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPreviewExchange"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationPreviewSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPreviewStatus"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    closePresentationPreview: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            204: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPreviewPresentation: {
+        parameters: {
+            query: {
+                pageKey: components["schemas"]["PresentationPageKey"];
+                locale: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPreview"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPublicPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: {
+                Range?: string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                    "video/mp4": string;
+                    "font/woff2": string;
+                };
+            };
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            206: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                    "video/mp4": string;
+                    "font/woff2": string;
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Range syntaxiquement valide mais impossible ou multiples non supportées ; vérification d’accès préalable. */
+            416: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    headPublicPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: {
+                Range?: string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            206: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Range syntaxiquement valide mais impossible ou multiples non supportées ; vérification d’accès préalable. */
+            416: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getPreviewPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: {
+                Range?: string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                    "video/mp4": string;
+                    "font/woff2": string;
+                };
+            };
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            206: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
+                    "video/mp4": string;
+                    "font/woff2": string;
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Range syntaxiquement valide mais impossible ou multiples non supportées ; vérification d’accès préalable. */
+            416: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    headPreviewPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: {
+                Range?: string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            206: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Length"?: number;
+                    "Accept-Ranges"?: "bytes";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Range syntaxiquement valide mais impossible ou multiples non supportées ; vérification d’accès préalable. */
+            416: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Content-Range"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createPresentationUploadAttempt: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationUploadIntent"];
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            201: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationUploadReservation"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationUploadAttempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assetId: string;
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationUploadStatus"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    finalizePresentationUploadAttempt: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path: {
+                assetId: string;
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationUploadStatus"];
+                };
+            };
+            /** @description Réponse validée */
+            202: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationUploadStatus"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    authorizePublicPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationMediaAuthorization"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    authorizeAdminPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationMediaAuthorization"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    authorizePreviewPresentationAsset: {
+        parameters: {
+            query?: {
+                variant?: "original" | "w640" | "w1280" | "w1920";
+            };
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Octets autorisés ; HEAD fournit les mêmes en-têtes sans corps. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationMediaAuthorization"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getContactConfiguration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactConfig"];
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unauthorized";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "rate_limited";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "contact_unavailable";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    submitContactInquiry: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Contact-Origin": string;
+                "X-Contact-Visitor-IP": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactSubmission"];
+            };
+        };
+        responses: {
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            202: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactReceipt"];
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "validation_error" | "invalid_request";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unauthorized";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "forbidden";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "not_found";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "idempotency_conflict";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "payload_too_large";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unsupported_media_type";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "rate_limited";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "contact_unavailable" | "contact_disabled";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    recoverContactReceipt: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Contact-Origin": string;
+                "X-Contact-Visitor-IP": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactReceiptRequest"];
+            };
+        };
+        responses: {
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactReceipt"];
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "validation_error" | "invalid_request";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unauthorized";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "forbidden";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "not_found";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "payload_too_large";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unsupported_media_type";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "rate_limited";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "contact_unavailable";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    listContactInquiries: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                kind?: "general" | "artwork";
+                state?: "pending" | "sending" | "sent" | "failed" | "uncertain";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactList"];
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "validation_error" | "invalid_request" | "invalid_cursor";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unauthorized";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "forbidden";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "rate_limited";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "contact_unavailable";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    readContactInquiry: {
+        parameters: {
+            query?: {
+                attemptsCursor?: string;
+            };
+            header?: never;
+            path: {
+                inquiryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    /** @description Tag fort inquiry sur détail uniquement ; liste non conditionnelle. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactDetail"];
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "validation_error" | "invalid_request" | "invalid_cursor";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unauthorized";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "forbidden";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "not_found";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "rate_limited";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "contact_unavailable";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    retryContactInquiry: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                inquiryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactRetry"];
+            };
+        };
+        responses: {
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            202: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactRetryAccepted"];
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "validation_error" | "invalid_request";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unauthorized";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "forbidden" | "csrf_invalid";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "not_found";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "idempotency_conflict" | "invalid_retry_state";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "version_conflict";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "payload_too_large";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "unsupported_media_type";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "precondition_required";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "rate_limited";
+                        };
+                    };
+                };
+            };
+            /** @description Projection bornée ; voir README.md pour règles normatives. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactError"] & {
+                        error?: {
+                            /** @enum {string} */
+                            code?: "contact_unavailable" | "contact_disabled";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    listGalleryArtworks: {
+        parameters: {
+            query?: {
+                /** @description NFC, trimmed; case/accent-insensitive literal substring of title or artist. Empty means all. */
+                q?: string;
+                page?: number;
+                pageSize?: number;
+                /** @description Expected catalogue revision. Mismatch: 409 catalog_changed. */
+                catalogRevision?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validated response */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "items": [
+                     *         {
+                     *           "id": "11111111-1111-4111-8111-111111111111",
+                     *           "title": "Étude 01",
+                     *           "artist": "Artiste de démonstration",
+                     *           "year": "2026",
+                     *           "medium": "Encre sur papier",
+                     *           "dimensions": "30 × 40 cm",
+                     *           "media": [
+                     *             {
+                     *               "id": "22222222-2222-4222-8222-222222222222",
+                     *               "alt": "Étude abstraite de démonstration",
+                     *               "width": 800,
+                     *               "height": 600,
+                     *               "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+                     *             }
+                     *           ],
+                     *           "slug": "etude-01-11111111111141118111111111111111"
+                     *         }
+                     *       ],
+                     *       "query": "etude",
+                     *       "page": 1,
+                     *       "pageSize": 20,
+                     *       "totalItems": 1,
+                     *       "pageCount": 1,
+                     *       "catalogRevision": 7
+                     *     }
+                     */
+                    "application/json": components["schemas"]["GalleryCatalog"];
+                };
+            };
+            /** @description invalid_request, page_out_of_range */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_request",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description not_found */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "not_found",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description catalog_changed */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "catalog_changed",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description rate_limited */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "rate_limited",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description service_unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "service_unavailable",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getGalleryArtworkExperience: {
+        parameters: {
+            query: {
+                locale: string;
+            };
+            header?: never;
+            path: {
+                artworkRef: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validated response */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "scope": "public",
+                     *       "artwork": {
+                     *         "id": "11111111-1111-4111-8111-111111111111",
+                     *         "title": "Étude 01",
+                     *         "artist": "Artiste de démonstration",
+                     *         "year": "2026",
+                     *         "medium": "Encre sur papier",
+                     *         "dimensions": "30 × 40 cm",
+                     *         "media": [
+                     *           {
+                     *             "id": "22222222-2222-4222-8222-222222222222",
+                     *             "alt": "Étude abstraite de démonstration",
+                     *             "width": 800,
+                     *             "height": 600,
+                     *             "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+                     *           }
+                     *         ],
+                     *         "slug": "etude-01-11111111111141118111111111111111"
+                     *       },
+                     *       "locale": "fr",
+                     *       "description": "Description synthétique de démonstration.",
+                     *       "descriptionLocale": "fr",
+                     *       "presentationReleaseId": "44444444-4444-4444-8444-444444444444",
+                     *       "catalogRevision": 7
+                     *     }
+                     */
+                    "application/json": components["schemas"]["GalleryExperience"];
+                };
+            };
+            /** @description invalid_request */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_request",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description not_found */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "not_found",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description rate_limited */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "rate_limited",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description service_unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "service_unavailable",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getGalleryArtworkEditorial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                artworkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validated response */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    /** @description Shared presentation aggregate revision; use this exact value as If-Match. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "artworkId": "11111111-1111-4111-8111-111111111111",
+                     *       "schemaVersion": 1,
+                     *       "description": {
+                     *         "fr": "Description de démonstration.",
+                     *         "en": null
+                     *       },
+                     *       "revision": "12"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["GalleryEditorialDraft"];
+                };
+            };
+            /** @description invalid_request, validation_error */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_request",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "unauthorized",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description forbidden */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "forbidden",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description not_found */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "not_found",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description rate_limited */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "rate_limited",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description service_unavailable, presentation_unavailable, presentation_configuration_mismatch */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "service_unavailable",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateGalleryArtworkEditorial: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                artworkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                /**
+                 * @example {
+                 *       "description": {
+                 *         "fr": "Description de démonstration.",
+                 *         "en": "Demonstration description."
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["GalleryEditorialUpdate"];
+            };
+        };
+        responses: {
+            /** @description Validated response */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    /** @description Shared presentation aggregate revision; use this exact value as If-Match. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "artworkId": "11111111-1111-4111-8111-111111111111",
+                     *       "schemaVersion": 1,
+                     *       "description": {
+                     *         "fr": "Description de démonstration.",
+                     *         "en": null
+                     *       },
+                     *       "revision": "12"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["GalleryEditorialDraft"];
+                };
+            };
+            /** @description invalid_request, validation_error */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_request",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "unauthorized",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description forbidden, csrf_invalid */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "forbidden",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description not_found */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "not_found",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description version_conflict */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "version_conflict",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description payload_too_large */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "payload_too_large",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description unsupported_media_type */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "unsupported_media_type",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description precondition_required */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "precondition_required",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description rate_limited */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "rate_limited",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description service_unavailable, presentation_unavailable, presentation_configuration_mismatch */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "service_unavailable",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getGalleryPreviewArtworkExperience: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validated response */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "scope": "preview",
+                     *       "artwork": {
+                     *         "id": "11111111-1111-4111-8111-111111111111",
+                     *         "title": "Étude 01",
+                     *         "artist": "Artiste de démonstration",
+                     *         "year": "2026",
+                     *         "medium": "Encre sur papier",
+                     *         "dimensions": "30 × 40 cm",
+                     *         "media": [
+                     *           {
+                     *             "id": "22222222-2222-4222-8222-222222222222",
+                     *             "alt": "Étude abstraite de démonstration",
+                     *             "width": 800,
+                     *             "height": 600,
+                     *             "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+                     *           }
+                     *         ],
+                     *         "slug": "etude-01-11111111111141118111111111111111"
+                     *       },
+                     *       "locale": "fr",
+                     *       "description": "Description synthétique de démonstration.",
+                     *       "descriptionLocale": "fr",
+                     *       "catalogRevision": 7,
+                     *       "snapshotId": "55555555-5555-4555-8555-555555555555",
+                     *       "revision": "12"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["GalleryPreviewExperience"];
+                };
+            };
+            /** @description invalid_request */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_request",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "unauthorized",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description forbidden */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "forbidden",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description not_found */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "not_found",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description rate_limited */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "rate_limited",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description service_unavailable, presentation_unavailable, presentation_configuration_mismatch */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "service_unavailable",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialCapabilities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCapabilities"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listEditorialArticles: {
+        parameters: {
+            query: {
+                kind: "publication" | "news";
+                locale?: string;
+                q?: string;
+                lifecycle?: "editable" | "archived" | "trashed";
+                published?: boolean;
+                scheduled?: boolean;
+                completeness?: "complete" | "incomplete";
+                sort?: "editorialDate" | "updatedAt";
+                catalogRevision?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialAdminPage"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createEditorialArticle: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "publication" | "news";
+                    titles?: components["schemas"]["EditorialLocalizedText"];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialArticle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialArticleAdmin"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    saveEditorialDraft: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    clientMutationId: string;
+                    document: components["schemas"]["EditorialArticleDocument"];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialDraftSaved"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    validateEditorialArticle: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialValidation"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listEditorialVersions: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialVersionPage"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createEditorialVersion: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialVersionDetail"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    renameEditorialVersion: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    restoreEditorialVersion: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    publishEditorialArticle: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    scheduleEditorialArticle: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    versionId: string;
+                    /** Format: date-time */
+                    startsAt: string;
+                    endsAt: string | null;
+                    timeZone: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cancelEditorialSchedule: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+                scheduleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    changeEditorialLifecycle: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "unpublish" | "archive" | "unarchive" | "trash" | "restoreTrash";
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    duplicateEditorialArticle: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createEditorialPreview: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    source: "draft" | "version";
+                    /** Format: uuid */
+                    versionId?: string;
+                    locale: string;
+                    /** @enum {integer} */
+                    viewport: 375 | 1440;
+                } & unknown;
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPreviewGrant"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialRelatedSuggestions: {
+        parameters: {
+            query?: {
+                q?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["EditorialArticleSummary"][];
+                    };
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialReferenceIssues: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialReferenceIssuePage"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    batchEditorialLifecycle: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "unpublish" | "archive" | "trash";
+                    items: {
+                        /** Format: uuid */
+                        id: string;
+                        ifMatch: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results: {
+                            /** Format: uuid */
+                            id: string;
+                            status: number;
+                            code?: string;
+                            revision?: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listEditorialVocabularies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["EditorialVocabulary"][];
+                    };
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createEditorialVocabulary: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditorialVocabularyInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialVocabulary"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialVocabulary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vocabularyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialVocabulary"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteEditorialVocabulary: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                vocabularyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateEditorialVocabulary: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                vocabularyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditorialVocabularyPatch"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialVocabulary"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listEditorialTerms: {
+        parameters: {
+            query?: {
+                q?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                vocabularyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTermPage"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createEditorialTerm: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path: {
+                vocabularyId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    labels?: components["schemas"]["EditorialLocalizedText"];
+                    parentId?: string | null;
+                    position?: number;
+                    author?: components["schemas"]["EditorialAuthorInput"] | null;
+                    /** @enum {string} */
+                    context?: "dedicated" | "article-editor";
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTerm"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialTerm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vocabularyId: string;
+                termId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTerm"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteEditorialTerm: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                vocabularyId: string;
+                termId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateEditorialTerm: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                vocabularyId: string;
+                termId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditorialTermInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTerm"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    mergeEditorialTerms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                vocabularyId: string;
+                termId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    targetTermId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTerm"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialSettings"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateEditorialSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditorialSettings"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialSettings"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listEditorialTemplates: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTemplatePage"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createEditorialTemplate: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditorialTemplateInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTemplate"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTemplate"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateEditorialTemplate: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditorialTemplateInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialTemplate"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteEditorialTemplate: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    applyEditorialTemplate: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "Idempotency-Key": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    templateId: string;
+                    templateRevision: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialCommandResult"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialArtworkUsages: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                artworkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "X-Resource-Version"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialArtworkUsages"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listPublicEditorialArticles: {
+        parameters: {
+            query: {
+                kind: "publication" | "news";
+                locale: string;
+                q?: string;
+                termIds?: string[];
+                catalogRevision?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialArticleCardPage"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPublicEditorialArticle: {
+        parameters: {
+            query: {
+                locale: string;
+            };
+            header?: never;
+            path: {
+                kind: "publication" | "news";
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialArticleResolution"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPublicEditorialAddress: {
+        parameters: {
+            query: {
+                locale: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        canonicalPath: string;
+                    };
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    authorizePublicEditorialMedia: {
+        parameters: {
+            query?: {
+                variant?: string;
+            };
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialMediaAuthorization"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getEditorialPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                snapshotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialPublicArticle"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Preview or parent session is not authorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Preview or parent session is not authorized. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    authorizeEditorialPreviewMedia: {
+        parameters: {
+            query?: {
+                variant?: string;
+            };
+            header?: never;
+            path: {
+                snapshotId: string;
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialMediaAuthorization"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Preview or parent session is not authorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Preview or parent session is not authorized. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Request refused; previous public content is preserved for failed mutations. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPublicEditorialFilters: {
+        parameters: {
+            query: {
+                kind: "publication" | "news";
+                locale: string;
+                vocabularyId?: string;
+                q?: string;
+                page?: number;
+                pageSize?: number;
+                catalogRevision?: string;
+                commonRevision?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public current filters */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditorialPublicFilters"];
+                };
+            };
+            /** @description Refused request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Refused request */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Refused request */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Refused request */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Refused request */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
 }
 
-export const sourceSha256 = "7d036f7fcd7e59817a26296207d88a4d7206e4e683f10ebcea56864f5bbe7289";
+export const sourceSha256 = "d41ea96578bd865142af514371e42d9aa557d9383415733cb003d62e73705fd5";

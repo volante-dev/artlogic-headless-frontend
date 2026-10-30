@@ -2,28 +2,50 @@
   "name": "artlogic-frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run --config vitest.config.ts",
+    "presentation:manifest": "node scripts/export-presentation-manifest.ts",
+    "presentation:check": "node scripts/check-presentation.ts",
+    "storybook": "storybook dev -p 6006 --no-open --disable-telemetry",
+    "build-storybook": "node scripts/prepare-gallery-storybook.ts && storybook build --disable-telemetry",
+    "test:storybook": "node scripts/test-storybook.ts"
   },
   "dependencies": {
+    "@emotion/cache": "11.14.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@mui/material": "9.5.0",
+    "@mui/material-nextjs": "9.5.0",
+    "@vimeo/player": "2.30.4",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "server-only": "0.0.1"
+    "server-only": "0.0.1",
+    "wheel-gestures": "2.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@storybook/addon-a11y": "10.6.4",
+    "@storybook/addon-docs": "10.6.4",
+    "@storybook/nextjs-vite": "10.6.4",
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.2",
+    "storybook": "10.6.4",
     "typescript": "5.9.3",
-    "@playwright/test": "1.64.1"
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   },
   "packageManager": "pnpm@12.14.0",
   "engines": {

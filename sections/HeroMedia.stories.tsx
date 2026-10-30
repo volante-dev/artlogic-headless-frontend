@@ -1,0 +1,12 @@
+import type {Meta,StoryObj} from "@storybook/nextjs-vite";
+import {SectionStory} from "../.storybook/SectionStory";
+const meta={title:"Sections/HeroMedia",component:SectionStory,args:{type:"heroMedia"},tags:["autodocs"]} satisfies Meta<typeof SectionStory>;
+export default meta;
+type Story=StoryObj<typeof meta>;
+export const Immersive:Story={args:{variant:"immersive",state:"normal"}};
+export const Centered:Story={args:{variant:"centered",state:"normal"}};
+export const Long:Story={args:{variant:"immersive",state:"long"}};
+export const Empty:Story={args:{variant:"immersive",state:"empty"}};
+export const PosterError:Story={args:{variant:"immersive",state:"posterError"}};
+export const VideoError:Story={args:{variant:"immersive",state:"videoError"}};
+export const ReducedMotion:Story={args:{variant:"immersive",state:"reducedMotion"}};

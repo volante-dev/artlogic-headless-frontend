@@ -1,0 +1,92 @@
+{
+  "colors": {
+    "background": "#F6F7F6",
+    "surface": "#FFFFFF",
+    "mutedSurface": "#E7EAE8",
+    "inverseSurface": "#101314",
+    "text": "#101314",
+    "mutedText": "#48544F",
+    "inverseText": "#F6F7F6",
+    "disabledText": "#66716C",
+    "accent": "#3C554A",
+    "onAccent": "#FFFFFF",
+    "link": "#304E40",
+    "linkHover": "#183C2B",
+    "border": "#64736A",
+    "focus": "#21623F",
+    "selection": "#365B48",
+    "onSelection": "#FFFFFF",
+    "error": "#9F2424",
+    "onError": "#FFFFFF",
+    "success": "#286341",
+    "onSuccess": "#FFFFFF",
+    "warning": "#725600",
+    "onWarning": "#FFFFFF"
+  },
+  "typography": {
+    "h1": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 400,
+      "style": "normal",
+      "minSizeRem": 2,
+      "maxSizeRem": 3.375,
+      "lineHeight": 1.05,
+      "letterSpacingEm": 0
+    },
+    "h2": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 400,
+      "style": "normal",
+      "minSizeRem": 1.5,
+      "maxSizeRem": 2.5,
+      "lineHeight": 1.2,
+      "letterSpacingEm": 0
+    },
+    "h3": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 400,
+      "style": "normal",
+      "minSizeRem": 1.25,
+      "maxSizeRem": 1.75,
+      "lineHeight": 1.2,
+      "letterSpacingEm": 0
+    },
+    "body": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 400,
+      "style": "normal",
+      "minSizeRem": 1,
+      "maxSizeRem": 1.125,
+      "lineHeight": 1.5,
+      "letterSpacingEm": 0
+    },
+    "caption": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 400,
+      "style": "normal",
+      "minSizeRem": 0.875,
+      "maxSizeRem": 0.875,
+      "lineHeight": 1.5,
+      "letterSpacingEm": 0
+    },
+    "navigation": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 500,
+      "style": "normal",
+      "minSizeRem": 0.875,
+      "maxSizeRem": 1,
+      "lineHeight": 1.5,
+      "letterSpacingEm": 0
+    },
+    "button": {
+      "familyId": "builtin:hanken-grotesk",
+      "weight": 500,
+      "style": "normal",
+      "minSizeRem": 0.875,
+      "maxSizeRem": 1,
+      "lineHeight": 1.5,
+      "letterSpacingEm": 0
+    }
+  },
+  "fonts": []
+}

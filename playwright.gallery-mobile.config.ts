@@ -1,0 +1,2 @@
+import {defineConfig,devices} from "@playwright/test";
+export default defineConfig({testDir:"./tests",testMatch:["gallery-mobile*.spec.ts","gallery-secondary-motion.spec.ts"],testIgnore:"**/storybook/**",workers:1,fullyParallel:false,timeout:60_000,use:{baseURL:process.env.E2E_BASE_URL??"http://127.0.0.1:3000",trace:"retain-on-failure"},projects:[{name:"mobile-chromium",use:{...devices["Pixel 7"]}},{name:"mobile-webkit",use:{...devices["iPhone 13"]}}],reporter:[["list"]],outputDir:"test-results/gallery-mobile"});

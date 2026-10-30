@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -19,7 +24,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
@@ -28,7 +35,49 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    ".runtime/next-public-5bb4c347-4278-49bd-ada6-ead400d2b3af/types/**/*.ts",
+    ".runtime/next-public-5bb4c347-4278-49bd-ada6-ead400d2b3af/dev/types/**/*.ts",
+    ".runtime/next-public-007f58aa-0d2f-430d-95ed-977e1372b531/types/**/*.ts",
+    ".runtime/next-public-007f58aa-0d2f-430d-95ed-977e1372b531/dev/types/**/*.ts",
+    ".runtime/next-public-8df626a3-f0e3-4974-9acc-184ea081e7e0/types/**/*.ts",
+    ".runtime/next-public-8df626a3-f0e3-4974-9acc-184ea081e7e0/dev/types/**/*.ts",
+    ".runtime/next-public-7390123b-13e5-4a55-ac60-4da15c8764c5/types/**/*.ts",
+    ".runtime/next-public-7390123b-13e5-4a55-ac60-4da15c8764c5/dev/types/**/*.ts",
+    ".runtime/next-public-ea38a7ce-29a0-41a6-977e-dcc076933f07/types/**/*.ts",
+    ".runtime/next-public-ea38a7ce-29a0-41a6-977e-dcc076933f07/dev/types/**/*.ts",
+    ".runtime/next-public-36ae5993-68c2-4acc-a3b0-c84573163a8e/types/**/*.ts",
+    ".runtime/next-public-36ae5993-68c2-4acc-a3b0-c84573163a8e/dev/types/**/*.ts",
+    ".runtime/next-public-0d062e5e-3e03-4c5f-96bd-41f0b0f584ec/types/**/*.ts",
+    ".runtime/next-public-0d062e5e-3e03-4c5f-96bd-41f0b0f584ec/dev/types/**/*.ts",
+    ".runtime/next-public-6143525a-0f45-4e58-ad12-f35b353fa5a4/types/**/*.ts",
+    ".runtime/next-public-6143525a-0f45-4e58-ad12-f35b353fa5a4/dev/types/**/*.ts",
+    ".runtime/next-public-f85f956c-ae19-4275-8390-aa1687093e48/types/**/*.ts",
+    ".runtime/next-public-f85f956c-ae19-4275-8390-aa1687093e48/dev/types/**/*.ts",
+    ".runtime/next-public-db4c366e-a346-4765-bd46-0043d4b80dfe/types/**/*.ts",
+    ".runtime/next-public-db4c366e-a346-4765-bd46-0043d4b80dfe/dev/types/**/*.ts",
+    ".runtime/next-public-5282989c-ad9a-4f2b-9344-912f2d3a0909/types/**/*.ts",
+    ".runtime/next-public-5282989c-ad9a-4f2b-9344-912f2d3a0909/dev/types/**/*.ts",
+    ".runtime/next-public-87630320-e1af-4d44-a315-84cd052deced/types/**/*.ts",
+    ".runtime/next-public-87630320-e1af-4d44-a315-84cd052deced/dev/types/**/*.ts",
+    ".runtime/next-public-57250e38-98c1-47bc-ac98-26ca064b8fe1/types/**/*.ts",
+    ".runtime/next-public-57250e38-98c1-47bc-ac98-26ca064b8fe1/dev/types/**/*.ts",
+    ".runtime/next-public-8a1e85ca-1a32-4ccd-b3f2-c0212299438d/types/**/*.ts",
+    ".runtime/next-public-8a1e85ca-1a32-4ccd-b3f2-c0212299438d/dev/types/**/*.ts",
+    ".runtime/next-public-94e10de8-d43c-4584-8268-c92e32dcb4a9/types/**/*.ts",
+    ".runtime/next-public-94e10de8-d43c-4584-8268-c92e32dcb4a9/dev/types/**/*.ts",
+    ".runtime/next-public-e88ff17c-deab-438a-93dd-1f59a987697b/types/**/*.ts",
+    ".runtime/next-public-e88ff17c-deab-438a-93dd-1f59a987697b/dev/types/**/*.ts",
+    ".runtime/next-public-af07674f-6df1-464d-8004-0d3ff939432a/types/**/*.ts",
+    ".runtime/next-public-af07674f-6df1-464d-8004-0d3ff939432a/dev/types/**/*.ts",
+    ".runtime/next-public-139d8dd2-2c7f-47e2-9e44-4379a075666d/types/**/*.ts",
+    ".runtime/next-public-139d8dd2-2c7f-47e2-9e44-4379a075666d/dev/types/**/*.ts",
+    ".runtime/next-public-35d2320e-8be6-4f40-9e07-58a4676999ad/types/**/*.ts",
+    ".runtime/next-public-35d2320e-8be6-4f40-9e07-58a4676999ad/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    ".runtime",
+    ".next/types/app"
+  ]
 }

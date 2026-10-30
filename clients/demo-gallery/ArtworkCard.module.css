@@ -1,0 +1,8 @@
+.card{list-style:none;min-width:0}
+.card a{display:block;color:var(--site-color-text);text-decoration:none}
+.image{aspect-ratio:4/5;background:var(--site-color-mutedSurface);display:grid;place-items:center;overflow:hidden}
+.image img{width:100%;height:100%;object-fit:contain}
+.caption{padding-block:20px;border-bottom:1px solid var(--site-color-border)}
+.caption h2{margin-bottom:8px}
+.card a:hover h2{text-decoration:underline;text-underline-offset:.2em}
+.card a:focus-visible{outline:3px solid var(--site-color-focus);outline-offset:5px}

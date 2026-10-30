@@ -1,0 +1,2 @@
+import {test,expect} from '@playwright/test';
+test('contact stories force inert execution without API calls',async({page})=>{const requests:string[]=[];page.on('request',request=>{if(request.url().includes('/api/contact'))requests.push(request.url());});await page.goto('/iframe.html?id=components-contactform--default&viewMode=story');await expect(page.getByRole('button',{name:'Envoyer la demande',exact:true})).toBeDisabled();expect(requests).toEqual([]);});

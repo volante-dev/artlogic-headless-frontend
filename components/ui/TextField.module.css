@@ -1,0 +1,2 @@
+/* The application reset is unlayered; preserve MUI's content-box input sizing. */
+.field :global(.MuiInputBase-input) { box-sizing:content-box; }

@@ -1,0 +1,61 @@
+"use client";
+import {useId,useContext,useRef,useState,useLayoutEffect,type ComponentType, type ReactNode} from "react";
+import {useSiteContent} from "../SiteContentProvider";
+import {ArtworkImage} from "../ArtworkImage";
+import {Typography} from "../ui/Typography";
+import {ArtworkInformation,type ArtworkContent,type ArtworkInformationProps} from "./ArtworkInformation";
+import {ArtworkProgress,type ArtworkProgressProps} from "./ArtworkProgress";
+import {useArtworkEntrance} from "./useArtworkEntrance";
+import {useArtworkScroll} from "./useArtworkScroll";
+import {ArtworkHeadingContext} from "./ArtworkHeadingContext";
+import {useArtworkInteraction} from "./ArtworkInteractionBoundary";
+import {ArtworkZoomImage} from "./ArtworkZoomImage";
+import styles from "./ArtworkExperience.module.css";
+export interface ArtworkExperienceProps {
+  id?:string;
+  content:ArtworkContent;
+  InformationView?:ComponentType<ArtworkInformationProps>;
+  ProgressView?:ComponentType<ArtworkProgressProps>;
+  supplementalContent?:ReactNode;
+}
+/** Replaceable composition; the public reader, modal and navigation stay outside this view. */
+export function DesktopArtworkExperience({content,id,InformationView=ArtworkInformation,ProgressView=ArtworkProgress,supplementalContent}:ArtworkExperienceProps){
+  const instance=useId(),heading=useContext(ArtworkHeadingContext)??instance,{messages:m}=useSiteContent();
+  const {artwork:art,description}=content,count=art.media.length;
+  const {root,information,active,goTo,restoreTo,enhanced}=useArtworkScroll(count);useArtworkEntrance(root);
+  const store=useArtworkInteraction(),[selection,setSelection]=useState({from:active,to:active}),restoring=useRef<number|null>(null);
+  if(selection.to!==active)setSelection({from:selection.to,to:active});
+  const previous=selection.to===active?selection.from:selection.to;
+  useLayoutEffect(()=>{const index=art.media.findIndex(m=>m.id===store?.read().selectedMediaId);restoring.current=Math.max(0,index);restoreTo(Math.max(0,index));},[store,restoreTo,art.media]);
+  useLayoutEffect(()=>{if(restoring.current!==null){if(active!==restoring.current)return;restoring.current=null;}const media=art.media[active];if(store&&media&&store.read().selectedMediaId!==media.id){store.send({type:"select",id:media.id,now:performance.now()},art.media.map(m=>m.id));store.send({type:"commit",epoch:store.read().epoch},art.media.map(m=>m.id));}},[active,art.media,store]);
+  const introduction=description&&Array.from(description).length>240?Array.from(description).slice(0,237).join("")+"…":description;
+  return <article id={id} ref={root} className={styles.experience} data-artwork-experience data-testid="artwork-experience" data-enhanced={String(enhanced)} data-artwork-layout="desktop" aria-labelledby={heading}>
+    <h1 id={heading} tabIndex={-1} data-artwork-focus-heading className={styles.srOnly}>{art.title??m["artwork.untitled"]}</h1>
+    <div className={styles.stage}>
+      <div className={styles.frame} data-artwork-entry-media data-testid="artwork-frame">
+        <div className={styles.imageStack} data-artwork-image-stack>
+          {count?art.media.map((media,index)=><div key={media.id} className={styles.view} data-view={index} data-active={index===active} inert={(enhanced?index!==active:index!==0)||undefined} aria-hidden={enhanced?index!==active:index!==0}>
+            <ArtworkZoomImage media={media} title={art.title} active={index===active} eager={index===0||index===active} transitioning zoomOut={previous>=1&&active>=1}/>
+          </div>):<div className={styles.view} data-view="0" data-active="true"><ArtworkImage title={art.title}/></div>}
+        </div>
+      </div>
+      <div className={styles.frost} data-artwork-frost aria-hidden="true">
+        <Typography variant="h1" component="p">{art.title??m["artwork.untitled"]}</Typography>
+        {art.artist&&<Typography>{art.artist}</Typography>}
+        {introduction&&<Typography className={styles.introduction} lang={content.descriptionLocale??content.locale}>{introduction}</Typography>}
+      </div>
+    </div>
+    <div className={styles.readingFlow}>
+      <div ref={information} className={styles.information}>
+        <InformationView content={content} headingComponent="p"/>
+      </div>
+    </div>
+    <div className={styles.staticViews}>
+      {art.media.slice(1).map((media,index)=><figure key={media.id} data-static-view={index+1}>
+        <ArtworkZoomImage media={media} title={art.title}/>
+      </figure>)}
+    </div>
+    <ProgressView count={count} active={active} onSelect={goTo}/>
+    {supplementalContent}
+  </article>;
+}

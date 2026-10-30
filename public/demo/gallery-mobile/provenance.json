@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "sourceId": "art-000817",
+  "tool": "image_gen",
+  "description": "Fictional Bamana/Bambara-inspired wooden antelope crest. AI-generated test imagery; no attribution, provenance or date of creation asserted.",
+  "images": [
+    {
+      "file": "main.webp",
+      "prompt": "Use case: product-mockup. Asset type: high-resolution artwork gallery test photograph, landscape 3:2 composition. Create a photorealistic studio photograph of one INVENTED sculptural antelope crest inspired by Bamana/Bambara ci wara carving vocabulary. This is a fictional contemporary artwork for a clearly synthetic test catalogue, not an attributed or authenticated historical object. One single hand-carved dark warm brown hardwood antelope crest: slender elongated muzzle facing left, two long elegant curved tapering horns, openwork triangular mane with six geometric apertures, arched decorated back, four small angular legs, standing on its own small oval carved wooden base. Subtle restrained incised chevrons, matte wood grain and warm rubbed edges; no metal, no added objects, no labels. A minimalist warm greige seamless studio background and ground, quiet museum-quality side lighting from upper left, realistic soft grounded shadow. Camera at sculpture height, front-left three-quarter view. Entire object visible from horn tips to base, generous negative space on the LEFT for the website caption; object centered at 65% horizontal, fills about 78% of image height. Sophisticated neutral photographic palette, crisp fine carving detail suitable for zoom. No text, no logos, no watermark, no people, no claims of age or provenance. Generate one image only."
+    },
+    {
+      "file": "view-2.webp",
+      "prompt": "Use case: identity-preserve. Asset type: second high-resolution photograph for the same fictional artwork's carousel. Reference image: the EXACT fictional Bamana/Bambara-inspired antelope wooden crest just generated. Rephotograph the same object as a beautiful close-up of its head, elongated muzzle, carved eye, horns and openwork mane from a slightly more frontal three-quarter camera angle. Preserve the exact sculpture geometry, incised motifs, proportions, dark brown wood, worn warm edges, and the warm greige studio background and side lighting. This is a detail photograph, so crop the lower body out intentionally; make the fine wood grain and tool marks legible for a 2× zoom. Landscape 3:2 image. A single coherent museum catalogue photograph, realistic texture and soft neutral studio falloff, no text, no labels, no hands, no extra sculpture, no collage, no watermark. The subject is fictional test data, with no historical attribution."
+    },
+    {
+      "file": "view-3.webp",
+      "prompt": "Use case: identity-preserve. Asset type: third high-resolution photograph for the same fictional artwork's carousel. Reference image: the EXACT fictional Bamana/Bambara-inspired antelope wooden crest just generated. Rephotograph the SAME object as a different close-up of its arched chevron-incised torso, angular legs and oval carved base, camera slightly lower and toward the opposite side, with the head and upper horns out of the frame. Preserve the reference sculpture's exact geometry, carved chevrons, dark warm brown hardwood and softly rubbed edges. Keep the identical warm greige seamless studio backdrop and quiet side lighting from upper left. Sharp tactile carving details and subtle wood grain for a 2× zoom. Landscape 3:2 composition, one object only, no text, no label, no logo, no hands, no watermark, no collage. Fictional test object, no claims of origin, age or provenance."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "buildPath": "comp",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "tests/unit/presentation-rendering.test.ts"
+        ],
+        "createdAt": "2026-10-27T01:42:03.436Z",
+        "reason": "Agent review: line 24 is an intentionally hostile img string in the editorial escaping test, not a rendered image; the assertion verifies that React escapes it. Narrow exception for this test fixture only."
+      }
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "package": "@fontsource/hanken-grotesk",
+  "version": "5.3.0",
+  "source": "https://registry.npmjs.org/@fontsource/hanken-grotesk/-/hanken-grotesk-5.3.0.tgz",
+  "integrity": "sha512-eiqAvcMT88tCMCBzn6qKgMHGLJKq3NEXO3+0y9JXqzyty2U6KZnaGtbfiQgzRAXfwFp559hJQ0zBgJ6d89AuTA==",
+  "files": [
+    {
+      "file": "LICENSE",
+      "sha256": "f45f60ca871850c58d8dc9c973bd6fcad40c137e9d037172b961e8ca68c87ef7",
+      "bytes": 4530
+    },
+    {
+      "file": "metadata.json",
+      "sha256": "c3cfbb218ae09f5678b461536f41e22d27760b83b0f43051465ab2404af46a08",
+      "bytes": 884
+    },
+    {
+      "file": "hanken-grotesk-latin-100-italic.woff2",
+      "sha256": "8995fec2a8760fabab6467f709036cc9f5f038a84e0b3672e8f01e5d741b0719",
+      "bytes": 15204
+    },
+    {
+      "file": "hanken-grotesk-latin-100-normal.woff2",
+      "sha256": "d8973d907a874ded034fb10804cb61aa0bb3d37943769cee5a8af3002b06ef6e",
+      "bytes": 14572
+    },
+    {
+      "file": "hanken-grotesk-latin-200-italic.woff2",
+      "sha256": "c8f2a6b0ca6c35f46e7238bc4a413bf5cc8c9270ce4307442722c107ed28e770",
+      "bytes": 15400
+    },
+    {
+      "file": "hanken-grotesk-latin-200-normal.woff2",
+      "sha256": "9938b0e9cb8ff6dcc54cf2b657724339089f4cd1edb7df7b5b441f703d4aabd8",
+      "bytes": 14640
+    },
+    {
+      "file": "hanken-grotesk-latin-300-italic.woff2",
+      "sha256": "8bc102ad67af3b2acda2a79104e92f70e7aa4e54995f0b595c5bd2c123e41326",
+      "bytes": 15160
+    },
+    {
+      "file": "hanken-grotesk-latin-300-normal.woff2",
+      "sha256": "91558946460b41071ade4850a92646c8c67448e3fc7b8f225d9d9bdc361e1134",
+      "bytes": 14520
+    },
+    {
+      "file": "hanken-grotesk-latin-400-italic.woff2",
+      "sha256": "53168ef35821f9ec781d281e9efefb097833a1f60760552ac9cba4f4ccc43aa6",
+      "bytes": 13896
+    },
+    {
+      "file": "hanken-grotesk-latin-400-normal.woff2",
+      "sha256": "787b3fdd0b7e6d59ae7ce14ce7a41d1a44616584b4c919b527da951972d5d87d",
+      "bytes": 13460
+    },
+    {
+      "file": "hanken-grotesk-latin-500-italic.woff2",
+      "sha256": "3c4f0e8cc44fe39db5b10f10c7f7da881318b702770da13bc266d6e22f1b90ef",
+      "bytes": 14240
+    },
+    {
+      "file": "hanken-grotesk-latin-500-normal.woff2",
+      "sha256": "31f666af7bff625900c46aa34a05d8620482ba2db37db7b63749b693ab0c72ec",
+      "bytes": 13796
+    },
+    {
+      "file": "hanken-grotesk-latin-600-italic.woff2",
+      "sha256": "75f9c1459748b38bd49cc50cb821b3180ea4eb775a616af46940efd3728908e7",
+      "bytes": 14300
+    },
+    {
+      "file": "hanken-grotesk-latin-600-normal.woff2",
+      "sha256": "58f23b7ae3e13b21a4dca4c05360be87b3531d60fc1cbff89732cac8fb3019ae",
+      "bytes": 13780
+    },
+    {
+      "file": "hanken-grotesk-latin-700-italic.woff2",
+      "sha256": "7cdbb67d8fb22723d96e29e7465033bab52a102c7cb07e4e2260d6a0168ff7e9",
+      "bytes": 14296
+    },
+    {
+      "file": "hanken-grotesk-latin-700-normal.woff2",
+      "sha256": "d85de6e272296d06f8205ad11e27140274e0ef97050232777d146eabb71c312d",
+      "bytes": 13844
+    },
+    {
+      "file": "hanken-grotesk-latin-800-italic.woff2",
+      "sha256": "524f950cfead9d899baa4c3588d18eaecc28b872ae88ebe35f486e0e0154736b",
+      "bytes": 14340
+    },
+    {
+      "file": "hanken-grotesk-latin-800-normal.woff2",
+      "sha256": "999ca80394429ddd84f4df688b3ca8ca28cfcbf0a03e2dd75d57d800300a781d",
+      "bytes": 13860
+    },
+    {
+      "file": "hanken-grotesk-latin-900-italic.woff2",
+      "sha256": "fc3ad33bd80019c8736d7acb3e3abfda406cc67a9027bc619d5fea9b299a5145",
+      "bytes": 13928
+    },
+    {
+      "file": "hanken-grotesk-latin-900-normal.woff2",
+      "sha256": "2c218038aafb52052349c7ede9ac6d7b28cb132b398f4f9e308353d73a2dae22",
+      "bytes": 13568
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-100-italic.woff2",
+      "sha256": "fc543af0426554b160dc65dcdeb15991afadefe1ab0b8b8daa0cd4b10589aa74",
+      "bytes": 9792
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-100-normal.woff2",
+      "sha256": "a786dc5993ea89d11af712e0f0443601261086323abb17c41035b26f1d47ca86",
+      "bytes": 9468
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-200-italic.woff2",
+      "sha256": "fe80042a958176fc3a451e1742f480965582740093ba90da4cf0034c2f2bec49",
+      "bytes": 9728
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-200-normal.woff2",
+      "sha256": "0cb96a35200416b40aeae8dd8e0054a7a709eb9286ab56ead28569577fbb750a",
+      "bytes": 9584
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-300-italic.woff2",
+      "sha256": "a2044003481004cd7e9abdc7f77aebafb509d8fa5b521abdf68fb0939794567e",
+      "bytes": 9748
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-300-normal.woff2",
+      "sha256": "e4415265241df7be707ecb120a5e5e7e187d169ab3541dabc4115cf9414fc3df",
+      "bytes": 9536
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-400-italic.woff2",
+      "sha256": "ad793f085b78daa95b2defcb334f33f56dd659ba149ffc822cd2380036e9161d",
+      "bytes": 9328
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-400-normal.woff2",
+      "sha256": "65303151b7cb080f02f532d1a6e611961d05a018390728b576ad40d86d9da46d",
+      "bytes": 9048
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-500-italic.woff2",
+      "sha256": "d0b0f1e6a3666666863b60790ef1cff19e8e24bb5df5f279dd298855a4ce5bcf",
+      "bytes": 9456
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-500-normal.woff2",
+      "sha256": "bc8e7e3f3888c9205883e28b41f508c1769df152a35033e9ac325253e65bb609",
+      "bytes": 9252
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-600-italic.woff2",
+      "sha256": "d262a50cd129d9bab55d1882112f27433f831cbb1914d1bf9c659f01961ea30f",
+      "bytes": 9448
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-600-normal.woff2",
+      "sha256": "2c5fce1b83bd087cc6d36ba4db0befb97ea60a113d36a4235cb095f15901dcd5",
+      "bytes": 9228
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-700-italic.woff2",
+      "sha256": "ab2a7d5f37a4ba85a95b9cd1d57438647b32293d8e5275b449e93a851d89d611",
+      "bytes": 9376
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-700-normal.woff2",
+      "sha256": "1bc1c12f679a3503145a4f413d7ff5e29eecbc4f9e1196e078fc6b64423c280a",
+      "bytes": 9152
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-800-italic.woff2",
+      "sha256": "166d43116b21eb0201e7a29448392c41726641b5235f478b90b90fe1bd90276e",
+      "bytes": 9520
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-800-normal.woff2",
+      "sha256": "ae66c144fe4bc5b0eb53f8cfc88c37be13418fd94230cec1f2938be01a191a6c",
+      "bytes": 9124
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-900-italic.woff2",
+      "sha256": "c0b55901dd20a37f4189b13682d018abcd4a3b406ea5caca8c03b23e6a9334ae",
+      "bytes": 9380
+    },
+    {
+      "file": "hanken-grotesk-latin-ext-900-normal.woff2",
+      "sha256": "b4524d6d591b937d15bc7de916b882979eee00727b556eda2689d571b2e039bc",
+      "bytes": 9020
+    }
+  ]
+}

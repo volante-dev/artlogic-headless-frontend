@@ -1,0 +1,10 @@
+import type {Meta,StoryObj} from "@storybook/nextjs-vite";
+import {Button} from "./Button";
+const meta={title:"Primitives/Button",component:Button,args:{children:"Découvrir les œuvres"},decorators:[Story=><div style={{padding:24}}><Story/></div>],tags:["autodocs"]} satisfies Meta<typeof Button>;export default meta;
+type Story=StoryObj<typeof meta>;
+export const Contained:Story={};
+export const Outlined:Story={args:{variant:"outlined"}};
+export const Text:Story={args:{variant:"text"}};
+export const Disabled:Story={args:{disabled:true}};
+export const Loading:Story={args:{loading:true}};
+export const Long:Story={args:{children:"Découvrir toutes les œuvres de la collection de démonstration"}};

@@ -1,0 +1,3 @@
+import {it,expect} from "vitest";
+import {initialMobileState,mobileTransition} from "../../components/artworks/artwork-mobile-state";
+it("reading owns input even at its scroll limits and keeps the selected destination",()=>{const ids=["a","b"];let s=initialMobileState("art",ids);s=mobileTransition(s,{type:"select",id:"b",now:0},ids);s=mobileTransition(s,{type:"information"},ids);expect(s.transition).toBeNull();for(const top of [0,400,9999,0]){s=mobileTransition(s,{type:"reading",top},ids);expect(mobileTransition(s,{type:"select",id:"a",now:1000},ids)).toBe(s);}expect(mobileTransition(s,{type:"gallery"},ids).selectedMediaId).toBe("b");});

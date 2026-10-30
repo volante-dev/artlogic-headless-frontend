@@ -1,0 +1,4 @@
+import {it,expect} from "vitest";
+import {beginOpening,readyOpening,openingPhase,completeOpening,openingDuration} from "../../components/artworks/artwork-opening-state";
+it("measures the entire choreography including delays, separately from fresh waiting",()=>{let s=beginOpening(1,100);expect(openingPhase(s,200)).toBe("backdrop");s=readyOpening(s,900);expect(s.revealStartedAt).toBe(900);expect(openingPhase(s,1599)).toBe("media");expect(openingPhase(s,1600)).toBe("controls");expect(openingPhase(s,1820)).toBe("identity");s=completeOpening(s,2120);expect(openingDuration(s)).toBe(1720);expect(openingPhase(s,2300)).toBe("complete");});
+it("consumption before data is not permission and cannot replay",()=>{const s=completeOpening(beginOpening(2,0),10);expect(s.revealStartedAt).toBeNull();expect(readyOpening(s,1000)).toBe(s);expect(s.completedAt).toBe(10);});

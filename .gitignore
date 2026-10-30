@@ -45,9 +45,19 @@ next-env.d.ts
 /dist/
 /playwright-report/
 /test-results/
+/storybook-static/
 .runtime/
 Thumbs.db
 *.tmp
 *.swp
 .vscode/
 .idea/
+*.log
+
+# Local design exploration and generated review artefacts
+/.impeccable/archive/
+/.impeccable/build/
+/.impeccable/mocks/
+/.impeccable/questions/
+/.impeccable/review/
+/.impeccable/hook.cache.json

@@ -15,10 +15,10 @@ function artwork(value:unknown):Artwork{
   })};
 }
 export async function getArtwork(artworkId:string):Promise<Artwork>{if(!uuidPattern.test(artworkId))throw new PublicApiError(404,"not_found");return artwork(await publicJson("/v1/public/artworks/"+artworkId));}
-export async function listArtworks(cursor?:string):Promise<ArtworkPage&{restarted:boolean}>{
+export async function listArtworks(cursor?:string,{restartOnChange=true}:{restartOnChange?:boolean}={}):Promise<ArtworkPage&{restarted:boolean}>{
   if(cursor&&cursor.length>2048)throw new PublicApiError(400,"invalid_request");let restarted=false,value:unknown;
   try{value=await publicJson("/v1/public/artworks?limit=20"+(cursor?"&cursor="+encodeURIComponent(cursor):""));}
-  catch(error){if(!(error instanceof PublicApiError)||error.code!=="catalog_changed"||!cursor)throw error;value=await publicJson("/v1/public/artworks?limit=20");restarted=true;}
+  catch(error){if(!(error instanceof PublicApiError)||error.code!=="catalog_changed"||!cursor||!restartOnChange)throw error;value=await publicJson("/v1/public/artworks?limit=20");restarted=true;}
   const page=object(value);if(!Array.isArray(page.items)||page.items.length>100||!(page.nextCursor===null||typeof page.nextCursor==="string")||typeof page.catalogRevision!=="number"||!Number.isSafeInteger(page.catalogRevision)||page.catalogRevision<0)throw new PublicApiError(503,"invalid_response");
   return {items:page.items.map(artwork),nextCursor:page.nextCursor,catalogRevision:page.catalogRevision,restarted};
 }

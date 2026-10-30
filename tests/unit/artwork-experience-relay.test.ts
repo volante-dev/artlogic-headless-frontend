@@ -1,0 +1,13 @@
+import {beforeEach,expect,it,vi} from "vitest";
+vi.mock('server-only',()=>({}));
+const api=vi.hoisted(()=>({fetch:vi.fn()}));
+vi.mock('@/lib/api/client',async importOriginal=>({...await importOriginal<typeof import('@/lib/api/client')>(),publicFetch:api.fetch}));
+vi.mock('@/lib/config/env',()=>({loadConfig:()=>({}),configuredLocalePolicy:()=>({defaultLocale:'fr',locales:[{code:'fr',label:'Français'},{code:'en',label:'English'}]})}));
+import {GET} from '@/app/api/artwork-experiences/[artworkRef]/route';
+const id='50000000-0000-4000-8000-000000000001';
+const document={scope:'public',artwork:{id,slug:'etude-'+id.replaceAll('-',''),title:'Synthetic',artist:null,year:null,medium:null,dimensions:null,media:[]},locale:'fr',description:null,descriptionLocale:null,presentationReleaseId:null,catalogRevision:1};
+beforeEach(()=>api.fetch.mockReset());
+const call=(query='?locale=fr',headers:Record<string,string>={})=>GET(new Request('http://gallery.test/api/artwork-experiences/'+id+query,{headers}),{params:Promise.resolve({artworkRef:id})});
+it('relays a validated fixed public projection without browser headers or arbitrary targets',async()=>{api.fetch.mockResolvedValue(Response.json(document));const r=await call('?locale=fr',{'X-BFF-Key':'FORGED','Cookie':'admin=PRIVATE'});expect(r.status).toBe(200);expect(await r.json()).toEqual(document);expect(r.headers.get('cache-control')).toBe('private, no-store');expect(api.fetch.mock.calls[0]?.[0]).toBe('/v1/public/artwork-experiences/'+id+'?locale=fr');expect(api.fetch.mock.calls[0]?.[1]).toBeInstanceOf(AbortSignal);});
+it('rejects unplanned or repeated selectors and inactive languages before fetching',async()=>{for(const q of ['?locale=fr&locale=en','?locale=fr&backendUrl=http://evil','?locale=de']){const r=await call(q);expect([400,404]).toContain(r.status);}expect(api.fetch).not.toHaveBeenCalled();});
+it('never returns a preview or unknown response property and keeps safe upstream failures',async()=>{api.fetch.mockResolvedValueOnce(Response.json({...document,scope:'preview',privateDraft:'PRIVATE'}));const bad=await call();expect(bad.status).toBe(503);expect(await bad.text()).not.toContain('PRIVATE');api.fetch.mockResolvedValueOnce(Response.json({error:{code:'not_found',message:'PRIVATE'}},{status:404}));const missing=await call();expect(missing.status).toBe(404);expect(await missing.text()).not.toContain('PRIVATE');});

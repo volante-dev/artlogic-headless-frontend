@@ -5,7 +5,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm build && node --input-type=module -e "import ts from 'typescript'; import fs from 'node:fs'; fs.writeFileSync('next.config.mjs', ts.transpileModule(fs.readFileSync('next.config.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText)" && pnpm prune --prod
+RUN pnpm presentation:check && pnpm build && node --input-type=module -e "import ts from 'typescript'; import fs from 'node:fs'; fs.writeFileSync('next.config.mjs', ts.transpileModule(fs.readFileSync('next.config.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText)" && pnpm prune --prod
 
 FROM node:24.22.0-bookworm-slim@sha256:91acba91b842bec0bf7ea6f5e09c644c7ccad72c4996ed9616d861d1c7cd60d4 AS runtime
 WORKDIR /app
