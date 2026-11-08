@@ -1,4 +1,5 @@
 import "server-only";
+import {PublicImagePreload} from "../media/public-image-preload";
 import {Suspense} from "react";
 import {connection} from "next/server";
 import {loadSiteContent} from "../i18n/load-site-content";
@@ -18,6 +19,6 @@ async function Document({params}:ArtworkRouteProps){
   await connection();
   const {artworkRef}=await params,site=await loadSiteContent();let document;
   try{document=await resolveArtworkDocument(artworkRef,site.locale);}catch(error){if(error instanceof PublicApiError&&error.status===404)return <ArtworkRouteState status="unavailable"/>;throw error;}
-  return <ArtworkFreshnessBoundary initial={document.experience} presentation={document.presentation} siteName={site.siteName} demonstration={loadConfig().DATA_MODE==="mock"}/>;
+  return <><PublicImagePreload media={document.experience.artwork.media[0]}/><ArtworkFreshnessBoundary initial={document.experience} presentation={document.presentation} siteName={site.siteName} demonstration={loadConfig().DATA_MODE==="mock"}/></>;
 }
 export function ArtworkPage(props:ArtworkRouteProps){return <Suspense fallback={<ArtworkRouteState/>}><Document {...props}/></Suspense>;}

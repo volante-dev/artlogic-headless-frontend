@@ -8,3 +8,5 @@ export const Text:Story={args:{variant:"text"}};
 export const Disabled:Story={args:{disabled:true}};
 export const Loading:Story={args:{loading:true}};
 export const Long:Story={args:{children:"Découvrir toutes les œuvres de la collection de démonstration"}};
+
+export const LightSurface:Story={args:{surface:"light",children:"Contrôle sur fond clair"}};

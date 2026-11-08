@@ -1,3 +1,4 @@
+import {artworkFinaleIntent} from "../../components/artworks/artwork-scroll-sequence";
 import {it,expect} from "vitest";
 import {artworkScrollTarget,artworkScrollUnsettled,artworkScrollEase} from "../../components/artworks/artwork-scroll-sequence";
 it("completes each transition in either direction without a rest point between slides",()=>{
@@ -21,3 +22,6 @@ it("keeps long text and sections after the scene freely scrollable",()=>{
  expect(artworkScrollTarget(5000,900,2400,3,-1)).toBeNull();
  for(const count of [0,1])expect(artworkScrollTarget(900,900,900,count,1)).toBeNull();
 });
+
+
+it("only accepts the finale after the real photograph and reverses without a photo timer",()=>{expect(artworkFinaleIntent(false,0,900,900,1,1)).toBeNull();expect(artworkFinaleIntent(false,900,900,900,1,1)).toBe(true);expect(artworkFinaleIntent(false,1800,900,900,2,1)).toBe(true);expect(artworkFinaleIntent(false,1800,900,900,2,1,true)).toBeNull();expect(artworkFinaleIntent(true,1800,900,900,2,-1)).toBe(false);expect(artworkFinaleIntent(true,1800,900,900,2,1)).toBe(true);});

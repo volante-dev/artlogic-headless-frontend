@@ -10,7 +10,7 @@ export function previewCookieSettings(){
  return {secure,names:{session:prefix+"artlogic_preview_"+site,csrf:prefix+"artlogic_preview_csrf_"+site}};
 }
 export async function previewHandle(){const value=(await cookies()).get(previewCookieSettings().names.session)?.value;if(!value||!/^[A-Za-z0-9_-]{43}$/.test(value))throw new PublicApiError(401,"preview_unauthorized");return value;}
-export function putPreviewCookies(response:NextResponse,session:string,csrf:string,expiresAt:string){
- const {secure,names}=previewCookieSettings();for(const [kind,value] of [["session",session],["csrf",csrf]] as const)response.cookies.set(names[kind],value,{secure,httpOnly:kind==="session",sameSite:"lax",path:"/",expires:new Date(expiresAt)});
+export function putPreviewCookies(response:NextResponse,session:string,csrf:string,expiresAt:string,embedded=false){
+ const {secure,names}=previewCookieSettings();for(const [kind,value] of [["session",session],["csrf",csrf]] as const)response.cookies.set(names[kind],value,{secure,httpOnly:kind==="session",sameSite:embedded&&secure?"none":"lax",...(embedded&&secure?{partitioned:true}:{}),path:"/",expires:new Date(expiresAt)});
 }
 export function clearPreviewCookies(response:NextResponse){const {secure,names}=previewCookieSettings();for(const kind of ["session","csrf"] as const)response.cookies.set(names[kind],"",{secure,httpOnly:kind==="session",sameSite:"lax",path:"/",maxAge:0});}

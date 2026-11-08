@@ -6,8 +6,118 @@ import { isIP } from "node:net";
 export type Scope = "A" | "W" | "M" | "F" | "B" | "X";
 export type ConfigValue = string | number | string[] | Record<string, string>;
 export type Config = Readonly<Record<string, ConfigValue | undefined>> & { readonly role: Scope };
-type Rule = { scopes: string; kind: string; required?: boolean; default?: string; values?: string[]; min?: number; max?: number; secret?: boolean };
+type Rule = { scopes: string; kind: string; required?: boolean; optionalScopes?: string; default?: string; values?: string[]; min?: number; max?: number; secret?: boolean };
 export const variables: Readonly<Record<string, Rule>> = {
+  MCP_ENABLED:{scopes:"AWB",kind:"enum",default:"false",values:["true","false"]},
+  MCP_RESOURCE_URL:{scopes:"AW",kind:"url"},
+  MCP_OAUTH_ISSUER_URL:{scopes:"A",kind:"url"},
+  MCP_CLIENT_ID:{scopes:"AW",kind:"string"},
+  MCP_CLIENT_SECRET_HASH:{scopes:"A",kind:"string",secret:true},
+  MCP_CLIENT_REDIRECT_URIS_JSON:{scopes:"A",kind:"list"},
+  MCP_ALLOWED_ORIGINS_JSON:{scopes:"A",kind:"origins",default:"[]"},
+  MCP_ACCESS_TTL_SECONDS:{scopes:"A",kind:"number",default:"300",min:30,max:300},
+  MCP_CODE_TTL_SECONDS:{scopes:"A",kind:"number",default:"60",min:15,max:60},
+  MCP_CONSENT_TTL_SECONDS:{scopes:"A",kind:"number",default:"600",min:60,max:600},
+  MCP_REFRESH_ABSOLUTE_SECONDS:{scopes:"AW",kind:"number",default:"2592000",min:3600,max:2592000},
+  MCP_REFRESH_IDLE_SECONDS:{scopes:"AW",kind:"number",default:"604800",min:3600,max:604800},
+  MCP_REQUEST_BYTES:{scopes:"A",kind:"number",default:"1048576",min:4096,max:1048576},
+  MCP_RESULT_BYTES:{scopes:"A",kind:"number",default:"262144",min:4096,max:262144},
+  MCP_CANDIDATE_BYTES:{scopes:"AW",kind:"number",default:"16777216",min:1048576,max:16777216},
+
+  PUBLIC_IMAGE_VARIANTS_ENABLED:{scopes:"A",kind:"enum",default:"false",values:["true","false"]},
+  PUBLIC_IMAGE_RESPONSIVE_ENABLED:{scopes:"F",kind:"enum",default:"false",values:["true","false"]},
+  PUBLIC_IMAGE_CAPABILITY_GENERATION:{scopes:"A",kind:"number",default:"1",min:1,max:2147483647},
+  PUBLIC_IMAGE_CAPABILITY_SIGN_TIMEOUT_MS:{scopes:"A",kind:"number",default:"5000",min:500,max:10000},
+  PUBLIC_IMAGE_DESCRIPTOR_TIMEOUT_MS:{scopes:"F",kind:"number",default:"1500",min:100,max:3000},
+  PUBLIC_MEDIA_DELIVERY_PHASE:{scopes:"A",kind:"enum",default:"relay",values:["relay","authorization","direct"]},
+  MEDIA_S3_ENDPOINT:{scopes:"A",kind:"url"},
+  MEDIA_S3_REGION:{scopes:"A",kind:"string"},
+  MEDIA_S3_ACCESS_KEY_ID:{scopes:"A",kind:"string",secret:true},
+  MEDIA_S3_SECRET_ACCESS_KEY:{scopes:"A",kind:"string",secret:true},
+  PUBLIC_MEDIA_READ_TTL_SECONDS:{scopes:"A",kind:"number",default:"86400",min:15,max:604800},
+  PUBLIC_MEDIA_CLOCK_MAX_AGE_MS:{scopes:"A",kind:"number",default:"30000",min:1000,max:30000},
+  PUBLIC_MEDIA_CLOCK_PROBE_TIMEOUT_MS:{scopes:"A",kind:"number",default:"2000",min:100,max:2000},
+  PUBLIC_MEDIA_DIRECT_ENABLED:{scopes:"F",kind:"enum",default:"false",values:["true","false"]},
+  PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON:{scopes:"F",kind:"origins",default:"[]"},
+  PUBLIC_MEDIA_LOAD_TIMEOUT_MS:{scopes:"F",kind:"number",default:"60000",min:5001,max:180000},
+  PRESENTATION_FOOTER_ENABLED:{scopes:"AWM",kind:"enum",default:"false",values:["true","false"]},
+  FORMS_ENABLED: {"scopes":"AWMFB","kind":"enum","default":"false","values":["true","false"]},
+  FORMS_NOTIFICATION_MODE: {scopes:"AWM",kind:"enum",values:["real","mock"]},
+  FORMS_NOTIFICATIONS_ENABLED: {"scopes":"AWM","kind":"enum","default":"false","values":["true","false"]},
+  FORMS_CONTACT_CUTOVER: {"scopes":"AWMF","kind":"enum","default":"false","values":["true","false"]},
+  FORM_RATE_REQUESTS_PER_SITE_MINUTE:{scopes:"AWM",kind:"number",default:"6000",min:1,max:100000},
+  FORM_RATE_REQUESTS_PER_VISITOR_MINUTE:{scopes:"AWM",kind:"number",default:"300",min:1,max:10000},
+  FORM_EXPORTS_BUCKET:{scopes:"AWM",kind:"string"},
+  FORM_EXPORT_MAX_BYTES:{scopes:"AWM",kind:"number",default:"32000000",min:100000,max:50000000},
+  FORM_EXPORT_MAX_COLUMNS:{scopes:"AWM",kind:"number",default:"2048",min:1,max:2048},
+  FORM_RATE_EXPORTS_PER_ADMIN_HOUR:{scopes:"AWM",kind:"number",default:"10",min:1,max:50},
+  FORM_RATE_EXPORTS_PER_SITE_HOUR:{scopes:"AWM",kind:"number",default:"50",min:1,max:500},
+  FORM_ATTACHMENTS_BUCKET: {"scopes":"AWM","kind":"string"},
+  FORM_SESSION_TTL_SECONDS: {"scopes":"AWM","kind":"number","default":"86400","min":1,"max":86400},
+  FORM_MAX_OBJECTS: {"scopes":"AWM","kind":"number","default":"10","min":1,"max":10},
+  FORM_MAX_IMAGES: {"scopes":"AWM","kind":"number","default":"50","min":1,"max":50},
+  FORM_MAX_SOURCE_BYTES: {"scopes":"AWM","kind":"number","default":"25000000","min":1,"max":25000000},
+  FORM_MAX_TOTAL_SOURCE_BYTES: {"scopes":"AWM","kind":"number","default":"500000000","min":1,"max":500000000},
+  FORM_IMAGE_MAX_EDGE: {"scopes":"AWM","kind":"number","default":"2000","min":1,"max":2000},
+  FORM_IMAGE_MAX_PIXELS: {"scopes":"AWM","kind":"number","default":"40000000","min":1,"max":40000000},
+  FORM_IMAGE_OUTPUT_MAX_BYTES: {"scopes":"AWM","kind":"number","default":"4000000","min":1,"max":4000000},
+  FORM_IMAGE_PREPARE_CONCURRENCY: {"scopes":"AWM","kind":"number","default":"1","min":1,"max":1},
+  FORM_IMAGE_DECODE_TIMEOUT_MS: {"scopes":"AWM","kind":"number","default":"15000","min":1,"max":15000},
+  FORM_IMAGE_DECODE_MEMORY_BYTES: {"scopes":"AWM","kind":"number","default":"805306368","min":1,"max":805306368},
+  FORM_CLEANUP_INTERVAL_SECONDS: {"scopes":"AWM","kind":"number","default":"3600","min":1,"max":3600},
+  FORM_UPLOAD_CLEANUP_MARGIN_SECONDS: {"scopes":"AWM","kind":"number","default":"300","min":1,"max":300},
+  FORM_RATE_SESSIONS_PER_VISITOR_HOUR: {"scopes":"AWM","kind":"number","default":"10","min":1,"max":10},
+  FORM_RATE_UPLOADS_PER_VISITOR_HOUR: {"scopes":"AWM","kind":"number","default":"100","min":1,"max":100},
+  FORM_RATE_SESSIONS_PER_SITE_HOUR: {"scopes":"AWM","kind":"number","default":"500","min":1,"max":500},
+  FORM_RATE_SOURCE_BYTES_PER_SITE_HOUR: {"scopes":"AWM","kind":"number","default":"5000000000","min":1,"max":5000000000},
+  FORM_RATE_SUBMISSIONS_PER_VISITOR_HOUR: {"scopes":"AWM","kind":"number","default":"10","min":1,"max":10},
+  FORM_NOTIFICATION_ENCODED_MAX_BYTES: {"scopes":"AWM","kind":"number","default":"15000000","min":1,"max":15000000},
+  FORM_NOTIFICATION_TIMEOUT_MS: {"scopes":"AWM","kind":"number","default":"15000","min":1,"max":15000},
+  FORM_IMAGE_RECONCILE_SECONDS: {"scopes":"WM","kind":"number","default":"5","min":1,"max":60},
+  FORM_HEIC_DECODER_PATH: {"scopes":"WM","kind":"localpath","default":"/usr/bin/heif-convert"},
+  RESEND_API_KEY: {"scopes":"WM","kind":"token","secret":true},
+  RESEND_WEBHOOK_SECRET: {"scopes":"AM","kind":"token","secret":true},
+  RESEND_FROM_EMAIL: {"scopes":"AWM","kind":"mailbox"},
+  RESEND_API_BASE_URL: {"scopes":"WM","kind":"url","default":"https://api.resend.com"},
+  CRM_SITE_DIRECTORY_URL: {"scopes":"AWM","kind":"url"},
+  CRM_SITE_DIRECTORY_CLIENT_ID: {"scopes":"AWM","kind":"profile"},
+  CRM_SITE_DIRECTORY_KEY_ID: {"scopes":"AWM","kind":"profile"},
+  CRM_SITE_DIRECTORY_PRIVATE_KEY: {"scopes":"AWM","kind":"string","secret":true},
+  EDITORIAL_IMAGE_GROUPS_ENABLED:{scopes:"AW",kind:"enum",default:"false",values:["true","false"]},
+  EDITORIAL_AI_TOKEN_BOUND_QUALIFIED:{scopes:"AW",kind:"enum",default:"false",values:["true","false"]},
+  EDITORIAL_AI_ENABLED: {"scopes":"AW","kind":"enum","default":"false","values":["true","false"]},
+  EDITORIAL_AI_PROVIDER: {"scopes":"AW","kind":"enum","default":"mock","values":["mock","openai"]},
+  EDITORIAL_AI_MODEL: {"scopes":"AW","kind":"string"},
+  EDITORIAL_AI_REASONING_EFFORT: {"scopes":"AW","kind":"enum","default":"low","values":["none","low","medium","high"]},
+  EDITORIAL_AI_API_KEY: {"scopes":"W","kind":"string","secret":true},
+  EDITORIAL_AI_DISCLOSURE_VERSION: {"scopes":"AW","kind":"string","default":"mock-v1"},
+  EDITORIAL_AI_PRICING_VERSION: {"scopes":"AW","kind":"string"},
+  EDITORIAL_AI_MAX_TEXT_CHARACTERS: {"scopes":"AW","kind":"number","default":"50000","min":1,"max":50000},
+  EDITORIAL_AI_MAX_TEXT_SOURCES: {"scopes":"AW","kind":"number","default":"20","min":1,"max":20},
+  EDITORIAL_AI_MAX_MEDIA_SOURCES: {"scopes":"AW","kind":"number","default":"20","min":1,"max":20},
+  EDITORIAL_AI_MAX_INSTRUCTION_CHARACTERS: {"scopes":"AW","kind":"number","default":"2000","min":1,"max":2000},
+  EDITORIAL_AI_MAX_BODY_BYTES: {"scopes":"AWB","kind":"number","default":"128000","min":4096,"max":128000},
+  EDITORIAL_AI_MAX_CONTEXT_BYTES: {"scopes":"AW","kind":"number","default":"128000","min":4096,"max":128000},
+  EDITORIAL_AI_MAX_OUTPUT_TOKENS: {"scopes":"AW","kind":"number","default":"16384","min":1024,"max":16384},
+  EDITORIAL_AI_PROVIDER_TIMEOUT_SECONDS: {"scopes":"AW","kind":"number","default":"90","min":1,"max":90},
+  EDITORIAL_AI_REQUEST_DEADLINE_SECONDS: {"scopes":"AW","kind":"number","default":"120","min":5,"max":120},
+  EDITORIAL_AI_MAX_CONCURRENT_PER_SITE: {"scopes":"AW","kind":"number","default":"2","min":1,"max":10},
+  EDITORIAL_AI_MAX_CONCURRENT_PER_ARTICLE: {"scopes":"AW","kind":"number","default":"1","min":1,"max":1},
+  EDITORIAL_AI_MAX_REQUESTS_PER_DAY: {"scopes":"AW","kind":"number","default":"30","min":1,"max":10000},
+  EDITORIAL_AI_MAX_REQUEST_CENTS: {"scopes":"AW","kind":"number","default":"50","min":1,"max":10000},
+  EDITORIAL_AI_DAILY_BUDGET_CENTS: {"scopes":"AW","kind":"number","default":"500","min":1,"max":1000000},
+  EDITORIAL_AI_MONTHLY_BUDGET_CENTS: {"scopes":"AW","kind":"number","default":"2000","min":1,"max":10000000},
+  EDITORIAL_AI_FAILED_TEXT_RETENTION_DAYS: {"scopes":"AW","kind":"number","default":"30","min":1,"max":365},
+  EDITORIAL_AI_AUDIT_RETENTION_DAYS: {"scopes":"AW","kind":"number","default":"90","min":1,"max":365},
+  EDITORIAL_AI_WORKER_HEARTBEAT_SECONDS: {"scopes":"AW","kind":"number","default":"10","min":1,"max":60},
+  EDITORIAL_AI_WORKER_LEASE_SECONDS: {"scopes":"AW","kind":"number","default":"30","min":3,"max":180},
+  EDITORIAL_AI_CANDIDATE_TTL_SECONDS: {"scopes":"AW","kind":"number","default":"600","min":30,"max":600},
+  EDITORIAL_AI_INPUT_CENTS_PER_MILLION: {"scopes":"AW","kind":"number","min":0,"max":100000},
+  EDITORIAL_AI_OUTPUT_CENTS_PER_MILLION: {"scopes":"AW","kind":"number","min":0,"max":100000},
+
+  EDITORIAL_IMMERSIVE_ENABLED: {scopes:"A",kind:"enum",default:"false",values:["true","false"]},
+  EDITORIAL_IMMERSIVE_RENDER_ENABLED: {scopes:"F",kind:"enum",default:"true",values:["true","false"]},
+  EDITORIAL_EXHIBITIONS_ENABLED: {scopes:"A",kind:"enum",default:"false",values:["true","false"]},
   EDITORIAL_ENABLED: {scopes:"AWMFB",kind:"enum",default:"false",values:["true","false"]},
   EDITORIAL_VERSION_LIMIT: {scopes:"AWM",kind:"number",default:"20",min:3,max:100},
   EDITORIAL_TRASH_DAYS: {scopes:"AWM",kind:"number",default:"30",min:1,max:365},
@@ -52,8 +162,10 @@ export const variables: Readonly<Record<string, Rule>> = {
 
   SITE_PROFILE: {scopes:"AWMF",kind:"profile",default:"default"},
   PRESENTATION_MANIFEST_PATH: {scopes:"AWM",kind:"localpath",required:true},
+  NAVIGATION_EDITING_ENABLED: {scopes:"A",kind:"enum",default:"false",values:["true","false"]},
   PREVIEW_SERVICE_KEY: {scopes:"AF",kind:"token",required:true,secret:true},
   PREVIEW_EXCHANGE_TTL_SECONDS: {scopes:"A",kind:"number",default:"60",min:15,max:120},
+  SESSION_REMEMBER_SECONDS: {scopes:"A",kind:"number",default:"2592000",min:300,max:2592000},
   PREVIEW_SESSION_TTL_SECONDS: {scopes:"A",kind:"number",default:"900",min:60,max:1800},
   PRESENTATION_UPLOAD_TTL_SECONDS: {scopes:"AW",kind:"number",default:"86400",min:3600,max:604800},
   PRESENTATION_ATTEMPT_TTL_SECONDS: {scopes:"AW",kind:"number",default:"900",min:60,max:3600},
@@ -91,6 +203,10 @@ export const variables: Readonly<Record<string, Rule>> = {
     ],
     "required": true
   },
+  CRM_ADMIN_ORIGIN: {scopes:"A",kind:"string"},
+  CRM_ADMIN_SSO_CLIENT_ID: {scopes:"AM",kind:"string"},
+  CLIENT_COMPANY_ID: {scopes:"AWM",kind:"string"},
+  CLIENT_ADMIN_ACCESS_ENABLED: {scopes:"AWM",kind:"string",default:"false"},
   "DATA_MODE": {
     "scopes": "AWMFBX",
     "kind": "enum",
@@ -126,14 +242,21 @@ export const variables: Readonly<Record<string, Rule>> = {
     "default": ""
   },
   "SITE_ORIGIN": {
-    "scopes": "AFB",
+    "scopes": "AMFB",
     "kind": "origin",
-    "required": true
+    "required": true,
+    "optionalScopes": "M"
+  },
+  "SITE_ALLOWED_ORIGINS_JSON": {
+    "scopes": "F",
+    "kind": "origins",
+    "default": "[]"
   },
   "ADMIN_ORIGIN": {
-    "scopes": "AFB",
+    "scopes": "AWFB",
     "kind": "origin",
-    "required": true
+    "required": true,
+    "optionalScopes": "W"
   },
   "BACKEND_URL": {
     "scopes": "FB",
@@ -245,6 +368,8 @@ export const variables: Readonly<Record<string, Rule>> = {
       "linked-v2"
     ]
   },
+  "ARTLOGIC_DESCRIPTION_LAYOUT": {"scopes":"WM","kind":"enum","values":["single","en-fr-separated"],"default":"single"},
+  "ARTLOGIC_DESCRIPTION_SOURCE_LOCALE": {"scopes":"WM","kind":"string"},
   "ARTLOGIC_FEED_ALLOWED_ORIGINS": {
     "scopes": "W",
     "kind": "origins",
@@ -324,7 +449,7 @@ export const variables: Readonly<Record<string, Rule>> = {
     "max": 1073741824
   },
   "SYNC_MAX_TEXT_LENGTH": {
-    "scopes": "W",
+    "scopes": "AW",
     "kind": "number",
     "default": "10000",
     "min": 1,
@@ -451,6 +576,12 @@ export const variables: Readonly<Record<string, Rule>> = {
     "min": 1,
     "max": 120000
   },
+  "PUBLIC_PAGE_REQUEST_TIMEOUT_MS": {
+    "scopes":"F", "kind":"number", "default":"45000", "min":1000, "max":120000
+  },
+  "PUBLIC_MEDIA_REQUEST_TIMEOUT_MS": {
+    "scopes": "F", "kind": "number", "default": "45000", "min": 1000, "max": 120000
+  },
   "PUBLIC_RATE_LIMIT_PER_MINUTE": {
     "scopes": "A",
     "kind": "number",
@@ -503,14 +634,16 @@ export const variables: Readonly<Record<string, Rule>> = {
     "max": 65535
   },
   "SSO_ISSUER": {
-    "scopes": "A",
+    "scopes": "AW",
     "kind": "url",
-    "required": true
+    "required": true,
+    "optionalScopes": "W"
   },
   "SSO_SUPABASE_URL": {
-    "scopes": "A",
+    "scopes": "AW",
     "kind": "url",
-    "required": true
+    "required": true,
+    "optionalScopes": "W"
   },
   "SSO_REDIRECT_URI": {
     "scopes": "A",
@@ -541,11 +674,12 @@ export const variables: Readonly<Record<string, Rule>> = {
     "default": "authenticated"
   },
   "ADMIN_ALLOWED_SUBJECTS": {
-    "scopes": "A",
+    "scopes": "AW",
     "kind": "list",
-    "required": true
+    "required": true,
+    "optionalScopes": "W"
   },
-  ADMIN_REQUIRE_CRM_ADMIN:{scopes:"A",kind:"enum",default:"false",values:["true","false"]},
+  ADMIN_REQUIRE_CRM_ADMIN:{scopes:"AW",kind:"enum",default:"false",values:["true","false"]},
   "LOG_LEVEL": {
     "scopes": "AWX",
     "kind": "enum",
@@ -677,6 +811,7 @@ function parseLocales(raw:string,name="SITE_LOCALES_JSON",minimum=1):ConfiguredL
 }
 export function configuredLocalePolicy(config:Config):{defaultLocale:string;locales:ConfiguredLocale[]}{
   const locales=parseLocales(stringValue(config,"SITE_LOCALES_JSON")),defaultLocale=stringValue(config,"SITE_DEFAULT_LOCALE");
+  if(config.ARTLOGIC_DESCRIPTION_SOURCE_LOCALE&&(String(config.ARTLOGIC_DESCRIPTION_SOURCE_LOCALE).length>35||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(String(config.ARTLOGIC_DESCRIPTION_SOURCE_LOCALE))))fail("ARTLOGIC_DESCRIPTION_SOURCE_LOCALE","langue source invalide");
   if(!locales.some(locale=>locale.code===defaultLocale))fail("SITE_DEFAULT_LOCALE","doit appartenir aux langues configurees");
   return {defaultLocale,locales};
 }
@@ -809,12 +944,40 @@ export function readConfig(role: Scope, env: Record<string, string | undefined> 
     const raw = env[name] === "" ? undefined : env[name];
     const input = raw ?? rule.default;
     if (input === undefined) {
-      if (rule.required) fail(name, "variable obligatoire");
+      if (rule.required&&!rule.optionalScopes?.includes(role)) fail(name, "variable obligatoire");
       continue;
     }
     result[name] = parse(name, input, rule);
   }
   const config = result as Config;
+  if(config.MCP_ENABLED==="true"&&(role==="A"||role==="W")){
+    for(const name of ["MCP_RESOURCE_URL","MCP_CLIENT_ID","CRM_SITE_DIRECTORY_URL","CRM_SITE_DIRECTORY_CLIENT_ID","CRM_SITE_DIRECTORY_KEY_ID","CRM_SITE_DIRECTORY_PRIVATE_KEY",...(role==="A"?["MCP_OAUTH_ISSUER_URL","MCP_CLIENT_SECRET_HASH","MCP_CLIENT_REDIRECT_URIS_JSON"]:[])])if(!config[name])fail(name,"requis pour la delegation MCP active");
+    const resource=new URL(stringValue(config,"MCP_RESOURCE_URL"));
+    if(resource.protocol!=="https:"||resource.pathname!=="/mcp"||resource.search||resource.hash||resource.username||resource.password||resource.hostname.includes("*"))fail("MCP_RESOURCE_URL","ressource HTTPS exacte /mcp requise");
+    const client=stringValue(config,"MCP_CLIENT_ID");if(!client.trim()||client!==client.trim()||client.length>200||/[\r\n\0]/.test(client))fail("MCP_CLIENT_ID","client enregistre borne requis");
+    if(numberValue(config,"MCP_REFRESH_IDLE_SECONDS")>numberValue(config,"MCP_REFRESH_ABSOLUTE_SECONDS"))fail("MCP_REFRESH_IDLE_SECONDS","ne peut depasser la duree absolue");
+    if(role==="A"){
+      if(stringValue(config,"MCP_OAUTH_ISSUER_URL")!==resource.origin+"/oauth/mcp")fail("MCP_OAUTH_ISSUER_URL","issuer exact du backend /oauth/mcp requis");
+      if(!/^[a-f0-9]{64}$/.test(stringValue(config,"MCP_CLIENT_SECRET_HASH")))fail("MCP_CLIENT_SECRET_HASH","SHA-256 hex requis");
+      const redirects=listValue(config,"MCP_CLIENT_REDIRECT_URIS_JSON");if(!redirects.length||redirects.length>8||new Set(redirects).size!==redirects.length)fail("MCP_CLIENT_REDIRECT_URIS_JSON","un a huit callbacks exacts uniques requis");
+      for(const raw of redirects){let u:URL;try{u=new URL(raw);}catch{return fail("MCP_CLIENT_REDIRECT_URIS_JSON","callback invalide");}if(u.protocol!=="https:"||u.username||u.password||u.hash||u.hostname.includes("*")||raw.length>2048)fail("MCP_CLIENT_REDIRECT_URIS_JSON","callback HTTPS exact sans wildcard ou fragment requis");}
+    }
+  }
+  if(role==="A"){
+
+    if(config.MEDIA_S3_ENDPOINT){const url=parseURL("MEDIA_S3_ENDPOINT",stringValue(config,"MEDIA_S3_ENDPOINT"));if(url.search||url.hostname.includes("*")||url.protocol!=="https:"&&!(config.DATA_MODE==="mock"&&isLoopback(url.hostname)))fail("MEDIA_S3_ENDPOINT","endpoint HTTPS exact requis");}
+  }
+  if(role==="F"){
+    const siteOrigins=listValue(config,"SITE_ALLOWED_ORIGINS_JSON");
+    if(siteOrigins.length>16)fail("SITE_ALLOWED_ORIGINS_JSON","seize origines maximum");
+    for(const origin of siteOrigins){const url=parseURL("SITE_ALLOWED_ORIGINS_JSON",origin,true);if(url.hostname.includes("*")||url.protocol!=="https:"&&!(config.DATA_MODE==="mock"&&isLoopback(url.hostname)))fail("SITE_ALLOWED_ORIGINS_JSON","origine HTTPS exacte requise");}
+    const origins=listValue(config,"PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON");
+    if(config.PUBLIC_IMAGE_RESPONSIVE_ENABLED==="true"&&config.PUBLIC_MEDIA_DIRECT_ENABLED!=="true")fail("PUBLIC_IMAGE_RESPONSIVE_ENABLED","diffusion directe requise");
+    if(config.PUBLIC_MEDIA_DIRECT_ENABLED==="true"&&!origins.length)fail("PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON","origine requise en direct");
+    for(const origin of origins){const url=parseURL("PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON",origin,true);if(url.hostname.includes("*")||url.protocol!=="https:"&&!(config.DATA_MODE==="mock"&&isLoopback(url.hostname)))fail("PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON","origine HTTPS exacte requise");}
+    if(numberValue(config,"PUBLIC_MEDIA_LOAD_TIMEOUT_MS")<numberValue(config,"PUBLIC_PAGE_REQUEST_TIMEOUT_MS")+5000)fail("PUBLIC_MEDIA_LOAD_TIMEOUT_MS","doit couvrir la deadline publique plus 5000 ms");
+  }
+
   if(config.PREVIEW_SERVICE_KEY&&config.PREVIEW_SERVICE_KEY===env.BFF_SERVICE_KEY)
     fail("PREVIEW_SERVICE_KEY","doit etre distinct de BFF_SERVICE_KEY");
   if(role!=="X")configuredLocalePolicy(config);
@@ -840,6 +1003,33 @@ export function readConfig(role: Scope, env: Record<string, string | undefined> 
   }
   const mode = stringValue(config, "DATA_MODE");
   const deployment = stringValue(config, "DEPLOYMENT_ENV");
+  const notificationMode=config.FORMS_NOTIFICATION_MODE??mode;
+  if(config.FORMS_CONTACT_CUTOVER==="true"&&config.FORMS_ENABLED!=="true")fail("FORMS_CONTACT_CUTOVER","module Forms requis");
+  if(config.FORMS_NOTIFICATIONS_ENABLED==="true"&&config.FORMS_ENABLED!=="true")fail("FORMS_NOTIFICATIONS_ENABLED","module Forms requis");
+  if(config.FORMS_ENABLED==="true"&&["A","W","M"].includes(role)){
+    const bucket=config.FORM_ATTACHMENTS_BUCKET;
+    if(!config.FORM_EXPORTS_BUCKET)result.FORM_EXPORTS_BUCKET="forms-exports-"+stringValue(config,"SITE_ID");
+    if(typeof config.FORM_EXPORTS_BUCKET!=="string"||! /^[a-z0-9][a-z0-9-]{2,62}$/.test(config.FORM_EXPORTS_BUCKET)||[config.MEDIA_BUCKET,bucket].includes(config.FORM_EXPORTS_BUCKET))fail("FORM_EXPORTS_BUCKET","bucket prive distinct pour les exports requis");
+    if(typeof bucket!=="string"||! /^[a-z0-9][a-z0-9-]{2,62}$/.test(bucket)||bucket===config.MEDIA_BUCKET)fail("FORM_ATTACHMENTS_BUCKET","bucket prive distinct des medias publics requis");
+  }
+  if(config.FORMS_NOTIFICATIONS_ENABLED==="true"){
+    if(numberValue(config,"FORM_NOTIFICATION_ENCODED_MAX_BYTES")<8192)fail("FORM_NOTIFICATION_ENCODED_MAX_BYTES","minimum 8192 octets pour le corps et les en-tetes");
+    const required=["CRM_SITE_DIRECTORY_URL","CRM_SITE_DIRECTORY_CLIENT_ID","CRM_SITE_DIRECTORY_KEY_ID","CRM_SITE_DIRECTORY_PRIVATE_KEY","RESEND_FROM_EMAIL",...(role==="A"?["RESEND_WEBHOOK_SECRET"]:role==="W"?["RESEND_API_KEY","SSO_ISSUER","SSO_SUPABASE_URL","ADMIN_ALLOWED_SUBJECTS","ADMIN_ORIGIN"]:["RESEND_API_KEY","RESEND_WEBHOOK_SECRET"])];
+    for(const name of required)if(!config[name])fail(name,"variable obligatoire si notifications Forms actives");
+  }
+  if(config.FORMS_NOTIFICATIONS_ENABLED==="true"&&notificationMode==="real"&&new URL(String(config.CRM_SITE_DIRECTORY_URL)).protocol!=="https:")fail("CRM_SITE_DIRECTORY_URL","HTTPS requis pour les notifications reelles");
+  if(config.CRM_SITE_DIRECTORY_PRIVATE_KEY){
+    try{
+      const jwk=JSON.parse(String(config.CRM_SITE_DIRECTORY_PRIVATE_KEY)) as Record<string,unknown>;
+      if(jwk.kty!=="OKP"||jwk.crv!=="Ed25519"||![jwk.x,jwk.d].every(v=>typeof v==="string"&&/^[A-Za-z0-9_-]{43}$/.test(v)))throw new Error();
+    }catch{fail("CRM_SITE_DIRECTORY_PRIVATE_KEY","JWK prive Ed25519 JSON monoligne requis");}
+  }
+  if(config.FORMS_NOTIFICATIONS_ENABLED==="true"&&notificationMode==="mock"){
+    if(!isLoopback(new URL(String(config.CRM_SITE_DIRECTORY_URL)).hostname))fail("CRM_SITE_DIRECTORY_URL","annuaire mock local requis");
+    if(config.RESEND_API_BASE_URL&&!isLoopback(new URL(String(config.RESEND_API_BASE_URL)).hostname))fail("RESEND_API_BASE_URL","livraison mock locale requise");
+    if(!String(config.RESEND_FROM_EMAIL).endsWith(".test"))fail("RESEND_FROM_EMAIL","adresse synthetique .test requise en mock");
+  }
+  if(notificationMode==="real"&&config.RESEND_API_BASE_URL&&String(config.RESEND_API_BASE_URL)!=="https://api.resend.com")fail("RESEND_API_BASE_URL","origine Resend officielle requise en reel");
   if(config.CONTACT_SERVICE_KEY&&[env.BFF_SERVICE_KEY,env.PREVIEW_SERVICE_KEY,env.CONTACT_INGRESS_KEY].includes(String(config.CONTACT_SERVICE_KEY)))fail("CONTACT_SERVICE_KEY","doit etre distinct des autres cles de service");
   if(role==="F"&&mode==="real"){
     for(const name of ["CONTACT_TRUSTED_INGRESS_HEADER","CONTACT_INGRESS_KEY"])if(!config[name])fail(name,"variable obligatoire en mode real, meme contact desactive");

@@ -1,0 +1,16 @@
+import type{Meta,StoryObj}from'@storybook/nextjs-vite';
+import{ArticleReader,type ArticleReaderProps}from'./ArticleReader';
+import{EditorialInteractionProvider}from'./immersive/EditorialInteractionProvider';
+import{editorialBlocks,editorialImage,eid}from'../../.storybook/editorial-fixtures';
+const split=editorialBlocks().find(b=>b.type==='textMedia');if(split?.type!=='textMedia')throw Error();
+const first={...editorialImage(501),source:{kind:'image' as const,assetId:eid(501),srcPath:'/demo/gallery/glass-full.png',width:1536,height:1024},subtext:null},second={...editorialImage(505),source:{kind:'image' as const,assetId:eid(505),srcPath:'/demo/gallery/glass-detail.png',width:1024,height:1536},subtext:null};
+const block={...split,media:first,secondMedia:second};
+const article:ArticleReaderProps['article']={id:eid(9700),kind:'publication',canonicalPath:'/publications/text-media-pair',title:'Deux regards, un récit',summary:null,editorialDate:'2026-11-03',cover:null,authors:[],terms:[],alternatePaths:{},blocks:[block],relatedArticles:[],publicRevision:'1',commonRevision:'1',readingMode:'classic'};
+const meta={title:'Editorial/Text media pair',component:ArticleReader,args:{article},decorators:[Story=><EditorialInteractionProvider><Story/></EditorialInteractionProvider>]}satisfies Meta<typeof ArticleReader>;export default meta;type Story=StoryObj<typeof meta>;
+export const Columns:Story={};
+export const Rows:Story={args:{article:{...article,blocks:[{...block,mediaLayout:'rows'}]}}};
+export const Immersive:Story={args:{article:{...article,readingMode:'immersive'}}};
+export const ImmersiveRows:Story={args:{article:{...article,readingMode:'immersive',blocks:[{...block,mediaLayout:'rows'}]}}};
+export const CrossReveal:Story={args:{article:{...article,readingMode:'immersive',blocks:[{...block,immersiveAnimation:'split-cross-reveal'}]}}};
+export const Stagger:Story={args:{article:{...article,readingMode:'immersive',blocks:[{...block,immersiveAnimation:'split-stagger'}]}}};
+export const Mixed:Story={args:{article:{...article,readingMode:'immersive',blocks:[{...block,secondMedia:{...second,source:{kind:'video',assetId:eid(600),srcPath:'/editorial-demo.mp4'},video:{autoplay:false,showSoundControl:true,posterPath:null}}}]}}};

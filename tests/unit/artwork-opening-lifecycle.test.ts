@@ -4,9 +4,11 @@ import {ArtworkOpening} from "../../components/artworks/artwork-opening";
 function paper(){return {style:{opacity:"",willChange:"",backdropFilter:""},dataset:{},inert:false} as unknown as HTMLElement;}
 it("publishes backdrop visibility when a visit closes",()=>{
  const opening=new ArtworkOpening(),visibility:boolean[]=[];
+ expect(opening.isClosing).toBe(false);
  opening.subscribe(()=>visibility.push(opening.hasPaper));
  opening.register("paper",paper());expect(visibility.at(-1)).toBe(true);
- opening.close();expect(visibility.at(-1)).toBe(false);
+ opening.close();expect(visibility.at(-1)).toBe(false);expect(opening.isClosing).toBe(true);
+ opening.begin();expect(opening.isClosing).toBe(false);opening.close();
 });
 it("keeps the backdrop visible across synchronous shell replacement",async()=>{
  const opening=new ArtworkOpening(),visibility:boolean[]=[];

@@ -25,3 +25,10 @@ export function artworkScrollUnsettled(y:number,viewport:number,reading:number,c
  return y< (offsets.at(-1)??reading)-1&&!offsets.some(offset=>Math.abs(offset-y)<=1);
 }
 export function artworkScrollEase(t:number):number{return 1-Math.pow(1-Math.min(1,Math.max(0,t)),4);}
+
+/** Finale is a destination, never a synthetic photographic offset. */
+export function artworkFinaleIntent(active:boolean,y:number,viewport:number,reading:number,count:number,direction:number,claimed=false):boolean|null{
+ if(claimed)return null;
+ if(active)return direction>0?true:direction<0?false:null;
+ return direction>0&&y>=Math.max(reading,artworkStageOffsets(viewport,reading,count).at(-1)??0)-1?true:null;
+}

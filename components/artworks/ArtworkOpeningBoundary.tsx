@@ -15,6 +15,6 @@ function OpeningBackdrop({opening}:{opening:ArtworkOpening}){
 }
 export function ArtworkOpeningBoundary({children}:{children:ReactNode}){
  const [opening]=useState(()=>new ArtworkOpening());
- useEffect(()=>{const detach=opening.attach();const reduced=matchMedia("(prefers-reduced-motion:reduce)"),changed=()=>{if(document.hidden||reduced.matches&&opening.phase!=="backdrop"&&opening.phase!=="waiting")opening.finish();};const resize=()=>opening.finish();document.addEventListener("visibilitychange",changed);reduced.addEventListener("change",changed);window.addEventListener("resize",resize);return ()=>{document.removeEventListener("visibilitychange",changed);reduced.removeEventListener("change",changed);window.removeEventListener("resize",resize);detach();};},[opening]);
+ useEffect(()=>{const detach=opening.attach();const reduced=matchMedia("(prefers-reduced-motion:reduce)"),finish=()=>{if(opening.returning.phase!=='idle')opening.returning.skipMotion();else opening.finish();},changed=()=>{if(document.hidden||reduced.matches&&opening.phase!=="backdrop"&&opening.phase!=="waiting")finish();};const resize=()=>finish();document.addEventListener("visibilitychange",changed);reduced.addEventListener("change",changed);window.addEventListener("resize",resize);return ()=>{document.removeEventListener("visibilitychange",changed);reduced.removeEventListener("change",changed);window.removeEventListener("resize",resize);detach();};},[opening]);
  return <Context value={opening}>{children}<OpeningBackdrop opening={opening}/></Context>;
 }

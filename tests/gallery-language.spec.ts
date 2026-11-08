@@ -11,7 +11,7 @@ test("the header translates the mounted page and preserves the document and vide
  const hero=page.locator("video").first(),node=await hero.elementHandle();await page.evaluate(()=>{Object.assign(window,{localeDocumentMarker:"unchanged"});});
  const documents:string[]=[];page.on("request",r=>{if(r.resourceType()==="document")documents.push(r.url());});
  await page.getByRole("navigation",{name:"Langue",exact:true}).getByRole("link",{name:"English",exact:true}).click();
- await expect(page).toHaveURL(/\/en$/);await expect(page.locator("html")).toHaveAttribute("lang","en");await expect(page.getByRole("heading",{name:"Art, at first sight.",exact:true})).toBeVisible();
+ await expect(page).toHaveURL(url=>url.pathname==="/en");await expect(page.locator("html")).toHaveAttribute("lang","en");await expect(page.getByRole("heading",{name:"Art, at first sight.",exact:true})).toBeVisible();
  expect(await node!.evaluate(n=>n.isConnected)).toBe(true);expect(await page.evaluate(()=>Reflect.get(window,"localeDocumentMarker"))).toBe("unchanged");
  await page.getByRole("navigation",{name:"Language",exact:true}).getByRole("link",{name:"Français",exact:true}).click();await expect(page.getByRole("heading",{name:"L’art, au premier regard.",exact:true})).toBeVisible();expect(documents).toEqual([]);
 });
@@ -28,6 +28,6 @@ test("artwork translations keep the dialog, slide, zoom and scroll mounted witho
 });
 test("locale failures keep the current page visible and a later attempt succeeds",async({page})=>{
  await page.goto("/news");await expect(page.getByRole("heading",{name:"Actualités",exact:true})).toBeVisible();
- const nav=page.getByRole("navigation",{name:"Langue",exact:true});await page.context().setOffline(true);await nav.getByRole("link",{name:"English",exact:true}).click();await expect(nav.getByRole("status")).toBeVisible();await expect(page.getByRole("heading",{name:"Actualités",exact:true})).toBeVisible();await expect(page).toHaveURL(/\/news$/);
- await page.context().setOffline(false);await nav.getByRole("link",{name:"English",exact:true}).click();await expect(page.getByRole("heading",{name:"News",exact:true})).toBeVisible();await expect(page).toHaveURL(/\/en\/news$/);
+ const nav=page.getByRole("navigation",{name:"Langue",exact:true});await page.context().setOffline(true);await nav.getByRole("link",{name:"English",exact:true}).click();await expect(nav.getByRole("status")).toBeVisible();await expect(page.getByRole("heading",{name:"Actualités",exact:true})).toBeVisible();await expect(page).toHaveURL(url=>url.pathname==="/news");
+ await page.context().setOffline(false);await nav.getByRole("link",{name:"English",exact:true}).click();await expect(page.getByRole("heading",{name:"News",exact:true})).toBeVisible();await expect(page).toHaveURL(url=>url.pathname==="/en/news");
 });

@@ -10,7 +10,8 @@ export const presentationSchemas = {
       "publications",
       "expertise",
       "contact",
-      "artworkDetail"
+      "artworkDetail",
+      "galerist"
     ]
   },
   "PresentationLink": {
@@ -32,7 +33,8 @@ export const presentationSchemas = {
               "publications",
               "expertise",
               "contact",
-              "artworkDetail"
+              "artworkDetail",
+              "galerist"
             ]
           },
           "artworkId": {
@@ -1898,7 +1900,8 @@ export const presentationSchemas = {
                       "publications",
                       "expertise",
                       "contact",
-                      "artworkDetail"
+                      "artworkDetail",
+                      "galerist"
                     ]
                   },
                   "artworkId": {
@@ -2104,12 +2107,18 @@ export const presentationSchemas = {
                       "publications",
                       "expertise",
                       "contact",
-                      "artworkDetail"
+                      "artworkDetail",
+                      "galerist"
                     ]
                   },
                   "artworkId": {
                     "type": "string",
                     "format": "uuid"
+                  },
+                  "href": {
+                    "type": "string",
+                    "pattern": "^/(?!/)",
+                    "maxLength": 2048
                   }
                 },
                 "required": [
@@ -2849,7 +2858,8 @@ export const presentationSchemas = {
                       "publications",
                       "expertise",
                       "contact",
-                      "artworkDetail"
+                      "artworkDetail",
+                      "galerist"
                     ]
                   },
                   "artworkId": {
@@ -3002,12 +3012,18 @@ export const presentationSchemas = {
                       "publications",
                       "expertise",
                       "contact",
-                      "artworkDetail"
+                      "artworkDetail",
+                      "galerist"
                     ]
                   },
                   "artworkId": {
                     "type": "string",
                     "format": "uuid"
+                  },
+                  "href": {
+                    "type": "string",
+                    "pattern": "^/(?!/)",
+                    "maxLength": 2048
                   }
                 },
                 "required": [
@@ -3172,7 +3188,8 @@ export const presentationSchemas = {
                       "publications",
                       "expertise",
                       "contact",
-                      "artworkDetail"
+                      "artworkDetail",
+                      "galerist"
                     ]
                   },
                   "artworkId": {
@@ -3397,12 +3414,18 @@ export const presentationSchemas = {
                       "publications",
                       "expertise",
                       "contact",
-                      "artworkDetail"
+                      "artworkDetail",
+                      "galerist"
                     ]
                   },
                   "artworkId": {
                     "type": "string",
                     "format": "uuid"
+                  },
+                  "href": {
+                    "type": "string",
+                    "pattern": "^/(?!/)",
+                    "maxLength": 2048
                   }
                 },
                 "required": [
@@ -3772,6 +3795,13 @@ export const presentationSchemas = {
             },
             "maxItems": 12,
             "uniqueItems": true
+          },
+          "imageFit": {
+            "type": "string",
+            "enum": [
+              "cover",
+              "contain"
+            ]
           }
         },
         "required": []
@@ -3926,6 +3956,13 @@ export const presentationSchemas = {
               }
             },
             "maxItems": 12
+          },
+          "imageFit": {
+            "type": "string",
+            "enum": [
+              "cover",
+              "contain"
+            ]
           }
         },
         "required": []
@@ -4072,7 +4109,8 @@ export const presentationSchemas = {
                             "publications",
                             "expertise",
                             "contact",
-                            "artworkDetail"
+                            "artworkDetail",
+                            "galerist"
                           ]
                         },
                         "artworkId": {
@@ -4303,12 +4341,18 @@ export const presentationSchemas = {
                             "publications",
                             "expertise",
                             "contact",
-                            "artworkDetail"
+                            "artworkDetail",
+                            "galerist"
                           ]
                         },
                         "artworkId": {
                           "type": "string",
                           "format": "uuid"
+                        },
+                        "href": {
+                          "type": "string",
+                          "pattern": "^/(?!/)",
+                          "maxLength": 2048
                         }
                       },
                       "required": [
@@ -5144,7 +5188,8 @@ export const presentationSchemas = {
                             "publications",
                             "expertise",
                             "contact",
-                            "artworkDetail"
+                            "artworkDetail",
+                            "galerist"
                           ]
                         },
                         "artworkId": {
@@ -5301,12 +5346,18 @@ export const presentationSchemas = {
                             "publications",
                             "expertise",
                             "contact",
-                            "artworkDetail"
+                            "artworkDetail",
+                            "galerist"
                           ]
                         },
                         "artworkId": {
                           "type": "string",
                           "format": "uuid"
+                        },
+                        "href": {
+                          "type": "string",
+                          "pattern": "^/(?!/)",
+                          "maxLength": 2048
                         }
                       },
                       "required": [
@@ -5638,7 +5689,8 @@ export const presentationSchemas = {
                           "publications",
                           "expertise",
                           "contact",
-                          "artworkDetail"
+                          "artworkDetail",
+                          "galerist"
                         ]
                       },
                       "artworkId": {
@@ -5877,7 +5929,8 @@ export const presentationSchemas = {
                           "publications",
                           "expertise",
                           "contact",
-                          "artworkDetail"
+                          "artworkDetail",
+                          "galerist"
                         ]
                       },
                       "artworkId": {
@@ -6063,7 +6116,8 @@ export const presentationSchemas = {
                           "publications",
                           "expertise",
                           "contact",
-                          "artworkDetail"
+                          "artworkDetail",
+                          "galerist"
                         ]
                       },
                       "artworkId": {
@@ -6310,6 +6364,13 @@ export const presentationSchemas = {
                 },
                 "maxItems": 12,
                 "uniqueItems": true
+              },
+              "imageFit": {
+                "type": "string",
+                "enum": [
+                  "cover",
+                  "contain"
+                ]
               }
             },
             "required": []
@@ -6457,7 +6518,8 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
@@ -6881,7 +6943,8 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
@@ -7055,6 +7118,337 @@ export const presentationSchemas = {
           "hidden",
           "props"
         ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "articleSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "compact"
+            ]
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 120
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "introduction": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "manual",
+                  "latest"
+                ]
+              },
+              "articleIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "maxItems": 12,
+                "uniqueItems": true
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "publication",
+                  "news"
+                ]
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12
+              },
+              "taxonomyAssignments": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "vocabularyId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "termIds": {
+                      "type": "array",
+                      "maxItems": 20,
+                      "uniqueItems": true,
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    }
+                  },
+                  "required": [
+                    "vocabularyId",
+                    "termIds"
+                  ]
+                }
+              },
+              "kinds": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 3,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "publication",
+                    "news",
+                    "exhibition"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "mode",
+              "articleIds",
+              "taxonomyAssignments",
+              "limit"
+            ],
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {}
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kinds": {}
+                },
+                "required": [
+                  "kinds"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "hidden",
+          "props"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "form"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "hidden",
+          "props"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "formImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "imageId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "alt": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "focalPoint": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "imageSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId",
+              "imageSide"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "hidden",
+          "props"
+        ]
       }
     ]
   },
@@ -7112,12 +7506,18 @@ export const presentationSchemas = {
                           "publications",
                           "expertise",
                           "contact",
-                          "artworkDetail"
+                          "artworkDetail",
+                          "galerist"
                         ]
                       },
                       "artworkId": {
                         "type": "string",
                         "format": "uuid"
+                      },
+                      "href": {
+                        "type": "string",
+                        "pattern": "^/(?!/)",
+                        "maxLength": 2048
                       }
                     },
                     "required": [
@@ -7824,12 +8224,18 @@ export const presentationSchemas = {
                           "publications",
                           "expertise",
                           "contact",
-                          "artworkDetail"
+                          "artworkDetail",
+                          "galerist"
                         ]
                       },
                       "artworkId": {
                         "type": "string",
                         "format": "uuid"
+                      },
+                      "href": {
+                        "type": "string",
+                        "pattern": "^/(?!/)",
+                        "maxLength": 2048
                       }
                     },
                     "required": [
@@ -7961,12 +8367,18 @@ export const presentationSchemas = {
                           "publications",
                           "expertise",
                           "contact",
-                          "artworkDetail"
+                          "artworkDetail",
+                          "galerist"
                         ]
                       },
                       "artworkId": {
                         "type": "string",
                         "format": "uuid"
+                      },
+                      "href": {
+                        "type": "string",
+                        "pattern": "^/(?!/)",
+                        "maxLength": 2048
                       }
                     },
                     "required": [
@@ -8402,6 +8814,13 @@ export const presentationSchemas = {
                   }
                 },
                 "maxItems": 12
+              },
+              "imageFit": {
+                "type": "string",
+                "enum": [
+                  "cover",
+                  "contain"
+                ]
               }
             },
             "required": []
@@ -8485,12 +8904,18 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
                               "type": "string",
                               "format": "uuid"
+                            },
+                            "href": {
+                              "type": "string",
+                              "pattern": "^/(?!/)",
+                              "maxLength": 2048
                             }
                           },
                           "required": [
@@ -9129,12 +9554,18 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
                               "type": "string",
                               "format": "uuid"
+                            },
+                            "href": {
+                              "type": "string",
+                              "pattern": "^/(?!/)",
+                              "maxLength": 2048
                             }
                           },
                           "required": [
@@ -9294,6 +9725,532 @@ export const presentationSchemas = {
           "variant",
           "props"
         ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "articleSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "compact"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "articles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "maxLength": 36,
+                      "format": "uuid"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "publication",
+                        "news",
+                        "exhibition"
+                      ]
+                    },
+                    "canonicalPath": {
+                      "type": "string",
+                      "maxLength": 2048,
+                      "pattern": "^/(?!/)"
+                    },
+                    "title": {
+                      "type": "string",
+                      "maxLength": 240,
+                      "minLength": 1
+                    },
+                    "summary": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 2000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "editorialDate": {
+                      "type": "string",
+                      "maxLength": 10,
+                      "format": "date"
+                    },
+                    "cover": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "srcPath": {
+                              "type": "string",
+                              "maxLength": 2048,
+                              "pattern": "^/(?!/)"
+                            },
+                            "alt": {
+                              "type": "string",
+                              "maxLength": 4000
+                            }
+                          },
+                          "required": [
+                            "srcPath",
+                            "alt"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "authors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "maxLength": 36,
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string",
+                            "maxLength": 240,
+                            "minLength": 1
+                          },
+                          "hasProfile": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "hasProfile"
+                        ]
+                      },
+                      "maxItems": 10,
+                      "minItems": 0
+                    },
+                    "exhibitionPeriod": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "startsOn",
+                        "endsOn"
+                      ],
+                      "properties": {
+                        "startsOn": {
+                          "type": "string",
+                          "format": "date",
+                          "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+                        },
+                        "endsOn": {
+                          "type": "string",
+                          "format": "date",
+                          "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "canonicalPath",
+                    "title",
+                    "summary",
+                    "editorialDate",
+                    "cover",
+                    "authors"
+                  ],
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "kind": {
+                            "const": "exhibition"
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ],
+                        "type": "object"
+                      },
+                      "then": {
+                        "required": [
+                          "exhibitionPeriod"
+                        ],
+                        "properties": {
+                          "exhibitionPeriod": {}
+                        },
+                        "type": "object"
+                      },
+                      "else": {
+                        "not": {
+                          "required": [
+                            "exhibitionPeriod"
+                          ],
+                          "properties": {
+                            "exhibitionPeriod": {}
+                          },
+                          "type": "object"
+                        },
+                        "type": "object"
+                      }
+                    }
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": [
+              "articles"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "form"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "formImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "focalPoint": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video",
+                          "font"
+                        ]
+                      },
+                      "path": {
+                        "type": "string",
+                        "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                        "maxLength": 200
+                      },
+                      "mimeType": {
+                        "type": "string",
+                        "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+                        "maxLength": 80
+                      },
+                      "byteSize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 20971520
+                      },
+                      "width": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "height": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "font": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "familyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "weight": {
+                            "type": "integer",
+                            "enum": [
+                              100,
+                              200,
+                              300,
+                              400,
+                              500,
+                              600,
+                              700,
+                              800,
+                              900
+                            ]
+                          },
+                          "style": {
+                            "type": "string",
+                            "enum": [
+                              "normal",
+                              "italic"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "familyId",
+                          "weight",
+                          "style"
+                        ]
+                      },
+                      "variants": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "variant": {
+                              "type": "string",
+                              "enum": [
+                                "w640",
+                                "w1280",
+                                "w1920"
+                              ]
+                            },
+                            "path": {
+                              "type": "string",
+                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                              "maxLength": 200
+                            },
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "variant",
+                            "path",
+                            "width",
+                            "height"
+                          ]
+                        },
+                        "maxItems": 3
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind",
+                      "path",
+                      "mimeType",
+                      "byteSize"
+                    ],
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "kind": {
+                              "const": "font"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ]
+                        },
+                        "then": {
+                          "properties": {
+                            "font": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "familyId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "weight": {
+                                  "type": "integer",
+                                  "enum": [
+                                    100,
+                                    200,
+                                    300,
+                                    400,
+                                    500,
+                                    600,
+                                    700,
+                                    800,
+                                    900
+                                  ]
+                                },
+                                "style": {
+                                  "type": "string",
+                                  "enum": [
+                                    "normal",
+                                    "italic"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "familyId",
+                                "weight",
+                                "style"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "font"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "imageSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId",
+              "imageSide"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
       }
     ]
   },
@@ -9311,7 +10268,8 @@ export const presentationSchemas = {
           "publications",
           "expertise",
           "contact",
-          "artworkDetail"
+          "artworkDetail",
+          "galerist"
         ]
       },
       "sections": {
@@ -9403,7 +10361,8 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
@@ -9642,7 +10601,8 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
@@ -9828,7 +10788,8 @@ export const presentationSchemas = {
                                 "publications",
                                 "expertise",
                                 "contact",
-                                "artworkDetail"
+                                "artworkDetail",
+                                "galerist"
                               ]
                             },
                             "artworkId": {
@@ -10075,6 +11036,13 @@ export const presentationSchemas = {
                       },
                       "maxItems": 12,
                       "uniqueItems": true
+                    },
+                    "imageFit": {
+                      "type": "string",
+                      "enum": [
+                        "cover",
+                        "contain"
+                      ]
                     }
                   },
                   "required": []
@@ -10222,7 +11190,8 @@ export const presentationSchemas = {
                                       "publications",
                                       "expertise",
                                       "contact",
-                                      "artworkDetail"
+                                      "artworkDetail",
+                                      "galerist"
                                     ]
                                   },
                                   "artworkId": {
@@ -10646,7 +11615,8 @@ export const presentationSchemas = {
                                       "publications",
                                       "expertise",
                                       "contact",
-                                      "artworkDetail"
+                                      "artworkDetail",
+                                      "galerist"
                                     ]
                                   },
                                   "artworkId": {
@@ -10820,15 +11790,434 @@ export const presentationSchemas = {
                 "hidden",
                 "props"
               ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": {
+                  "const": "articleSelection"
+                },
+                "schemaVersion": {
+                  "const": 1
+                },
+                "variant": {
+                  "type": "string",
+                  "enum": [
+                    "grid",
+                    "compact"
+                  ]
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "props": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                        "maxLength": 35
+                      },
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 120
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "introduction": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                        "maxLength": 35
+                      },
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 500
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "manual",
+                        "latest"
+                      ]
+                    },
+                    "articleIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maxItems": 12,
+                      "uniqueItems": true
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "all",
+                        "publication",
+                        "news"
+                      ]
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12
+                    },
+                    "taxonomyAssignments": {
+                      "type": "array",
+                      "maxItems": 20,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "vocabularyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "termIds": {
+                            "type": "array",
+                            "maxItems": 20,
+                            "uniqueItems": true,
+                            "items": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          }
+                        },
+                        "required": [
+                          "vocabularyId",
+                          "termIds"
+                        ]
+                      }
+                    },
+                    "kinds": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 3,
+                      "uniqueItems": true,
+                      "items": {
+                        "enum": [
+                          "publication",
+                          "news",
+                          "exhibition"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "mode",
+                    "articleIds",
+                    "taxonomyAssignments",
+                    "limit"
+                  ],
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {}
+                      },
+                      "required": [
+                        "kind"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kinds": {}
+                      },
+                      "required": [
+                        "kinds"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "schemaVersion",
+                "variant",
+                "hidden",
+                "props"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": {
+                  "const": "form"
+                },
+                "schemaVersion": {
+                  "const": 1
+                },
+                "variant": {
+                  "type": "string",
+                  "enum": [
+                    "default"
+                  ]
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "props": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "formId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "hideTitle": {
+                      "type": "boolean",
+                      "description": "Hide the form heading at this placement only; omitted means visible."
+                    }
+                  },
+                  "required": [
+                    "formId"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "schemaVersion",
+                "variant",
+                "hidden",
+                "props"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": {
+                  "const": "formImage"
+                },
+                "schemaVersion": {
+                  "const": 1
+                },
+                "variant": {
+                  "type": "string",
+                  "enum": [
+                    "default"
+                  ]
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "props": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "formId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "imageId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "alt": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                        "maxLength": 35
+                      },
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 500
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "focalPoint": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "imageSide": {
+                      "type": "string",
+                      "enum": [
+                        "left",
+                        "right"
+                      ]
+                    },
+                    "hideTitle": {
+                      "type": "boolean",
+                      "description": "Hide the form heading at this placement only; omitted means visible."
+                    }
+                  },
+                  "required": [
+                    "formId",
+                    "imageSide"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "schemaVersion",
+                "variant",
+                "hidden",
+                "props"
+              ]
             }
           ]
         },
         "maxItems": 30
+      },
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "enabled",
+          "showInNavigation",
+          "name",
+          "slug"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "showInNavigation": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "description": "Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md."
+          },
+          "slug": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "description": "Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md."
+          }
+        }
+      },
+      "metaDescription": {
+        "type": "object",
+        "maxProperties": 32,
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 320
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "description": "Optional localized page meta descriptions. Empty secondary locales use the reference locale; absent values use the site description. Omitted on update preserves existing metadata."
       }
     },
     "required": [
       "pageKey",
       "sections"
+    ],
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "pageKey": {
+              "const": "galerist"
+            }
+          },
+          "required": [
+            "pageKey"
+          ]
+        },
+        "then": {},
+        "else": {
+          "not": {
+            "required": [
+              "settings"
+            ],
+            "properties": {
+              "settings": {}
+            }
+          }
+        }
+      }
     ]
   },
   "PresentationDiagnostic": {
@@ -10857,7 +12246,11 @@ export const presentationSchemas = {
           "font_glyph_missing",
           "contrast_insufficient",
           "artwork_unavailable",
-          "aggregate_too_large"
+          "aggregate_too_large",
+          "reserved_slug",
+          "invalid_slug",
+          "empty_page",
+          "empty_footer_group"
         ]
       },
       "severity": {
@@ -10914,7 +12307,11 @@ export const presentationSchemas = {
                 "font_glyph_missing",
                 "contrast_insufficient",
                 "artwork_unavailable",
-                "aggregate_too_large"
+                "aggregate_too_large",
+                "reserved_slug",
+                "invalid_slug",
+                "empty_page",
+                "empty_footer_group"
               ]
             },
             "severity": {
@@ -10965,1121 +12362,10 @@ export const presentationSchemas = {
         "pattern": "^[0-9a-f]{64}$"
       },
       "themeOverrides": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "colors": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "background": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "surface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "text": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "disabledText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "accent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onAccent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "link": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "linkHover": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "border": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "focus": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "selection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSelection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "error": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onError": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "success": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSuccess": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "warning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onWarning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              }
-            },
-            "required": []
-          },
-          "typography": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "h1": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              },
-              "h2": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              },
-              "h3": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              },
-              "body": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              },
-              "caption": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              },
-              "navigation": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              },
-              "button": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": []
-              }
-            },
-            "required": []
-          },
-          "fonts": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "label": {
-                  "type": "string",
-                  "maxLength": 80
-                },
-                "faces": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "assetId": {
-                        "type": "string",
-                        "format": "uuid"
-                      }
-                    },
-                    "required": [
-                      "assetId"
-                    ]
-                  },
-                  "maxItems": 18
-                }
-              },
-              "required": [
-                "id",
-                "label",
-                "faces"
-              ]
-            },
-            "maxItems": 12
-          }
-        },
-        "required": []
+        "$ref": "#/$defs/PresentationThemeOverrides"
       },
       "effectiveTheme": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "colors": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "background": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "surface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "text": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "disabledText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "accent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onAccent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "link": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "linkHover": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "border": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "focus": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "selection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSelection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "error": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onError": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "success": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSuccess": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "warning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onWarning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              }
-            },
-            "required": [
-              "background",
-              "surface",
-              "mutedSurface",
-              "inverseSurface",
-              "text",
-              "mutedText",
-              "inverseText",
-              "disabledText",
-              "accent",
-              "onAccent",
-              "link",
-              "linkHover",
-              "border",
-              "focus",
-              "selection",
-              "onSelection",
-              "error",
-              "onError",
-              "success",
-              "onSuccess",
-              "warning",
-              "onWarning"
-            ]
-          },
-          "typography": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "h1": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              },
-              "h2": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              },
-              "h3": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              },
-              "body": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              },
-              "caption": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              },
-              "navigation": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              },
-              "button": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
-              }
-            },
-            "required": [
-              "h1",
-              "h2",
-              "h3",
-              "body",
-              "caption",
-              "navigation",
-              "button"
-            ]
-          },
-          "fonts": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "label": {
-                  "type": "string",
-                  "maxLength": 80
-                },
-                "faces": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "assetId": {
-                        "type": "string",
-                        "format": "uuid"
-                      }
-                    },
-                    "required": [
-                      "assetId"
-                    ]
-                  },
-                  "maxItems": 18
-                }
-              },
-              "required": [
-                "id",
-                "label",
-                "faces"
-              ]
-            },
-            "maxItems": 12
-          }
-        },
-        "required": [
-          "colors",
-          "typography",
-          "fonts"
-        ]
+        "$ref": "#/$defs/PresentationTheme"
       },
       "valueOrigins": {
         "type": "object",
@@ -12095,19 +12381,9 @@ export const presentationSchemas = {
       "pageKeys": {
         "type": "array",
         "items": {
-          "type": "string",
-          "enum": [
-            "home",
-            "news",
-            "artworks",
-            "exhibitions",
-            "publications",
-            "expertise",
-            "contact",
-            "artworkDetail"
-          ]
+          "$ref": "#/$defs/PresentationPageKey"
         },
-        "maxItems": 8,
+        "maxItems": 9,
         "minItems": 8,
         "uniqueItems": true
       },
@@ -12125,6 +12401,16 @@ export const presentationSchemas = {
       "updatedAt": {
         "type": "string",
         "format": "date-time"
+      },
+      "footer": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationFooterConfiguration"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "required": [
@@ -12139,7 +12425,990 @@ export const presentationSchemas = {
       "pageKeys",
       "activeReleaseId",
       "updatedAt"
-    ]
+    ],
+    "$defs": {
+      "PresentationThemeOverrides": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "colors": {
+            "$ref": "#/$defs/PresentationColorOverrides"
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "h1": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              },
+              "h2": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              },
+              "h3": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              },
+              "body": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              },
+              "caption": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              },
+              "navigation": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              },
+              "button": {
+                "$ref": "#/$defs/PresentationTypographyRoleOverride"
+              }
+            },
+            "required": []
+          },
+          "fonts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFontFamily"
+            },
+            "maxItems": 12
+          }
+        },
+        "required": []
+      },
+      "PresentationColorOverrides": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "surface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "text": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "disabledText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "accent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onAccent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "link": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "linkHover": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "border": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "focus": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "selection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSelection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "error": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onError": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "success": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSuccess": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "warning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onWarning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": []
+      },
+      "PresentationTypographyRoleOverride": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          },
+          "minSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "maxSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "lineHeight": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 2.5
+          },
+          "letterSpacingEm": {
+            "type": "number",
+            "minimum": -0.05,
+            "maximum": 0.3
+          }
+        },
+        "required": []
+      },
+      "PresentationFontFamily": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "faces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "assetId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "assetId"
+              ]
+            },
+            "maxItems": 18
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "faces"
+        ]
+      },
+      "PresentationTheme": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "colors": {
+            "$ref": "#/$defs/PresentationColors"
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "h1": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "h2": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "h3": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "body": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "caption": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "navigation": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "button": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              }
+            },
+            "required": [
+              "h1",
+              "h2",
+              "h3",
+              "body",
+              "caption",
+              "navigation",
+              "button"
+            ]
+          },
+          "fonts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFontFamily"
+            },
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "colors",
+          "typography",
+          "fonts"
+        ]
+      },
+      "PresentationColors": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "surface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "text": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "disabledText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "accent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onAccent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "link": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "linkHover": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "border": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "focus": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "selection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSelection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "error": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onError": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "success": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSuccess": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "warning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onWarning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": [
+          "background",
+          "surface",
+          "mutedSurface",
+          "inverseSurface",
+          "text",
+          "mutedText",
+          "inverseText",
+          "disabledText",
+          "accent",
+          "onAccent",
+          "link",
+          "linkHover",
+          "border",
+          "focus",
+          "selection",
+          "onSelection",
+          "error",
+          "onError",
+          "success",
+          "onSuccess",
+          "warning",
+          "onWarning"
+        ]
+      },
+      "PresentationTypographyRole": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          },
+          "minSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "maxSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "lineHeight": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 2.5
+          },
+          "letterSpacingEm": {
+            "type": "number",
+            "minimum": -0.05,
+            "maximum": 0.3
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style",
+          "minSizeRem",
+          "maxSizeRem",
+          "lineHeight",
+          "letterSpacingEm"
+        ]
+      },
+      "PresentationPageKey": {
+        "type": "string",
+        "enum": [
+          "home",
+          "news",
+          "artworks",
+          "exhibitions",
+          "publications",
+          "expertise",
+          "contact",
+          "artworkDetail",
+          "galerist"
+        ]
+      },
+      "PresentationFooterConfiguration": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "services": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterService"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterGroup"
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterSocialLink"
+            }
+          },
+          "showLanguageSelector": {
+            "type": "boolean"
+          },
+          "showDescription": {
+            "type": "boolean"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "object",
+                "maxProperties": 20,
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/PresentationFooterRichText"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "services",
+          "groups",
+          "socialLinks",
+          "showLanguageSelector",
+          "showDescription"
+        ]
+      },
+      "PresentationFooterService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "title": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterDescription"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterText": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "PresentationFooterDescription": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 600
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "PresentationLink": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              },
+              "artworkId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "kind",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "value": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 254
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^\\+?[0-9 ()-]{3,32}$"
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "title": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "links": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterSocialLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      }
+    }
   },
   "PresentationDraftPage": {
     "type": "object",
@@ -12164,7 +13433,8 @@ export const presentationSchemas = {
               "publications",
               "expertise",
               "contact",
-              "artworkDetail"
+              "artworkDetail",
+              "galerist"
             ]
           },
           "sections": {
@@ -12256,7 +13526,8 @@ export const presentationSchemas = {
                                     "publications",
                                     "expertise",
                                     "contact",
-                                    "artworkDetail"
+                                    "artworkDetail",
+                                    "galerist"
                                   ]
                                 },
                                 "artworkId": {
@@ -12495,7 +13766,8 @@ export const presentationSchemas = {
                                     "publications",
                                     "expertise",
                                     "contact",
-                                    "artworkDetail"
+                                    "artworkDetail",
+                                    "galerist"
                                   ]
                                 },
                                 "artworkId": {
@@ -12681,7 +13953,8 @@ export const presentationSchemas = {
                                     "publications",
                                     "expertise",
                                     "contact",
-                                    "artworkDetail"
+                                    "artworkDetail",
+                                    "galerist"
                                   ]
                                 },
                                 "artworkId": {
@@ -12928,6 +14201,13 @@ export const presentationSchemas = {
                           },
                           "maxItems": 12,
                           "uniqueItems": true
+                        },
+                        "imageFit": {
+                          "type": "string",
+                          "enum": [
+                            "cover",
+                            "contain"
+                          ]
                         }
                       },
                       "required": []
@@ -13075,7 +14355,8 @@ export const presentationSchemas = {
                                           "publications",
                                           "expertise",
                                           "contact",
-                                          "artworkDetail"
+                                          "artworkDetail",
+                                          "galerist"
                                         ]
                                       },
                                       "artworkId": {
@@ -13499,7 +14780,8 @@ export const presentationSchemas = {
                                           "publications",
                                           "expertise",
                                           "contact",
-                                          "artworkDetail"
+                                          "artworkDetail",
+                                          "galerist"
                                         ]
                                       },
                                       "artworkId": {
@@ -13673,15 +14955,434 @@ export const presentationSchemas = {
                     "hidden",
                     "props"
                   ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "type": {
+                      "const": "articleSelection"
+                    },
+                    "schemaVersion": {
+                      "const": 1
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": [
+                        "grid",
+                        "compact"
+                      ]
+                    },
+                    "hidden": {
+                      "type": "boolean"
+                    },
+                    "props": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "heading": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                            "maxLength": 35
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 120
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "introduction": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                            "maxLength": 35
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 500
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "manual",
+                            "latest"
+                          ]
+                        },
+                        "articleIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "maxItems": 12,
+                          "uniqueItems": true
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "all",
+                            "publication",
+                            "news"
+                          ]
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 12
+                        },
+                        "taxonomyAssignments": {
+                          "type": "array",
+                          "maxItems": 20,
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "vocabularyId": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "termIds": {
+                                "type": "array",
+                                "maxItems": 20,
+                                "uniqueItems": true,
+                                "items": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                }
+                              }
+                            },
+                            "required": [
+                              "vocabularyId",
+                              "termIds"
+                            ]
+                          }
+                        },
+                        "kinds": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 3,
+                          "uniqueItems": true,
+                          "items": {
+                            "enum": [
+                              "publication",
+                              "news",
+                              "exhibition"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "mode",
+                        "articleIds",
+                        "taxonomyAssignments",
+                        "limit"
+                      ],
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {}
+                          },
+                          "required": [
+                            "kind"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kinds": {}
+                          },
+                          "required": [
+                            "kinds"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "schemaVersion",
+                    "variant",
+                    "hidden",
+                    "props"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "type": {
+                      "const": "form"
+                    },
+                    "schemaVersion": {
+                      "const": 1
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": [
+                        "default"
+                      ]
+                    },
+                    "hidden": {
+                      "type": "boolean"
+                    },
+                    "props": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "formId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "hideTitle": {
+                          "type": "boolean",
+                          "description": "Hide the form heading at this placement only; omitted means visible."
+                        }
+                      },
+                      "required": [
+                        "formId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "schemaVersion",
+                    "variant",
+                    "hidden",
+                    "props"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "type": {
+                      "const": "formImage"
+                    },
+                    "schemaVersion": {
+                      "const": 1
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": [
+                        "default"
+                      ]
+                    },
+                    "hidden": {
+                      "type": "boolean"
+                    },
+                    "props": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "formId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "imageId": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "alt": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                            "maxLength": 35
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 500
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "focalPoint": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "y": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        },
+                        "imageSide": {
+                          "type": "string",
+                          "enum": [
+                            "left",
+                            "right"
+                          ]
+                        },
+                        "hideTitle": {
+                          "type": "boolean",
+                          "description": "Hide the form heading at this placement only; omitted means visible."
+                        }
+                      },
+                      "required": [
+                        "formId",
+                        "imageSide"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "schemaVersion",
+                    "variant",
+                    "hidden",
+                    "props"
+                  ]
                 }
               ]
             },
             "maxItems": 30
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "enabled",
+              "showInNavigation",
+              "name",
+              "slug"
+            ],
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "showInNavigation": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "object",
+                "propertyNames": {
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "description": "Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md."
+              },
+              "slug": {
+                "type": "object",
+                "propertyNames": {
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "description": "Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md."
+              }
+            }
+          },
+          "metaDescription": {
+            "type": "object",
+            "maxProperties": 32,
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 320
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "description": "Optional localized page meta descriptions. Empty secondary locales use the reference locale; absent values use the site description. Omitted on update preserves existing metadata."
           }
         },
         "required": [
           "pageKey",
           "sections"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "pageKey": {
+                  "const": "galerist"
+                }
+              },
+              "required": [
+                "pageKey"
+              ]
+            },
+            "then": {},
+            "else": {
+              "not": {
+                "required": [
+                  "settings"
+                ],
+                "properties": {
+                  "settings": {}
+                }
+              }
+            }
+          }
         ]
       },
       "diagnostics": {
@@ -13712,7 +15413,11 @@ export const presentationSchemas = {
                 "font_glyph_missing",
                 "contrast_insufficient",
                 "artwork_unavailable",
-                "aggregate_too_large"
+                "aggregate_too_large",
+                "reserved_slug",
+                "invalid_slug",
+                "empty_page",
+                "empty_footer_group"
               ]
             },
             "severity": {
@@ -13778,7 +15483,11 @@ export const presentationSchemas = {
                 "font_glyph_missing",
                 "contrast_insufficient",
                 "artwork_unavailable",
-                "aggregate_too_large"
+                "aggregate_too_large",
+                "reserved_slug",
+                "invalid_slug",
+                "empty_page",
+                "empty_footer_group"
               ]
             },
             "severity": {
@@ -13952,6 +15661,67 @@ export const presentationSchemas = {
         "maxLength": 35
       },
       "pageKey": {
+        "$ref": "#/$defs/PresentationPageKey"
+      },
+      "theme": {
+        "$ref": "#/$defs/PresentationTheme"
+      },
+      "fontFiles": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/PresentationPublicAsset"
+        },
+        "maxItems": 216
+      },
+      "sections": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/ResolvedPresentationSection"
+        },
+        "maxItems": 30
+      },
+      "galeristNavigation": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationGaleristNavigation"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "pageIdentity": {
+        "$ref": "#/$defs/PresentationGaleristIdentity"
+      },
+      "footer": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationFooterResolved"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "metaDescription": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 320
+      }
+    },
+    "required": [
+      "releaseId",
+      "schemaVersion",
+      "profileId",
+      "manifestFingerprint",
+      "locale",
+      "pageKey",
+      "theme",
+      "fontFiles",
+      "sections"
+    ],
+    "$defs": {
+      "PresentationPageKey": {
         "type": "string",
         "enum": [
           "home",
@@ -13961,554 +15731,41 @@ export const presentationSchemas = {
           "publications",
           "expertise",
           "contact",
-          "artworkDetail"
+          "artworkDetail",
+          "galerist"
         ]
       },
-      "theme": {
+      "PresentationTheme": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "colors": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "background": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "surface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "text": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "disabledText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "accent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onAccent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "link": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "linkHover": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "border": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "focus": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "selection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSelection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "error": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onError": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "success": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSuccess": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "warning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onWarning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              }
-            },
-            "required": [
-              "background",
-              "surface",
-              "mutedSurface",
-              "inverseSurface",
-              "text",
-              "mutedText",
-              "inverseText",
-              "disabledText",
-              "accent",
-              "onAccent",
-              "link",
-              "linkHover",
-              "border",
-              "focus",
-              "selection",
-              "onSelection",
-              "error",
-              "onError",
-              "success",
-              "onSuccess",
-              "warning",
-              "onWarning"
-            ]
+            "$ref": "#/$defs/PresentationColors"
           },
           "typography": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
               "h1": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "h2": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "h3": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "body": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "caption": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "navigation": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "button": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               }
             },
             "required": [
@@ -14524,40 +15781,7 @@ export const presentationSchemas = {
           "fonts": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "label": {
-                  "type": "string",
-                  "maxLength": 80
-                },
-                "faces": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "assetId": {
-                        "type": "string",
-                        "format": "uuid"
-                      }
-                    },
-                    "required": [
-                      "assetId"
-                    ]
-                  },
-                  "maxItems": 18
-                }
-              },
-              "required": [
-                "id",
-                "label",
-                "faces"
-              ]
+              "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
           }
@@ -14568,1165 +15792,943 @@ export const presentationSchemas = {
           "fonts"
         ]
       },
-      "fontFiles": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "kind": {
-              "type": "string",
-              "enum": [
-                "image",
-                "video",
-                "font"
-              ]
-            },
-            "path": {
-              "type": "string",
-              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-              "maxLength": 200
-            },
-            "mimeType": {
-              "type": "string",
-              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-              "maxLength": 80
-            },
-            "byteSize": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 20971520
-            },
-            "width": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "height": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "font": {
+      "PresentationColors": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "surface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "text": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "disabledText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "accent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onAccent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "link": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "linkHover": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "border": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "focus": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "selection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSelection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "error": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onError": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "success": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSuccess": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "warning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onWarning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": [
+          "background",
+          "surface",
+          "mutedSurface",
+          "inverseSurface",
+          "text",
+          "mutedText",
+          "inverseText",
+          "disabledText",
+          "accent",
+          "onAccent",
+          "link",
+          "linkHover",
+          "border",
+          "focus",
+          "selection",
+          "onSelection",
+          "error",
+          "onError",
+          "success",
+          "onSuccess",
+          "warning",
+          "onWarning"
+        ]
+      },
+      "PresentationTypographyRole": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          },
+          "minSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "maxSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "lineHeight": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 2.5
+          },
+          "letterSpacingEm": {
+            "type": "number",
+            "minimum": -0.05,
+            "maximum": 0.3
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style",
+          "minSizeRem",
+          "maxSizeRem",
+          "lineHeight",
+          "letterSpacingEm"
+        ]
+      },
+      "PresentationFontFamily": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "faces": {
+            "type": "array",
+            "items": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "familyId": {
+                "assetId": {
                   "type": "string",
                   "format": "uuid"
-                },
-                "weight": {
-                  "type": "integer",
-                  "enum": [
-                    100,
-                    200,
-                    300,
-                    400,
-                    500,
-                    600,
-                    700,
-                    800,
-                    900
-                  ]
-                },
-                "style": {
-                  "type": "string",
-                  "enum": [
-                    "normal",
-                    "italic"
-                  ]
                 }
               },
               "required": [
-                "familyId",
-                "weight",
-                "style"
+                "assetId"
               ]
             },
-            "variants": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "variant": {
-                    "type": "string",
-                    "enum": [
-                      "w640",
-                      "w1280",
-                      "w1920"
-                    ]
-                  },
-                  "path": {
-                    "type": "string",
-                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                    "maxLength": 200
-                  },
-                  "width": {
-                    "type": "integer",
-                    "minimum": 1
-                  },
-                  "height": {
-                    "type": "integer",
-                    "minimum": 1
-                  }
-                },
-                "required": [
-                  "variant",
-                  "path",
-                  "width",
-                  "height"
-                ]
-              },
-              "maxItems": 3
-            }
-          },
-          "required": [
-            "id",
-            "kind",
-            "path",
-            "mimeType",
-            "byteSize"
-          ],
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "kind": {
-                    "const": "font"
-                  }
-                },
-                "required": [
-                  "kind"
-                ]
-              },
-              "then": {
-                "properties": {
-                  "font": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "familyId": {
-                        "type": "string",
-                        "format": "uuid"
-                      },
-                      "weight": {
-                        "type": "integer",
-                        "enum": [
-                          100,
-                          200,
-                          300,
-                          400,
-                          500,
-                          600,
-                          700,
-                          800,
-                          900
-                        ]
-                      },
-                      "style": {
-                        "type": "string",
-                        "enum": [
-                          "normal",
-                          "italic"
-                        ]
-                      }
-                    },
-                    "required": [
-                      "familyId",
-                      "weight",
-                      "style"
-                    ]
-                  }
-                },
-                "required": [
-                  "font"
-                ]
-              }
-            }
-          ]
+            "maxItems": 18
+          }
         },
-        "maxItems": 216
+        "required": [
+          "id",
+          "label",
+          "faces"
+        ]
       },
-      "sections": {
-        "type": "array",
-        "items": {
-          "oneOf": [
-            {
+      "PresentationPublicAsset": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video",
+              "font"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+            "maxLength": 200
+          },
+          "mimeType": {
+            "type": "string",
+            "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+            "maxLength": 80
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20971520
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "font": {
+            "$ref": "#/$defs/PresentationFontDescriptor"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "heroMedia"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
                 "variant": {
                   "type": "string",
                   "enum": [
-                    "immersive",
-                    "centered"
+                    "w640",
+                    "w1280",
+                    "w1920"
                   ]
                 },
-                "props": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                  "maxLength": 200
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "variant",
+                "path",
+                "width",
+                "height"
+              ]
+            },
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "mimeType",
+          "byteSize"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "font"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "font": {
+                  "$ref": "#/$defs/PresentationFontDescriptor"
+                }
+              },
+              "required": [
+                "font"
+              ]
+            }
+          }
+        ]
+      },
+      "PresentationFontDescriptor": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style"
+        ]
+      },
+      "ResolvedPresentationSection": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ResolvedPresentationHeroMediaSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationTextSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationTextImageSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkSelectionSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationEditorialCardsSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationImageGallerySection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationContactSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkCatalogSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkDetailsSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArticleSelectionSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationFormSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationFormImageSection"
+          }
+        ]
+      },
+      "ResolvedPresentationHeroMediaSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "heroMedia"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "immersive",
+              "centered"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "poster": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "video": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mobileVideo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationLink": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              },
+              "artworkId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "href": {
+                "type": "string",
+                "pattern": "^/(?!/)",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "value": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 254
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^\\+?[0-9 ()-]{3,32}$"
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          }
+        ]
+      },
+      "PresentationFocalPoint": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "ResolvedPresentationTextSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "text"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "narrow"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationTextImageSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "textImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "imageLeft",
+              "imageRight"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "caption": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "decorative": {
+                "type": "boolean"
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkSelectionSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "strip"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "artworks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PublicArtwork"
+                },
+                "maxItems": 12
+              },
+              "imageFit": {
+                "type": "string",
+                "enum": [
+                  "cover",
+                  "contain"
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "PublicArtwork": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "artist",
+          "year",
+          "medium",
+          "dimensions",
+          "media"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "artist": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "year": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "medium": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dimensions": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PublicMedia"
+            }
+          }
+        },
+        "example": {
+          "id": "11111111-1111-4111-8111-111111111111",
+          "title": "Étude 01",
+          "artist": "Artiste de démonstration",
+          "year": "2026",
+          "medium": "Encre sur papier",
+          "dimensions": "30 × 40 cm",
+          "media": [
+            {
+              "id": "22222222-2222-4222-8222-222222222222",
+              "alt": "Étude abstraite de démonstration",
+              "width": 800,
+              "height": 600,
+              "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+            }
+          ]
+        }
+      },
+      "PublicMedia": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "alt",
+          "width",
+          "height",
+          "path"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "alt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/public/media/"
+          }
+        }
+      },
+      "ResolvedPresentationEditorialCardsSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "editorialCards"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "list"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "items": {
+                "type": "array",
+                "items": {
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
                     "heading": {
                       "type": "string",
                       "maxLength": 120
                     },
-                    "introduction": {
+                    "excerpt": {
                       "type": "string",
                       "maxLength": 500
                     },
                     "link": {
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "page"
-                            },
-                            "pageKey": {
-                              "type": "string",
-                              "enum": [
-                                "home",
-                                "news",
-                                "artworks",
-                                "exhibitions",
-                                "publications",
-                                "expertise",
-                                "contact",
-                                "artworkDetail"
-                              ]
-                            },
-                            "artworkId": {
-                              "type": "string",
-                              "format": "uuid"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "pageKey"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "external"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "pattern": "^https://",
-                              "maxLength": 2048
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "url"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "email"
-                            },
-                            "value": {
-                              "type": "string",
-                              "format": "email",
-                              "maxLength": 254
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "phone"
-                            },
-                            "value": {
-                              "type": "string",
-                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        }
-                      ]
-                    },
-                    "linkLabel": {
-                      "type": "string",
-                      "maxLength": 80
-                    },
-                    "focalPoint": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "x": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        },
-                        "y": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        }
-                      },
-                      "required": [
-                        "x",
-                        "y"
-                      ]
-                    },
-                    "poster": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "video": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "mobileVideo": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "text"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "standard",
-                    "narrow"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 5000
-                    },
-                    "link": {
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "page"
-                            },
-                            "pageKey": {
-                              "type": "string",
-                              "enum": [
-                                "home",
-                                "news",
-                                "artworks",
-                                "exhibitions",
-                                "publications",
-                                "expertise",
-                                "contact",
-                                "artworkDetail"
-                              ]
-                            },
-                            "artworkId": {
-                              "type": "string",
-                              "format": "uuid"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "pageKey"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "external"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "pattern": "^https://",
-                              "maxLength": 2048
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "url"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "email"
-                            },
-                            "value": {
-                              "type": "string",
-                              "format": "email",
-                              "maxLength": 254
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "phone"
-                            },
-                            "value": {
-                              "type": "string",
-                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        }
-                      ]
-                    },
-                    "linkLabel": {
-                      "type": "string",
-                      "maxLength": 80
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "textImage"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "imageLeft",
-                    "imageRight"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 5000
-                    },
-                    "link": {
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "page"
-                            },
-                            "pageKey": {
-                              "type": "string",
-                              "enum": [
-                                "home",
-                                "news",
-                                "artworks",
-                                "exhibitions",
-                                "publications",
-                                "expertise",
-                                "contact",
-                                "artworkDetail"
-                              ]
-                            },
-                            "artworkId": {
-                              "type": "string",
-                              "format": "uuid"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "pageKey"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "external"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "pattern": "^https://",
-                              "maxLength": 2048
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "url"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "email"
-                            },
-                            "value": {
-                              "type": "string",
-                              "format": "email",
-                              "maxLength": 254
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "phone"
-                            },
-                            "value": {
-                              "type": "string",
-                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        }
-                      ]
-                    },
-                    "linkLabel": {
-                      "type": "string",
-                      "maxLength": 80
+                      "$ref": "#/$defs/ResolvedPresentationLink"
                     },
                     "alt": {
                       "type": "string",
@@ -15740,204 +16742,12 @@ export const presentationSchemas = {
                       "type": "boolean"
                     },
                     "focalPoint": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "x": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        },
-                        "y": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        }
-                      },
-                      "required": [
-                        "x",
-                        "y"
-                      ]
+                      "$ref": "#/$defs/PresentationFocalPoint"
                     },
                     "image": {
                       "anyOf": [
                         {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
+                          "$ref": "#/$defs/PresentationPublicAsset"
                         },
                         {
                           "type": "null"
@@ -15945,1066 +16755,1058 @@ export const presentationSchemas = {
                       ]
                     }
                   },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "artworkSelection"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid",
-                    "strip"
+                  "required": [
+                    "id"
                   ]
                 },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "introduction": {
-                      "type": "string",
-                      "maxLength": 500
-                    },
-                    "artworks": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": [
-                          "id",
-                          "title",
-                          "artist",
-                          "year",
-                          "medium",
-                          "dimensions",
-                          "media"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "title": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "artist": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "year": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "medium": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "dimensions": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "media": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "required": [
-                                "id",
-                                "alt",
-                                "width",
-                                "height",
-                                "path"
-                              ],
-                              "properties": {
-                                "id": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "alt": {
-                                  "type": [
-                                    "string",
-                                    "null"
-                                  ]
-                                },
-                                "width": {
-                                  "type": "integer",
-                                  "minimum": 1
-                                },
-                                "height": {
-                                  "type": "integer",
-                                  "minimum": 1
-                                },
-                                "path": {
-                                  "type": "string",
-                                  "pattern": "^/v1/public/media/"
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "example": {
-                          "id": "11111111-1111-4111-8111-111111111111",
-                          "title": "Étude 01",
-                          "artist": "Artiste de démonstration",
-                          "year": "2026",
-                          "medium": "Encre sur papier",
-                          "dimensions": "30 × 40 cm",
-                          "media": [
-                            {
-                              "id": "22222222-2222-4222-8222-222222222222",
-                              "alt": "Étude abstraite de démonstration",
-                              "width": 800,
-                              "height": 600,
-                              "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
-                            }
-                          ]
-                        }
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
+                "maxItems": 12
+              }
             },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "editorialCards"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid",
-                    "list"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "introduction": {
-                      "type": "string",
-                      "maxLength": 500
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "heading": {
-                            "type": "string",
-                            "maxLength": 120
-                          },
-                          "excerpt": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "link": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "page"
-                                  },
-                                  "pageKey": {
-                                    "type": "string",
-                                    "enum": [
-                                      "home",
-                                      "news",
-                                      "artworks",
-                                      "exhibitions",
-                                      "publications",
-                                      "expertise",
-                                      "contact",
-                                      "artworkDetail"
-                                    ]
-                                  },
-                                  "artworkId": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "pageKey"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "external"
-                                  },
-                                  "url": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "pattern": "^https://",
-                                    "maxLength": 2048
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "url"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "email"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "maxLength": 254
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "phone"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              }
-                            ]
-                          },
-                          "alt": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "caption": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "decorative": {
-                            "type": "boolean"
-                          },
-                          "focalPoint": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "x": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              },
-                              "y": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              }
-                            },
-                            "required": [
-                              "x",
-                              "y"
-                            ]
-                          },
-                          "image": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "id": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  },
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "image",
-                                      "video",
-                                      "font"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "mimeType": {
-                                    "type": "string",
-                                    "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                                    "maxLength": 80
-                                  },
-                                  "byteSize": {
-                                    "type": "integer",
-                                    "minimum": 1,
-                                    "maximum": 20971520
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  },
-                                  "variants": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "variant": {
-                                          "type": "string",
-                                          "enum": [
-                                            "w640",
-                                            "w1280",
-                                            "w1920"
-                                          ]
-                                        },
-                                        "path": {
-                                          "type": "string",
-                                          "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                          "maxLength": 200
-                                        },
-                                        "width": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        },
-                                        "height": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        }
-                                      },
-                                      "required": [
-                                        "variant",
-                                        "path",
-                                        "width",
-                                        "height"
-                                      ]
-                                    },
-                                    "maxItems": 3
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "kind",
-                                  "path",
-                                  "mimeType",
-                                  "byteSize"
-                                ],
-                                "allOf": [
-                                  {
-                                    "if": {
-                                      "properties": {
-                                        "kind": {
-                                          "const": "font"
-                                        }
-                                      },
-                                      "required": [
-                                        "kind"
-                                      ]
-                                    },
-                                    "then": {
-                                      "properties": {
-                                        "font": {
-                                          "type": "object",
-                                          "additionalProperties": false,
-                                          "properties": {
-                                            "familyId": {
-                                              "type": "string",
-                                              "format": "uuid"
-                                            },
-                                            "weight": {
-                                              "type": "integer",
-                                              "enum": [
-                                                100,
-                                                200,
-                                                300,
-                                                400,
-                                                500,
-                                                600,
-                                                700,
-                                                800,
-                                                900
-                                              ]
-                                            },
-                                            "style": {
-                                              "type": "string",
-                                              "enum": [
-                                                "normal",
-                                                "italic"
-                                              ]
-                                            }
-                                          },
-                                          "required": [
-                                            "familyId",
-                                            "weight",
-                                            "style"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "font"
-                                      ]
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ]
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "imageGallery"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid",
-                    "strip"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "alt": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "caption": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "decorative": {
-                            "type": "boolean"
-                          },
-                          "focalPoint": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "x": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              },
-                              "y": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              }
-                            },
-                            "required": [
-                              "x",
-                              "y"
-                            ]
-                          },
-                          "image": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "id": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  },
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "image",
-                                      "video",
-                                      "font"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "mimeType": {
-                                    "type": "string",
-                                    "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                                    "maxLength": 80
-                                  },
-                                  "byteSize": {
-                                    "type": "integer",
-                                    "minimum": 1,
-                                    "maximum": 20971520
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  },
-                                  "variants": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "variant": {
-                                          "type": "string",
-                                          "enum": [
-                                            "w640",
-                                            "w1280",
-                                            "w1920"
-                                          ]
-                                        },
-                                        "path": {
-                                          "type": "string",
-                                          "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                          "maxLength": 200
-                                        },
-                                        "width": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        },
-                                        "height": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        }
-                                      },
-                                      "required": [
-                                        "variant",
-                                        "path",
-                                        "width",
-                                        "height"
-                                      ]
-                                    },
-                                    "maxItems": 3
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "kind",
-                                  "path",
-                                  "mimeType",
-                                  "byteSize"
-                                ],
-                                "allOf": [
-                                  {
-                                    "if": {
-                                      "properties": {
-                                        "kind": {
-                                          "const": "font"
-                                        }
-                                      },
-                                      "required": [
-                                        "kind"
-                                      ]
-                                    },
-                                    "then": {
-                                      "properties": {
-                                        "font": {
-                                          "type": "object",
-                                          "additionalProperties": false,
-                                          "properties": {
-                                            "familyId": {
-                                              "type": "string",
-                                              "format": "uuid"
-                                            },
-                                            "weight": {
-                                              "type": "integer",
-                                              "enum": [
-                                                100,
-                                                200,
-                                                300,
-                                                400,
-                                                500,
-                                                600,
-                                                700,
-                                                800,
-                                                900
-                                              ]
-                                            },
-                                            "style": {
-                                              "type": "string",
-                                              "enum": [
-                                                "normal",
-                                                "italic"
-                                              ]
-                                            }
-                                          },
-                                          "required": [
-                                            "familyId",
-                                            "weight",
-                                            "style"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "font"
-                                      ]
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ]
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "contact"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "compact",
-                    "split"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 5000
-                    },
-                    "links": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "label": {
-                            "type": "string",
-                            "maxLength": 80
-                          },
-                          "destination": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "page"
-                                  },
-                                  "pageKey": {
-                                    "type": "string",
-                                    "enum": [
-                                      "home",
-                                      "news",
-                                      "artworks",
-                                      "exhibitions",
-                                      "publications",
-                                      "expertise",
-                                      "contact",
-                                      "artworkDetail"
-                                    ]
-                                  },
-                                  "artworkId": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "pageKey"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "external"
-                                  },
-                                  "url": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "pattern": "^https://",
-                                    "maxLength": 2048
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "url"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "email"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "maxLength": 254
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "phone"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "label",
-                          "destination"
-                        ]
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "artworkCatalog"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "columns": {
-                      "type": "integer",
-                      "minimum": 2,
-                      "maximum": 4
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "artworkDetails"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "standard"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {},
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            }
-          ]
+            "required": []
+          }
         },
-        "maxItems": 30
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationImageGallerySection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "imageGallery"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "strip"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "alt": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "caption": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "decorative": {
+                      "type": "boolean"
+                    },
+                    "focalPoint": {
+                      "$ref": "#/$defs/PresentationFocalPoint"
+                    },
+                    "image": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/PresentationPublicAsset"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationContactSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "contact"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "split"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "destination": {
+                      "$ref": "#/$defs/ResolvedPresentationLink"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "destination"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkCatalogSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkCatalog"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "columns": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 4
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkDetailsSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkDetails"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "standard"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {},
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArticleSelectionSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "articleSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "compact"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "articles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/EditorialArticleCard"
+                },
+                "maxItems": 12
+              }
+            },
+            "required": [
+              "articles"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "EditorialArticleCard": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 36,
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "publication",
+              "news",
+              "exhibition"
+            ]
+          },
+          "canonicalPath": {
+            "type": "string",
+            "maxLength": 2048,
+            "pattern": "^/(?!/)"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "editorialDate": {
+            "type": "string",
+            "maxLength": 10,
+            "format": "date"
+          },
+          "cover": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "srcPath": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^/(?!/)"
+                  },
+                  "alt": {
+                    "type": "string",
+                    "maxLength": 4000
+                  }
+                },
+                "required": [
+                  "srcPath",
+                  "alt"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/EditorialAuthorCard"
+            },
+            "maxItems": 10,
+            "minItems": 0
+          },
+          "exhibitionPeriod": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "startsOn",
+              "endsOn"
+            ],
+            "properties": {
+              "startsOn": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              },
+              "endsOn": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "canonicalPath",
+          "title",
+          "summary",
+          "editorialDate",
+          "cover",
+          "authors"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "exhibition"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "type": "object"
+            },
+            "then": {
+              "required": [
+                "exhibitionPeriod"
+              ],
+              "properties": {
+                "exhibitionPeriod": {}
+              },
+              "type": "object"
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "exhibitionPeriod"
+                ],
+                "properties": {
+                  "exhibitionPeriod": {}
+                },
+                "type": "object"
+              },
+              "type": "object"
+            }
+          }
+        ]
+      },
+      "EditorialAuthorCard": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 36,
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1
+          },
+          "hasProfile": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "hasProfile"
+        ]
+      },
+      "ResolvedPresentationFormSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "form"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationFormImageSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "formImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "imageSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId",
+              "imageSide"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "PresentationGaleristNavigation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": {
+            "const": "galerist"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "href": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "pageKey",
+          "name",
+          "href",
+          "alternatePaths"
+        ]
+      },
+      "PresentationGaleristIdentity": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": {
+            "const": "galerist"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "canonicalPath": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "pageKey",
+          "name",
+          "canonicalPath",
+          "alternatePaths"
+        ]
+      },
+      "PresentationFooterResolved": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "scope": {
+            "enum": [
+              "public",
+              "preview"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 35
+          },
+          "services": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedService"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedGroup"
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          },
+          "showLanguageSelector": {
+            "type": "boolean"
+          },
+          "showDescription": {
+            "type": "boolean"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterRichText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "scope",
+          "locale",
+          "services",
+          "groups",
+          "socialLinks",
+          "showLanguageSelector",
+          "showDescription"
+        ]
+      },
+      "PresentationFooterResolvedService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 600
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterDestination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^/(?!/)",
+                "maxLength": 4096
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              }
+            },
+            "required": [
+              "kind",
+              "href",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^mailto:",
+                "maxLength": 270
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^tel:",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterResolvedGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "links": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterResolvedLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
       }
-    },
-    "required": [
-      "releaseId",
-      "schemaVersion",
-      "profileId",
-      "manifestFingerprint",
-      "locale",
-      "pageKey",
-      "theme",
-      "fontFiles",
-      "sections"
-    ]
+    }
   },
   "PresentationAssetCreate": {
     "type": "object",
@@ -17789,6 +18591,70 @@ export const presentationSchemas = {
           "imageBytes",
           "fontBytes"
         ]
+      },
+      "formsWritable": {
+        "type": "boolean"
+      },
+      "footer": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "writable": {
+            "const": true
+          },
+          "contractVersion": {
+            "const": 1
+          },
+          "limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "services": {
+                "const": 3
+              },
+              "groups": {
+                "const": 4
+              },
+              "linksPerGroup": {
+                "const": 12
+              },
+              "socialLinks": {
+                "const": 8
+              },
+              "documentBytes": {
+                "const": 262144
+              }
+            },
+            "required": [
+              "services",
+              "groups",
+              "linksPerGroup",
+              "socialLinks",
+              "documentBytes"
+            ]
+          }
+        },
+        "required": [
+          "writable",
+          "contractVersion",
+          "limits"
+        ]
+      },
+      "artworkSettings": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "writable",
+          "contractVersion"
+        ],
+        "properties": {
+          "writable": {
+            "const": true
+          },
+          "contractVersion": {
+            "const": 1
+          }
+        }
       }
     },
     "required": [
@@ -17814,7 +18680,8 @@ export const presentationSchemas = {
           "publications",
           "expertise",
           "contact",
-          "artworkDetail"
+          "artworkDetail",
+          "galerist"
         ]
       },
       "locale": {
@@ -17887,7 +18754,8 @@ export const presentationSchemas = {
           "publications",
           "expertise",
           "contact",
-          "artworkDetail"
+          "artworkDetail",
+          "galerist"
         ]
       },
       "locale": {
@@ -17898,6 +18766,35 @@ export const presentationSchemas = {
       "artworkId": {
         "type": "string",
         "format": "uuid"
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "article"
+        ]
+      },
+      "snapshotId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "articleId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "articleKind": {
+        "type": "string",
+        "enum": [
+          "publication",
+          "news",
+          "exhibition"
+        ]
+      },
+      "viewport": {
+        "type": "integer",
+        "enum": [
+          375,
+          1440
+        ]
       }
     },
     "required": [
@@ -17907,6 +18804,62 @@ export const presentationSchemas = {
       "revision",
       "pageKey",
       "locale"
+    ],
+    "allOf": [
+      {
+        "if": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "article"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        },
+        "then": {
+          "type": "object",
+          "required": [
+            "kind",
+            "snapshotId",
+            "articleId",
+            "articleKind",
+            "viewport"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "article"
+              ]
+            },
+            "snapshotId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "articleId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "articleKind": {
+              "type": "string",
+              "enum": [
+                "publication",
+                "news",
+                "exhibition"
+              ]
+            },
+            "viewport": {
+              "type": "integer",
+              "enum": [
+                375,
+                1440
+              ]
+            }
+          }
+        }
+      }
     ]
   },
   "PresentationPreviewStatus": {
@@ -17932,7 +18885,8 @@ export const presentationSchemas = {
           "publications",
           "expertise",
           "contact",
-          "artworkDetail"
+          "artworkDetail",
+          "galerist"
         ]
       },
       "locale": {
@@ -17944,6 +18898,35 @@ export const presentationSchemas = {
         "type": "string",
         "format": "uuid",
         "description": "Œuvre publique choisie pour la fiche d’aperçu ; aucune autorité d’accès."
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "article"
+        ]
+      },
+      "snapshotId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "articleId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "articleKind": {
+        "type": "string",
+        "enum": [
+          "publication",
+          "news",
+          "exhibition"
+        ]
+      },
+      "viewport": {
+        "type": "integer",
+        "enum": [
+          375,
+          1440
+        ]
       }
     },
     "required": [
@@ -17951,6 +18934,62 @@ export const presentationSchemas = {
       "expiresAt",
       "pageKey",
       "locale"
+    ],
+    "allOf": [
+      {
+        "if": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "article"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        },
+        "then": {
+          "type": "object",
+          "required": [
+            "kind",
+            "snapshotId",
+            "articleId",
+            "articleKind",
+            "viewport"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "article"
+              ]
+            },
+            "snapshotId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "articleId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "articleKind": {
+              "type": "string",
+              "enum": [
+                "publication",
+                "news",
+                "exhibition"
+              ]
+            },
+            "viewport": {
+              "type": "integer",
+              "enum": [
+                375,
+                1440
+              ]
+            }
+          }
+        }
+      }
     ]
   },
   "PresentationPreview": {
@@ -17974,6 +19013,77 @@ export const presentationSchemas = {
         "maxLength": 35
       },
       "pageKey": {
+        "$ref": "#/$defs/PresentationPageKey"
+      },
+      "theme": {
+        "$ref": "#/$defs/PresentationTheme"
+      },
+      "fontFiles": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/PresentationPublicAsset"
+        },
+        "maxItems": 216
+      },
+      "sections": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/ResolvedPresentationSection"
+        },
+        "maxItems": 30
+      },
+      "snapshotId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "revision": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]*$",
+        "maxLength": 20
+      },
+      "galeristNavigation": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationGaleristNavigation"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "pageIdentity": {
+        "$ref": "#/$defs/PresentationGaleristIdentity"
+      },
+      "footer": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationFooterResolved"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "metaDescription": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 320
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "profileId",
+      "manifestFingerprint",
+      "locale",
+      "pageKey",
+      "theme",
+      "fontFiles",
+      "sections",
+      "snapshotId",
+      "revision"
+    ],
+    "$defs": {
+      "PresentationPageKey": {
         "type": "string",
         "enum": [
           "home",
@@ -17983,554 +19093,41 @@ export const presentationSchemas = {
           "publications",
           "expertise",
           "contact",
-          "artworkDetail"
+          "artworkDetail",
+          "galerist"
         ]
       },
-      "theme": {
+      "PresentationTheme": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "colors": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "background": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "surface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseSurface": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "text": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "mutedText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "inverseText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "disabledText": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "accent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onAccent": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "link": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "linkHover": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "border": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "focus": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "selection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSelection": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "error": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onError": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "success": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onSuccess": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "warning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              },
-              "onWarning": {
-                "type": "string",
-                "pattern": "^#[0-9a-fA-F]{6}$"
-              }
-            },
-            "required": [
-              "background",
-              "surface",
-              "mutedSurface",
-              "inverseSurface",
-              "text",
-              "mutedText",
-              "inverseText",
-              "disabledText",
-              "accent",
-              "onAccent",
-              "link",
-              "linkHover",
-              "border",
-              "focus",
-              "selection",
-              "onSelection",
-              "error",
-              "onError",
-              "success",
-              "onSuccess",
-              "warning",
-              "onWarning"
-            ]
+            "$ref": "#/$defs/PresentationColors"
           },
           "typography": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
               "h1": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "h2": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "h3": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "body": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "caption": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "navigation": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               },
               "button": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "familyId": {
-                    "type": "string",
-                    "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
-                  },
-                  "weight": {
-                    "type": "integer",
-                    "enum": [
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ]
-                  },
-                  "style": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "italic"
-                    ]
-                  },
-                  "minSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "maxSizeRem": {
-                    "type": "number",
-                    "minimum": 0.625,
-                    "maximum": 6
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 2.5
-                  },
-                  "letterSpacingEm": {
-                    "type": "number",
-                    "minimum": -0.05,
-                    "maximum": 0.3
-                  }
-                },
-                "required": [
-                  "familyId",
-                  "weight",
-                  "style",
-                  "minSizeRem",
-                  "maxSizeRem",
-                  "lineHeight",
-                  "letterSpacingEm"
-                ]
+                "$ref": "#/$defs/PresentationTypographyRole"
               }
             },
             "required": [
@@ -18546,40 +19143,7 @@ export const presentationSchemas = {
           "fonts": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "label": {
-                  "type": "string",
-                  "maxLength": 80
-                },
-                "faces": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "assetId": {
-                        "type": "string",
-                        "format": "uuid"
-                      }
-                    },
-                    "required": [
-                      "assetId"
-                    ]
-                  },
-                  "maxItems": 18
-                }
-              },
-              "required": [
-                "id",
-                "label",
-                "faces"
-              ]
+              "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
           }
@@ -18590,1165 +19154,943 @@ export const presentationSchemas = {
           "fonts"
         ]
       },
-      "fontFiles": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "kind": {
-              "type": "string",
-              "enum": [
-                "image",
-                "video",
-                "font"
-              ]
-            },
-            "path": {
-              "type": "string",
-              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-              "maxLength": 200
-            },
-            "mimeType": {
-              "type": "string",
-              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-              "maxLength": 80
-            },
-            "byteSize": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 20971520
-            },
-            "width": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "height": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "font": {
+      "PresentationColors": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "surface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "text": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "disabledText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "accent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onAccent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "link": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "linkHover": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "border": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "focus": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "selection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSelection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "error": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onError": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "success": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSuccess": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "warning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onWarning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": [
+          "background",
+          "surface",
+          "mutedSurface",
+          "inverseSurface",
+          "text",
+          "mutedText",
+          "inverseText",
+          "disabledText",
+          "accent",
+          "onAccent",
+          "link",
+          "linkHover",
+          "border",
+          "focus",
+          "selection",
+          "onSelection",
+          "error",
+          "onError",
+          "success",
+          "onSuccess",
+          "warning",
+          "onWarning"
+        ]
+      },
+      "PresentationTypographyRole": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          },
+          "minSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "maxSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "lineHeight": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 2.5
+          },
+          "letterSpacingEm": {
+            "type": "number",
+            "minimum": -0.05,
+            "maximum": 0.3
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style",
+          "minSizeRem",
+          "maxSizeRem",
+          "lineHeight",
+          "letterSpacingEm"
+        ]
+      },
+      "PresentationFontFamily": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "faces": {
+            "type": "array",
+            "items": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "familyId": {
+                "assetId": {
                   "type": "string",
                   "format": "uuid"
-                },
-                "weight": {
-                  "type": "integer",
-                  "enum": [
-                    100,
-                    200,
-                    300,
-                    400,
-                    500,
-                    600,
-                    700,
-                    800,
-                    900
-                  ]
-                },
-                "style": {
-                  "type": "string",
-                  "enum": [
-                    "normal",
-                    "italic"
-                  ]
                 }
               },
               "required": [
-                "familyId",
-                "weight",
-                "style"
+                "assetId"
               ]
             },
-            "variants": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "variant": {
-                    "type": "string",
-                    "enum": [
-                      "w640",
-                      "w1280",
-                      "w1920"
-                    ]
-                  },
-                  "path": {
-                    "type": "string",
-                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                    "maxLength": 200
-                  },
-                  "width": {
-                    "type": "integer",
-                    "minimum": 1
-                  },
-                  "height": {
-                    "type": "integer",
-                    "minimum": 1
-                  }
-                },
-                "required": [
-                  "variant",
-                  "path",
-                  "width",
-                  "height"
-                ]
-              },
-              "maxItems": 3
-            }
-          },
-          "required": [
-            "id",
-            "kind",
-            "path",
-            "mimeType",
-            "byteSize"
-          ],
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "kind": {
-                    "const": "font"
-                  }
-                },
-                "required": [
-                  "kind"
-                ]
-              },
-              "then": {
-                "properties": {
-                  "font": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "familyId": {
-                        "type": "string",
-                        "format": "uuid"
-                      },
-                      "weight": {
-                        "type": "integer",
-                        "enum": [
-                          100,
-                          200,
-                          300,
-                          400,
-                          500,
-                          600,
-                          700,
-                          800,
-                          900
-                        ]
-                      },
-                      "style": {
-                        "type": "string",
-                        "enum": [
-                          "normal",
-                          "italic"
-                        ]
-                      }
-                    },
-                    "required": [
-                      "familyId",
-                      "weight",
-                      "style"
-                    ]
-                  }
-                },
-                "required": [
-                  "font"
-                ]
-              }
-            }
-          ]
+            "maxItems": 18
+          }
         },
-        "maxItems": 216
+        "required": [
+          "id",
+          "label",
+          "faces"
+        ]
       },
-      "sections": {
-        "type": "array",
-        "items": {
-          "oneOf": [
-            {
+      "PresentationPublicAsset": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video",
+              "font"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+            "maxLength": 200
+          },
+          "mimeType": {
+            "type": "string",
+            "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+            "maxLength": 80
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20971520
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "font": {
+            "$ref": "#/$defs/PresentationFontDescriptor"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "heroMedia"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
                 "variant": {
                   "type": "string",
                   "enum": [
-                    "immersive",
-                    "centered"
+                    "w640",
+                    "w1280",
+                    "w1920"
                   ]
                 },
-                "props": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                  "maxLength": 200
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "variant",
+                "path",
+                "width",
+                "height"
+              ]
+            },
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "mimeType",
+          "byteSize"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "font"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "font": {
+                  "$ref": "#/$defs/PresentationFontDescriptor"
+                }
+              },
+              "required": [
+                "font"
+              ]
+            }
+          }
+        ]
+      },
+      "PresentationFontDescriptor": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style"
+        ]
+      },
+      "ResolvedPresentationSection": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ResolvedPresentationHeroMediaSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationTextSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationTextImageSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkSelectionSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationEditorialCardsSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationImageGallerySection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationContactSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkCatalogSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkDetailsSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArticleSelectionSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationFormSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationFormImageSection"
+          }
+        ]
+      },
+      "ResolvedPresentationHeroMediaSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "heroMedia"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "immersive",
+              "centered"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "poster": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "video": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mobileVideo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationLink": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              },
+              "artworkId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "href": {
+                "type": "string",
+                "pattern": "^/(?!/)",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "value": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 254
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^\\+?[0-9 ()-]{3,32}$"
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          }
+        ]
+      },
+      "PresentationFocalPoint": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "ResolvedPresentationTextSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "text"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "narrow"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationTextImageSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "textImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "imageLeft",
+              "imageRight"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "caption": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "decorative": {
+                "type": "boolean"
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkSelectionSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "strip"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "artworks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PublicArtwork"
+                },
+                "maxItems": 12
+              },
+              "imageFit": {
+                "type": "string",
+                "enum": [
+                  "cover",
+                  "contain"
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "PublicArtwork": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "artist",
+          "year",
+          "medium",
+          "dimensions",
+          "media"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "artist": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "year": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "medium": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dimensions": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PublicMedia"
+            }
+          }
+        },
+        "example": {
+          "id": "11111111-1111-4111-8111-111111111111",
+          "title": "Étude 01",
+          "artist": "Artiste de démonstration",
+          "year": "2026",
+          "medium": "Encre sur papier",
+          "dimensions": "30 × 40 cm",
+          "media": [
+            {
+              "id": "22222222-2222-4222-8222-222222222222",
+              "alt": "Étude abstraite de démonstration",
+              "width": 800,
+              "height": 600,
+              "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+            }
+          ]
+        }
+      },
+      "PublicMedia": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "alt",
+          "width",
+          "height",
+          "path"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "alt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/public/media/"
+          }
+        }
+      },
+      "ResolvedPresentationEditorialCardsSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "editorialCards"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "list"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "items": {
+                "type": "array",
+                "items": {
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
                     "heading": {
                       "type": "string",
                       "maxLength": 120
                     },
-                    "introduction": {
+                    "excerpt": {
                       "type": "string",
                       "maxLength": 500
                     },
                     "link": {
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "page"
-                            },
-                            "pageKey": {
-                              "type": "string",
-                              "enum": [
-                                "home",
-                                "news",
-                                "artworks",
-                                "exhibitions",
-                                "publications",
-                                "expertise",
-                                "contact",
-                                "artworkDetail"
-                              ]
-                            },
-                            "artworkId": {
-                              "type": "string",
-                              "format": "uuid"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "pageKey"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "external"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "pattern": "^https://",
-                              "maxLength": 2048
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "url"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "email"
-                            },
-                            "value": {
-                              "type": "string",
-                              "format": "email",
-                              "maxLength": 254
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "phone"
-                            },
-                            "value": {
-                              "type": "string",
-                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        }
-                      ]
-                    },
-                    "linkLabel": {
-                      "type": "string",
-                      "maxLength": 80
-                    },
-                    "focalPoint": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "x": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        },
-                        "y": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        }
-                      },
-                      "required": [
-                        "x",
-                        "y"
-                      ]
-                    },
-                    "poster": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "video": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "mobileVideo": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "text"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "standard",
-                    "narrow"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 5000
-                    },
-                    "link": {
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "page"
-                            },
-                            "pageKey": {
-                              "type": "string",
-                              "enum": [
-                                "home",
-                                "news",
-                                "artworks",
-                                "exhibitions",
-                                "publications",
-                                "expertise",
-                                "contact",
-                                "artworkDetail"
-                              ]
-                            },
-                            "artworkId": {
-                              "type": "string",
-                              "format": "uuid"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "pageKey"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "external"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "pattern": "^https://",
-                              "maxLength": 2048
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "url"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "email"
-                            },
-                            "value": {
-                              "type": "string",
-                              "format": "email",
-                              "maxLength": 254
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "phone"
-                            },
-                            "value": {
-                              "type": "string",
-                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        }
-                      ]
-                    },
-                    "linkLabel": {
-                      "type": "string",
-                      "maxLength": 80
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "textImage"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "imageLeft",
-                    "imageRight"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 5000
-                    },
-                    "link": {
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "page"
-                            },
-                            "pageKey": {
-                              "type": "string",
-                              "enum": [
-                                "home",
-                                "news",
-                                "artworks",
-                                "exhibitions",
-                                "publications",
-                                "expertise",
-                                "contact",
-                                "artworkDetail"
-                              ]
-                            },
-                            "artworkId": {
-                              "type": "string",
-                              "format": "uuid"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "pageKey"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "external"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "pattern": "^https://",
-                              "maxLength": 2048
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "url"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "email"
-                            },
-                            "value": {
-                              "type": "string",
-                              "format": "email",
-                              "maxLength": 254
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "kind": {
-                              "const": "phone"
-                            },
-                            "value": {
-                              "type": "string",
-                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                            }
-                          },
-                          "required": [
-                            "kind",
-                            "value"
-                          ]
-                        }
-                      ]
-                    },
-                    "linkLabel": {
-                      "type": "string",
-                      "maxLength": 80
+                      "$ref": "#/$defs/ResolvedPresentationLink"
                     },
                     "alt": {
                       "type": "string",
@@ -19762,204 +20104,12 @@ export const presentationSchemas = {
                       "type": "boolean"
                     },
                     "focalPoint": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "x": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        },
-                        "y": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 1
-                        }
-                      },
-                      "required": [
-                        "x",
-                        "y"
-                      ]
+                      "$ref": "#/$defs/PresentationFocalPoint"
                     },
                     "image": {
                       "anyOf": [
                         {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": [
-                                "image",
-                                "video",
-                                "font"
-                              ]
-                            },
-                            "path": {
-                              "type": "string",
-                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                              "maxLength": 200
-                            },
-                            "mimeType": {
-                              "type": "string",
-                              "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                              "maxLength": 80
-                            },
-                            "byteSize": {
-                              "type": "integer",
-                              "minimum": 1,
-                              "maximum": 20971520
-                            },
-                            "width": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "height": {
-                              "type": "integer",
-                              "minimum": 1
-                            },
-                            "font": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "properties": {
-                                "familyId": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "weight": {
-                                  "type": "integer",
-                                  "enum": [
-                                    100,
-                                    200,
-                                    300,
-                                    400,
-                                    500,
-                                    600,
-                                    700,
-                                    800,
-                                    900
-                                  ]
-                                },
-                                "style": {
-                                  "type": "string",
-                                  "enum": [
-                                    "normal",
-                                    "italic"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "familyId",
-                                "weight",
-                                "style"
-                              ]
-                            },
-                            "variants": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "variant": {
-                                    "type": "string",
-                                    "enum": [
-                                      "w640",
-                                      "w1280",
-                                      "w1920"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  }
-                                },
-                                "required": [
-                                  "variant",
-                                  "path",
-                                  "width",
-                                  "height"
-                                ]
-                              },
-                              "maxItems": 3
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "kind",
-                            "path",
-                            "mimeType",
-                            "byteSize"
-                          ],
-                          "allOf": [
-                            {
-                              "if": {
-                                "properties": {
-                                  "kind": {
-                                    "const": "font"
-                                  }
-                                },
-                                "required": [
-                                  "kind"
-                                ]
-                              },
-                              "then": {
-                                "properties": {
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "font"
-                                ]
-                              }
-                            }
-                          ]
+                          "$ref": "#/$defs/PresentationPublicAsset"
                         },
                         {
                           "type": "null"
@@ -19967,1076 +20117,1058 @@ export const presentationSchemas = {
                       ]
                     }
                   },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "artworkSelection"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid",
-                    "strip"
+                  "required": [
+                    "id"
                   ]
                 },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "introduction": {
-                      "type": "string",
-                      "maxLength": 500
-                    },
-                    "artworks": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": [
-                          "id",
-                          "title",
-                          "artist",
-                          "year",
-                          "medium",
-                          "dimensions",
-                          "media"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "title": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "artist": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "year": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "medium": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "dimensions": {
-                            "type": [
-                              "string",
-                              "null"
-                            ]
-                          },
-                          "media": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "additionalProperties": false,
-                              "required": [
-                                "id",
-                                "alt",
-                                "width",
-                                "height",
-                                "path"
-                              ],
-                              "properties": {
-                                "id": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                },
-                                "alt": {
-                                  "type": [
-                                    "string",
-                                    "null"
-                                  ]
-                                },
-                                "width": {
-                                  "type": "integer",
-                                  "minimum": 1
-                                },
-                                "height": {
-                                  "type": "integer",
-                                  "minimum": 1
-                                },
-                                "path": {
-                                  "type": "string",
-                                  "pattern": "^/v1/public/media/"
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "example": {
-                          "id": "11111111-1111-4111-8111-111111111111",
-                          "title": "Étude 01",
-                          "artist": "Artiste de démonstration",
-                          "year": "2026",
-                          "medium": "Encre sur papier",
-                          "dimensions": "30 × 40 cm",
-                          "media": [
-                            {
-                              "id": "22222222-2222-4222-8222-222222222222",
-                              "alt": "Étude abstraite de démonstration",
-                              "width": 800,
-                              "height": 600,
-                              "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
-                            }
-                          ]
-                        }
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
+                "maxItems": 12
+              }
             },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "editorialCards"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid",
-                    "list"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "introduction": {
-                      "type": "string",
-                      "maxLength": 500
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "heading": {
-                            "type": "string",
-                            "maxLength": 120
-                          },
-                          "excerpt": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "link": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "page"
-                                  },
-                                  "pageKey": {
-                                    "type": "string",
-                                    "enum": [
-                                      "home",
-                                      "news",
-                                      "artworks",
-                                      "exhibitions",
-                                      "publications",
-                                      "expertise",
-                                      "contact",
-                                      "artworkDetail"
-                                    ]
-                                  },
-                                  "artworkId": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "pageKey"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "external"
-                                  },
-                                  "url": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "pattern": "^https://",
-                                    "maxLength": 2048
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "url"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "email"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "maxLength": 254
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "phone"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              }
-                            ]
-                          },
-                          "alt": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "caption": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "decorative": {
-                            "type": "boolean"
-                          },
-                          "focalPoint": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "x": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              },
-                              "y": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              }
-                            },
-                            "required": [
-                              "x",
-                              "y"
-                            ]
-                          },
-                          "image": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "id": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  },
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "image",
-                                      "video",
-                                      "font"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "mimeType": {
-                                    "type": "string",
-                                    "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                                    "maxLength": 80
-                                  },
-                                  "byteSize": {
-                                    "type": "integer",
-                                    "minimum": 1,
-                                    "maximum": 20971520
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  },
-                                  "variants": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "variant": {
-                                          "type": "string",
-                                          "enum": [
-                                            "w640",
-                                            "w1280",
-                                            "w1920"
-                                          ]
-                                        },
-                                        "path": {
-                                          "type": "string",
-                                          "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                          "maxLength": 200
-                                        },
-                                        "width": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        },
-                                        "height": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        }
-                                      },
-                                      "required": [
-                                        "variant",
-                                        "path",
-                                        "width",
-                                        "height"
-                                      ]
-                                    },
-                                    "maxItems": 3
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "kind",
-                                  "path",
-                                  "mimeType",
-                                  "byteSize"
-                                ],
-                                "allOf": [
-                                  {
-                                    "if": {
-                                      "properties": {
-                                        "kind": {
-                                          "const": "font"
-                                        }
-                                      },
-                                      "required": [
-                                        "kind"
-                                      ]
-                                    },
-                                    "then": {
-                                      "properties": {
-                                        "font": {
-                                          "type": "object",
-                                          "additionalProperties": false,
-                                          "properties": {
-                                            "familyId": {
-                                              "type": "string",
-                                              "format": "uuid"
-                                            },
-                                            "weight": {
-                                              "type": "integer",
-                                              "enum": [
-                                                100,
-                                                200,
-                                                300,
-                                                400,
-                                                500,
-                                                600,
-                                                700,
-                                                800,
-                                                900
-                                              ]
-                                            },
-                                            "style": {
-                                              "type": "string",
-                                              "enum": [
-                                                "normal",
-                                                "italic"
-                                              ]
-                                            }
-                                          },
-                                          "required": [
-                                            "familyId",
-                                            "weight",
-                                            "style"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "font"
-                                      ]
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ]
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "imageGallery"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid",
-                    "strip"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "alt": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "caption": {
-                            "type": "string",
-                            "maxLength": 500
-                          },
-                          "decorative": {
-                            "type": "boolean"
-                          },
-                          "focalPoint": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "x": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              },
-                              "y": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1
-                              }
-                            },
-                            "required": [
-                              "x",
-                              "y"
-                            ]
-                          },
-                          "image": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "id": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  },
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "image",
-                                      "video",
-                                      "font"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                    "maxLength": 200
-                                  },
-                                  "mimeType": {
-                                    "type": "string",
-                                    "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
-                                    "maxLength": 80
-                                  },
-                                  "byteSize": {
-                                    "type": "integer",
-                                    "minimum": 1,
-                                    "maximum": 20971520
-                                  },
-                                  "width": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "height": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                  },
-                                  "font": {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "familyId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                      },
-                                      "weight": {
-                                        "type": "integer",
-                                        "enum": [
-                                          100,
-                                          200,
-                                          300,
-                                          400,
-                                          500,
-                                          600,
-                                          700,
-                                          800,
-                                          900
-                                        ]
-                                      },
-                                      "style": {
-                                        "type": "string",
-                                        "enum": [
-                                          "normal",
-                                          "italic"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "familyId",
-                                      "weight",
-                                      "style"
-                                    ]
-                                  },
-                                  "variants": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "variant": {
-                                          "type": "string",
-                                          "enum": [
-                                            "w640",
-                                            "w1280",
-                                            "w1920"
-                                          ]
-                                        },
-                                        "path": {
-                                          "type": "string",
-                                          "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
-                                          "maxLength": 200
-                                        },
-                                        "width": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        },
-                                        "height": {
-                                          "type": "integer",
-                                          "minimum": 1
-                                        }
-                                      },
-                                      "required": [
-                                        "variant",
-                                        "path",
-                                        "width",
-                                        "height"
-                                      ]
-                                    },
-                                    "maxItems": 3
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "kind",
-                                  "path",
-                                  "mimeType",
-                                  "byteSize"
-                                ],
-                                "allOf": [
-                                  {
-                                    "if": {
-                                      "properties": {
-                                        "kind": {
-                                          "const": "font"
-                                        }
-                                      },
-                                      "required": [
-                                        "kind"
-                                      ]
-                                    },
-                                    "then": {
-                                      "properties": {
-                                        "font": {
-                                          "type": "object",
-                                          "additionalProperties": false,
-                                          "properties": {
-                                            "familyId": {
-                                              "type": "string",
-                                              "format": "uuid"
-                                            },
-                                            "weight": {
-                                              "type": "integer",
-                                              "enum": [
-                                                100,
-                                                200,
-                                                300,
-                                                400,
-                                                500,
-                                                600,
-                                                700,
-                                                800,
-                                                900
-                                              ]
-                                            },
-                                            "style": {
-                                              "type": "string",
-                                              "enum": [
-                                                "normal",
-                                                "italic"
-                                              ]
-                                            }
-                                          },
-                                          "required": [
-                                            "familyId",
-                                            "weight",
-                                            "style"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "font"
-                                      ]
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ]
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "contact"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "compact",
-                    "split"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "heading": {
-                      "type": "string",
-                      "maxLength": 120
-                    },
-                    "body": {
-                      "type": "string",
-                      "maxLength": 5000
-                    },
-                    "links": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "label": {
-                            "type": "string",
-                            "maxLength": 80
-                          },
-                          "destination": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "page"
-                                  },
-                                  "pageKey": {
-                                    "type": "string",
-                                    "enum": [
-                                      "home",
-                                      "news",
-                                      "artworks",
-                                      "exhibitions",
-                                      "publications",
-                                      "expertise",
-                                      "contact",
-                                      "artworkDetail"
-                                    ]
-                                  },
-                                  "artworkId": {
-                                    "type": "string",
-                                    "format": "uuid"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "pageKey"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "external"
-                                  },
-                                  "url": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "pattern": "^https://",
-                                    "maxLength": 2048
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "url"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "email"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "maxLength": 254
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "kind": {
-                                    "const": "phone"
-                                  },
-                                  "value": {
-                                    "type": "string",
-                                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "value"
-                                ]
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "label",
-                          "destination"
-                        ]
-                      },
-                      "maxItems": 12
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "artworkCatalog"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "grid"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "columns": {
-                      "type": "integer",
-                      "minimum": 2,
-                      "maximum": 4
-                    }
-                  },
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "type": {
-                  "const": "artworkDetails"
-                },
-                "schemaVersion": {
-                  "const": 1
-                },
-                "variant": {
-                  "type": "string",
-                  "enum": [
-                    "standard"
-                  ]
-                },
-                "props": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {},
-                  "required": []
-                }
-              },
-              "required": [
-                "id",
-                "type",
-                "schemaVersion",
-                "variant",
-                "props"
-              ]
-            }
-          ]
+            "required": []
+          }
         },
-        "maxItems": 30
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
       },
-      "snapshotId": {
-        "type": "string",
-        "format": "uuid"
+      "ResolvedPresentationImageGallerySection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "imageGallery"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "strip"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "alt": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "caption": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "decorative": {
+                      "type": "boolean"
+                    },
+                    "focalPoint": {
+                      "$ref": "#/$defs/PresentationFocalPoint"
+                    },
+                    "image": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/PresentationPublicAsset"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
       },
-      "revision": {
-        "type": "string",
-        "pattern": "^[1-9][0-9]*$",
-        "maxLength": 20
+      "ResolvedPresentationContactSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "contact"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "split"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "destination": {
+                      "$ref": "#/$defs/ResolvedPresentationLink"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "destination"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkCatalogSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkCatalog"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "columns": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 4
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkDetailsSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkDetails"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "standard"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {},
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArticleSelectionSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "articleSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "compact"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "articles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/EditorialArticleCard"
+                },
+                "maxItems": 12
+              }
+            },
+            "required": [
+              "articles"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "EditorialArticleCard": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 36,
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "publication",
+              "news",
+              "exhibition"
+            ]
+          },
+          "canonicalPath": {
+            "type": "string",
+            "maxLength": 2048,
+            "pattern": "^/(?!/)"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "editorialDate": {
+            "type": "string",
+            "maxLength": 10,
+            "format": "date"
+          },
+          "cover": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "srcPath": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^/(?!/)"
+                  },
+                  "alt": {
+                    "type": "string",
+                    "maxLength": 4000
+                  }
+                },
+                "required": [
+                  "srcPath",
+                  "alt"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/EditorialAuthorCard"
+            },
+            "maxItems": 10,
+            "minItems": 0
+          },
+          "exhibitionPeriod": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "startsOn",
+              "endsOn"
+            ],
+            "properties": {
+              "startsOn": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              },
+              "endsOn": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "canonicalPath",
+          "title",
+          "summary",
+          "editorialDate",
+          "cover",
+          "authors"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "exhibition"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "type": "object"
+            },
+            "then": {
+              "required": [
+                "exhibitionPeriod"
+              ],
+              "properties": {
+                "exhibitionPeriod": {}
+              },
+              "type": "object"
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "exhibitionPeriod"
+                ],
+                "properties": {
+                  "exhibitionPeriod": {}
+                },
+                "type": "object"
+              },
+              "type": "object"
+            }
+          }
+        ]
+      },
+      "EditorialAuthorCard": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 36,
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1
+          },
+          "hasProfile": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "hasProfile"
+        ]
+      },
+      "ResolvedPresentationFormSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "form"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationFormImageSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "formImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "imageSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId",
+              "imageSide"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "PresentationGaleristNavigation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": {
+            "const": "galerist"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "href": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "pageKey",
+          "name",
+          "href",
+          "alternatePaths"
+        ]
+      },
+      "PresentationGaleristIdentity": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": {
+            "const": "galerist"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "canonicalPath": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "pageKey",
+          "name",
+          "canonicalPath",
+          "alternatePaths"
+        ]
+      },
+      "PresentationFooterResolved": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "scope": {
+            "enum": [
+              "public",
+              "preview"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 35
+          },
+          "services": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedService"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedGroup"
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          },
+          "showLanguageSelector": {
+            "type": "boolean"
+          },
+          "showDescription": {
+            "type": "boolean"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterRichText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "scope",
+          "locale",
+          "services",
+          "groups",
+          "socialLinks",
+          "showLanguageSelector",
+          "showDescription"
+        ]
+      },
+      "PresentationFooterResolvedService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 600
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterDestination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^/(?!/)",
+                "maxLength": 4096
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              }
+            },
+            "required": [
+              "kind",
+              "href",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^mailto:",
+                "maxLength": 270
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^tel:",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterResolvedGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "links": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterResolvedLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
       }
-    },
-    "required": [
-      "schemaVersion",
-      "profileId",
-      "manifestFingerprint",
-      "locale",
-      "pageKey",
-      "theme",
-      "fontFiles",
-      "sections",
-      "snapshotId",
-      "revision"
-    ]
+    }
   },
   "PresentationUploadAttempt": {
     "type": "object",
@@ -21506,6 +21638,6438 @@ export const presentationSchemas = {
       "expiresAt": {
         "type": "string",
         "format": "date-time"
+      }
+    }
+  },
+  "PresentationArticleSelectionSection": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "const": "articleSelection"
+      },
+      "schemaVersion": {
+        "const": 1
+      },
+      "variant": {
+        "type": "string",
+        "enum": [
+          "grid",
+          "compact"
+        ]
+      },
+      "hidden": {
+        "type": "boolean"
+      },
+      "props": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "heading": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "introduction": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "latest"
+            ]
+          },
+          "articleIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 12,
+            "uniqueItems": true
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "all",
+              "publication",
+              "news"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "taxonomyAssignments": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "vocabularyId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "termIds": {
+                  "type": "array",
+                  "maxItems": 20,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              "required": [
+                "vocabularyId",
+                "termIds"
+              ]
+            }
+          },
+          "kinds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "publication",
+                "news",
+                "exhibition"
+              ]
+            }
+          }
+        },
+        "required": [
+          "mode",
+          "articleIds",
+          "taxonomyAssignments",
+          "limit"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "kind": {}
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kinds": {}
+            },
+            "required": [
+              "kinds"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "schemaVersion",
+      "variant",
+      "hidden",
+      "props"
+    ]
+  },
+  "ResolvedPresentationArticleSelectionSection": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "const": "articleSelection"
+      },
+      "schemaVersion": {
+        "const": 1
+      },
+      "variant": {
+        "type": "string",
+        "enum": [
+          "grid",
+          "compact"
+        ]
+      },
+      "props": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "heading": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "introduction": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "maxLength": 36,
+                  "format": "uuid"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "publication",
+                    "news",
+                    "exhibition"
+                  ]
+                },
+                "canonicalPath": {
+                  "type": "string",
+                  "maxLength": 2048,
+                  "pattern": "^/(?!/)"
+                },
+                "title": {
+                  "type": "string",
+                  "maxLength": 240,
+                  "minLength": 1
+                },
+                "summary": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 2000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "editorialDate": {
+                  "type": "string",
+                  "maxLength": 10,
+                  "format": "date"
+                },
+                "cover": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "srcPath": {
+                          "type": "string",
+                          "maxLength": 2048,
+                          "pattern": "^/(?!/)"
+                        },
+                        "alt": {
+                          "type": "string",
+                          "maxLength": 4000
+                        }
+                      },
+                      "required": [
+                        "srcPath",
+                        "alt"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "authors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "maxLength": 36,
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string",
+                        "maxLength": 240,
+                        "minLength": 1
+                      },
+                      "hasProfile": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "hasProfile"
+                    ]
+                  },
+                  "maxItems": 10,
+                  "minItems": 0
+                },
+                "exhibitionPeriod": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "startsOn",
+                    "endsOn"
+                  ],
+                  "properties": {
+                    "startsOn": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+                    },
+                    "endsOn": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "canonicalPath",
+                "title",
+                "summary",
+                "editorialDate",
+                "cover",
+                "authors"
+              ],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "exhibition"
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  "then": {
+                    "required": [
+                      "exhibitionPeriod"
+                    ],
+                    "properties": {
+                      "exhibitionPeriod": {}
+                    },
+                    "type": "object"
+                  },
+                  "else": {
+                    "not": {
+                      "required": [
+                        "exhibitionPeriod"
+                      ],
+                      "properties": {
+                        "exhibitionPeriod": {}
+                      },
+                      "type": "object"
+                    },
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "articles"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "schemaVersion",
+      "variant",
+      "props"
+    ]
+  },
+  "PresentationGaleristSettings": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "enabled",
+      "showInNavigation",
+      "name",
+      "slug"
+    ],
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "showInNavigation": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "object",
+        "propertyNames": {
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "description": "Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md."
+      },
+      "slug": {
+        "type": "object",
+        "propertyNames": {
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "description": "Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md."
+      }
+    }
+  },
+  "PresentationGaleristIdentity": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "pageKey": {
+        "const": "galerist"
+      },
+      "name": {
+        "type": "string",
+        "maxLength": 120
+      },
+      "canonicalPath": {
+        "type": "string",
+        "maxLength": 2048
+      },
+      "alternatePaths": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      }
+    },
+    "required": [
+      "pageKey",
+      "name",
+      "canonicalPath",
+      "alternatePaths"
+    ]
+  },
+  "PresentationGaleristNavigation": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "pageKey": {
+        "const": "galerist"
+      },
+      "name": {
+        "type": "string",
+        "maxLength": 120
+      },
+      "href": {
+        "type": "string",
+        "maxLength": 2048
+      },
+      "alternatePaths": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      }
+    },
+    "required": [
+      "pageKey",
+      "name",
+      "href",
+      "alternatePaths"
+    ]
+  },
+  "PresentationPageAddress": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "canonical"
+          },
+          "pageKey": {
+            "const": "galerist"
+          },
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canonicalPath": {
+            "type": "string"
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "presentation": {
+            "$ref": "#/$defs/PresentationPublic"
+          }
+        },
+        "required": [
+          "kind",
+          "pageKey",
+          "releaseId",
+          "canonicalPath",
+          "alternatePaths",
+          "name",
+          "presentation"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "redirect"
+          },
+          "pageKey": {
+            "const": "galerist"
+          },
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canonicalPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "pageKey",
+          "releaseId",
+          "canonicalPath"
+        ]
+      }
+    ],
+    "$defs": {
+      "PresentationPublic": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "profileId": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "manifestFingerprint": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "locale": {
+            "type": "string",
+            "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+            "maxLength": 35
+          },
+          "pageKey": {
+            "$ref": "#/$defs/PresentationPageKey"
+          },
+          "theme": {
+            "$ref": "#/$defs/PresentationTheme"
+          },
+          "fontFiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationPublicAsset"
+            },
+            "maxItems": 216
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ResolvedPresentationSection"
+            },
+            "maxItems": 30
+          },
+          "galeristNavigation": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationGaleristNavigation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pageIdentity": {
+            "$ref": "#/$defs/PresentationGaleristIdentity"
+          },
+          "footer": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterResolved"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metaDescription": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 320
+          }
+        },
+        "required": [
+          "releaseId",
+          "schemaVersion",
+          "profileId",
+          "manifestFingerprint",
+          "locale",
+          "pageKey",
+          "theme",
+          "fontFiles",
+          "sections"
+        ]
+      },
+      "PresentationPageKey": {
+        "type": "string",
+        "enum": [
+          "home",
+          "news",
+          "artworks",
+          "exhibitions",
+          "publications",
+          "expertise",
+          "contact",
+          "artworkDetail",
+          "galerist"
+        ]
+      },
+      "PresentationTheme": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "colors": {
+            "$ref": "#/$defs/PresentationColors"
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "h1": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "h2": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "h3": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "body": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "caption": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "navigation": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              },
+              "button": {
+                "$ref": "#/$defs/PresentationTypographyRole"
+              }
+            },
+            "required": [
+              "h1",
+              "h2",
+              "h3",
+              "body",
+              "caption",
+              "navigation",
+              "button"
+            ]
+          },
+          "fonts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFontFamily"
+            },
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "colors",
+          "typography",
+          "fonts"
+        ]
+      },
+      "PresentationColors": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "surface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseSurface": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "text": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "mutedText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "inverseText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "disabledText": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "accent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onAccent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "link": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "linkHover": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "border": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "focus": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "selection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSelection": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "error": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onError": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "success": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onSuccess": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "warning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "onWarning": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": [
+          "background",
+          "surface",
+          "mutedSurface",
+          "inverseSurface",
+          "text",
+          "mutedText",
+          "inverseText",
+          "disabledText",
+          "accent",
+          "onAccent",
+          "link",
+          "linkHover",
+          "border",
+          "focus",
+          "selection",
+          "onSelection",
+          "error",
+          "onError",
+          "success",
+          "onSuccess",
+          "warning",
+          "onWarning"
+        ]
+      },
+      "PresentationTypographyRole": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "pattern": "^(?:builtin:[a-z][a-z0-9-]{0,40}|[0-9a-f-]{36})$"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          },
+          "minSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "maxSizeRem": {
+            "type": "number",
+            "minimum": 0.625,
+            "maximum": 6
+          },
+          "lineHeight": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 2.5
+          },
+          "letterSpacingEm": {
+            "type": "number",
+            "minimum": -0.05,
+            "maximum": 0.3
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style",
+          "minSizeRem",
+          "maxSizeRem",
+          "lineHeight",
+          "letterSpacingEm"
+        ]
+      },
+      "PresentationFontFamily": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "faces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "assetId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "assetId"
+              ]
+            },
+            "maxItems": 18
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "faces"
+        ]
+      },
+      "PresentationPublicAsset": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video",
+              "font"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+            "maxLength": 200
+          },
+          "mimeType": {
+            "type": "string",
+            "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+            "maxLength": 80
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20971520
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "font": {
+            "$ref": "#/$defs/PresentationFontDescriptor"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "variant": {
+                  "type": "string",
+                  "enum": [
+                    "w640",
+                    "w1280",
+                    "w1920"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                  "maxLength": 200
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "variant",
+                "path",
+                "width",
+                "height"
+              ]
+            },
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "mimeType",
+          "byteSize"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "font"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "font": {
+                  "$ref": "#/$defs/PresentationFontDescriptor"
+                }
+              },
+              "required": [
+                "font"
+              ]
+            }
+          }
+        ]
+      },
+      "PresentationFontDescriptor": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "familyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "weight": {
+            "type": "integer",
+            "enum": [
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900
+            ]
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ]
+          }
+        },
+        "required": [
+          "familyId",
+          "weight",
+          "style"
+        ]
+      },
+      "ResolvedPresentationSection": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ResolvedPresentationHeroMediaSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationTextSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationTextImageSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkSelectionSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationEditorialCardsSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationImageGallerySection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationContactSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkCatalogSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArtworkDetailsSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationArticleSelectionSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationFormSection"
+          },
+          {
+            "$ref": "#/$defs/ResolvedPresentationFormImageSection"
+          }
+        ]
+      },
+      "ResolvedPresentationHeroMediaSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "heroMedia"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "immersive",
+              "centered"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "poster": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "video": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mobileVideo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationLink": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              },
+              "artworkId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "href": {
+                "type": "string",
+                "pattern": "^/(?!/)",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "value": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 254
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^\\+?[0-9 ()-]{3,32}$"
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          }
+        ]
+      },
+      "PresentationFocalPoint": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "ResolvedPresentationTextSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "text"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "narrow"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationTextImageSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "textImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "imageLeft",
+              "imageRight"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "link": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
+              },
+              "linkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "caption": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "decorative": {
+                "type": "boolean"
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkSelectionSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "strip"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "artworks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PublicArtwork"
+                },
+                "maxItems": 12
+              },
+              "imageFit": {
+                "type": "string",
+                "enum": [
+                  "cover",
+                  "contain"
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "PublicArtwork": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "artist",
+          "year",
+          "medium",
+          "dimensions",
+          "media"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "artist": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "year": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "medium": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dimensions": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PublicMedia"
+            }
+          }
+        },
+        "example": {
+          "id": "11111111-1111-4111-8111-111111111111",
+          "title": "Étude 01",
+          "artist": "Artiste de démonstration",
+          "year": "2026",
+          "medium": "Encre sur papier",
+          "dimensions": "30 × 40 cm",
+          "media": [
+            {
+              "id": "22222222-2222-4222-8222-222222222222",
+              "alt": "Étude abstraite de démonstration",
+              "width": 800,
+              "height": 600,
+              "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+            }
+          ]
+        }
+      },
+      "PublicMedia": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "alt",
+          "width",
+          "height",
+          "path"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "alt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/public/media/"
+          }
+        }
+      },
+      "ResolvedPresentationEditorialCardsSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "editorialCards"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "list"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxLength": 120
+                    },
+                    "excerpt": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "link": {
+                      "$ref": "#/$defs/ResolvedPresentationLink"
+                    },
+                    "alt": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "caption": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "decorative": {
+                      "type": "boolean"
+                    },
+                    "focalPoint": {
+                      "$ref": "#/$defs/PresentationFocalPoint"
+                    },
+                    "image": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/PresentationPublicAsset"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationImageGallerySection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "imageGallery"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "strip"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "alt": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "caption": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "decorative": {
+                      "type": "boolean"
+                    },
+                    "focalPoint": {
+                      "$ref": "#/$defs/PresentationFocalPoint"
+                    },
+                    "image": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/PresentationPublicAsset"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationContactSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "contact"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "split"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "destination": {
+                      "$ref": "#/$defs/ResolvedPresentationLink"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "destination"
+                  ]
+                },
+                "maxItems": 12
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkCatalogSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkCatalog"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "columns": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 4
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArtworkDetailsSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "artworkDetails"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "standard"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {},
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationArticleSelectionSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "articleSelection"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "compact"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "introduction": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "articles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/EditorialArticleCard"
+                },
+                "maxItems": 12
+              }
+            },
+            "required": [
+              "articles"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "EditorialArticleCard": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 36,
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "publication",
+              "news",
+              "exhibition"
+            ]
+          },
+          "canonicalPath": {
+            "type": "string",
+            "maxLength": 2048,
+            "pattern": "^/(?!/)"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "editorialDate": {
+            "type": "string",
+            "maxLength": 10,
+            "format": "date"
+          },
+          "cover": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "srcPath": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^/(?!/)"
+                  },
+                  "alt": {
+                    "type": "string",
+                    "maxLength": 4000
+                  }
+                },
+                "required": [
+                  "srcPath",
+                  "alt"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/EditorialAuthorCard"
+            },
+            "maxItems": 10,
+            "minItems": 0
+          },
+          "exhibitionPeriod": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "startsOn",
+              "endsOn"
+            ],
+            "properties": {
+              "startsOn": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              },
+              "endsOn": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "canonicalPath",
+          "title",
+          "summary",
+          "editorialDate",
+          "cover",
+          "authors"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "exhibition"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "type": "object"
+            },
+            "then": {
+              "required": [
+                "exhibitionPeriod"
+              ],
+              "properties": {
+                "exhibitionPeriod": {}
+              },
+              "type": "object"
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "exhibitionPeriod"
+                ],
+                "properties": {
+                  "exhibitionPeriod": {}
+                },
+                "type": "object"
+              },
+              "type": "object"
+            }
+          }
+        ]
+      },
+      "EditorialAuthorCard": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 36,
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1
+          },
+          "hasProfile": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "hasProfile"
+        ]
+      },
+      "ResolvedPresentationFormSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "form"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "ResolvedPresentationFormImageSection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "const": "formImage"
+          },
+          "schemaVersion": {
+            "const": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default"
+            ]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "formId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "focalPoint": {
+                "$ref": "#/$defs/PresentationFocalPoint"
+              },
+              "image": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "imageSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "hideTitle": {
+                "type": "boolean",
+                "description": "Hide the form heading at this placement only; omitted means visible."
+              }
+            },
+            "required": [
+              "formId",
+              "imageSide"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "schemaVersion",
+          "variant",
+          "props"
+        ]
+      },
+      "PresentationGaleristNavigation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": {
+            "const": "galerist"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "href": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "pageKey",
+          "name",
+          "href",
+          "alternatePaths"
+        ]
+      },
+      "PresentationGaleristIdentity": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageKey": {
+            "const": "galerist"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "canonicalPath": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "alternatePaths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "pageKey",
+          "name",
+          "canonicalPath",
+          "alternatePaths"
+        ]
+      },
+      "PresentationFooterResolved": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "scope": {
+            "enum": [
+              "public",
+              "preview"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 35
+          },
+          "services": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedService"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedGroup"
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          },
+          "showLanguageSelector": {
+            "type": "boolean"
+          },
+          "showDescription": {
+            "type": "boolean"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterRichText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "scope",
+          "locale",
+          "services",
+          "groups",
+          "socialLinks",
+          "showLanguageSelector",
+          "showDescription"
+        ]
+      },
+      "PresentationFooterResolvedService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 600
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterDestination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^/(?!/)",
+                "maxLength": 4096
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              }
+            },
+            "required": [
+              "kind",
+              "href",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^mailto:",
+                "maxLength": 270
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^tel:",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterResolvedGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "links": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterResolvedLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "ResolvedPresentationLink": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "page"
+          },
+          "pageKey": {
+            "type": "string",
+            "enum": [
+              "home",
+              "news",
+              "artworks",
+              "exhibitions",
+              "publications",
+              "expertise",
+              "contact",
+              "artworkDetail",
+              "galerist"
+            ]
+          },
+          "artworkId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "href": {
+            "type": "string",
+            "pattern": "^/(?!/)",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "kind",
+          "pageKey"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "external"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "kind",
+          "url"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "email"
+          },
+          "value": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          }
+        },
+        "required": [
+          "kind",
+          "value"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "phone"
+          },
+          "value": {
+            "type": "string",
+            "pattern": "^\\+?[0-9 ()-]{3,32}$"
+          }
+        },
+        "required": [
+          "kind",
+          "value"
+        ]
+      }
+    ]
+  },
+  "PresentationFormSection": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "const": "form"
+      },
+      "schemaVersion": {
+        "const": 1
+      },
+      "variant": {
+        "type": "string",
+        "enum": [
+          "default"
+        ]
+      },
+      "hidden": {
+        "type": "boolean"
+      },
+      "props": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "formId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hideTitle": {
+            "type": "boolean",
+            "description": "Hide the form heading at this placement only; omitted means visible."
+          }
+        },
+        "required": [
+          "formId"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "schemaVersion",
+      "variant",
+      "hidden",
+      "props"
+    ]
+  },
+  "ResolvedPresentationFormSection": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "const": "form"
+      },
+      "schemaVersion": {
+        "const": 1
+      },
+      "variant": {
+        "type": "string",
+        "enum": [
+          "default"
+        ]
+      },
+      "props": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "formId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hideTitle": {
+            "type": "boolean",
+            "description": "Hide the form heading at this placement only; omitted means visible."
+          }
+        },
+        "required": [
+          "formId"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "schemaVersion",
+      "variant",
+      "props"
+    ]
+  },
+  "PresentationFormImageSection": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "const": "formImage"
+      },
+      "schemaVersion": {
+        "const": 1
+      },
+      "variant": {
+        "type": "string",
+        "enum": [
+          "default"
+        ]
+      },
+      "hidden": {
+        "type": "boolean"
+      },
+      "props": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "formId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "imageId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alt": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "focalPoint": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ]
+          },
+          "imageSide": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ]
+          },
+          "hideTitle": {
+            "type": "boolean",
+            "description": "Hide the form heading at this placement only; omitted means visible."
+          }
+        },
+        "required": [
+          "formId",
+          "imageSide"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "schemaVersion",
+      "variant",
+      "hidden",
+      "props"
+    ]
+  },
+  "ResolvedPresentationFormImageSection": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "const": "formImage"
+      },
+      "schemaVersion": {
+        "const": 1
+      },
+      "variant": {
+        "type": "string",
+        "enum": [
+          "default"
+        ]
+      },
+      "props": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "formId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "alt": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "focalPoint": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ]
+          },
+          "image": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "image",
+                      "video",
+                      "font"
+                    ]
+                  },
+                  "path": {
+                    "type": "string",
+                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                    "maxLength": 200
+                  },
+                  "mimeType": {
+                    "type": "string",
+                    "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+                    "maxLength": 80
+                  },
+                  "byteSize": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20971520
+                  },
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "font": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "familyId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "weight": {
+                        "type": "integer",
+                        "enum": [
+                          100,
+                          200,
+                          300,
+                          400,
+                          500,
+                          600,
+                          700,
+                          800,
+                          900
+                        ]
+                      },
+                      "style": {
+                        "type": "string",
+                        "enum": [
+                          "normal",
+                          "italic"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "familyId",
+                      "weight",
+                      "style"
+                    ]
+                  },
+                  "variants": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "variant": {
+                          "type": "string",
+                          "enum": [
+                            "w640",
+                            "w1280",
+                            "w1920"
+                          ]
+                        },
+                        "path": {
+                          "type": "string",
+                          "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                          "maxLength": 200
+                        },
+                        "width": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "height": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      },
+                      "required": [
+                        "variant",
+                        "path",
+                        "width",
+                        "height"
+                      ]
+                    },
+                    "maxItems": 3
+                  }
+                },
+                "required": [
+                  "id",
+                  "kind",
+                  "path",
+                  "mimeType",
+                  "byteSize"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "kind": {
+                          "const": "font"
+                        }
+                      },
+                      "required": [
+                        "kind"
+                      ]
+                    },
+                    "then": {
+                      "properties": {
+                        "font": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "familyId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "weight": {
+                              "type": "integer",
+                              "enum": [
+                                100,
+                                200,
+                                300,
+                                400,
+                                500,
+                                600,
+                                700,
+                                800,
+                                900
+                              ]
+                            },
+                            "style": {
+                              "type": "string",
+                              "enum": [
+                                "normal",
+                                "italic"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "familyId",
+                            "weight",
+                            "style"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "font"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "imageSide": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ]
+          },
+          "hideTitle": {
+            "type": "boolean",
+            "description": "Hide the form heading at this placement only; omitted means visible."
+          }
+        },
+        "required": [
+          "formId",
+          "imageSide"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "schemaVersion",
+      "variant",
+      "props"
+    ]
+  },
+  "PresentationFooterText": {
+    "type": "object",
+    "propertyNames": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+      "maxLength": 35
+    },
+    "additionalProperties": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 160
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "PresentationFooterDescription": {
+    "type": "object",
+    "propertyNames": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+      "maxLength": 35
+    },
+    "additionalProperties": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 600
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "PresentationFooterService": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "title": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "description": {
+        "anyOf": [
+          {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 600
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "destination": {
+        "anyOf": [
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "page"
+                  },
+                  "pageKey": {
+                    "type": "string",
+                    "enum": [
+                      "home",
+                      "news",
+                      "artworks",
+                      "exhibitions",
+                      "publications",
+                      "expertise",
+                      "contact",
+                      "artworkDetail",
+                      "galerist"
+                    ]
+                  },
+                  "artworkId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "pageKey"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "email"
+                  },
+                  "value": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "phone"
+                  },
+                  "value": {
+                    "type": "string",
+                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "enabled",
+      "title",
+      "description",
+      "destination"
+    ]
+  },
+  "PresentationFooterLink": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "label": {
+        "anyOf": [
+          {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "destination": {
+        "anyOf": [
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "page"
+                  },
+                  "pageKey": {
+                    "type": "string",
+                    "enum": [
+                      "home",
+                      "news",
+                      "artworks",
+                      "exhibitions",
+                      "publications",
+                      "expertise",
+                      "contact",
+                      "artworkDetail",
+                      "galerist"
+                    ]
+                  },
+                  "artworkId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "pageKey"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "email"
+                  },
+                  "value": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "phone"
+                  },
+                  "value": {
+                    "type": "string",
+                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "enabled",
+      "label",
+      "destination"
+    ]
+  },
+  "PresentationFooterGroup": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "title": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "links": {
+        "type": "array",
+        "maxItems": 12,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "label": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                    "maxLength": 35
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 160
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "destination": {
+              "anyOf": [
+                {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "const": "page"
+                        },
+                        "pageKey": {
+                          "type": "string",
+                          "enum": [
+                            "home",
+                            "news",
+                            "artworks",
+                            "exhibitions",
+                            "publications",
+                            "expertise",
+                            "contact",
+                            "artworkDetail",
+                            "galerist"
+                          ]
+                        },
+                        "artworkId": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "pageKey"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "const": "external"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "pattern": "^https://",
+                          "maxLength": 2048
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "url"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "const": "email"
+                        },
+                        "value": {
+                          "type": "string",
+                          "format": "email",
+                          "maxLength": 254
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "const": "phone"
+                        },
+                        "value": {
+                          "type": "string",
+                          "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "value"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "enabled",
+            "label",
+            "destination"
+          ]
+        }
+      }
+    },
+    "required": [
+      "id",
+      "enabled",
+      "title",
+      "links"
+    ]
+  },
+  "PresentationFooterSocialLink": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "label": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "destination": {
+        "anyOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "enabled",
+      "label",
+      "destination"
+    ]
+  },
+  "PresentationFooterConfiguration": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "services": {
+        "type": "array",
+        "maxItems": 3,
+        "items": {
+          "$ref": "#/$defs/PresentationFooterService"
+        }
+      },
+      "groups": {
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+          "$ref": "#/$defs/PresentationFooterGroup"
+        }
+      },
+      "socialLinks": {
+        "type": "array",
+        "maxItems": 8,
+        "items": {
+          "$ref": "#/$defs/PresentationFooterSocialLink"
+        }
+      },
+      "showLanguageSelector": {
+        "type": "boolean"
+      },
+      "showDescription": {
+        "type": "boolean"
+      },
+      "address": {
+        "anyOf": [
+          {
+            "type": "object",
+            "maxProperties": 20,
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/PresentationFooterRichText"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "services",
+      "groups",
+      "socialLinks",
+      "showLanguageSelector",
+      "showDescription"
+    ],
+    "$defs": {
+      "PresentationFooterService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "title": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterDescription"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterText": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "PresentationFooterDescription": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 600
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "PresentationLink": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              },
+              "artworkId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "kind",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "value": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 254
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^\\+?[0-9 ()-]{3,32}$"
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          }
+        ]
+      },
+      "PresentationPageKey": {
+        "type": "string",
+        "enum": [
+          "home",
+          "news",
+          "artworks",
+          "exhibitions",
+          "publications",
+          "expertise",
+          "contact",
+          "artworkDetail",
+          "galerist"
+        ]
+      },
+      "PresentationFooterGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "title": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "links": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterSocialLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "PresentationFooterRead": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "revision": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}$"
+      },
+      "footer": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationFooterConfiguration"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "revision",
+      "footer"
+    ],
+    "$defs": {
+      "PresentationFooterConfiguration": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "services": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterService"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterGroup"
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterSocialLink"
+            }
+          },
+          "showLanguageSelector": {
+            "type": "boolean"
+          },
+          "showDescription": {
+            "type": "boolean"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "object",
+                "maxProperties": 20,
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/PresentationFooterRichText"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "services",
+          "groups",
+          "socialLinks",
+          "showLanguageSelector",
+          "showDescription"
+        ]
+      },
+      "PresentationFooterService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "title": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterDescription"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterText": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "PresentationFooterDescription": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+          "maxLength": 35
+        },
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 600
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "PresentationLink": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              },
+              "artworkId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "kind",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "value": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 254
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^\\+?[0-9 ()-]{3,32}$"
+              }
+            },
+            "required": [
+              "kind",
+              "value"
+            ]
+          }
+        ]
+      },
+      "PresentationPageKey": {
+        "type": "string",
+        "enum": [
+          "home",
+          "news",
+          "artworks",
+          "exhibitions",
+          "publications",
+          "expertise",
+          "contact",
+          "artworkDetail",
+          "galerist"
+        ]
+      },
+      "PresentationFooterGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "title": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "links": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterSocialLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "$ref": "#/$defs/PresentationFooterText"
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "PresentationFooterDestination": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "page"
+          },
+          "href": {
+            "type": "string",
+            "format": "uri-reference",
+            "pattern": "^/(?!/)",
+            "maxLength": 4096
+          },
+          "pageKey": {
+            "type": "string",
+            "enum": [
+              "home",
+              "news",
+              "artworks",
+              "exhibitions",
+              "publications",
+              "expertise",
+              "contact",
+              "artworkDetail",
+              "galerist"
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "href",
+          "pageKey"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "external"
+          },
+          "href": {
+            "type": "string",
+            "format": "uri-reference",
+            "pattern": "^https://",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "kind",
+          "href"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "email"
+          },
+          "href": {
+            "type": "string",
+            "format": "uri-reference",
+            "pattern": "^mailto:",
+            "maxLength": 270
+          }
+        },
+        "required": [
+          "kind",
+          "href"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "phone"
+          },
+          "href": {
+            "type": "string",
+            "format": "uri-reference",
+            "pattern": "^tel:",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "kind",
+          "href"
+        ]
+      }
+    ]
+  },
+  "PresentationFooterResolvedLink": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "label": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 600
+      },
+      "destination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^/(?!/)",
+                "maxLength": 4096
+              },
+              "pageKey": {
+                "type": "string",
+                "enum": [
+                  "home",
+                  "news",
+                  "artworks",
+                  "exhibitions",
+                  "publications",
+                  "expertise",
+                  "contact",
+                  "artworkDetail",
+                  "galerist"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "href",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^mailto:",
+                "maxLength": 270
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^tel:",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "label",
+      "destination"
+    ]
+  },
+  "PresentationFooterResolvedService": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "description": {
+        "anyOf": [
+          {
+            "type": "string",
+            "maxLength": 600
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "destination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^/(?!/)",
+                "maxLength": 4096
+              },
+              "pageKey": {
+                "type": "string",
+                "enum": [
+                  "home",
+                  "news",
+                  "artworks",
+                  "exhibitions",
+                  "publications",
+                  "expertise",
+                  "contact",
+                  "artworkDetail",
+                  "galerist"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "href",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^mailto:",
+                "maxLength": 270
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^tel:",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "title",
+      "description",
+      "destination"
+    ]
+  },
+  "PresentationFooterResolvedGroup": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "links": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 12,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 600
+            },
+            "destination": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "page"
+                    },
+                    "href": {
+                      "type": "string",
+                      "format": "uri-reference",
+                      "pattern": "^/(?!/)",
+                      "maxLength": 4096
+                    },
+                    "pageKey": {
+                      "type": "string",
+                      "enum": [
+                        "home",
+                        "news",
+                        "artworks",
+                        "exhibitions",
+                        "publications",
+                        "expertise",
+                        "contact",
+                        "artworkDetail",
+                        "galerist"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "href",
+                    "pageKey"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "external"
+                    },
+                    "href": {
+                      "type": "string",
+                      "format": "uri-reference",
+                      "pattern": "^https://",
+                      "maxLength": 2048
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "href"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "email"
+                    },
+                    "href": {
+                      "type": "string",
+                      "format": "uri-reference",
+                      "pattern": "^mailto:",
+                      "maxLength": 270
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "href"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "phone"
+                    },
+                    "href": {
+                      "type": "string",
+                      "format": "uri-reference",
+                      "pattern": "^tel:",
+                      "maxLength": 64
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "href"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "label",
+            "destination"
+          ]
+        }
+      }
+    },
+    "required": [
+      "id",
+      "title",
+      "links"
+    ]
+  },
+  "PresentationFooterResolved": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "scope": {
+        "enum": [
+          "public",
+          "preview"
+        ]
+      },
+      "locale": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 35
+      },
+      "services": {
+        "type": "array",
+        "maxItems": 3,
+        "items": {
+          "$ref": "#/$defs/PresentationFooterResolvedService"
+        }
+      },
+      "groups": {
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+          "$ref": "#/$defs/PresentationFooterResolvedGroup"
+        }
+      },
+      "socialLinks": {
+        "type": "array",
+        "maxItems": 8,
+        "items": {
+          "$ref": "#/$defs/PresentationFooterResolvedLink"
+        }
+      },
+      "showLanguageSelector": {
+        "type": "boolean"
+      },
+      "showDescription": {
+        "type": "boolean"
+      },
+      "address": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationFooterRichText"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "scope",
+      "locale",
+      "services",
+      "groups",
+      "socialLinks",
+      "showLanguageSelector",
+      "showDescription"
+    ],
+    "$defs": {
+      "PresentationFooterResolvedService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 600
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "destination"
+        ]
+      },
+      "PresentationFooterDestination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "page"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^/(?!/)",
+                "maxLength": 4096
+              },
+              "pageKey": {
+                "$ref": "#/$defs/PresentationPageKey"
+              }
+            },
+            "required": [
+              "kind",
+              "href",
+              "pageKey"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^https://",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "email"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^mailto:",
+                "maxLength": 270
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "phone"
+              },
+              "href": {
+                "type": "string",
+                "format": "uri-reference",
+                "pattern": "^tel:",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "kind",
+              "href"
+            ]
+          }
+        ]
+      },
+      "PresentationPageKey": {
+        "type": "string",
+        "enum": [
+          "home",
+          "news",
+          "artworks",
+          "exhibitions",
+          "publications",
+          "expertise",
+          "contact",
+          "artworkDetail",
+          "galerist"
+        ]
+      },
+      "PresentationFooterResolvedGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "links": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/$defs/PresentationFooterResolvedLink"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "links"
+        ]
+      },
+      "PresentationFooterResolvedLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "destination": {
+            "$ref": "#/$defs/PresentationFooterDestination"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "destination"
+        ]
+      },
+      "PresentationFooterRichText": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "doc"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "content"
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "PresentationFooterCapability": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "writable": {
+        "const": true
+      },
+      "contractVersion": {
+        "const": 1
+      },
+      "limits": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "services": {
+            "const": 3
+          },
+          "groups": {
+            "const": 4
+          },
+          "linksPerGroup": {
+            "const": 12
+          },
+          "socialLinks": {
+            "const": 8
+          },
+          "documentBytes": {
+            "const": 262144
+          }
+        },
+        "required": [
+          "services",
+          "groups",
+          "linksPerGroup",
+          "socialLinks",
+          "documentBytes"
+        ]
+      }
+    },
+    "required": [
+      "writable",
+      "contractVersion",
+      "limits"
+    ]
+  },
+  "PresentationFooterRichText": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "type": {
+        "const": "doc"
+      },
+      "content": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/PresentationFooterRichNode"
+        },
+        "maxItems": 10000
+      }
+    },
+    "required": [
+      "type",
+      "content"
+    ],
+    "$defs": {
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "PresentationFooterRichNode": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "text"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 131072
+          },
+          "marks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichMark"
+            },
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "type",
+          "text"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "heading"
+          },
+          "attrs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "level": {
+                "enum": [
+                  2,
+                  3
+                ]
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type",
+          "attrs"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "enum": [
+              "paragraph",
+              "bulletList",
+              "orderedList",
+              "listItem",
+              "blockquote"
+            ]
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/PresentationFooterRichNode"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "hardBreak"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    ],
+    "$defs": {
+      "PresentationFooterRichMark": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "bold",
+                  "italic"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+                  }
+                },
+                "required": [
+                  "href"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          }
+        ]
+      },
+      "PresentationFooterRichNode": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 131072
+              },
+              "marks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichMark"
+                },
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "heading"
+              },
+              "attrs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "enum": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "required": [
+                  "level"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type",
+              "attrs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "enum": [
+                  "paragraph",
+                  "bulletList",
+                  "orderedList",
+                  "listItem",
+                  "blockquote"
+                ]
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/PresentationFooterRichNode"
+                },
+                "maxItems": 10000
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "hardBreak"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "PresentationFooterRichMark": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "enum": [
+              "bold",
+              "italic"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "link"
+          },
+          "attrs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^(?:https://|/(?!/)|#|mailto:|tel:)"
+              }
+            },
+            "required": [
+              "href"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "attrs"
+        ]
+      }
+    ]
+  },
+  "PresentationArtworkDefaults": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "year",
+      "provenance"
+    ],
+    "properties": {
+      "year": {
+        "type": "boolean"
+      },
+      "provenance": {
+        "type": "boolean"
+      }
+    }
+  },
+  "PresentationArtworkSettingsRead": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "defaults",
+      "revision"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "defaults": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "year",
+          "provenance"
+        ],
+        "properties": {
+          "year": {
+            "type": "boolean"
+          },
+          "provenance": {
+            "type": "boolean"
+          }
+        }
+      },
+      "revision": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}$"
+      }
+    }
+  },
+  "PresentationArtworkSettingsUpdate": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "defaults"
+    ],
+    "properties": {
+      "defaults": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "year",
+          "provenance"
+        ],
+        "properties": {
+          "year": {
+            "type": "boolean"
+          },
+          "provenance": {
+            "type": "boolean"
+          }
+        }
       }
     }
   }

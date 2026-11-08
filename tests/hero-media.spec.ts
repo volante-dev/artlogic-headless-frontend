@@ -9,7 +9,7 @@ for(const width of [375,1440])test("SC-001: fullscreen poster/film and immediate
   const data=presentationFixture();await page.setViewportSize({width,height:900});
   // A slow film must not hold the main navigation or useful content hostage.
   await page.route("**/presentation-assets/**",async route=>{const url=new URL(route.request().url());if([data.assets.video,data.assets.mobileVideo].some(path=>url.pathname===path.split("?")[0]))await route.abort();else await route.continue();});
-  await page.goto("/");const hero=page.getByTestId("hero-media");await expect(hero).toBeVisible();const box=await hero.boundingBox();expect(box).not.toBeNull();expect(box!.x).toBeCloseTo(0,0);expect(box!.y).toBeCloseTo(0,0);expect(box!.width).toBeCloseTo(width,0);expect(box!.height).toBeGreaterThanOrEqual(899);
+  await page.goto("/");const hero=page.getByTestId("hero-media");await expect(hero).toBeVisible();const box=await hero.boundingBox();expect(box).not.toBeNull();expect(box!.x).toBeCloseTo(0,0);expect(box!.y).toBeCloseTo(0,0);expect(box!.width).toBeCloseTo(width,0);expect(box!.height).toBeCloseTo(900,0);await expect(hero.getByRole("link",{name:"Explorer",exact:true})).toHaveCount(0);
   await expect(page.getByRole("heading",{name:data.heading.fr,exact:true})).toBeVisible();
   const poster=hero.locator("video");await expect(poster).toHaveAttribute("poster",data.assets.poster);
   const discover=hero.getByRole("link",{name:data.discoverLabel.fr,exact:true});await expect(discover).toBeVisible();await discover.click();await expect(page).toHaveURL(/\/artworks$/);await expect(page.getByRole("heading",{level:1})).toBeVisible();
@@ -61,4 +61,11 @@ test("keeps keyboard controls and navigation usable at 200 percent CSS zoom",asy
   const toggle=page.getByRole("button",{name:/^(Lire le film|Mettre le film en pause)$/});await toggle.focus();await expect(toggle).toBeInViewport();await page.keyboard.press("Enter");await expect(toggle).toBeFocused();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
   const link=page.getByTestId("hero-media").getByRole("link",{name:presentationFixture().discoverLabel.fr,exact:true});await link.focus();await expect(link).toBeInViewport();await page.keyboard.press("Enter");await expect(page).toHaveURL(/\/artworks$/);
+});
+
+
+test("does not cancel autoplay when intersection arrives while a slow film is buffering",async({page})=>{
+ const data=presentationFixture();await page.route("**/presentation-assets/**",async route=>{if([data.assets.video,data.assets.mobileVideo].some(path=>new URL(route.request().url()).pathname===path.split("?")[0]))await new Promise(done=>setTimeout(done,400));await route.continue();});
+
+ await page.goto("/");const video=page.getByTestId("hero-media").locator("video");await expect.poll(()=>video.evaluate((value:HTMLVideoElement)=>value.currentTime)).toBeGreaterThan(.25);await page.waitForTimeout(500);expect(await video.evaluate((value:HTMLVideoElement)=>value.paused)).toBe(false);
 });

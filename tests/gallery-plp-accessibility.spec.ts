@@ -1,0 +1,9 @@
+import {test,expect} from "@playwright/test";
+import {setPlp} from "./plp-helpers";
+test.afterEach(async({request})=>{await setPlp(request,false,'none');});
+test('hover and focus reveal identity without moving cards, reduced motion is immediate',async({page,request})=>{
+ await setPlp(request,true);await page.setViewportSize({width:1440,height:1000});await page.goto('/artworks');await page.waitForFunction(()=>Boolean(document.querySelector('header')?.style.getPropertyValue('--site-menu-header-height')));await page.evaluate(()=>document.fonts.ready);const first=page.getByTestId('artwork-card').first(),link=first.locator('a');await expect(first).toBeVisible();await link.scrollIntoViewIfNeeded();const before=await first.boundingBox();await link.hover();await expect(first.locator('h2')).toBeVisible();expect(await first.boundingBox()).toEqual(before);await link.focus();await expect(link).toBeFocused();expect(await link.getAttribute('aria-label')).toBeTruthy();await page.emulateMedia({reducedMotion:'reduce'});const transition=await first.locator('h2').evaluate(n=>getComputedStyle(n.parentElement!).transitionDuration);expect(transition).toBe('0s');
+});
+test('wide touch shows captions without a first reveal tap',async({browser,request,baseURL})=>{
+ await setPlp(request,true);const context=await browser.newContext({baseURL,viewport:{width:1280,height:900},hasTouch:true,isMobile:false});try{const page=await context.newPage();await page.goto('/artworks');await page.waitForFunction(()=>Boolean(document.querySelector('header')?.style.getPropertyValue('--site-menu-header-height')));await page.evaluate(()=>document.fonts.ready);const card=page.getByTestId('artwork-card').first();await expect(card).toBeVisible();expect(await card.locator('h2').evaluate(n=>getComputedStyle(n.parentElement!).opacity)).toBe('1');await card.locator('a').tap();await expect(page.getByTestId('artwork-experience')).toBeVisible();}finally{await context.close();}
+});

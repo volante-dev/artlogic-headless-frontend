@@ -1,4 +1,5 @@
 "use client";
+import{useEditorialSurface}from"../editorial/immersive/EditorialInteractionProvider";
 import {useRef,useState,useEffect,useLayoutEffect,useCallback,useMemo,type ReactNode} from "react";
 import {useRouter,usePathname,useSelectedLayoutSegments} from "next/navigation";
 import {ArtworkVisits,type ArtworkOrigin,type ArtworkActivation} from "../../lib/artworks/navigation";
@@ -7,6 +8,7 @@ import {classifyRoute,localizedPath} from "../../lib/i18n/routes";
 import {useSiteContent} from "../SiteContentProvider";
 import {ArtworkNavigationContext} from "./ArtworkNavigationContext";
 import {ArtworkDialogShell} from "./ArtworkDialogShell";
+import {ArtworkReturnOverlay} from "./ArtworkReturnOverlay";
 import styles from "./ArtworkDialogShell.module.css";
 import {ArtworkRouteState} from "./ArtworkRouteState";
 import type {MobileArtworkVisualSnapshot} from "../../lib/artworks/interaction";
@@ -15,7 +17,7 @@ import {useSiteLocale} from "../SiteLocaleBoundary";
 
 const stateKey="artlogicArtworkVisit";
 type Pending={reference:string;locale:string;status:number|null};
-type Restore={origin:ArtworkOrigin;baseline:string|undefined};
+type Restore={origin:ArtworkOrigin};
 export function ArtworkNavigationBoundary({children,artwork,canonical}:{children:ReactNode;artwork:ReactNode;canonical:ReactNode}){
   const opening=useArtworkOpening(),site=useSiteContent(),dynamic=useSiteLocale(),router=useRouter(),pathname=usePathname(),segments=useSelectedLayoutSegments("artwork"),slot=segments.join("|");
   const policy=useMemo(()=>({defaultLocale:site.defaultLocale,locales:site.locales.map(code=>({code,label:code}))}),[site.defaultLocale,site.locales]);
@@ -23,7 +25,7 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const visits=useRef<ArtworkVisits|null>(null);if(visits.current===null){visits.current=new ArtworkVisits();}
   const background=useRef<HTMLDivElement>(null),container=useRef<HTMLDivElement>(null),committing=useRef<{href:string;token:string;cancelled?:boolean;refresh?:boolean}|null>(null);
   const [pending,setPending]=useState<Pending|null>(null),[restoring,setRestoring]=useState<Restore|null>(null),[activation,setActivation]=useState(0);
-  const nonces=useRef(new Map<string,string>()),seenNonces=useRef(new Set<string>()),restoringRef=useRef(restoring),pendingRef=useRef(pending);
+  const nonces=useRef(new Map<string,string>()),closingRequest=useRef(false),completingRestore=useRef<Restore|null>(null),restoringRef=useRef(restoring),pendingRef=useRef(pending);
   useLayoutEffect(()=>{restoringRef.current=restoring;pendingRef.current=pending;},[restoring,pending]);
   const visitToken=useCallback(()=>visits.current!.token,[]);
   const rememberVisual=useCallback((scrollTop:number,provided?:string|null)=>{const token=provided===undefined?visits.current!.token:provided;if(token)visits.current!.rememberVisual(token,{scrollTop});},[]);
@@ -44,17 +46,43 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       }else setPending(null);
     }catch(error){if(request.signal.aborted||!visits.current!.fail(request.id))return;setPending({reference:request.reference,locale:request.locale,status:error instanceof ArtworkReadError?error.status:503});}
   },[router,site.defaultLocale,setPending]);
+  const completeRestore=useCallback((restore:Restore)=>{
+    if(restoringRef.current!==restore||completingRestore.current===restore)return;
+    completingRestore.current=restore;
+    requestAnimationFrame(()=>{void(async()=>{
+      if(restoringRef.current!==restore)return;
+      window.scrollTo(restore.origin.scrollX,restore.origin.scrollY);
+      const completed=opening?await opening.revealOrigin():true;
+      if(!completed||restoringRef.current!==restore)return;
+      restoringRef.current=null;setRestoring(null);closingRequest.current=false;
+      requestAnimationFrame(()=>{
+        const dialog=[...container.current?.querySelectorAll<HTMLElement>("[role=dialog]")??[]].find(node=>node.checkVisibility());
+        if(dialog&&restore.origin.artworkScrollTop!==undefined)dialog.scrollTop=restore.origin.artworkScrollTop;
+        const focus=restore.origin.focus,anchors=focus?[...document.querySelectorAll<HTMLAnchorElement>("a[href]")].filter(a=>a.getAttribute("href")===focus.href&&a.checkVisibility()&&!a.closest("[inert]")):[];
+        (anchors[focus?.index??0]??dialog?.querySelector<HTMLElement>('[role="button"]')??document.querySelector<HTMLElement>("#contenu"))?.focus({preventScroll:true});
+      });
+    })();});
+  },[opening]);
+  const restoreOrigin=useCallback((origin:ArtworkOrigin)=>{const restore={origin};restoringRef.current=restore;setRestoring(restore);return restore;},[]);
   const close=useCallback(()=>{
-    if(restoringRef.current){window.location.replace(fallback);return;}
-    opening?.close();saveCurrentVisual();const wasPending=Boolean(pendingRef.current),commit=committing.current,result=visits.current!.close(fallback);setPending(null);
-    if(commit&&commit.href!==location.pathname){commit.cancelled=true;return;}
-    committing.current=null;
-    if(result.action==="back"){
-      const key=new URL(result.origin.href,location.origin).pathname+new URL(result.origin.href,location.origin).search;
-      setRestoring({origin:result.origin,baseline:nonces.current.get(key)});router.back();
-    }else if(result.action==="dismiss"&&isArtwork&&wasPending)visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,route.artworkId!,route.locale);
-    else if(result.action==="replace"||isArtwork)router.replace(fallback,{scroll:false});
-  },[fallback,isArtwork,route.artworkId,route.locale,router,setPending,setRestoring,saveCurrentVisual,opening]);
+    if(closingRequest.current||restoringRef.current)return;
+    closingRequest.current=true;saveCurrentVisual();
+    const visit=visits.current!.state,origin=visit.kind==="closed"?null:visit.visit.origin;
+    const wasPending=Boolean(pendingRef.current),result=visits.current!.close(fallback);
+    void(async()=>{
+      if(opening&&!await opening.startClosing()){closingRequest.current=false;return;}
+      setPending(null);
+      const target=origin??{href:isArtwork?fallback:location.pathname+location.search,locale:route.locale,scrollX:isArtwork?0:scrollX,scrollY:isArtwork?0:scrollY,focus:null};
+      const restore=restoreOrigin(result.action==="back"?result.origin:target),commit=committing.current;
+      if(commit&&commit.href!==location.pathname){commit.cancelled=true;return;}
+      committing.current=null;
+      if(result.action==="back")router.back();
+      else if(result.action==="dismiss"){
+        if(isArtwork&&wasPending)visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,route.artworkId!,route.locale);
+        completeRestore(restore);
+      }else router.replace(fallback,{scroll:false});
+    })();
+  },[fallback,isArtwork,route.artworkId,route.locale,router,saveCurrentVisual,opening,restoreOrigin,completeRestore]);
   const changeLocale=useCallback((locale:string)=>{if(!site.locales.includes(locale))return;saveCurrentVisual();if(dynamic)dynamic.changeLocale(locale);else void resolve(visits.current!.changeLocale(locale));},[resolve,site.locales,saveCurrentVisual,dynamic]);
 
   useLayoutEffect(()=>{
@@ -64,13 +92,16 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
         if(commit.cancelled){committing.current=null;router.back();return;}
         history.replaceState({...history.state,[stateKey]:commit.token},"",location.href);committing.current=null;setPending(null);if(commit.refresh)router.refresh();
       }else visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,route.artworkId!,route.locale);
-    }else if(restoringRef.current)router.refresh();
+    }else if(restoringRef.current){
+      const restore=restoringRef.current,url=new URL(restore.origin.href,location.origin);
+      if(nonces.current.has(url.pathname+url.search)&&location.pathname===url.pathname)completeRestore(restore);
+    }
     else if(visits.current!.state.kind!=="closed"){
       opening?.close();visits.current!.dispose();setPending(null);if(committing.current)committing.current.cancelled=true;
       const origin:ArtworkOrigin={href:location.pathname+location.search+location.hash,locale:route.locale,scrollX:0,scrollY:0,focus:null};
-      setRestoring({origin,baseline:nonces.current.get(location.pathname+location.search)});router.replace(origin.href,{scroll:false});
+      const restore=restoreOrigin(origin);if(nonces.current.has(location.pathname+location.search))completeRestore(restore);
     }
-  },[pathname,isArtwork,route.artworkId,route.locale,router,opening]);
+  },[pathname,isArtwork,route.artworkId,route.locale,router,opening,restoreOrigin,completeRestore]);
   useLayoutEffect(()=>{
     const state=visits.current!.state;
     if(isArtwork&&state.kind!=="closed"&&state.visit.pushed&&state.visit.reference===route.artworkId&&state.visit.locale===route.locale&&history.state?.[stateKey]!==state.visit.token)history.replaceState({...history.state,[stateKey]:state.visit.token},"",location.href);
@@ -88,6 +119,7 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       if(language){if(language!==(pending?.locale??(dynamic?site.locale:route.locale)))changeLocale(language);return;}
       const anchors=[...document.querySelectorAll<HTMLAnchorElement>("a[href]")].filter(a=>a.href===target.href&&a.checkVisibility()&&!a.closest("[inert]"));
       const origin:ArtworkOrigin={href:location.pathname+location.search+location.hash,locale:route.locale,scrollX:scrollX,scrollY:scrollY,focus:{href:target.getAttribute("href")!,index:Math.max(0,anchors.indexOf(target))},...(isArtwork?{artworkScrollTop:target.closest<HTMLElement>("[role=dialog]")?.scrollTop??0}:{})};
+      target.focus({preventScroll:true});
       opening?.begin();void resolve(visits.current!.start(next.artworkId!,next.locale,origin));
     };
     document.addEventListener("click",capture,true);
@@ -97,43 +129,40 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   useLayoutEffect(()=>{
     const ready=(event:Event)=>{
       const detail=(event as CustomEvent<{nonce:string;href:string}>).detail;if(!detail)return;
-      const fresh=!seenNonces.current.has(detail.nonce);seenNonces.current.add(detail.nonce);nonces.current.set(detail.href,detail.nonce);
-      const restore=restoringRef.current;if(!restore||!fresh||detail.nonce===restore.baseline)return;
+      nonces.current.set(detail.href,detail.nonce);
+      const restore=restoringRef.current;if(!restore)return;
       const url=new URL(restore.origin.href,location.origin);if(detail.href!==url.pathname+url.search)return;
-      setRestoring(null);requestAnimationFrame(()=>{
-        window.scrollTo(restore.origin.scrollX,restore.origin.scrollY);
-        const dialog=[...container.current?.querySelectorAll<HTMLElement>("[role=dialog]")??[]].find(node=>node.checkVisibility());
-        if(dialog&&restore.origin.artworkScrollTop!==undefined)dialog.scrollTop=restore.origin.artworkScrollTop;
-        const focus=restore.origin.focus,anchors=focus?[...document.querySelectorAll<HTMLAnchorElement>("a[href]")].filter(a=>a.getAttribute("href")===focus.href&&a.checkVisibility()&&!a.closest("[inert]")):[];
-        const element=anchors[focus?.index??0]??dialog?.querySelector<HTMLElement>('[role="button"]')??document.querySelector<HTMLElement>("#contenu");element?.focus({preventScroll:true});
-      });
+      completeRestore(restore);
     };
     const pop=()=>{
       const current=classifyRoute(location.pathname,policy);
       if(current.kind==="artwork"){
-        if(!document.querySelector("[role=dialog]"))opening?.begin();saveCurrentVisual();visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,current.artworkId!,current.locale);setActivation(n=>n+1);return;
+        if(![...document.querySelectorAll<HTMLElement>("[role=dialog]")].some(node=>node.checkVisibility()))opening?.begin();saveCurrentVisual();visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,current.artworkId!,current.locale);setActivation(n=>n+1);return;
       }
-      opening?.close();
+      if(opening&&!closingRequest.current&&(opening.isOpen||visits.current!.state.kind!=="closed")){closingRequest.current=true;void opening.startClosing(true).then(completed=>{const restore=restoringRef.current;if(completed&&restore&&nonces.current.has(location.pathname+location.search))completeRestore(restore);});}
       if(visits.current!.state.kind!=="closed"){
         saveCurrentVisual();const result=visits.current!.close(localizedPath("/artworks",current.locale,site.defaultLocale));setPending(null);
         if(result.action==="back"){
-          const url=new URL(result.origin.href,location.origin);setRestoring({origin:result.origin,baseline:nonces.current.get(url.pathname+url.search)});
+          restoreOrigin(result.origin);
         }
       }
     };
     window.addEventListener("artwork-origin-ready",ready);window.addEventListener("popstate",pop);
     return ()=>{window.removeEventListener("artwork-origin-ready",ready);window.removeEventListener("popstate",pop);};
-  },[policy,site.defaultLocale,saveCurrentVisual,opening]);
+  },[policy,site.defaultLocale,saveCurrentVisual,opening,restoreOrigin,completeRestore]);
   useEffect(()=>{if(!restoring)return;const timer=setTimeout(()=>window.location.replace(fallback),10000);return ()=>clearTimeout(timer);},[restoring,fallback]);
+  const leaveForHeader=useCallback(()=>{opening?.close();visits.current!.dispose();committing.current=null;setPending(null);setRestoring(null);restoringRef.current=null;pendingRef.current=null;closingRequest.current=false;},[opening]);
   useEffect(()=>()=>visits.current!.dispose(),[]);
   const active=isArtwork||pending!==null||restoring!==null;
+ useEditorialSurface(active);
   useLayoutEffect(()=>{if(active&&background.current)return opening?.register("background",background.current);},[active,opening]);
   const pendingShell=Boolean(pending&&(!isArtwork||pending.locale!==route.locale||pending.reference!==route.artworkId||pending.status));
-  return <ArtworkNavigationContext value={{close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
-    <div ref={background} className={styles.origin} data-artwork-background inert={active||undefined} aria-hidden={active||undefined}>{!(isArtwork&&!intercepted)&&children}</div>
+  return <ArtworkNavigationContext value={{leaveForHeader,close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
+    <div ref={background} className={styles.origin} data-editorial-layout data-artwork-background inert={active||undefined} aria-hidden={active||undefined}>{!(isArtwork&&!intercepted)&&children}</div>
     {!pendingShell&&isArtwork&&(!intercepted?canonical:artwork)}
-    {(pendingShell||restoring)&&<ArtworkDialogShell artworkRef={pending?.reference} locale={pending?.locale}>
+    {pendingShell&&!restoring&&<ArtworkDialogShell artworkRef={pending?.reference} locale={pending?.locale}>
       <ArtworkRouteState status={pending?.status===404?"unavailable":pending?.status?"error":"loading"} retry={()=>{const request=visits.current!.retry();if(request)void resolve(request);}}/>
     </ArtworkDialogShell>}
+    <ArtworkReturnOverlay/>
   </div></ArtworkNavigationContext>;
 }

@@ -5,6 +5,7 @@
 .search { display:flex; align-items:stretch; gap:12px; width:min(100%,520px); }
 .search > :first-child { flex:1; min-width:0; }
 .search button { flex:none; }
+.search .searchSubmit { width:48px; min-width:48px; height:56px; padding:12px; border:0; color:var(--site-color-text); background:transparent; }
 .clear,.action { display:inline-flex; align-items:center; min-height:44px; text-underline-offset:.25em; color:var(--site-color-link); }
 .clear { margin-top:16px; }
 .clear:hover,.action:hover { color:var(--site-color-linkHover); }
@@ -15,8 +16,8 @@
 .page { display:inline-flex; align-items:center; justify-content:center; width:44px; min-height:44px; color:var(--site-color-text); text-decoration:none; }
 .page[aria-current="page"] { background:var(--site-color-accent); color:var(--site-color-onAccent); }
 .page:not([aria-current="page"]):hover { background:var(--site-color-mutedSurface); text-decoration:underline; text-underline-offset:.25em; }
-.page:focus-visible,.clear:focus-visible,.action:focus-visible { outline:3px solid var(--site-color-focus); outline-offset:4px; }
+.page:focus-visible,.clear:focus-visible,.action:focus-visible { outline:3px solid currentColor; outline-offset:4px; }
 .gap { padding-inline:8px; }
 .pageStatus { margin-inline-start:auto; color:var(--site-color-mutedText); }
 @media(max-width:950px) { .heading { align-items:stretch; flex-direction:column; gap:32px; } }
-@media(max-width:600px) { .search { flex-direction:column; gap:16px; } .search button { align-self:flex-start; } .pageStatus { flex-basis:100%; margin:16px 0 0; } .pagination { gap:4px; margin-top:32px; } }
+@media(max-width:600px) { .search { gap:8px; } .pageStatus { flex-basis:100%; margin:16px 0 0; } .pagination { gap:4px; margin-top:32px; } }

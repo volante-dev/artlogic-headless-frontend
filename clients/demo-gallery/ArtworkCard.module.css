@@ -6,3 +6,9 @@
 .caption h2{margin-bottom:8px}
 .card a:hover h2{text-decoration:underline;text-underline-offset:.2em}
 .card a:focus-visible{outline:3px solid var(--site-color-focus);outline-offset:5px}
+
+.card[data-image-fit="cover"] .image img{object-fit:cover}
+.card[data-image-fit="contain"] .image{aspect-ratio:auto;background:transparent;display:block;overflow:visible}
+.card[data-image-fit="contain"] .image img{width:auto;max-width:100%;height:auto;max-height:80svh;object-fit:contain}
+.card[data-image-fit="cover"] .image{position:relative;display:block}
+.card[data-image-fit="cover"] .image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}

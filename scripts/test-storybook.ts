@@ -2,7 +2,7 @@ import {createServer} from "node:http";
 import {readFile,stat} from "node:fs/promises";
 import {resolve,extname,sep} from "node:path";
 import {spawn} from "node:child_process";
-const root=resolve(import.meta.dirname,".."),staticRoot=resolve(root,"storybook-static");
+const root=resolve(import.meta.dirname,".."),staticRoot=resolve(root,process.env.STORYBOOK_BUILD_DIR??"storybook-static");
 await stat(resolve(staticRoot,"index.json"));
 const types:Record<string,string>={".html":"text/html",".js":"application/javascript",".mjs":"application/javascript",".css":"text/css",".json":"application/json",".woff2":"font/woff2",".svg":"image/svg+xml",".png":"image/png",".webp":"image/webp",".mp4":"video/mp4",".ico":"image/x-icon"};
 const server=createServer(async(req,res)=>{

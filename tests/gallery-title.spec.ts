@@ -1,0 +1,8 @@
+import {test,expect} from "@playwright/test";
+import {readFileSync} from "node:fs";
+test("published translated title reaches public catalogue, detail and metadata",async({page},info)=>{
+ test.setTimeout(120000);const site=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,"utf8")).sites[0],title="Public translated title "+info.project.name,id=site.artworkId;
+ await page.goto(site.adminOrigin);await page.getByRole("button",{name:/se connecter/i}).click();await page.getByRole("button",{name:/continuer avec le compte de test/i}).click();await page.goto(site.adminOrigin+"/artworks/"+id);await page.getByRole("combobox",{name:"Langue de la description",exact:true}).click();await page.getByRole("option",{name:/English|Anglais/}).click();await page.getByLabel("Nom de l’œuvre dans cette langue",{exact:true}).fill(title);await page.getByRole("button",{name:"Enregistrer les contributions",exact:true}).click();await expect(page.locator(".workspace-panel").getByRole("status")).toContainText("Contributions enregistrées");await page.getByRole("button",{name:"Publier le site",exact:true}).click();await expect(page.locator(".workspace-panel").getByRole("status")).toContainText("Publication confirmée");
+ await page.goto(site.siteOrigin+"/en/artworks");await expect(page.getByText(title,{exact:true}).first()).toBeAttached();const read=await page.request.get(site.apiOrigin+"/v1/public/artwork-experiences/"+id+"?locale=en"),art=(await read.json()).artwork;
+ await page.goto(site.siteOrigin+"/en/artworks/"+art.slug);await expect(page).toHaveTitle(new RegExp(title));await expect(page.getByText(title,{exact:true}).first()).toBeAttached();await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content",new RegExp(title));
+});

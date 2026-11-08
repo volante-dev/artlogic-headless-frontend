@@ -1,0 +1,9 @@
+import{test,expect}from"@playwright/test";import{mkdir}from"node:fs/promises";
+test("exhibitions preserve the public identity, calendar days and responsive reading across profiles",async({page})=>{
+ const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));await page.emulateMedia({reducedMotion:"reduce"});await mkdir(".impeccable/review/exhibitions",{recursive:true});
+ for(const profile of["default","demo-gallery"])for(const locale of["fr","en"])for(const width of[375,1440]){
+ await page.setViewportSize({width,height:900});const globals=`locale:${locale};profile:${profile};width:${width}`;await page.goto("/iframe.html?id=editorial-article--exhibition-past&viewMode=story&globals="+globals);await expect(page.getByRole("heading",{name:"La matière et le geste",exact:true})).toBeVisible();const dates=page.locator("[data-exhibition-period]");await expect(dates).toContainText(locale==="fr"?"20 janvier 2020":"January 20, 2020");await expect(dates.locator("time").first()).toHaveAttribute("datetime","2020-01-20");expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:`.impeccable/review/exhibitions/reader-${profile}-${locale}-${width}.png`,animations:"disabled"});
+ await page.goto("/iframe.html?id=editorial-list--exhibitions&viewMode=story&globals="+globals);await expect(page.locator("[data-exhibition-period]")).toHaveCount(3);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:`.impeccable/review/exhibitions/list-${profile}-${locale}-${width}.png`,animations:"disabled"});
+ }
+ await page.goto("/iframe.html?id=editorial-article--exhibition-one-day&viewMode=story");await expect(page.locator("[data-exhibition-period] time")).toHaveCount(1);expect(errors).toEqual([]);
+});

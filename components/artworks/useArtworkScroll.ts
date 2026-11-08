@@ -2,11 +2,12 @@
 import {useLayoutEffect,useRef,useState,useCallback} from "react";
 import {useArtworkOpening} from "./ArtworkOpeningBoundary";
 import {artworkProgress,artworkStageOffsets} from "./artwork-progress";
-import {artworkScrollDuration,artworkScrollEase,artworkScrollTarget,artworkScrollUnsettled} from "./artwork-scroll-sequence";
+import {artworkFinaleIntent,artworkScrollDuration,artworkScrollEase,artworkScrollTarget,artworkScrollUnsettled} from "./artwork-scroll-sequence";
 import {createArtworkWheelGesture} from "./artwork-wheel-gesture";
 interface Geometry {scroller:HTMLElement|Window;start:number;viewport:number;reading:number;enhanced:boolean;staticOffsets:number[]}
 interface Motion {from:number;to:number;started:number;media:number}
-export function useArtworkScroll(count:number){
+export function useArtworkScroll(count:number,finale?:{active:boolean;change:(open:boolean)=>void}){
+ const finaleRef=useRef(finale);useLayoutEffect(()=>{finaleRef.current=finale;},[finale]);
  const opening=useArtworkOpening();
  const root=useRef<HTMLElement>(null),information=useRef<HTMLDivElement>(null),geometry=useRef<Geometry|null>(null),select=useRef<(index:number)=>void>(()=>{}),restore=useRef<(index:number)=>void>(()=>{});
  const [active,setActive]=useState(0),[enhanced,setEnhanced]=useState(false);
@@ -54,6 +55,8 @@ export function useArtworkScroll(count:number){
    schedule();
   }
   function measure(){
+   // The finale temporarily fixes the information panel; it must not change photo offsets.
+   if(geometry.current&&finaleRef.current?.active)return;
    if(motion)finish();
    const viewport=scroller===window?window.innerHeight:(scroller as HTMLElement).clientHeight,offset=scroller===window?0:(scroller as HTMLElement).getBoundingClientRect().top;
    const start=element!.getBoundingClientRect().top-offset+scrollTop(),reading=Math.max(viewport,info!.scrollHeight+160),enhanced=!preference.matches&&!compact.matches;
@@ -77,8 +80,12 @@ export function useArtworkScroll(count:number){
   }
   function intent(direction:number,event:Event,claimed=false){
    if(element!.inert){event.preventDefault();return false;}
-   const g=geometry.current;if(!g?.enhanced||!direction||nestedScroll(event.target,direction))return;
+   const g=geometry.current;if(!g||!direction||nestedScroll(event.target,direction))return;
+   const f=finaleRef.current,description=element!.querySelector<HTMLElement>('[data-finale-description][data-scrollable="true"]');
+   if(f?.active){if(description&&(description.contains(event.target as Node)||description.contains(document.activeElement))){event.stopPropagation();return;}event.preventDefault();if(!claimed)f.change(direction>0);return true;}
+   if(!g.enhanced)return;
    if(motion){event.preventDefault();return;}
+   if(f&&artworkFinaleIntent(false,position(),g.viewport,g.reading,count,direction,claimed)===true){event.preventDefault();f.change(true);return true;}
    const target=artworkScrollTarget(position(),g.viewport,g.reading,count,direction);
    if(target!==null){event.preventDefault();opening?.finish();if(!claimed)animateTo(target);return true;}
    return false;

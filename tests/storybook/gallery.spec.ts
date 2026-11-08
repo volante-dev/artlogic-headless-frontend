@@ -44,7 +44,7 @@ test("compact zoom uses a dedicated examination without duplicated identity",asy
 test("title and artist hold their exact position through the full-screen to reading transition",async({page})=>{
  await page.setViewportSize({width:1440,height:900});await page.goto("/iframe.html?id=gallery-artworkexperience--arrival&viewMode=story");await page.evaluate(()=>document.fonts.ready);
  const scene=page.getByTestId("artwork-experience");await expect(scene).toHaveAttribute("data-enhanced","true");await expect.poll(()=>scene.evaluate(n=>n.getAnimations({subtree:true}).length)).toBe(0);
- const heading=scene.locator('[data-artwork-frost] > p').first(),artist=scene.locator('[data-artwork-frost] > p').nth(1),before=(await heading.boundingBox())!,beforeArtist=(await artist.boundingBox())!;
+ const heading=scene.locator('[data-artwork-frost-content] > p').first(),artist=scene.locator('[data-artwork-frost-content] > p').nth(1),before=(await heading.boundingBox())!,beforeArtist=(await artist.boundingBox())!;
  await page.mouse.move(1100,450);await page.mouse.wheel(0,8);await expect(scene).toHaveAttribute("data-scroll-motion","idle");await expect(scene).toHaveAttribute("data-transition","1");
  const after=(await scene.locator('[data-artwork-title]').boundingBox())!,afterArtist=(await scene.locator('[data-artwork-artist]').boundingBox())!;
  for(const key of ["x","y","width","height"] as const){expect(after[key]).toBeCloseTo(before[key],0);expect(afterArtist[key]).toBeCloseTo(beforeArtist[key],0);}

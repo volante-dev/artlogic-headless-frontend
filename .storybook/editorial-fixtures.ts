@@ -1,0 +1,15 @@
+import type {components} from "../lib/api/generated";
+type Media=components["schemas"]["EditorialPublicMedia"];
+type Block=components["schemas"]["EditorialPublicBlock"];
+export const eid=(n:number)=>"00000000-0000-4000-8000-"+String(n).padStart(12,"0");
+export const editorialText=(text:string):components["schemas"]["EditorialRichText"]=>({type:"doc",content:[{type:"paragraph",content:[{type:"text",text}]}]});
+export function editorialImage(n=501):Media{return {id:eid(n+1000),source:{kind:"image",assetId:eid(n),srcPath:"/media/"+eid(n),width:1536,height:1024},alt:"Étude de démonstration — volumes de verre et lumière",subtext:editorialText("Détail d’une composition de démonstration. Aucun contenu client."),artworkInfo:[],render:{desktop:{aspect:"landscape",fit:"cover",focalPoint:{x:.5,y:.5},enlarge:true},mobile:{aspect:"portrait",fit:"cover",focalPoint:{x:.5,y:.5},enlarge:true}},cta:null,video:null};}
+export const editorialArtwork=():Media=>({...editorialImage(603),source:{kind:"artwork",artworkId:eid(817),mediaId:eid(603),srcPath:"/media/"+eid(603),href:"/artworks/etude-demonstration",width:1024,height:1536},cta:{label:"Découvrir l’œuvre",href:"/artworks/etude-demonstration"},artworkInfo:[{field:"title",label:"Œuvre",value:"Étude de démonstration"}]});
+export const editorialVideo=(kind:"video"|"youtube"|"vimeo"="video"):Media=>({...editorialImage(502),id:eid(1600),source:kind==="video"?{kind,assetId:eid(600),srcPath:"/editorial-demo.mp4"}:kind==="youtube"?{kind,videoId:"DEMOvideo01"}:{kind,videoId:"123456789",privacyHash:null},alt:"Film de démonstration",subtext:null,video:{autoplay:false,showSoundControl:true,posterPath:"/media/"+eid(502)},render:{desktop:{aspect:"natural",fit:"contain",focalPoint:{x:.5,y:.5},enlarge:false},mobile:{aspect:"natural",fit:"contain",focalPoint:{x:.5,y:.5},enlarge:false}}});
+export function editorialCarousel({automatic=false,one=false,empty=false,video=false}={}):Extract<Block,{type:"carousel"}>{return {id:eid(2300),type:"carousel",variant:"default",automatic,intervalSeconds:3,slides:empty?[]:(one?[editorialImage()]:[editorialImage(),editorialArtwork(),video?editorialVideo():editorialImage(505)]).map((media,i)=>({id:eid(2400+i),media}))};}
+export function editorialBlocks():Block[]{return [
+ {id:eid(2001),type:"text",variant:"default",text:{type:"doc",content:[{type:"heading",attrs:{level:2},content:[{type:"text",text:"La lumière comme matière"}]},{type:"paragraph",content:[{type:"text",text:"Un récit de démonstration pour explorer les rapprochements entre l’objet, sa matière et l’espace qui l’entoure."}]},{type:"blockquote",content:[{type:"paragraph",content:[{type:"text",text:"Le regard se construit dans les détails."}]}]}]}},
+ {id:eid(2002),type:"media",variant:"default",media:editorialImage()},
+ {id:eid(2003),type:"textMedia",variant:"default",text:editorialText("L’image et le récit se répondent. Sur mobile, leur ordre et le cadrage sont réglés indépendamment."),media:editorialArtwork(),layout:"split",desktopMediaSide:"right",mobileMediaOrder:"before"},
+ editorialCarousel(),
+ ];}

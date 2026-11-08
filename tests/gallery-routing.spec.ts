@@ -23,11 +23,11 @@ test("direct UUID canonicalizes then closes to the public PLP; reload loses orig
 });
 test("home and ordinary client anchors share the modal; modified click opens an independent document",async({page,context})=>{
   await page.goto("/");const first=page.getByTestId("artwork-card").first().getByRole("link");await first.click();
-  await expect(visibleDialogs(page)).toHaveCount(1);await page.keyboard.press("Escape");await expect(page).toHaveURL(new RegExp("/$"));
+  await expect(visibleDialogs(page)).toHaveCount(1);await expect(visibleDialogs(page).getByTestId("artwork-experience")).toBeVisible();await page.keyboard.press("Escape");await expect(page).toHaveURL(new RegExp("/$"));
   await expect(visibleDialogs(page)).toHaveCount(0);
   const href=await first.getAttribute("href");await page.evaluate(href=>{const a=document.createElement("a");a.href=href!;a.textContent="Synthetic editorial link";document.querySelector("main")!.append(a);},href);
-  await page.getByRole("link",{name:"Synthetic editorial link",exact:true}).click();await expect(visibleDialogs(page)).toHaveCount(1);
-  await page.keyboard.press("Escape");await expect(visibleDialogs(page)).toHaveCount(0);
+  await page.getByRole("link",{name:"Synthetic editorial link",exact:true}).click();await expect(visibleDialogs(page)).toHaveCount(1);await expect(visibleDialogs(page).getByTestId("artwork-experience")).toBeVisible();
+  await page.keyboard.press("Escape");await expect(page).toHaveURL(new RegExp("/$"));await expect(visibleDialogs(page)).toHaveCount(0);
   const popup=context.waitForEvent("page");await first.click({modifiers:["ControlOrMeta"]});const next=await popup;await next.waitForLoadState();
   await expect(next.getByRole("dialog")).toHaveCount(1);await next.getByRole("button",{name:"Fermer la fiche de l’œuvre",exact:true}).click();await expect(next).toHaveURL(/\/artworks$/);await next.close();
 });

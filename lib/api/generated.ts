@@ -96,7 +96,11 @@ export interface paths {
         post?: never;
         delete?: never;
         options?: never;
-        head?: never;
+        /**
+         * Métadonnées publiques autorisées, sans transfert
+         * @description Vérifier l’appartenance du média au catalogue actif et une œuvre disponible et publiée. Refuser les anciennes versions remplacées. Ignorer les requêtes Range (réponse complète 200) ; ne pas produire de 304 court-circuitant le contrôle.
+         */
+        head: operations["getPublishedMediaMetadata"];
         patch?: never;
         trace?: never;
     };
@@ -324,6 +328,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/artwork-catalog/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Composer la grille et consulter la réserve.
+         * @description Deux collections paginées indépendantes sous la même révision. Le mode public est projeté sans nouvelle préférence admin.
+         */
+        get: operations["getArtworkCatalogWorkspace"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/artwork-catalog/placements/{artworkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Déplacer ou publier à une position du catalogue.
+         * @description Commande atomique ; If-Match catalogue et publicationVersion requis. Un conflit exige une relecture avant nouvelle décision.
+         */
+        put: operations["placeArtworkInCatalog"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/public/site-content": {
         parameters: {
             query?: never;
@@ -424,7 +468,11 @@ export interface paths {
         post?: never;
         delete?: never;
         options?: never;
-        head?: never;
+        /**
+         * Métadonnées publiques autorisées, sans transfert
+         * @description Contrôle site + pointeur courant avant lecture Storage à chaque requête. Candidat/ancien/étranger/absent : 404 ; objet courant indisponible : 503, frontend utilisant le nom textuel.
+         */
+        head: operations["getPublicSiteLogoMetadata"];
         patch?: never;
         trace?: never;
     };
@@ -924,6 +972,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/public/presentation/page-address": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Resolve the active galerist address
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["resolvePresentationPageAddress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/footer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lire le footer de brouillon à la révision globale
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationFooter"];
+        /**
+         * Enregistrer le footer de brouillon, sans le publier
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        put: operations["savePresentationFooter"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/presentation/artwork-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lire les défauts des fiches d’œuvre
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        get: operations["getPresentationArtworkSettings"];
+        /**
+         * Enregistrer les défauts des fiches d’œuvre
+         * @description Voir le contrat normatif README.md pour états, erreurs et confidentialité.
+         */
+        put: operations["savePresentationArtworkSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/internal/contact/config": {
         parameters: {
             query?: never;
@@ -1102,6 +1218,26 @@ export interface paths {
          * @description Normative semantics, compatibility, limits and status/code allowlists are in README.md.
          */
         get: operations["getGalleryPreviewArtworkExperience"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/preview/artwork-titles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Résoudre en lot les titres du snapshot pour les cartes d’aperçu.
+         * @description Lecture privée bornée, jamais le brouillon courant. Visibilité actuelle et scope du preview vérifiés.
+         */
+        get: operations["getGalleryPreviewArtworkTitles"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1704,6 +1840,1137 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/crm/instance-binding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read this site binding using the current CRM administrator session */
+        get: operations["readCrmInstanceBinding"];
+        put?: never;
+        /** Manage this site binding from the CRM */
+        post: operations["manageCrmInstanceBinding"];
+        delete?: never;
+        /** Allow only the configured CRM browser origin */
+        options: operations["crmInstancePreflight"];
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/binding-confirmation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirmer le rattachement par un membre authentifié de l’entreprise.
+         * @description Consentement explicite après revalidation SSO, entreprise, session et CSRF ; aucune recette manuelle préalable.
+         */
+        post: operations["confirmSiteMembership"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/artworks/{artworkId}/catalog-display": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lire le format PLP local, même pour une œuvre masquée ou retirée */
+        get: operations["getArtworkCatalogDisplay"];
+        /**
+         * Enregistrer le format PLP sans modifier publication ou révision du catalogue
+         * @description Gardes BFF/session/CSRF avant parsing. Corps strict <=1024 octets. If-Match fort et lié à artworkId, jamais wildcard ni liste. Version périmée =>412, aucun rejeu automatique. Absence de ligne => false/version0 ; mutation sans changement =>200/version inchangée. L’acteur et le site proviennent du contexte autorisé.
+         */
+        put: operations["updateArtworkCatalogDisplay"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/artwork-catalog/display": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lire le mode global de la PLP
+         * @description Site issu de la session autorisée. Défaut false/version0 ; version indépendante. Verrou state → mode. Ne change ni les flags par œuvre, ni catalogRevision, ni les releases de présentation.
+         */
+        get: operations["getArtworkCatalogMode"];
+        /**
+         * Activer ou désactiver le mode masonry/2×2 sans publication de présentation
+         * @description Site issu de la session autorisée. Défaut false/version0 ; version indépendante. Verrou state → mode. Ne change ni les flags par œuvre, ni catalogRevision, ni les releases de présentation.
+         */
+        put: operations["updateArtworkCatalogMode"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/composition/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Capacité013 indépendante de exhibitionsWritable et immersive.writable. Aucun secret ou modèle privé dans la projection. */
+        get: operations["getEditorialCompositionCapabilities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Reprise sans mutation. Liste privée par article, createdAt+id décroissants,20max. Filtre idempotencyKey uniquement sur les demandes de l’opérateur courant ; même filtre retourne au plus1résultat sans POST ni appel fournisseur. Permet de retrouver une demande dont la réponse POST a été perdue. */
+        get: operations["listEditorialCompositionRequests"];
+        put?: never;
+        /** @description Gèle base et brief, réserve budget et enqueue atomiquement. Même clé/payload retourne la même demande, jamais un second appel. Global exige blockIds vide ; blocks exige IDs uniques existants. Corps128000 octets max. */
+        post: operations["submitEditorialComposition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-requests/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Lecture uniquement, no-store ; même session et droits admin. Aucun accès fournisseur lors du polling. */
+        get: operations["getEditorialCompositionRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-requests/{requestId}/abandon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Idempotent. Bloque création/adoption tardive de résultat, sans prétendre annuler une facturation déjà commencée. */
+        post: operations["abandonEditorialComposition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-proposals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Historique privé, curseur opaque,20 résultats max ; versions publiques et modèles partagés inchangés. */
+        get: operations["listEditorialCompositionProposals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-proposals/{proposalId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Document compilé immuable, diagnostics et réécritures ; prêt à aperçu ne signifie pas prêt à publier. */
+        get: operations["getEditorialCompositionProposal"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-proposals/{proposalId}/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Adopte EXACTEMENT le document du candidat non expiré, même site/article/proposition/session. Hash client=hash stocké, If-Match=ETag candidat=ETag courant ; sinon409 sans mutation et nouveau candidat/aperçu requis. Aucun rebase silencieux pendant apply ; recovery version et receipt transactionnels, pas de publication/programmation. */
+        post: operations["applyEditorialCompositionProposal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-proposals/{proposalId}/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Gèle le candidat exact contre If-Match courant, conserve les champs protégés actuels, contrôle le scope et retourne document/hash/ETag. Pas de mutation du brouillon ni d’appel IA. TTL10min borné par session. Conflit ciblé409 si des blocs protégés ont changé. */
+        post: operations["prepareEditorialCompositionCandidate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-candidates/{candidateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Candidat immuable lié au même site/article/session ; expiré ou révoqué404. Ne modifie pas le document si la révision courante a changé. */
+        get: operations["getEditorialCompositionCandidate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/editorial/articles/{articleId}/composition-candidates/{candidateId}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Émet snapshot source proposal avec sourceProposalId et sourceCandidateId ; document EXACT du candidat, hash identique. Requiert If-Match égal à articleEtag du candidat ET à la révision courante. Grant/session/TTL008, sans saveDraft. */
+        post: operations["previewEditorialCompositionCandidate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/navigation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lire uniquement la configuration enregistrée et son ETag propre */
+        get: operations["getSiteNavigation"];
+        /** Activer atomiquement l’ordre et les visibilités immédiatement après commit */
+        put: operations["replaceSiteNavigation"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/navigation/context": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lire disponibilité publiée et gate opérateur, hors ETag du menu */
+        get: operations["getSiteNavigationContext"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/navigation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lire le menu courant lié à une release encore active */
+        get: operations["getPublicSiteNavigation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/preview/navigation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lire le menu capturé, jamais le menu public courant */
+        get: operations["getPreviewSiteNavigation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/{formId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsPublic */
+        get: operations["getFormsPublic"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/{formId}/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** openFormsSession */
+        post: operations["openFormsSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/sessions/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsSession */
+        get: operations["getFormsSession"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/sessions/{sessionId}/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** reserveFormsUpload */
+        post: operations["reserveFormsUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/sessions/{sessionId}/uploads/{uploadId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** completeFormsUpload */
+        post: operations["completeFormsUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/sessions/{sessionId}/uploads/{uploadId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** removeFormsUpload */
+        delete: operations["removeFormsUpload"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/sessions/{sessionId}/uploads/{uploadId}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** previewFormsUpload */
+        post: operations["previewFormsUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/sessions/{sessionId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** submitFormsSession */
+        post: operations["submitFormsSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/internal/forms/receipts/recover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** recoverFormsReceipt */
+        post: operations["recoverFormsReceipt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listForms */
+        get: operations["listForms"];
+        put?: never;
+        /** createForms */
+        post: operations["createForms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsAdmin */
+        get: operations["getFormsAdmin"];
+        put?: never;
+        post?: never;
+        /** deleteForms */
+        delete: operations["deleteForms"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** updateFormsDraft */
+        put: operations["updateFormsDraft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** validateForms */
+        post: operations["validateForms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** publishForms */
+        post: operations["publishForms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** duplicateForms */
+        post: operations["duplicateForms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listFormsVersions */
+        get: operations["listFormsVersions"];
+        put?: never;
+        /** saveFormsVersion */
+        post: operations["saveFormsVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/versions/{versionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsVersion */
+        get: operations["getFormsVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** restoreFormsVersion */
+        post: operations["restoreFormsVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/usages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listFormsUsages */
+        get: operations["listFormsUsages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** archiveForms */
+        post: operations["archiveForms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** reopenForms */
+        post: operations["reopenForms"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/administrator-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listFormsAdministratorCandidates */
+        get: operations["listFormsAdministratorCandidates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/{formId}/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsNotificationSettings */
+        get: operations["getFormsNotificationSettings"];
+        /** updateFormsNotificationSettings */
+        put: operations["updateFormsNotificationSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listFormsSubmissions */
+        get: operations["listFormsSubmissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsSubmission */
+        get: operations["getFormsSubmission"];
+        put?: never;
+        post?: never;
+        /** deleteFormsSubmission */
+        delete: operations["deleteFormsSubmission"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** markFormsRead */
+        post: operations["markFormsRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}/workflow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** updateFormsWorkflow */
+        patch: operations["updateFormsWorkflow"];
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List immutable private notes with bounded pagination */
+        get: operations["listFormsNotes"];
+        put?: never;
+        /** addFormsNote */
+        post: operations["addFormsNote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}/attachments/{attachmentId}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** accessFormsAttachment */
+        post: operations["accessFormsAttachment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** bulkFormsSubmissions */
+        post: operations["bulkFormsSubmissions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listFormsNotifications */
+        get: operations["listFormsNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/submissions/{id}/notifications/{notificationId}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** retryFormsNotification */
+        post: operations["retryFormsNotification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** listFormsViews */
+        get: operations["listFormsViews"];
+        put?: never;
+        /** createFormsView */
+        post: operations["createFormsView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/views/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** updateFormsView */
+        put: operations["updateFormsView"];
+        post?: never;
+        /** deleteFormsView */
+        delete: operations["deleteFormsView"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** createFormsExport */
+        post: operations["createFormsExport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/exports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** getFormsExport */
+        get: operations["getFormsExport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/forms/exports/{id}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** accessFormsExport */
+        post: operations["accessFormsExport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/resend/forms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** receiveFormsResendWebhook */
+        post: operations["receiveFormsResendWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/media/{mediaId}/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtenir un accès GET temporaire au média actuellement public. */
+        get: operations["authorizePublicArtworkMedia"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/site-logos/{logoId}/authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtenir un accès GET temporaire au média actuellement public. */
+        get: operations["authorizePublicSiteLogo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/media-observations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enregistrer une observation déclarative sans effet métier. */
+        post: operations["recordPublicMediaObservation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/image-descriptors/query": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Describe eligible images without signing or fetching files */
+        post: operations["queryPublicImageDescriptors"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/media/{mediaId}/image-authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Authorize one bounded public image rendition */
+        get: operations["authorizePublicArtworkImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/site-logos/{logoId}/image-authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Authorize one bounded public image rendition */
+        get: operations["authorizePublicSiteLogoImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/presentation-assets/{assetId}/image-authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Authorize one bounded public image rendition */
+        get: operations["authorizePublicPresentationImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/editorial/media/{assetId}/image-authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Authorize one bounded public image rendition */
+        get: operations["authorizePublicEditorialImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/public/image-observations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a closed, untrusted display signal without affecting authorization */
+        post: operations["recordPublicImageObservation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1938,10 +3205,20 @@ export interface components {
             /** Format: date-time */
             expiresAt: string;
             permissions: ("catalog:read" | "catalog:publish" | "sync:run" | "sync:read")[];
+            bindingConfirmation?: {
+                /** @constant */
+                required: true;
+                version: number;
+            };
         };
         LoginStartInput: {
             /** @default / */
             next: string;
+            /**
+             * @description Keep this browser signed in for up to the configured remembered-session duration.
+             * @default false
+             */
+            rememberMe: boolean;
         };
         LoginStart: {
             /** Format: uri */
@@ -1965,6 +3242,164 @@ export interface components {
         Health: {
             /** @enum {string} */
             status: "ok";
+        };
+        /**
+         * @example {
+         *       "id": "11111111-1111-4111-8111-111111111111",
+         *       "title": "Étude 01",
+         *       "artist": "Artiste de démonstration",
+         *       "year": "2026",
+         *       "medium": "Encre sur papier",
+         *       "dimensions": "30 × 40 cm",
+         *       "media": [
+         *         {
+         *           "id": "22222222-2222-4222-8222-222222222222",
+         *           "alt": "Étude abstraite de démonstration",
+         *           "width": 800,
+         *           "height": 600,
+         *           "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+         *         }
+         *       ]
+         *     }
+         */
+        PublicArtworkPlp: {
+            /** Format: uuid */
+            id: string;
+            title: string | null;
+            artist: string | null;
+            year: string | null;
+            medium: string | null;
+            dimensions: string | null;
+            media: components["schemas"]["PublicMedia"][];
+            catalogLarge: boolean;
+        };
+        /**
+         * @example {
+         *       "items": [
+         *         {
+         *           "id": "11111111-1111-4111-8111-111111111111",
+         *           "title": "Étude 01",
+         *           "artist": "Artiste de démonstration",
+         *           "year": "2026",
+         *           "medium": "Encre sur papier",
+         *           "dimensions": "30 × 40 cm",
+         *           "media": [
+         *             {
+         *               "id": "22222222-2222-4222-8222-222222222222",
+         *               "alt": "Étude abstraite de démonstration",
+         *               "width": 800,
+         *               "height": 600,
+         *               "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+         *             }
+         *           ]
+         *         }
+         *       ],
+         *       "nextCursor": null,
+         *       "catalogRevision": 1
+         *     }
+         */
+        PublicArtworkPagePlp: {
+            items: components["schemas"]["PublicArtworkPlp"][];
+            nextCursor: string | null;
+            catalogRevision: number;
+            /** @constant */
+            display: "plp";
+            /** @enum {string} */
+            layout: "grid" | "masonry";
+        };
+        /** Artwork catalog placement command */
+        ArtworkCatalogPlacement: {
+            /** @enum {unknown} */
+            action: "move" | "publish";
+            publicationVersion: number;
+            destination: {
+                /** @enum {unknown} */
+                kind: "start" | "end";
+            } | {
+                /** @enum {unknown} */
+                kind: "before" | "after";
+                /** Format: uuid */
+                anchorArtworkId: string;
+            };
+        };
+        ArtworkCatalogWorkspaceItem: {
+            /** Format: uuid */
+            id: string;
+            sourceId: string;
+            title: string | null;
+            artist: string | null;
+            year: string | null;
+            medium: string | null;
+            dimensions: string | null;
+            /** @enum {string} */
+            availability: "available" | "withdrawn";
+            /** @enum {string} */
+            publication: "hidden" | "published";
+            publicationVersion: number;
+            effectivePublic: boolean;
+            /** Format: date-time */
+            lastSyncedAt: string;
+            media: components["schemas"]["AdminMedia"][];
+            warnings: string[];
+            catalogLarge: boolean;
+            publishable: boolean;
+            /** @enum {string|null} */
+            blockedReason: null | "artwork_unavailable";
+        };
+        ArtworkCatalogWorkspacePage: {
+            items: components["schemas"]["ArtworkCatalogWorkspaceItem"][];
+            nextCursor: string | null;
+            total: number;
+            unfilteredTotal: number;
+        };
+        ArtworkCatalogWorkspace: {
+            catalogRevision: number;
+            /** @enum {unknown} */
+            layout: "grid" | "masonry";
+            orderingAllowed: boolean;
+            published?: components["schemas"]["ArtworkCatalogWorkspacePage"];
+            reserve?: components["schemas"]["ArtworkCatalogWorkspacePage"];
+        };
+        ArtworkCatalogPlacementResult: {
+            artwork: components["schemas"]["AdminArtwork"];
+            catalogRevision: number;
+            changed: boolean;
+        };
+        EditorialRichText: {
+            /** @constant */
+            type: "doc";
+            content: components["schemas"]["EditorialRichNode"][];
+        };
+        EditorialRichNode: {
+            /** @constant */
+            type: "text";
+            text: string;
+            marks?: components["schemas"]["EditorialRichMark"][];
+        } | {
+            /** @constant */
+            type: "heading";
+            attrs: {
+                /** @enum {unknown} */
+                level: 2 | 3;
+            };
+            content?: components["schemas"]["EditorialRichNode"][];
+        } | {
+            /** @enum {unknown} */
+            type: "paragraph" | "bulletList" | "orderedList" | "listItem" | "blockquote";
+            content?: components["schemas"]["EditorialRichNode"][];
+        } | {
+            /** @constant */
+            type: "hardBreak";
+        };
+        EditorialRichMark: {
+            /** @enum {unknown} */
+            type: "bold" | "italic";
+        } | {
+            /** @constant */
+            type: "link";
+            attrs: {
+                href: string;
+            };
         };
         SiteLocale: {
             code: string;
@@ -2139,19 +3574,53 @@ export interface components {
             "gallery.viewWholeImage": string;
             "gallery.mobileGestureHelp": string;
             "gallery.panHelp": string;
+            "editorial.play": string;
+            "editorial.pause": string;
+            "editorial.fullscreen": string;
+            "editorial.soundOn": string;
+            "editorial.soundOff": string;
+            "editorial.videoUnavailable": string;
+            "editorial.autoplayBlocked": string;
+            "editorial.previousSlide": string;
+            "editorial.nextSlide": string;
+            "editorial.pauseCarousel": string;
+            "editorial.resumeCarousel": string;
+            "editorial.slide": string;
+            "editorial.close": string;
+            "editorial.zoomImage": string;
+            "editorial.imageDialog": string;
+            "editorial.authors": string;
+            "editorial.authorProfile": string;
+            "editorial.related": string;
+            "editorial.search": string;
+            "editorial.noResults": string;
+            "editorial.loadError": string;
+            "editorial.retry": string;
+            "editorial.readArticle": string;
+            "editorial.previousPage": string;
+            "editorial.nextPage": string;
+            "editorial.page": string;
+            "editorial.allCategories": string;
+            "editorial.filters": string;
+            "editorial.resetSearch": string;
+            "editorial.carousel": string;
+            "editorial.imageUnavailable": string;
+            "editorial.artworkTitle": string;
+            "editorial.searchTerms": string;
+            "editorial.filterLimit": string;
         };
         SiteMessageDefinition: {
             /** @enum {string} */
-            key: "nav.news" | "nav.artworks" | "nav.exhibitions" | "nav.publications" | "nav.expertise" | "nav.contact" | "header.homeLabel" | "header.navigationLabel" | "header.openMenu" | "header.closeMenu" | "header.languageLabel" | "header.skipToContent" | "page.home.title" | "page.news.title" | "page.news.empty" | "page.artworks.title" | "page.exhibitions.title" | "page.exhibitions.empty" | "page.publications.title" | "page.publications.empty" | "page.expertise.title" | "page.expertise.empty" | "page.contact.title" | "page.contact.empty" | "catalog.loading" | "catalog.empty" | "catalog.restarted" | "catalog.next" | "catalog.errorTitle" | "catalog.errorMessage" | "catalog.retry" | "catalog.unavailableTitle" | "artwork.loading" | "artwork.back" | "artwork.untitled" | "artwork.unknownArtist" | "artwork.artist" | "artwork.year" | "artwork.medium" | "artwork.dimensions" | "artwork.unspecified" | "artwork.imageUnavailable" | "artwork.imageAlt" | "error.artworkNotFoundTitle" | "error.artworkNotFoundMessage" | "error.pageNotFoundTitle" | "error.pageNotFoundMessage" | "error.viewArtworks" | "video.play" | "video.pause" | "video.unavailable" | "video.reducedMotion" | "presentation.discover" | "presentation.readMore" | "presentation.galleryLabel" | "presentation.previous" | "presentation.next" | "presentation.empty" | "error.presentationTitle" | "error.presentationMessage" | "preview.title" | "preview.notice" | "preview.desktop" | "preview.mobile" | "preview.close" | "preview.expired" | "preview.unavailable" | "preview.checking" | "preview.backToAdmin" | "video.playLabel" | "video.pauseLabel" | "presentation.explore" | "presentation.demonstration" | "contact.name" | "contact.email" | "contact.subject" | "contact.message" | "contact.required" | "contact.limits" | "contact.privacy" | "contact.privacyLink" | "contact.submit" | "contact.sending" | "contact.confirmed" | "contact.confirmationHelp" | "contact.reference" | "contact.disabled" | "contact.unavailable" | "contact.invalid" | "contact.requiredError" | "contact.invalidEmail" | "contact.tooLong" | "contact.rateLimited" | "contact.retryAfter" | "contact.recover" | "contact.recovering" | "contact.unknownReceipt" | "contact.conflict" | "contact.newEnquiry" | "contact.newConfirm" | "contact.artworkCta" | "contact.artworkHeading" | "contact.artworkSubject" | "contact.artworkUnavailable" | "contact.general" | "contact.backArtwork" | "contact.leaveConfirm" | "contact.demonstration" | "contact.notificationHeading" | "contact.notificationGallery" | "contact.notificationLocale" | "contact.notificationArtwork" | "contact.load" | "contact.sentCopy" | "contact.notificationType" | "contact.notificationGeneral" | "gallery.searchLabel" | "gallery.searchSubmit" | "gallery.searchClear" | "gallery.noResults" | "gallery.paginationLabel" | "gallery.previousPage" | "gallery.nextPage" | "gallery.page" | "gallery.of" | "gallery.closeArtwork" | "gallery.opening" | "gallery.unavailable" | "gallery.progressLabel" | "gallery.view" | "gallery.presentation" | "gallery.description" | "gallery.revalidate" | "gallery.restart" | "gallery.zoomIn" | "gallery.zoomOut" | "gallery.zoomHelp" | "gallery.openInformation" | "gallery.backToImages" | "gallery.viewWholeImage" | "gallery.mobileGestureHelp" | "gallery.panHelp";
+            key: "nav.news" | "nav.artworks" | "nav.exhibitions" | "nav.publications" | "nav.expertise" | "nav.contact" | "header.homeLabel" | "header.navigationLabel" | "header.openMenu" | "header.closeMenu" | "header.languageLabel" | "header.skipToContent" | "page.home.title" | "page.news.title" | "page.news.empty" | "page.artworks.title" | "page.exhibitions.title" | "page.exhibitions.empty" | "page.publications.title" | "page.publications.empty" | "page.expertise.title" | "page.expertise.empty" | "page.contact.title" | "page.contact.empty" | "catalog.loading" | "catalog.empty" | "catalog.restarted" | "catalog.next" | "catalog.errorTitle" | "catalog.errorMessage" | "catalog.retry" | "catalog.unavailableTitle" | "artwork.loading" | "artwork.back" | "artwork.untitled" | "artwork.unknownArtist" | "artwork.artist" | "artwork.year" | "artwork.medium" | "artwork.dimensions" | "artwork.unspecified" | "artwork.imageUnavailable" | "artwork.imageAlt" | "error.artworkNotFoundTitle" | "error.artworkNotFoundMessage" | "error.pageNotFoundTitle" | "error.pageNotFoundMessage" | "error.viewArtworks" | "video.play" | "video.pause" | "video.unavailable" | "video.reducedMotion" | "presentation.discover" | "presentation.readMore" | "presentation.galleryLabel" | "presentation.previous" | "presentation.next" | "presentation.empty" | "error.presentationTitle" | "error.presentationMessage" | "preview.title" | "preview.notice" | "preview.desktop" | "preview.mobile" | "preview.close" | "preview.expired" | "preview.unavailable" | "preview.checking" | "preview.backToAdmin" | "video.playLabel" | "video.pauseLabel" | "presentation.explore" | "presentation.demonstration" | "contact.name" | "contact.email" | "contact.subject" | "contact.message" | "contact.required" | "contact.limits" | "contact.privacy" | "contact.privacyLink" | "contact.submit" | "contact.sending" | "contact.confirmed" | "contact.confirmationHelp" | "contact.reference" | "contact.disabled" | "contact.unavailable" | "contact.invalid" | "contact.requiredError" | "contact.invalidEmail" | "contact.tooLong" | "contact.rateLimited" | "contact.retryAfter" | "contact.recover" | "contact.recovering" | "contact.unknownReceipt" | "contact.conflict" | "contact.newEnquiry" | "contact.newConfirm" | "contact.artworkCta" | "contact.artworkHeading" | "contact.artworkSubject" | "contact.artworkUnavailable" | "contact.general" | "contact.backArtwork" | "contact.leaveConfirm" | "contact.demonstration" | "contact.notificationHeading" | "contact.notificationGallery" | "contact.notificationLocale" | "contact.notificationArtwork" | "contact.load" | "contact.sentCopy" | "contact.notificationType" | "contact.notificationGeneral" | "gallery.searchLabel" | "gallery.searchSubmit" | "gallery.searchClear" | "gallery.noResults" | "gallery.paginationLabel" | "gallery.previousPage" | "gallery.nextPage" | "gallery.page" | "gallery.of" | "gallery.closeArtwork" | "gallery.opening" | "gallery.unavailable" | "gallery.progressLabel" | "gallery.view" | "gallery.presentation" | "gallery.description" | "gallery.revalidate" | "gallery.restart" | "gallery.zoomIn" | "gallery.zoomOut" | "gallery.zoomHelp" | "gallery.openInformation" | "gallery.backToImages" | "gallery.viewWholeImage" | "gallery.mobileGestureHelp" | "gallery.panHelp" | "editorial.play" | "editorial.pause" | "editorial.fullscreen" | "editorial.soundOn" | "editorial.soundOff" | "editorial.videoUnavailable" | "editorial.autoplayBlocked" | "editorial.previousSlide" | "editorial.nextSlide" | "editorial.pauseCarousel" | "editorial.resumeCarousel" | "editorial.slide" | "editorial.close" | "editorial.zoomImage" | "editorial.imageDialog" | "editorial.authors" | "editorial.authorProfile" | "editorial.related" | "editorial.search" | "editorial.noResults" | "editorial.loadError" | "editorial.retry" | "editorial.readArticle" | "editorial.previousPage" | "editorial.nextPage" | "editorial.page" | "editorial.allCategories" | "editorial.filters" | "editorial.resetSearch" | "editorial.carousel" | "editorial.imageUnavailable" | "editorial.artworkTitle" | "editorial.searchTerms" | "editorial.filterLimit";
             /** @enum {string} */
-            group: "navigation" | "header" | "pages" | "catalog" | "artwork" | "errors" | "video" | "presentation" | "preview" | "contact" | "gallery";
+            group: "navigation" | "header" | "pages" | "catalog" | "artwork" | "errors" | "video" | "presentation" | "preview" | "contact" | "gallery" | "editorial";
             label: string;
             /** @enum {integer} */
             maxLength: 80 | 500;
         };
         SiteTranslation: {
             /** @enum {string} */
-            key: "nav.news" | "nav.artworks" | "nav.exhibitions" | "nav.publications" | "nav.expertise" | "nav.contact" | "header.homeLabel" | "header.navigationLabel" | "header.openMenu" | "header.closeMenu" | "header.languageLabel" | "header.skipToContent" | "page.home.title" | "page.news.title" | "page.news.empty" | "page.artworks.title" | "page.exhibitions.title" | "page.exhibitions.empty" | "page.publications.title" | "page.publications.empty" | "page.expertise.title" | "page.expertise.empty" | "page.contact.title" | "page.contact.empty" | "catalog.loading" | "catalog.empty" | "catalog.restarted" | "catalog.next" | "catalog.errorTitle" | "catalog.errorMessage" | "catalog.retry" | "catalog.unavailableTitle" | "artwork.loading" | "artwork.back" | "artwork.untitled" | "artwork.unknownArtist" | "artwork.artist" | "artwork.year" | "artwork.medium" | "artwork.dimensions" | "artwork.unspecified" | "artwork.imageUnavailable" | "artwork.imageAlt" | "error.artworkNotFoundTitle" | "error.artworkNotFoundMessage" | "error.pageNotFoundTitle" | "error.pageNotFoundMessage" | "error.viewArtworks" | "video.play" | "video.pause" | "video.unavailable" | "video.reducedMotion" | "presentation.discover" | "presentation.readMore" | "presentation.galleryLabel" | "presentation.previous" | "presentation.next" | "presentation.empty" | "error.presentationTitle" | "error.presentationMessage" | "preview.title" | "preview.notice" | "preview.desktop" | "preview.mobile" | "preview.close" | "preview.expired" | "preview.unavailable" | "preview.checking" | "preview.backToAdmin" | "video.playLabel" | "video.pauseLabel" | "presentation.explore" | "presentation.demonstration" | "contact.name" | "contact.email" | "contact.subject" | "contact.message" | "contact.required" | "contact.limits" | "contact.privacy" | "contact.privacyLink" | "contact.submit" | "contact.sending" | "contact.confirmed" | "contact.confirmationHelp" | "contact.reference" | "contact.disabled" | "contact.unavailable" | "contact.invalid" | "contact.requiredError" | "contact.invalidEmail" | "contact.tooLong" | "contact.rateLimited" | "contact.retryAfter" | "contact.recover" | "contact.recovering" | "contact.unknownReceipt" | "contact.conflict" | "contact.newEnquiry" | "contact.newConfirm" | "contact.artworkCta" | "contact.artworkHeading" | "contact.artworkSubject" | "contact.artworkUnavailable" | "contact.general" | "contact.backArtwork" | "contact.leaveConfirm" | "contact.demonstration" | "contact.notificationHeading" | "contact.notificationGallery" | "contact.notificationLocale" | "contact.notificationArtwork" | "contact.load" | "contact.sentCopy" | "contact.notificationType" | "contact.notificationGeneral" | "gallery.searchLabel" | "gallery.searchSubmit" | "gallery.searchClear" | "gallery.noResults" | "gallery.paginationLabel" | "gallery.previousPage" | "gallery.nextPage" | "gallery.page" | "gallery.of" | "gallery.closeArtwork" | "gallery.opening" | "gallery.unavailable" | "gallery.progressLabel" | "gallery.view" | "gallery.presentation" | "gallery.description" | "gallery.revalidate" | "gallery.restart" | "gallery.zoomIn" | "gallery.zoomOut" | "gallery.zoomHelp" | "gallery.openInformation" | "gallery.backToImages" | "gallery.viewWholeImage" | "gallery.mobileGestureHelp" | "gallery.panHelp";
+            key: "nav.news" | "nav.artworks" | "nav.exhibitions" | "nav.publications" | "nav.expertise" | "nav.contact" | "header.homeLabel" | "header.navigationLabel" | "header.openMenu" | "header.closeMenu" | "header.languageLabel" | "header.skipToContent" | "page.home.title" | "page.news.title" | "page.news.empty" | "page.artworks.title" | "page.exhibitions.title" | "page.exhibitions.empty" | "page.publications.title" | "page.publications.empty" | "page.expertise.title" | "page.expertise.empty" | "page.contact.title" | "page.contact.empty" | "catalog.loading" | "catalog.empty" | "catalog.restarted" | "catalog.next" | "catalog.errorTitle" | "catalog.errorMessage" | "catalog.retry" | "catalog.unavailableTitle" | "artwork.loading" | "artwork.back" | "artwork.untitled" | "artwork.unknownArtist" | "artwork.artist" | "artwork.year" | "artwork.medium" | "artwork.dimensions" | "artwork.unspecified" | "artwork.imageUnavailable" | "artwork.imageAlt" | "error.artworkNotFoundTitle" | "error.artworkNotFoundMessage" | "error.pageNotFoundTitle" | "error.pageNotFoundMessage" | "error.viewArtworks" | "video.play" | "video.pause" | "video.unavailable" | "video.reducedMotion" | "presentation.discover" | "presentation.readMore" | "presentation.galleryLabel" | "presentation.previous" | "presentation.next" | "presentation.empty" | "error.presentationTitle" | "error.presentationMessage" | "preview.title" | "preview.notice" | "preview.desktop" | "preview.mobile" | "preview.close" | "preview.expired" | "preview.unavailable" | "preview.checking" | "preview.backToAdmin" | "video.playLabel" | "video.pauseLabel" | "presentation.explore" | "presentation.demonstration" | "contact.name" | "contact.email" | "contact.subject" | "contact.message" | "contact.required" | "contact.limits" | "contact.privacy" | "contact.privacyLink" | "contact.submit" | "contact.sending" | "contact.confirmed" | "contact.confirmationHelp" | "contact.reference" | "contact.disabled" | "contact.unavailable" | "contact.invalid" | "contact.requiredError" | "contact.invalidEmail" | "contact.tooLong" | "contact.rateLimited" | "contact.retryAfter" | "contact.recover" | "contact.recovering" | "contact.unknownReceipt" | "contact.conflict" | "contact.newEnquiry" | "contact.newConfirm" | "contact.artworkCta" | "contact.artworkHeading" | "contact.artworkSubject" | "contact.artworkUnavailable" | "contact.general" | "contact.backArtwork" | "contact.leaveConfirm" | "contact.demonstration" | "contact.notificationHeading" | "contact.notificationGallery" | "contact.notificationLocale" | "contact.notificationArtwork" | "contact.load" | "contact.sentCopy" | "contact.notificationType" | "contact.notificationGeneral" | "gallery.searchLabel" | "gallery.searchSubmit" | "gallery.searchClear" | "gallery.noResults" | "gallery.paginationLabel" | "gallery.previousPage" | "gallery.nextPage" | "gallery.page" | "gallery.of" | "gallery.closeArtwork" | "gallery.opening" | "gallery.unavailable" | "gallery.progressLabel" | "gallery.view" | "gallery.presentation" | "gallery.description" | "gallery.revalidate" | "gallery.restart" | "gallery.zoomIn" | "gallery.zoomOut" | "gallery.zoomHelp" | "gallery.openInformation" | "gallery.backToImages" | "gallery.viewWholeImage" | "gallery.mobileGestureHelp" | "gallery.panHelp" | "editorial.play" | "editorial.pause" | "editorial.fullscreen" | "editorial.soundOn" | "editorial.soundOff" | "editorial.videoUnavailable" | "editorial.autoplayBlocked" | "editorial.previousSlide" | "editorial.nextSlide" | "editorial.pauseCarousel" | "editorial.resumeCarousel" | "editorial.slide" | "editorial.close" | "editorial.zoomImage" | "editorial.imageDialog" | "editorial.authors" | "editorial.authorProfile" | "editorial.related" | "editorial.search" | "editorial.noResults" | "editorial.loadError" | "editorial.retry" | "editorial.readArticle" | "editorial.previousPage" | "editorial.nextPage" | "editorial.page" | "editorial.allCategories" | "editorial.filters" | "editorial.resetSearch" | "editorial.carousel" | "editorial.imageUnavailable" | "editorial.artworkTitle" | "editorial.searchTerms" | "editorial.filterLimit";
             locale: string;
             value: string | null;
             resolvedValue: string;
@@ -2163,6 +3632,7 @@ export interface components {
             policy: components["schemas"]["SiteLocalePolicy"];
             messages: components["schemas"]["SiteMessages"];
             logo: components["schemas"]["SiteLogo"] | null;
+            whiteLogo?: components["schemas"]["SiteLogo"] | null;
         };
         SiteContentAdmin: {
             revision: number;
@@ -2176,6 +3646,7 @@ export interface components {
             logo: components["schemas"]["SiteLogo"] | null;
             /** Format: date-time */
             updatedAt: string;
+            whiteLogo?: components["schemas"]["SiteLogo"] | null;
         };
         SiteTranslationChange: {
             /** @description Syntaxe seulement avant transaction ; appartenance au registre vérifiée après politique et ETag, afin de préserver la priorité du conflit de version. */
@@ -2188,6 +3659,8 @@ export interface components {
             translations?: components["schemas"]["SiteTranslationChange"][];
             /** Format: uuid */
             logoId?: string | null;
+            /** Format: uuid */
+            whiteLogoId?: string | null;
         };
         /** @description Détails du PATCH uniquement : positions 0–63 dans le corps soumis, raisons fermées, aucune valeur contributive ni chemin libre. Le BFF vérifie à nouveau cette liste et produit ses propres messages français. */
         SiteContentValidationError: components["schemas"]["Error"] & {
@@ -2217,8 +3690,8 @@ export interface components {
                     /** @enum {string} */
                     reason: "required" | "invalid_type" | "reference_required" | "max_length";
                 } | {
-                    /** @constant */
-                    field: "logoId";
+                    /** @enum {string} */
+                    field: "logoId" | "whiteLogoId";
                     /** @enum {string} */
                     reason: "invalid_type";
                 })[];
@@ -2237,7 +3710,7 @@ export interface components {
             };
         };
         /** @enum {string} */
-        PresentationPageKey: "home" | "news" | "artworks" | "exhibitions" | "publications" | "expertise" | "contact" | "artworkDetail";
+        PresentationPageKey: "home" | "news" | "artworks" | "exhibitions" | "publications" | "expertise" | "contact" | "artworkDetail" | "galerist";
         PresentationLink: {
             /** @constant */
             kind: "page";
@@ -2434,7 +3907,7 @@ export interface components {
             props: {
                 heading?: string;
                 introduction?: string;
-                link?: components["schemas"]["PresentationLink"];
+                link?: components["schemas"]["ResolvedPresentationLink"];
                 linkLabel?: string;
                 focalPoint?: components["schemas"]["PresentationFocalPoint"];
                 poster?: components["schemas"]["PresentationPublicAsset"] | null;
@@ -2477,7 +3950,7 @@ export interface components {
             props: {
                 heading?: string;
                 body?: string;
-                link?: components["schemas"]["PresentationLink"];
+                link?: components["schemas"]["ResolvedPresentationLink"];
                 linkLabel?: string;
             };
         };
@@ -2525,7 +3998,7 @@ export interface components {
             props: {
                 heading?: string;
                 body?: string;
-                link?: components["schemas"]["PresentationLink"];
+                link?: components["schemas"]["ResolvedPresentationLink"];
                 linkLabel?: string;
                 alt?: string;
                 caption?: string;
@@ -2552,6 +4025,8 @@ export interface components {
                     [key: string]: string | null;
                 };
                 artworkIds?: string[];
+                /** @enum {string} */
+                imageFit?: "cover" | "contain";
             };
         };
         ResolvedPresentationArtworkSelectionSection: {
@@ -2567,6 +4042,8 @@ export interface components {
                 heading?: string;
                 introduction?: string;
                 artworks?: components["schemas"]["PublicArtwork"][];
+                /** @enum {string} */
+                imageFit?: "cover" | "contain";
             };
         };
         PresentationEditorialCardsSection: {
@@ -2625,7 +4102,7 @@ export interface components {
                     id: string;
                     heading?: string;
                     excerpt?: string;
-                    link?: components["schemas"]["PresentationLink"];
+                    link?: components["schemas"]["ResolvedPresentationLink"];
                     alt?: string;
                     caption?: string;
                     decorative?: boolean;
@@ -2728,7 +4205,7 @@ export interface components {
                     /** Format: uuid */
                     id: string;
                     label: string;
-                    destination: components["schemas"]["PresentationLink"];
+                    destination: components["schemas"]["ResolvedPresentationLink"];
                 }[];
             };
         };
@@ -2782,16 +4259,21 @@ export interface components {
             variant: "standard";
             props: Record<string, never>;
         };
-        PresentationSection: components["schemas"]["PresentationHeroMediaSection"] | components["schemas"]["PresentationTextSection"] | components["schemas"]["PresentationTextImageSection"] | components["schemas"]["PresentationArtworkSelectionSection"] | components["schemas"]["PresentationEditorialCardsSection"] | components["schemas"]["PresentationImageGallerySection"] | components["schemas"]["PresentationContactSection"] | components["schemas"]["PresentationArtworkCatalogSection"] | components["schemas"]["PresentationArtworkDetailsSection"];
-        ResolvedPresentationSection: components["schemas"]["ResolvedPresentationHeroMediaSection"] | components["schemas"]["ResolvedPresentationTextSection"] | components["schemas"]["ResolvedPresentationTextImageSection"] | components["schemas"]["ResolvedPresentationArtworkSelectionSection"] | components["schemas"]["ResolvedPresentationEditorialCardsSection"] | components["schemas"]["ResolvedPresentationImageGallerySection"] | components["schemas"]["ResolvedPresentationContactSection"] | components["schemas"]["ResolvedPresentationArtworkCatalogSection"] | components["schemas"]["ResolvedPresentationArtworkDetailsSection"];
+        PresentationSection: components["schemas"]["PresentationHeroMediaSection"] | components["schemas"]["PresentationTextSection"] | components["schemas"]["PresentationTextImageSection"] | components["schemas"]["PresentationArtworkSelectionSection"] | components["schemas"]["PresentationEditorialCardsSection"] | components["schemas"]["PresentationImageGallerySection"] | components["schemas"]["PresentationContactSection"] | components["schemas"]["PresentationArtworkCatalogSection"] | components["schemas"]["PresentationArtworkDetailsSection"] | components["schemas"]["PresentationArticleSelectionSection"] | components["schemas"]["PresentationFormSection"] | components["schemas"]["PresentationFormImageSection"];
+        ResolvedPresentationSection: components["schemas"]["ResolvedPresentationHeroMediaSection"] | components["schemas"]["ResolvedPresentationTextSection"] | components["schemas"]["ResolvedPresentationTextImageSection"] | components["schemas"]["ResolvedPresentationArtworkSelectionSection"] | components["schemas"]["ResolvedPresentationEditorialCardsSection"] | components["schemas"]["ResolvedPresentationImageGallerySection"] | components["schemas"]["ResolvedPresentationContactSection"] | components["schemas"]["ResolvedPresentationArtworkCatalogSection"] | components["schemas"]["ResolvedPresentationArtworkDetailsSection"] | components["schemas"]["ResolvedPresentationArticleSelectionSection"] | components["schemas"]["ResolvedPresentationFormSection"] | components["schemas"]["ResolvedPresentationFormImageSection"];
         PresentationPage: {
             pageKey: components["schemas"]["PresentationPageKey"];
             sections: components["schemas"]["PresentationSection"][];
-        };
+            settings?: components["schemas"]["PresentationGaleristSettings"];
+            /** @description Optional localized page meta descriptions. Empty secondary locales use the reference locale; absent values use the site description. Omitted on update preserves existing metadata. */
+            metaDescription?: {
+                [key: string]: string | null;
+            };
+        } & unknown;
         PresentationDiagnostic: {
             field: string;
             /** @enum {string} */
-            reason: "required" | "unsupported_locale" | "unsupported_variant" | "incompatible_schema" | "duplicate_id" | "missing_required_block" | "invalid_placement" | "invalid_link" | "asset_not_ready" | "asset_not_found" | "poster_required" | "font_weight_missing" | "font_glyph_missing" | "contrast_insufficient" | "artwork_unavailable" | "aggregate_too_large";
+            reason: "required" | "unsupported_locale" | "unsupported_variant" | "incompatible_schema" | "duplicate_id" | "missing_required_block" | "invalid_placement" | "invalid_link" | "asset_not_ready" | "asset_not_found" | "poster_required" | "font_weight_missing" | "font_glyph_missing" | "contrast_insufficient" | "artwork_unavailable" | "aggregate_too_large" | "reserved_slug" | "invalid_slug" | "empty_page" | "empty_footer_group";
             /** @enum {string} */
             severity: "error" | "warning";
         };
@@ -2816,6 +4298,7 @@ export interface components {
             activeReleaseId: string | null;
             /** Format: date-time */
             updatedAt: string;
+            footer?: components["schemas"]["PresentationFooterConfiguration"] | null;
         };
         PresentationDraftPage: {
             revision: string;
@@ -2854,6 +4337,10 @@ export interface components {
             theme: components["schemas"]["PresentationTheme"];
             fontFiles: components["schemas"]["PresentationPublicAsset"][];
             sections: components["schemas"]["ResolvedPresentationSection"][];
+            galeristNavigation?: components["schemas"]["PresentationGaleristNavigation"] | null;
+            pageIdentity?: components["schemas"]["PresentationGaleristIdentity"];
+            footer?: components["schemas"]["PresentationFooterResolved"] | null;
+            metaDescription?: string;
         };
         PresentationAssetCreate: {
             /** @enum {string} */
@@ -2945,6 +4432,14 @@ export interface components {
                 /** @constant */
                 fontBytes: 2097152;
             };
+            formsWritable?: boolean;
+            footer?: components["schemas"]["PresentationFooterCapability"];
+            artworkSettings?: {
+                /** @constant */
+                writable: true;
+                /** @constant */
+                contractVersion: 1;
+            };
         };
         PresentationPreviewInput: {
             pageKey: components["schemas"]["PresentationPageKey"];
@@ -2969,7 +4464,17 @@ export interface components {
             locale: string;
             /** Format: uuid */
             artworkId?: string;
-        };
+            /** @enum {string} */
+            kind?: "article";
+            /** Format: uuid */
+            snapshotId?: string;
+            /** Format: uuid */
+            articleId?: string;
+            /** @enum {string} */
+            articleKind?: "publication" | "news" | "exhibition";
+            /** @enum {integer} */
+            viewport?: 375 | 1440;
+        } & unknown;
         PresentationPreviewStatus: {
             revision: string;
             /** Format: date-time */
@@ -2981,7 +4486,17 @@ export interface components {
              * @description Œuvre publique choisie pour la fiche d’aperçu ; aucune autorité d’accès.
              */
             artworkId?: string;
-        };
+            /** @enum {string} */
+            kind?: "article";
+            /** Format: uuid */
+            snapshotId?: string;
+            /** Format: uuid */
+            articleId?: string;
+            /** @enum {string} */
+            articleKind?: "publication" | "news" | "exhibition";
+            /** @enum {integer} */
+            viewport?: 375 | 1440;
+        } & unknown;
         PresentationPreview: {
             /** @constant */
             schemaVersion: 1;
@@ -2995,6 +4510,10 @@ export interface components {
             /** Format: uuid */
             snapshotId: string;
             revision: string;
+            galeristNavigation?: components["schemas"]["PresentationGaleristNavigation"] | null;
+            pageIdentity?: components["schemas"]["PresentationGaleristIdentity"];
+            footer?: components["schemas"]["PresentationFooterResolved"] | null;
+            metaDescription?: string;
         };
         PresentationUploadAttempt: {
             /** Format: uuid */
@@ -3034,6 +4553,415 @@ export interface components {
             url: string;
             /** Format: date-time */
             expiresAt: string;
+        };
+        EditorialAuthorCard: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            hasProfile: boolean;
+        };
+        EditorialArticleCard: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "publication" | "news" | "exhibition";
+            canonicalPath: string;
+            title: string;
+            summary: string | null;
+            /** Format: date */
+            editorialDate: string;
+            cover: {
+                srcPath: string;
+                alt: string;
+            } | null;
+            authors: components["schemas"]["EditorialAuthorCard"][];
+            exhibitionPeriod?: {
+                /** Format: date */
+                startsOn: string;
+                /** Format: date */
+                endsOn: string;
+            };
+        } & unknown;
+        PresentationArticleSelectionSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "articleSelection";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "compact";
+            hidden: boolean;
+            props: {
+                heading?: {
+                    [key: string]: string | null;
+                };
+                introduction?: {
+                    [key: string]: string | null;
+                };
+                /** @enum {string} */
+                mode: "manual" | "latest";
+                articleIds: string[];
+                /** @enum {string} */
+                kind?: "all" | "publication" | "news";
+                limit: number;
+                taxonomyAssignments: {
+                    /** Format: uuid */
+                    vocabularyId: string;
+                    termIds: string[];
+                }[];
+                kinds?: ("publication" | "news" | "exhibition")[];
+            } & ({
+                kind: unknown;
+            } | {
+                kinds: unknown;
+            });
+        };
+        ResolvedPresentationArticleSelectionSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "articleSelection";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "grid" | "compact";
+            props: {
+                heading?: string;
+                introduction?: string;
+                articles: components["schemas"]["EditorialArticleCard"][];
+            };
+        };
+        PresentationGaleristSettings: {
+            enabled: boolean;
+            showInNavigation: boolean;
+            /** @description Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md. */
+            name: {
+                [key: string]: string;
+            };
+            /** @description Only site-configured locales. Secondary absent/empty values use reference fallback. Semantic publication checks are defined in interfaces.md. */
+            slug: {
+                [key: string]: string;
+            };
+        };
+        PresentationGaleristIdentity: {
+            /** @constant */
+            pageKey: "galerist";
+            name: string;
+            canonicalPath: string;
+            alternatePaths: {
+                [key: string]: string;
+            };
+        };
+        PresentationGaleristNavigation: {
+            /** @constant */
+            pageKey: "galerist";
+            name: string;
+            href: string;
+            alternatePaths: {
+                [key: string]: string;
+            };
+        };
+        PresentationPageAddress: {
+            /** @constant */
+            kind: "canonical";
+            /** @constant */
+            pageKey: "galerist";
+            /** Format: uuid */
+            releaseId: string;
+            canonicalPath: string;
+            alternatePaths: {
+                [key: string]: string;
+            };
+            name: string;
+            presentation: components["schemas"]["PresentationPublic"];
+        } | {
+            /** @constant */
+            kind: "redirect";
+            /** @constant */
+            pageKey: "galerist";
+            /** Format: uuid */
+            releaseId: string;
+            canonicalPath: string;
+        };
+        ResolvedPresentationLink: {
+            /** @constant */
+            kind: "page";
+            pageKey: components["schemas"]["PresentationPageKey"];
+            /** Format: uuid */
+            artworkId?: string;
+            href?: string;
+        } | {
+            /** @constant */
+            kind: "external";
+            /** Format: uri */
+            url: string;
+        } | {
+            /** @constant */
+            kind: "email";
+            /** Format: email */
+            value: string;
+        } | {
+            /** @constant */
+            kind: "phone";
+            value: string;
+        };
+        PresentationFormSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "form";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "default";
+            hidden: boolean;
+            props: {
+                /** Format: uuid */
+                formId: string;
+                /** @description Hide the form heading at this placement only; omitted means visible. */
+                hideTitle?: boolean;
+            };
+        };
+        ResolvedPresentationFormSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "form";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "default";
+            props: {
+                /** Format: uuid */
+                formId: string;
+                /** @description Hide the form heading at this placement only; omitted means visible. */
+                hideTitle?: boolean;
+            };
+        };
+        PresentationFormImageSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "formImage";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "default";
+            hidden: boolean;
+            props: {
+                /** Format: uuid */
+                formId: string;
+                imageId?: string | null;
+                alt?: {
+                    [key: string]: string | null;
+                };
+                focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                /** @enum {string} */
+                imageSide: "left" | "right";
+                /** @description Hide the form heading at this placement only; omitted means visible. */
+                hideTitle?: boolean;
+            };
+        };
+        ResolvedPresentationFormImageSection: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "formImage";
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            variant: "default";
+            props: {
+                /** Format: uuid */
+                formId: string;
+                alt?: string;
+                focalPoint?: components["schemas"]["PresentationFocalPoint"];
+                image?: components["schemas"]["PresentationPublicAsset"] | null;
+                /** @enum {string} */
+                imageSide: "left" | "right";
+                /** @description Hide the form heading at this placement only; omitted means visible. */
+                hideTitle?: boolean;
+            };
+        };
+        PresentationFooterText: {
+            [key: string]: string | null;
+        };
+        PresentationFooterDescription: {
+            [key: string]: string | null;
+        };
+        PresentationFooterService: {
+            /** Format: uuid */
+            id: string;
+            enabled: boolean;
+            title: components["schemas"]["PresentationFooterText"];
+            description: components["schemas"]["PresentationFooterDescription"] | null;
+            destination: components["schemas"]["PresentationLink"] | null;
+        };
+        PresentationFooterLink: {
+            /** Format: uuid */
+            id: string;
+            enabled: boolean;
+            label: components["schemas"]["PresentationFooterText"] | null;
+            destination: components["schemas"]["PresentationLink"] | null;
+        };
+        PresentationFooterGroup: {
+            /** Format: uuid */
+            id: string;
+            enabled: boolean;
+            title: components["schemas"]["PresentationFooterText"];
+            links: components["schemas"]["PresentationFooterLink"][];
+        };
+        PresentationFooterSocialLink: {
+            /** Format: uuid */
+            id: string;
+            enabled: boolean;
+            label: components["schemas"]["PresentationFooterText"];
+            destination: {
+                /** @constant */
+                kind: "external";
+                /** Format: uri */
+                url: string;
+            } | null;
+        };
+        PresentationFooterConfiguration: {
+            /** @constant */
+            schemaVersion: 1;
+            services: components["schemas"]["PresentationFooterService"][];
+            groups: components["schemas"]["PresentationFooterGroup"][];
+            socialLinks: components["schemas"]["PresentationFooterSocialLink"][];
+            showLanguageSelector: boolean;
+            showDescription: boolean;
+            address?: {
+                [key: string]: components["schemas"]["PresentationFooterRichText"];
+            } | null;
+        };
+        PresentationFooterRead: {
+            /** @constant */
+            schemaVersion: 1;
+            revision: string;
+            footer: components["schemas"]["PresentationFooterConfiguration"] | null;
+        };
+        PresentationFooterDestination: {
+            /** @constant */
+            kind: "page";
+            /** Format: uri-reference */
+            href: string;
+            pageKey: components["schemas"]["PresentationPageKey"];
+        } | {
+            /** @constant */
+            kind: "external";
+            /** Format: uri-reference */
+            href: string;
+        } | {
+            /** @constant */
+            kind: "email";
+            /** Format: uri-reference */
+            href: string;
+        } | {
+            /** @constant */
+            kind: "phone";
+            /** Format: uri-reference */
+            href: string;
+        };
+        PresentationFooterResolvedLink: {
+            /** Format: uuid */
+            id: string;
+            label: string;
+            destination: components["schemas"]["PresentationFooterDestination"];
+        };
+        PresentationFooterResolvedService: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            description: string | null;
+            destination: components["schemas"]["PresentationFooterDestination"];
+        };
+        PresentationFooterResolvedGroup: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            links: components["schemas"]["PresentationFooterResolvedLink"][];
+        };
+        PresentationFooterResolved: {
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {unknown} */
+            scope: "public" | "preview";
+            locale: string;
+            services: components["schemas"]["PresentationFooterResolvedService"][];
+            groups: components["schemas"]["PresentationFooterResolvedGroup"][];
+            socialLinks: components["schemas"]["PresentationFooterResolvedLink"][];
+            showLanguageSelector: boolean;
+            showDescription: boolean;
+            address?: components["schemas"]["PresentationFooterRichText"] | null;
+        };
+        PresentationFooterCapability: {
+            /** @constant */
+            writable: true;
+            /** @constant */
+            contractVersion: 1;
+            limits: {
+                /** @constant */
+                services: 3;
+                /** @constant */
+                groups: 4;
+                /** @constant */
+                linksPerGroup: 12;
+                /** @constant */
+                socialLinks: 8;
+                /** @constant */
+                documentBytes: 262144;
+            };
+        };
+        PresentationFooterRichText: {
+            /** @constant */
+            type: "doc";
+            content: components["schemas"]["PresentationFooterRichNode"][];
+        };
+        PresentationFooterRichNode: {
+            /** @constant */
+            type: "text";
+            text: string;
+            marks?: components["schemas"]["PresentationFooterRichMark"][];
+        } | {
+            /** @constant */
+            type: "heading";
+            attrs: {
+                /** @enum {unknown} */
+                level: 2 | 3;
+            };
+            content?: components["schemas"]["PresentationFooterRichNode"][];
+        } | {
+            /** @enum {unknown} */
+            type: "paragraph" | "bulletList" | "orderedList" | "listItem" | "blockquote";
+            content?: components["schemas"]["PresentationFooterRichNode"][];
+        } | {
+            /** @constant */
+            type: "hardBreak";
+        };
+        PresentationFooterRichMark: {
+            /** @enum {unknown} */
+            type: "bold" | "italic";
+        } | {
+            /** @constant */
+            type: "link";
+            attrs: {
+                href: string;
+            };
+        };
+        PresentationArtworkDefaults: {
+            year: boolean;
+            provenance: boolean;
+        };
+        PresentationArtworkSettingsRead: {
+            /** @constant */
+            schemaVersion: 1;
+            defaults: components["schemas"]["PresentationArtworkDefaults"];
+            revision: string;
+        };
+        PresentationArtworkSettingsUpdate: {
+            defaults: components["schemas"]["PresentationArtworkDefaults"];
         };
         ContactError: {
             error: {
@@ -3212,6 +5140,11 @@ export interface components {
             /** Format: uuid */
             presentationReleaseId: string | null;
             catalogRevision: number;
+            heroFocus?: null | components["schemas"]["GalleryFocusSelection"];
+            importedDescription?: components["schemas"]["EditorialRichText"] | null;
+            importedDescriptionLocale?: string | null;
+            importedProvenance?: components["schemas"]["EditorialRichText"] | null;
+            importedProvenanceLocale?: string | null;
         };
         GalleryPreviewExperience: {
             /** @constant */
@@ -3224,6 +5157,11 @@ export interface components {
             /** Format: uuid */
             snapshotId: string;
             revision: string;
+            heroFocus?: null | components["schemas"]["GalleryFocusSelection"];
+            importedDescription?: components["schemas"]["EditorialRichText"] | null;
+            importedDescriptionLocale?: string | null;
+            importedProvenance?: components["schemas"]["EditorialRichText"] | null;
+            importedProvenanceLocale?: string | null;
         };
         GalleryEditorialDraft: {
             /** Format: uuid */
@@ -3234,50 +5172,116 @@ export interface components {
                 [key: string]: string | null;
             };
             revision: string;
+            focusContext?: components["schemas"]["GalleryFocusContext"];
+            title?: {
+                [key: string]: string | null;
+            };
+            titleContext?: {
+                sourceTitle: string | null;
+                defaultLocale: string;
+                editableLocales: string[];
+                maxLength: number;
+                /** @constant */
+                lengthUnit: "utf16";
+            };
+            visibility?: components["schemas"]["GalleryVisibilityContext"];
         };
         GalleryEditorialUpdate: {
-            description: {
+            description?: {
                 [key: string]: string | null;
+            };
+            heroFocus?: null | components["schemas"]["GalleryFocusSelection"];
+            title?: {
+                [key: string]: string | null;
+            };
+            visibility?: {
+                /** @enum {string} */
+                year?: "inherit" | "show" | "hide";
+                /** @enum {string} */
+                provenance?: "inherit" | "show" | "hide";
+            };
+        };
+        /**
+         * @description New gallery projection; legacy PublicArtwork remains unchanged. Slug is assigned once, independent of the UUID identity.
+         * @example {
+         *       "id": "11111111-1111-4111-8111-111111111111",
+         *       "title": "Étude 01",
+         *       "artist": "Artiste de démonstration",
+         *       "year": "2026",
+         *       "medium": "Encre sur papier",
+         *       "dimensions": "30 × 40 cm",
+         *       "media": [
+         *         {
+         *           "id": "22222222-2222-4222-8222-222222222222",
+         *           "alt": "Étude abstraite de démonstration",
+         *           "width": 800,
+         *           "height": 600,
+         *           "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+         *         }
+         *       ],
+         *       "slug": "etude-01-11111111111141118111111111111111"
+         *     }
+         */
+        GalleryArtworkPlp: {
+            /** Format: uuid */
+            id: string;
+            title: string | null;
+            artist: string | null;
+            year: string | null;
+            medium: string | null;
+            dimensions: string | null;
+            media: components["schemas"]["PublicMedia"][];
+            slug: string;
+            catalogLarge: boolean;
+        };
+        GalleryCatalogPlp: {
+            items: components["schemas"]["GalleryArtworkPlp"][];
+            query: string;
+            page: number;
+            pageSize: number;
+            totalItems: number;
+            pageCount: number;
+            catalogRevision: number;
+            /** @constant */
+            display: "plp";
+            /** @enum {string} */
+            layout: "grid" | "masonry";
+        };
+        GalleryFocusSelection: {
+            /** Format: uuid */
+            mediaId: string;
+            x: number;
+            y: number;
+        };
+        GalleryFocusContext: {
+            primaryMedia: null | {
+                /** Format: uuid */
+                id: string;
+                width: number;
+                height: number;
+            };
+            selection: components["schemas"]["GalleryFocusSelection"] | null;
+            /** @enum {unknown} */
+            status: "none" | "applicable" | "stale" | "unavailable";
+        } & (unknown & unknown & unknown & unknown);
+        GalleryVisibilityContext: {
+            overrides: {
+                /** @enum {string} */
+                year: "inherit" | "show" | "hide";
+                /** @enum {string} */
+                provenance: "inherit" | "show" | "hide";
+            };
+            defaults: {
+                year: boolean;
+                provenance: boolean;
+            };
+            effective: {
+                year: boolean;
+                provenance: boolean;
             };
         };
         EditorialLocalizedText: {
             [key: string]: string;
-        };
-        EditorialRichMark: {
-            /** @enum {unknown} */
-            type: "bold" | "italic";
-        } | {
-            /** @constant */
-            type: "link";
-            attrs: {
-                href: string;
-            };
-        };
-        EditorialRichNode: {
-            /** @constant */
-            type: "text";
-            text: string;
-            marks?: components["schemas"]["EditorialRichMark"][];
-        } | {
-            /** @constant */
-            type: "heading";
-            attrs: {
-                /** @enum {unknown} */
-                level: 2 | 3;
-            };
-            content?: components["schemas"]["EditorialRichNode"][];
-        } | {
-            /** @enum {unknown} */
-            type: "paragraph" | "bulletList" | "orderedList" | "listItem" | "blockquote";
-            content?: components["schemas"]["EditorialRichNode"][];
-        } | {
-            /** @constant */
-            type: "hardBreak";
-        };
-        EditorialRichText: {
-            /** @constant */
-            type: "doc";
-            content: components["schemas"]["EditorialRichNode"][];
         };
         EditorialLocalizedRichText: {
             [key: string]: components["schemas"]["EditorialRichText"];
@@ -3351,6 +5355,8 @@ export interface components {
             /** @constant */
             type: "text";
             text: components["schemas"]["EditorialLocalizedRichText"];
+            /** @enum {string} */
+            immersiveAnimation?: "text-fade" | "text-rise" | "text-stagger";
         } | {
             /** Format: uuid */
             id: string;
@@ -3359,6 +5365,8 @@ export interface components {
             /** @constant */
             type: "media";
             media: components["schemas"]["EditorialMedia"];
+            /** @enum {string} */
+            immersiveAnimation?: "media-fade" | "media-zoom-out" | "media-reveal";
         } | {
             /** Format: uuid */
             id: string;
@@ -3374,6 +5382,11 @@ export interface components {
             desktopMediaSide: "left" | "right";
             /** @enum {unknown} */
             mobileMediaOrder: "before" | "after";
+            /** @enum {string} */
+            immersiveAnimation?: "split-fade" | "split-cross-reveal" | "split-stagger";
+            secondMedia?: components["schemas"]["EditorialMedia"];
+            /** @enum {string} */
+            mediaLayout?: "columns" | "rows";
         } | ({
             /** Format: uuid */
             id: string;
@@ -3388,7 +5401,9 @@ export interface components {
                 id: string;
                 media: components["schemas"]["EditorialMedia"];
             }[];
-        } & unknown);
+            /** @enum {string} */
+            immersiveAnimation?: "carousel-fade" | "carousel-zoom-out" | "carousel-reveal";
+        } & unknown) | components["schemas"]["EditorialImageGroup"] | components["schemas"]["EditorialFormBlock"] | components["schemas"]["EditorialFormImageBlock"];
         EditorialArticleTranslation: {
             title: string;
             slug: string;
@@ -3417,6 +5432,9 @@ export interface components {
             }[];
             relatedArticleIds: string[];
             blocks: components["schemas"]["EditorialBlock"][];
+            exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
+            /** @enum {string} */
+            readingMode?: "classic" | "immersive";
         };
         EditorialIssue: {
             field: string;
@@ -3449,7 +5467,7 @@ export interface components {
             };
             vimeoCustomControlsAllowed: boolean;
             formats: {
-                blocks: ("text" | "media" | "textMedia" | "carousel")[];
+                blocks: ("text" | "media" | "textMedia" | "carousel" | "imageGroup" | "form" | "formImage")[];
                 mediaSources: ("image" | "video" | "artwork" | "youtube" | "vimeo")[];
                 richNodes: ("doc" | "paragraph" | "text" | "heading" | "bulletList" | "orderedList" | "listItem" | "blockquote" | "hardBreak")[];
                 richMarks: ("bold" | "italic" | "link")[];
@@ -3457,6 +5475,33 @@ export interface components {
             players: ("native" | "youtube" | "vimeo")[];
             vocabularies: components["schemas"]["EditorialVocabulary"][];
             timeZone: string;
+            /** Format: uri */
+            siteOrigin: string;
+            exhibitionsWritable?: boolean;
+            immersive?: {
+                writable: boolean;
+                /** @constant */
+                contractVersion: 1;
+                animationsByBlock: {
+                    text: ("text-fade" | "text-rise" | "text-stagger")[];
+                    media: ("media-fade" | "media-zoom-out" | "media-reveal")[];
+                    textMedia: ("split-fade" | "split-cross-reveal" | "split-stagger")[];
+                    carousel: ("carousel-fade" | "carousel-zoom-out" | "carousel-reveal")[];
+                    form?: ("form-fade" | "form-rise" | "form-reveal")[];
+                    formImage?: ("form-fade" | "form-rise" | "form-reveal")[];
+                };
+            };
+            imageGroups?: {
+                writable: boolean;
+                formats: ("diptych" | "triptych")[];
+                sourceKinds: "image"[];
+                animations: ("group-fade" | "group-reveal" | "group-zoom-out")[];
+                /** @constant */
+                maxItems: 3;
+            };
+            forms?: {
+                writable: boolean;
+            };
         };
         EditorialCommandResult: {
             /** Format: uuid */
@@ -3492,7 +5537,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            kind: "publication" | "news";
+            kind: "publication" | "news" | "exhibition";
             revision: string;
             /** @enum {string} */
             lifecycle: "editable" | "archived" | "trashed";
@@ -3510,12 +5555,15 @@ export interface components {
                     issuesCount: number;
                 };
             };
+            trashedAt: string | null;
+            purgeAfter: string | null;
+            exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
         };
         EditorialArticleAdmin: {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            kind: "publication" | "news";
+            kind: "publication" | "news" | "exhibition";
             revision: string;
             /** @enum {string} */
             lifecycle: "editable" | "archived" | "trashed";
@@ -3535,6 +5583,10 @@ export interface components {
             };
             document: components["schemas"]["EditorialArticleDocument"];
             diagnostics: components["schemas"]["EditorialIssue"][];
+            scheduleHistory: components["schemas"]["EditorialScheduleSummary"][];
+            trashedAt: string | null;
+            purgeAfter: string | null;
+            exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
         };
         EditorialAdminPage: {
             items: components["schemas"]["EditorialArticleSummary"][];
@@ -3580,7 +5632,7 @@ export interface components {
             kind: "custom";
             labels: components["schemas"]["EditorialLocalizedText"];
             hierarchical: boolean;
-            allowedArticleKinds: ("publication" | "news")[];
+            allowedArticleKinds: ("publication" | "news" | "exhibition")[];
             position: number;
             inlineCreationLocked: boolean;
             publicFilter: boolean;
@@ -3589,7 +5641,7 @@ export interface components {
         EditorialVocabularyPatch: {
             labels?: components["schemas"]["EditorialLocalizedText"];
             hierarchical?: boolean;
-            allowedArticleKinds?: ("publication" | "news")[];
+            allowedArticleKinds?: ("publication" | "news" | "exhibition")[];
             position?: number;
             inlineCreationLocked?: boolean;
             publicFilter?: boolean;
@@ -3601,7 +5653,7 @@ export interface components {
             kind: "category" | "tag" | "author" | "custom";
             labels: components["schemas"]["EditorialLocalizedText"];
             hierarchical: boolean;
-            allowedArticleKinds: ("publication" | "news")[];
+            allowedArticleKinds: ("publication" | "news" | "exhibition")[];
             position: number;
             inlineCreationLocked: boolean;
             publicFilter: boolean;
@@ -3657,9 +5709,10 @@ export interface components {
             revision: string;
             /** Format: date-time */
             updatedAt: string;
+            diagnostics: components["schemas"]["EditorialIssue"][];
         };
         EditorialTemplatePage: {
-            items: components["schemas"]["EditorialTemplate"][];
+            items: components["schemas"]["EditorialTemplateSummary"][];
             total: number;
             page: number;
         };
@@ -3685,6 +5738,8 @@ export interface components {
                 /** Format: uuid */
                 assetId: string;
                 srcPath: string;
+                width?: number | null;
+                height?: number | null;
             } | {
                 /** @constant */
                 kind: "artwork";
@@ -3694,6 +5749,8 @@ export interface components {
                 mediaId: string;
                 srcPath: string;
                 href: string;
+                width?: number | null;
+                height?: number | null;
             } | {
                 /** @constant */
                 kind: "youtube";
@@ -3732,6 +5789,8 @@ export interface components {
             /** @constant */
             type: "text";
             text: components["schemas"]["EditorialRichText"];
+            /** @enum {string} */
+            immersiveAnimation?: "text-fade" | "text-rise" | "text-stagger";
         } | {
             /** Format: uuid */
             id: string;
@@ -3739,6 +5798,8 @@ export interface components {
             /** @constant */
             type: "media";
             media: components["schemas"]["EditorialPublicMedia"];
+            /** @enum {string} */
+            immersiveAnimation?: "media-fade" | "media-zoom-out" | "media-reveal";
         } | {
             /** Format: uuid */
             id: string;
@@ -3753,6 +5814,11 @@ export interface components {
             desktopMediaSide: "left" | "right";
             /** @enum {string} */
             mobileMediaOrder: "before" | "after";
+            /** @enum {string} */
+            immersiveAnimation?: "split-fade" | "split-cross-reveal" | "split-stagger";
+            secondMedia?: components["schemas"]["EditorialPublicMedia"];
+            /** @enum {string} */
+            mediaLayout?: "columns" | "rows";
         } | {
             /** Format: uuid */
             id: string;
@@ -3766,12 +5832,35 @@ export interface components {
                 id: string;
                 media: components["schemas"]["EditorialPublicMedia"];
             }[];
-        };
-        EditorialAuthorCard: {
+            /** @enum {string} */
+            immersiveAnimation?: "carousel-fade" | "carousel-zoom-out" | "carousel-reveal";
+        } | components["schemas"]["EditorialPublicImageGroup"] | {
             /** Format: uuid */
             id: string;
-            name: string;
-            hasProfile: boolean;
+            variant: string;
+            /** @constant */
+            type: "form";
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            immersiveAnimation?: "form-fade" | "form-rise" | "form-reveal";
+            /** @description Hide the form heading at this placement only; omitted means visible. */
+            hideTitle?: boolean;
+        } | {
+            /** Format: uuid */
+            id: string;
+            variant: string;
+            /** @constant */
+            type: "formImage";
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            immersiveAnimation?: "form-fade" | "form-rise" | "form-reveal";
+            image: components["schemas"]["EditorialPublicMedia"];
+            /** @enum {string} */
+            imageSide: "left" | "right";
+            /** @description Hide the form heading at this placement only; omitted means visible. */
+            hideTitle?: boolean;
         };
         EditorialPublicAuthor: {
             /** Format: uuid */
@@ -3789,22 +5878,6 @@ export interface components {
             vocabularyId: string;
             label: string;
         };
-        EditorialArticleCard: {
-            /** Format: uuid */
-            id: string;
-            /** @enum {string} */
-            kind: "publication" | "news";
-            canonicalPath: string;
-            title: string;
-            summary: string | null;
-            /** Format: date */
-            editorialDate: string;
-            cover: {
-                srcPath: string;
-                alt: string;
-            } | null;
-            authors: components["schemas"]["EditorialAuthorCard"][];
-        };
         EditorialArticleCardPage: {
             items: components["schemas"]["EditorialArticleCard"][];
             total: number;
@@ -3816,7 +5889,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            kind: "publication" | "news";
+            kind: "publication" | "news" | "exhibition";
             canonicalPath: string;
             title: string;
             summary: string | null;
@@ -3835,7 +5908,15 @@ export interface components {
             relatedArticles: components["schemas"]["EditorialArticleCard"][];
             publicRevision: string;
             commonRevision: string;
-        };
+            exhibitionPeriod?: {
+                /** Format: date */
+                startsOn: string;
+                /** Format: date */
+                endsOn: string;
+            };
+            /** @enum {string} */
+            readingMode?: "classic" | "immersive";
+        } & unknown;
         EditorialArticleResolution: components["schemas"]["EditorialPublicArticle"] | {
             /** @constant */
             resolution: "redirect";
@@ -3852,7 +5933,7 @@ export interface components {
                 /** Format: uuid */
                 articleId: string;
                 /** @enum {string} */
-                kind: "publication" | "news";
+                kind: "publication" | "news" | "exhibition";
                 title: string;
                 /** Format: uuid */
                 versionId: string;
@@ -3897,6 +5978,1401 @@ export interface components {
             /** Format: uuid */
             clientMutationId: string;
             changed: boolean;
+        };
+        EditorialTermCommandResult: {
+            /** Format: uuid */
+            commandId: string;
+            /** Format: uuid */
+            vocabularyId: string;
+            /** Format: uuid */
+            termId: string;
+            revision: string;
+            changed: boolean;
+        };
+        EditorialPreviewArticle: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "publication" | "news" | "exhibition";
+            canonicalPath: string;
+            title: string;
+            summary: string | null;
+            editorialDate: string | null;
+            cover: {
+                srcPath: string;
+                alt: string;
+            } | null;
+            authors: components["schemas"]["EditorialPublicAuthor"][];
+            terms: components["schemas"]["EditorialPublicTerm"][];
+            alternatePaths: {
+                [key: string]: string;
+            };
+            blocks: components["schemas"]["EditorialPublicBlock"][];
+            relatedArticles: components["schemas"]["EditorialArticleCard"][];
+            publicRevision: string;
+            commonRevision: string;
+            diagnostics: components["schemas"]["EditorialIssue"][];
+            exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
+            /** @enum {string} */
+            readingMode?: "classic" | "immersive";
+        } & unknown;
+        EditorialTemplateSummary: {
+            name: string;
+            /** @constant */
+            schemaVersion: 1;
+            /** Format: uuid */
+            id: string;
+            revision: string;
+            /** Format: date-time */
+            updatedAt: string;
+            blockCount: number;
+        };
+        EditorialExhibitionCalendarDateOrNull: null | string;
+        EditorialExhibitionPeriod: {
+            startsOn: components["schemas"]["EditorialExhibitionCalendarDateOrNull"];
+            endsOn: components["schemas"]["EditorialExhibitionCalendarDateOrNull"];
+        };
+        EditorialImageMedia: {
+            /** Format: uuid */
+            id: string;
+            source: {
+                /** @constant */
+                kind: "image";
+                /** Format: uuid */
+                assetId: string;
+            };
+            alt: components["schemas"]["EditorialLocalizedText"];
+            subtext: components["schemas"]["EditorialLocalizedRichText"] | null;
+            /** @constant */
+            showArtworkInfo: false;
+            render: {
+                desktop: components["schemas"]["EditorialRender"];
+                mobile: components["schemas"]["EditorialRender"];
+            };
+            cta: null | {
+                /** @constant */
+                kind: "link";
+                label: components["schemas"]["EditorialLocalizedText"];
+                href: string;
+            };
+        };
+        EditorialImageGroupItem: {
+            /** Format: uuid */
+            id: string;
+            media: components["schemas"]["EditorialImageMedia"];
+        };
+        EditorialImageGroup: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "imageGroup";
+            visible: boolean;
+            variant: string;
+            /** @enum {string} */
+            format: "diptych" | "triptych";
+            items: components["schemas"]["EditorialImageGroupItem"][];
+            /** @enum {string} */
+            immersiveAnimation?: "group-fade" | "group-reveal" | "group-zoom-out";
+        } & unknown;
+        EditorialPublicImageMedia: {
+            /** Format: uuid */
+            id: string;
+            source: {
+                /** @constant */
+                kind: "image";
+                /** Format: uuid */
+                assetId: string;
+                srcPath: string;
+                width?: number | null;
+                height?: number | null;
+            };
+            alt: string;
+            subtext: components["schemas"]["EditorialRichText"] | null;
+            artworkInfo: {
+                field: string;
+                label: string;
+                value: string;
+            }[];
+            render: {
+                desktop: components["schemas"]["EditorialRender"];
+                mobile: components["schemas"]["EditorialRender"];
+            };
+            cta: {
+                label: string;
+                href: string;
+            } | null;
+            video: null;
+        } & unknown;
+        EditorialPublicImageGroup: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "imageGroup";
+            variant: string;
+            /** @enum {string} */
+            format: "diptych" | "triptych";
+            items: {
+                /** Format: uuid */
+                id: string;
+                media: components["schemas"]["EditorialPublicImageMedia"];
+            }[];
+            /** @enum {string} */
+            immersiveAnimation?: "group-fade" | "group-reveal" | "group-zoom-out";
+        } & unknown;
+        EditorialFormBlock: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "form";
+            visible: boolean;
+            /** @enum {string} */
+            variant: "default";
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            immersiveAnimation?: "form-fade" | "form-rise" | "form-reveal";
+            /** @description Hide the form heading at this placement only; omitted means visible. */
+            hideTitle?: boolean;
+        };
+        EditorialFormImageBlock: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "formImage";
+            visible: boolean;
+            /** @enum {string} */
+            variant: "default";
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            immersiveAnimation?: "form-fade" | "form-rise" | "form-reveal";
+            image: components["schemas"]["EditorialImageMedia"];
+            /** @enum {string} */
+            imageSide: "left" | "right";
+            /** @description Hide the form heading at this placement only; omitted means visible. */
+            hideTitle?: boolean;
+        };
+        CrmInstanceBinding: {
+            /** Format: uuid */
+            siteId: string;
+            name: string;
+            /** Format: uri */
+            siteOrigin: string;
+            /** Format: uri */
+            adminOrigin: string;
+            /** @enum {string} */
+            dataMode: "real" | "mock";
+            company: {
+                id: string;
+                name: string;
+            };
+            /** @enum {string} */
+            state: "unbound" | "confirmed_closed" | "verifying" | "active" | "suspended";
+            version: number;
+            /** Format: uuid */
+            verificationSubject: string | null;
+            /** Format: date-time */
+            verificationExpiresAt: string | null;
+            canActivate: boolean;
+            clients: {
+                /** Format: uuid */
+                subject: string;
+                label: string;
+            }[];
+        };
+        /**
+         * @example {
+         *       "artworkId": "11111111-1111-4111-8111-111111111111",
+         *       "large": false,
+         *       "version": "0",
+         *       "updatedAt": null
+         *     }
+         */
+        PlpArtworkCatalogDisplay: {
+            /** Format: uuid */
+            artworkId: string;
+            large: boolean;
+            version: string;
+            /** Format: date-time */
+            updatedAt: string | null;
+        };
+        /**
+         * @example {
+         *       "error": {
+         *         "code": "not_found",
+         *         "message": "Ressource introuvable.",
+         *         "requestId": "33333333-3333-4333-8333-333333333333"
+         *       }
+         *     }
+         */
+        PlpError: {
+            error: {
+                code: string;
+                message: string;
+                /** Format: uuid */
+                requestId: string;
+                details?: {
+                    field: string;
+                    reason: string;
+                }[];
+            };
+        };
+        /**
+         * @example {
+         *       "enabled": false,
+         *       "version": "0",
+         *       "updatedAt": null
+         *     }
+         */
+        PlpArtworkCatalogMode: {
+            version: string;
+            /** Format: date-time */
+            updatedAt: string | null;
+            enabled: boolean;
+        };
+        CompositionBrief: {
+            locale: string;
+            instruction: string;
+            /** @enum {unknown} */
+            textMode: "preserve" | "restructure" | "rewrite";
+            textSources: components["schemas"]["CompositionTextSource"][];
+            mediaSources: components["schemas"]["CompositionMediaSource"][];
+            disclosureVersion: string;
+            /** @constant */
+            acknowledgedExternalProcessing: true;
+            /** @description Explicit image cover, sent for alternatives only and excluded from layout sections. Optional for legacy requests and selected-block refinement. */
+            cover?: components["schemas"]["CompositionMediaSource"];
+        };
+        SubmitComposition: {
+            /** Format: uuid */
+            baseProposalId: string | null;
+            scope: {
+                /** @enum {unknown} */
+                kind: "global" | "blocks";
+                blockIds: string[];
+            };
+            brief: components["schemas"]["CompositionBrief"];
+        };
+        CompositionRequest: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            articleId: string;
+            revision: number;
+            /** @enum {unknown} */
+            status: "queued" | "running" | "ready" | "failed" | "uncertain" | "abandoned";
+            /** @enum {unknown} */
+            phase: "queued" | "preparing" | "submitted" | "validating" | "terminal";
+            /** Format: uuid */
+            proposalId: string | null;
+            failureCode: string | null;
+            /** @enum {unknown} */
+            costStatus: "reserved" | "confirmed" | "unknown" | "released";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            deadlineAt: string;
+            brief: components["schemas"]["CompositionBrief"] | null;
+            /** @enum {unknown} */
+            sourcesAvailability: "available" | "purged";
+            /** Format: uuid */
+            baseProposalId: string | null;
+            scope: {
+                /** @enum {unknown} */
+                kind: "global" | "blocks";
+                blockIds: string[];
+            };
+            progress?: components["schemas"]["CompositionProgress"];
+        } & unknown;
+        CompositionProposal: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            articleId: string;
+            /** Format: uuid */
+            requestId: string;
+            /** Format: uuid */
+            parentProposalId: string | null;
+            baseArticleRevision: string;
+            contentHash: string;
+            document: {
+                /** @constant */
+                schemaVersion: 1;
+                editorialDate: string | null;
+                translations: {
+                    [key: string]: components["schemas"]["EditorialArticleTranslation"];
+                };
+                cover: {
+                    /** Format: uuid */
+                    assetId: string;
+                    alt: components["schemas"]["EditorialLocalizedText"];
+                } | null;
+                authorIds: string[];
+                categoryIds: string[];
+                primaryCategoryId: string | null;
+                tagIds: string[];
+                taxonomyAssignments: {
+                    /** Format: uuid */
+                    vocabularyId: string;
+                    termIds: string[];
+                }[];
+                relatedArticleIds: string[];
+                blocks: components["schemas"]["EditorialBlock"][];
+                exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
+                /** @enum {string} */
+                readingMode?: "classic" | "immersive";
+            };
+            issues: {
+                path: string;
+                code: string;
+                /** @enum {unknown} */
+                severity: "error" | "warning" | "publication";
+                message: string;
+            }[];
+            changedTextPaths: string[];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ApplyComposition: {
+            /** @constant */
+            confirmReplacement: true;
+            /** Format: uuid */
+            clientMutationId: string;
+            /** Format: uuid */
+            candidateId: string;
+            candidateHash: string;
+        };
+        CompositionCapabilities: {
+            enabled: boolean;
+            canSubmit: boolean;
+            providerLabel: string;
+            /** @enum {string} */
+            mediaAnalysis: "metadata-only" | "selected-images";
+            disclosureVersion: string;
+            limits: {
+                maxTextCharacters: number;
+                maxMediaSources: number;
+                maxInstructionCharacters: number;
+                maxConcurrentPerSite: number;
+                maxConcurrentPerArticle: number;
+                maxTextSources: number;
+                maxBodyBytes: number;
+                maxContextBytes: number;
+            };
+            textModes: ("preserve" | "restructure" | "rewrite")[];
+        };
+        CompositionProposalPage: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                requestId: string;
+                /** Format: date-time */
+                createdAt: string;
+                contentHash: string;
+            }[];
+            nextCursor: string | null;
+        };
+        CompositionError: {
+            error: {
+                code: string;
+                message: string;
+                requestId: string;
+                details?: {
+                    field: string;
+                    reason: string;
+                }[];
+            };
+        };
+        CompositionTextSource: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            origin: "input";
+            text: string;
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            origin: "base";
+            occurrence: {
+                /** Format: uuid */
+                blockId: string;
+                /** Format: uuid */
+                slideId: string | null;
+                /** @enum {unknown} */
+                field: "text" | "subtext";
+                locale: string;
+                contentHash: string;
+            };
+        };
+        CompositionMediaSource: {
+            source: {
+                /** @enum {unknown} */
+                kind: "image" | "video";
+                /** Format: uuid */
+                assetId: string;
+            } | {
+                /** @constant */
+                kind: "artwork";
+                /** Format: uuid */
+                artworkId: string;
+                /** Format: uuid */
+                mediaId: string;
+            } | {
+                /** @constant */
+                kind: "youtube";
+                videoId: string;
+            } | {
+                /** @constant */
+                kind: "vimeo";
+                videoId: string;
+                privacyHash?: string | null;
+            };
+            description: string;
+            selectedArtworkInfoFields: ("title" | "artist" | "year" | "medium" | "dimensions")[];
+            occurrence?: {
+                /** Format: uuid */
+                blockId: string;
+                /** Format: uuid */
+                itemId: string | null;
+                /** Format: uuid */
+                mediaId: string;
+                contentHash: string;
+            };
+        };
+        CompositionRequestSummary: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            articleId: string;
+            revision: number;
+            /** @enum {unknown} */
+            status: "queued" | "running" | "ready" | "failed" | "uncertain" | "abandoned";
+            /** @enum {unknown} */
+            phase: "queued" | "preparing" | "submitted" | "validating" | "terminal";
+            /** Format: uuid */
+            proposalId: string | null;
+            failureCode: string | null;
+            /** @enum {unknown} */
+            costStatus: "reserved" | "confirmed" | "unknown" | "released";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            deadlineAt: string;
+            progress?: components["schemas"]["CompositionProgress"];
+        };
+        CompositionRequestPage: {
+            items: components["schemas"]["CompositionRequestSummary"][];
+            nextCursor: string | null;
+        };
+        CompositionCandidate: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            articleId: string;
+            /** Format: uuid */
+            proposalId: string;
+            articleEtag: string;
+            baseContentHash: string;
+            contentHash: string;
+            document: {
+                /** @constant */
+                schemaVersion: 1;
+                editorialDate: string | null;
+                translations: {
+                    [key: string]: components["schemas"]["EditorialArticleTranslation"];
+                };
+                cover: {
+                    /** Format: uuid */
+                    assetId: string;
+                    alt: components["schemas"]["EditorialLocalizedText"];
+                } | null;
+                authorIds: string[];
+                categoryIds: string[];
+                primaryCategoryId: string | null;
+                tagIds: string[];
+                taxonomyAssignments: {
+                    /** Format: uuid */
+                    vocabularyId: string;
+                    termIds: string[];
+                }[];
+                relatedArticleIds: string[];
+                blocks: components["schemas"]["EditorialBlock"][];
+                exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
+                /** @enum {string} */
+                readingMode?: "classic" | "immersive";
+            };
+            protectedChangedPaths: string[];
+            /** Format: date-time */
+            expiresAt: string;
+            publicationIssues?: {
+                path: string;
+                code: string;
+                /** @enum {unknown} */
+                severity: "error" | "warning" | "publication";
+                message: string;
+            }[];
+        };
+        CompositionProgress: {
+            /** @enum {string} */
+            readonly stage: "preparing" | "generating" | "receiving" | "validating";
+            /** Format: date-time */
+            readonly updatedAt: string;
+        };
+        NavigationEntry: {
+            /** @enum {string} */
+            pageKey: "galerist" | "news" | "artworks" | "exhibitions" | "publications" | "expertise" | "contact";
+            visible: boolean;
+        };
+        NavigationEntries: components["schemas"]["NavigationEntry"][] & (unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[]);
+        NavigationConfiguration: {
+            /** @constant */
+            schemaVersion: 1;
+            revision: string;
+            items: components["schemas"]["NavigationEntries"];
+        };
+        NavigationWrite: {
+            /** @constant */
+            schemaVersion: 1;
+            items: components["schemas"]["NavigationEntries"];
+        };
+        NavigationSnapshot: {
+            /** @constant */
+            schemaVersion: 1;
+            sourceRevision: string;
+            items: components["schemas"]["NavigationEntries"];
+        };
+        NavigationPublicLink: {
+            /** @constant */
+            pageKey: "news";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "artworks";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "exhibitions";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "publications";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "expertise";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "contact";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "galerist";
+            href: string;
+            name: string;
+        };
+        NavigationPreviewLink: {
+            /** @constant */
+            pageKey: "galerist";
+            href: string;
+            name: string;
+        } | {
+            /** @constant */
+            pageKey: "news";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "artworks";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "exhibitions";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "publications";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "expertise";
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "contact";
+            href: string;
+        };
+        NavigationPublicProjection: {
+            /** @constant */
+            schemaVersion: 1;
+            /** @constant */
+            scope: "public";
+            revision: string;
+            /** Format: uuid */
+            releaseId: string;
+            locale: string;
+            items: components["schemas"]["NavigationPublicLink"][] & (unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[]);
+        };
+        NavigationPreviewProjection: {
+            /** @constant */
+            schemaVersion: 1;
+            /** @constant */
+            scope: "preview";
+            sourceRevision: string | null;
+            /** Format: uuid */
+            snapshotId: string;
+            locale: string;
+            items: components["schemas"]["NavigationPreviewLink"][] & (unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[]);
+        };
+        NavigationAdminPage: {
+            /** @enum {string} */
+            pageKey: "news" | "artworks" | "exhibitions" | "publications" | "expertise" | "contact";
+            /** @constant */
+            publicAvailable: true;
+            name: string;
+        } | {
+            /** @constant */
+            pageKey: "galerist";
+            /** @constant */
+            publicAvailable: true;
+            name: string;
+            href: string;
+        } | {
+            /** @constant */
+            pageKey: "galerist";
+            /** @constant */
+            publicAvailable: false;
+            name?: string;
+        };
+        NavigationAdminContext: {
+            /** @constant */
+            schemaVersion: 1;
+            editingEnabled: boolean;
+            /** Format: uuid */
+            releaseId: string;
+            locale: string;
+            pages: components["schemas"]["NavigationAdminPage"][] & (unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[] & unknown[]);
+        };
+        NavigationErrorResponse: {
+            error: {
+                /** @enum {string} */
+                code: "invalid_request" | "validation_error" | "unauthorized" | "forbidden" | "csrf_invalid" | "precondition_required" | "version_conflict" | "navigation_editing_disabled" | "navigation_managed_separately" | "presentation_release_changed" | "preview_unauthorized" | "not_found" | "rate_limited" | "payload_too_large" | "unsupported_media_type" | "service_unavailable";
+                message: string;
+                /** Format: uuid */
+                requestId: string;
+                details?: {
+                    field: string;
+                    /** @enum {string} */
+                    reason: "unknown_page" | "duplicate_page" | "missing_page" | "invalid_value" | "unexpected_property";
+                }[];
+            };
+        };
+        FormsIssue: {
+            path: string;
+            code: string;
+            locale?: string;
+            /** Format: uuid */
+            fieldId?: string;
+            /** Format: uuid */
+            objectId?: string;
+        };
+        FormsError: {
+            error: {
+                code: string;
+                message: string;
+                requestId: string;
+                issues?: components["schemas"]["FormsIssue"][];
+                retryAfterSeconds?: number;
+            };
+        };
+        FormsCondition: {
+            /** Format: uuid */
+            fieldId: string;
+            /** @enum {string} */
+            operator: "equals" | "includes" | "checked";
+            value?: string | boolean;
+        };
+        FormsConstraints: {
+            minLength?: number;
+            maxLength?: number;
+            min?: number;
+            max?: number;
+            /** Format: date */
+            minDate?: string;
+            /** Format: date */
+            maxDate?: string;
+            minChoices?: number;
+            maxChoices?: number;
+            minFiles?: number;
+            maxFiles?: number;
+        };
+        FormsField: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            type: "shortText" | "longText" | "email" | "phone" | "number" | "date" | "select" | "singleChoice" | "multiChoice" | "checkbox" | "images" | "heading" | "help";
+            /** Format: uuid */
+            stepId: string;
+            rowId: string;
+            column: number;
+            required: boolean;
+            translations: {
+                [key: string]: {
+                    label: string;
+                    help?: string;
+                    placeholder?: string;
+                };
+            };
+            options?: {
+                id: string;
+                translations: {
+                    [key: string]: string;
+                };
+            }[];
+            constraints: components["schemas"]["FormsConstraints"];
+            condition?: components["schemas"]["FormsCondition"];
+        };
+        FormsDocument: {
+            /** @description Masque le titre dans tous les emplacements de cette version publiée. Absent : titre affiché. Un emplacement peut également masquer le titre. */
+            hideTitle?: boolean;
+            /** @constant */
+            schemaVersion: 1;
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            translations: {
+                [key: string]: {
+                    title: string;
+                    intro?: string;
+                    submitLabel: string;
+                    successMessage: string;
+                    closedMessage: string;
+                };
+            };
+            steps: {
+                /** Format: uuid */
+                id: string;
+                translations: {
+                    [key: string]: string;
+                };
+            }[];
+            fields: components["schemas"]["FormsField"][];
+            /** Format: uuid */
+            contactEmailFieldId?: string;
+        };
+        FormsLimits: {
+            maxObjects: number;
+            maxImages: number;
+            maxSourceBytes: number;
+            maxTotalSourceBytes: number;
+            imageMaxEdge: number;
+            sessionTtlSeconds: number;
+        };
+        FormsNotificationSettings: {
+            enabled: boolean;
+            visitorConfirmationEnabled: boolean;
+            recipientSubjects: string[];
+            revision?: string;
+            recipients?: {
+                subject: string;
+                displayName: string;
+                /** Format: email */
+                confirmedEmail: string;
+            }[];
+        };
+        FormsAdmin: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            /** @enum {string} */
+            state: "draft" | "published" | "archived";
+            revision: string;
+            draft: components["schemas"]["FormsDocument"];
+            publishedVersionId: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            createdAt: string;
+            usageCount?: number;
+        };
+        FormsVersion: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            formId: string;
+            number: number;
+            name: string | null;
+            document: components["schemas"]["FormsDocument"];
+            /** Format: date-time */
+            createdAt: string;
+            createdBy: string;
+            publishedAt: string | null;
+        };
+        FormsUsage: {
+            /** @enum {string} */
+            ownerType: "page" | "article";
+            ownerId: string;
+            revisionId: string;
+            blockId: string;
+            /** @enum {string} */
+            state: "draft" | "published" | "restorable";
+            adminHref: string;
+        };
+        FormsPublic: {
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            /** @enum {string} */
+            availability: "open" | "closed" | "unavailable";
+            /** Format: uuid */
+            versionId?: string;
+            document?: components["schemas"]["FormsDocument"];
+            closedMessage?: string;
+            limits: components["schemas"]["FormsLimits"];
+        };
+        FormsPlacement: {
+            /** @enum {string} */
+            ownerType: "page" | "article" | "artwork";
+            ownerId: string;
+            /** Format: uuid */
+            blockId?: string;
+            /**
+             * Format: uuid
+             * @description Optional published artwork context, accepted only for the Contact page after cutover.
+             */
+            artworkId?: string;
+        };
+        FormsSessionInput: {
+            locale: string;
+            placement: components["schemas"]["FormsPlacement"];
+        };
+        FormsSessionCreated: {
+            /** Format: uuid */
+            sessionId: string;
+            capability: string;
+            /** Format: uuid */
+            versionId: string;
+            document: components["schemas"]["FormsDocument"];
+            /** Format: date-time */
+            expiresAt: string;
+            limits: components["schemas"]["FormsLimits"];
+        };
+        FormsUploadAuthorization: {
+            url: string;
+            /** @enum {string} */
+            method: "PUT";
+            headers: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        FormsUpload: {
+            /** Format: uuid */
+            uploadId: string;
+            /** Format: uuid */
+            clientFileId: string;
+            attempt: number;
+            /** @enum {string} */
+            state: "authorizing" | "reserved" | "uploaded" | "preparing" | "ready" | "attached" | "failed" | "removed";
+            upload?: components["schemas"]["FormsUploadAuthorization"];
+            errorCode?: string;
+            width?: number;
+            height?: number;
+            byteSize?: number;
+        };
+        FormsUploadInput: {
+            /** Format: uuid */
+            clientFileId: string;
+            attempt: number;
+            byteSize: number;
+            /** @enum {string} */
+            mimeType: "image/jpeg" | "image/png" | "image/webp" | "image/heic" | "image/heif";
+        };
+        FormsSession: {
+            /** Format: uuid */
+            sessionId: string;
+            /** Format: uuid */
+            versionId: string;
+            /** @enum {string} */
+            state: "open" | "submitted" | "expired";
+            /** Format: date-time */
+            expiresAt: string;
+            uploads: components["schemas"]["FormsUpload"][];
+        };
+        FormsExpertiseObjectInput: {
+            /** Format: uuid */
+            id: string;
+            position: number;
+            designation: string;
+            description?: string;
+            artistOrCulture?: string;
+            period?: string;
+            materials?: string;
+            dimensions?: string;
+            provenance?: string;
+            uploadIds: string[];
+            /** Format: uuid */
+            primaryUploadId: string;
+        };
+        FormsSubmissionInput: {
+            locale: string;
+            /** Format: uuid */
+            versionId: string;
+            answers: {
+                [key: string]: string | number | boolean | string[];
+            };
+            objects?: components["schemas"]["FormsExpertiseObjectInput"][];
+            unassignedExcludedConfirmed: boolean;
+        };
+        FormsReceipt: {
+            reference: string;
+            /** Format: date-time */
+            acceptedAt: string;
+        };
+        FormsReceiptRecoveryInput: {
+            /** Format: uuid */
+            sessionId: string;
+            submissionProof: string;
+        };
+        FormsAccess: {
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        FormsValidation: {
+            publishable: boolean;
+            issues: components["schemas"]["FormsIssue"][];
+        };
+        FormsCandidate: {
+            subject: string;
+            /** @enum {string} */
+            accountType: "crm_internal" | "company_client";
+            displayName: string;
+            /** Format: email */
+            email?: string;
+            eligible: boolean;
+            reason?: string;
+            authorized: boolean;
+        };
+        FormsSubmissionSummary: {
+            /** Format: uuid */
+            id: string;
+            reference: string;
+            /** Format: uuid */
+            formId: string;
+            formTitle: string;
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            /** Format: date-time */
+            createdAt: string;
+            locale: string;
+            readAt: string | null;
+            readBy: string | null;
+            /** @enum {string} */
+            treatment: "new" | "in_progress" | "waiting" | "completed" | "archived";
+            assigneeSubject: string | null;
+            /** @enum {string} */
+            originType: "page" | "article" | "artwork";
+            revision: string;
+            etag: string;
+        };
+        FormsAttachment: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            objectId?: string;
+            /** Format: uuid */
+            fieldId?: string;
+            position: number;
+            /** @enum {string} */
+            mimeType: "image/jpeg" | "image/webp";
+            width: number;
+            height: number;
+            byteSize: number;
+            primary: boolean;
+        };
+        FormsNote: {
+            /** Format: uuid */
+            id: string;
+            author: string;
+            /** Format: date-time */
+            createdAt: string;
+            text: string;
+        };
+        FormsFilters: {
+            q?: string;
+            /** Format: uuid */
+            formId?: string;
+            /** @enum {string} */
+            originType?: "page" | "article" | "artwork";
+            /** Format: date-time */
+            from?: string;
+            /** Format: date-time */
+            to?: string;
+            read?: boolean;
+            /** @enum {string} */
+            treatment?: "new" | "in_progress" | "waiting" | "completed" | "archived";
+            assignee?: string;
+        };
+        FormsSubmissionDetail: {
+            /** Format: uuid */
+            id: string;
+            reference: string;
+            /** Format: uuid */
+            formId: string;
+            formTitle: string;
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            /** Format: date-time */
+            createdAt: string;
+            locale: string;
+            readAt: string | null;
+            readBy: string | null;
+            /** @enum {string} */
+            treatment: "new" | "in_progress" | "waiting" | "completed" | "archived";
+            assigneeSubject: string | null;
+            /** @enum {string} */
+            originType: "page" | "article" | "artwork";
+            revision: string;
+            definition: components["schemas"]["FormsDocument"];
+            answers: {
+                [key: string]: string | number | boolean | string[];
+            };
+            objects?: components["schemas"]["FormsExpertiseObjectInput"][];
+            attachments: components["schemas"]["FormsAttachment"][];
+            notes: components["schemas"]["FormsNote"][];
+            context: {
+                title: string;
+                url: string;
+                /** Format: uuid */
+                artworkId?: string;
+            };
+            etag: string;
+            notesNextCursor: string | null;
+        };
+        FormsView: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            filters: components["schemas"]["FormsFilters"];
+            revision: string;
+            etag: string;
+        };
+        FormsNotification: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            channel: "resend" | "legacy_smtp" | "visitor_confirmation";
+            /** @enum {string} */
+            state: "pending" | "sending" | "accepted" | "delivered" | "retry_wait" | "failed" | "uncertain" | "recipient_blocked" | "bounced";
+            recipientSubject: string | null;
+            partNumber: number;
+            partCount: number;
+            attempts: number;
+            providerId: string | null;
+            lastErrorCode: string | null;
+            revision: string;
+            etag: string;
+            capturedEmail: string | null;
+            currentEmail: string | null;
+            addressChanged: boolean;
+            canRetry: boolean;
+            retryBlockedReason: string | null;
+            acknowledgmentRequired: boolean;
+            history: components["schemas"]["FormsNotificationRetryHistory"][];
+        };
+        FormsExport: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            state: "pending" | "ready" | "failed";
+            /** Format: date-time */
+            expiresAt: string;
+            errorCode?: string;
+        };
+        FormsBulkInput: {
+            /** @enum {string} */
+            action: "read" | "workflow" | "assign" | "archive" | "delete";
+            items: {
+                /** Format: uuid */
+                id: string;
+                etag: string;
+            }[];
+            read?: boolean;
+            /** @enum {string} */
+            treatment?: "new" | "in_progress" | "waiting" | "completed" | "archived";
+            assigneeSubject?: string | null;
+            confirmDeletion?: boolean;
+        };
+        FormsBulkResult: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {integer} */
+                status: 200 | 202 | 400 | 403 | 404 | 409 | 412 | 428 | 429 | 503;
+                etag?: string;
+                code?: string;
+            }[];
+        };
+        FormsNameInput: {
+            name: string;
+        };
+        FormsViewInput: {
+            name: string;
+            filters: components["schemas"]["FormsFilters"];
+        };
+        FormsExportInput: {
+            selection: {
+                ids: string[];
+            } | {
+                filters: components["schemas"]["FormsFilters"];
+            };
+        };
+        FormsCreateInput: {
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            /** @enum {string} */
+            template: "blank" | "contact" | "expertise";
+        };
+        FormsWorkflowInput: {
+            /** @enum {string} */
+            treatment?: "new" | "in_progress" | "waiting" | "completed" | "archived";
+            assigneeSubject?: string | null;
+        };
+        FormsAdminPage: {
+            items: components["schemas"]["FormsSummary"][];
+            nextCursor: string | null;
+        };
+        FormsVersionPage: {
+            items: components["schemas"]["FormsVersionSummary"][];
+            nextCursor: string | null;
+        };
+        FormsUsagePage: {
+            items: components["schemas"]["FormsUsage"][];
+            nextCursor: string | null;
+        };
+        FormsCandidatePage: {
+            items: components["schemas"]["FormsCandidate"][];
+            nextCursor: string | null;
+        };
+        FormsSubmissionPage: {
+            items: components["schemas"]["FormsSubmissionSummary"][];
+            nextCursor: string | null;
+        };
+        FormsViewPage: {
+            items: components["schemas"]["FormsView"][];
+            nextCursor: string | null;
+        };
+        FormsNotificationPage: {
+            items: components["schemas"]["FormsNotification"][];
+            nextCursor: string | null;
+            planFailure: {
+                /** Format: uuid */
+                submissionId: string;
+                /** @enum {string} */
+                code: "notification_payload_too_large" | "notification_attachment_too_large" | "notification_plan_invalid";
+                /** Format: date-time */
+                createdAt: string;
+            } | null;
+        };
+        FormsSummary: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "classic" | "expertise";
+            /** @enum {string} */
+            state: "draft" | "published" | "archived";
+            revision: string;
+            publishedVersionId: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            createdAt: string;
+            titles: {
+                [key: string]: string;
+            };
+            fieldCount: number;
+        };
+        FormsVersionSummary: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            formId: string;
+            number: number;
+            name: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            createdBy: string;
+            publishedAt: string | null;
+        };
+        FormsNotePage: {
+            items: components["schemas"]["FormsNote"][];
+            nextCursor: string | null;
+        };
+        FormsNotificationRetryHistory: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            actor: string;
+            /** @enum {string} */
+            reason: "manual_replay" | "manual_new_window" | "recipient_reconfirmed";
+            /** @enum {string} */
+            previousState: "pending" | "sending" | "accepted" | "delivered" | "retry_wait" | "failed" | "uncertain" | "recipient_blocked" | "bounced";
+            previousAttempts: number;
+            previousFirstSendAt: string | null;
+        };
+        DisplayId: string;
+        PublicMediaAuthorization: {
+            /** Format: uuid */
+            resourceId: string;
+            /**
+             * Format: uuid
+             * @description Identité immuable, égale à resourceId pour les médias actuels.
+             */
+            version: string;
+            /**
+             * Format: uri
+             * @description Capacité GET native Supabase compatible CDN ; ne pas journaliser.
+             */
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** @constant */
+            mimeType: "image/webp";
+            byteSize: number;
+        };
+        PublicMediaObservation: {
+            /** @enum {string} */
+            resourceKind: "artwork" | "siteLogo";
+            /** Format: uuid */
+            resourceId: string;
+            displayId: components["schemas"]["DisplayId"];
+            /** @enum {integer} */
+            retry: 0 | 1;
+            /** @enum {string} */
+            event: "loaded" | "failed" | "timeout" | "retry";
+            elapsedMs: number;
+        };
+        ImageResource: {
+            /** @enum {string} */
+            resourceKind: "artwork" | "siteLogo" | "presentation" | "editorial";
+            /** Format: uuid */
+            resourceId: string;
+        };
+        ImageSource: {
+            width: number;
+            height: number;
+            /** @enum {string} */
+            mimeType: "image/webp" | "image/jpeg" | "image/png" | "image/gif" | "image/svg+xml";
+        };
+        ImageSourceFile: {
+            width: number;
+            height: number;
+            /** @enum {string} */
+            mimeType: "image/webp" | "image/jpeg" | "image/png" | "image/gif" | "image/svg+xml";
+            byteSize: number;
+        };
+        ImageCandidate: {
+            /** @enum {string} */
+            rendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+            /** @enum {string} */
+            mode: "transformed" | "reference";
+            expectedWidth: number;
+            expectedHeight: number;
+        };
+        PublicImageDescriptor: {
+            /** @enum {string} */
+            resourceKind: "artwork" | "siteLogo" | "presentation" | "editorial";
+            /** Format: uuid */
+            resourceId: string;
+            sourceVersion: string;
+            /** @constant */
+            policyVersion: "r1";
+            source: components["schemas"]["ImageSource"];
+            candidates: components["schemas"]["ImageCandidate"][];
+        };
+        ImageDescriptorQuery: {
+            resources: components["schemas"]["ImageResource"][];
+        };
+        ImageDescriptorItem: {
+            resource: components["schemas"]["ImageResource"];
+            /** @constant */
+            availability: "available";
+            descriptor: components["schemas"]["PublicImageDescriptor"];
+        } | {
+            resource: components["schemas"]["ImageResource"];
+            /** @constant */
+            availability: "unavailable";
+        };
+        ImageDescriptorResult: {
+            items: components["schemas"]["ImageDescriptorItem"][];
+        };
+        ImageRepresentation: {
+            /** @constant */
+            mode: "transformed";
+            expectedWidth: number;
+            expectedHeight: number;
+            mimeType: null;
+            byteSize: null;
+        } | {
+            /** @constant */
+            mode: "reference";
+            expectedWidth: number;
+            expectedHeight: number;
+            /** @enum {string} */
+            mimeType: "image/webp" | "image/jpeg" | "image/png" | "image/gif" | "image/svg+xml";
+            byteSize: number;
+        };
+        ImageDelivery: {
+            /** Format: uri */
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        PublicImageAuthorization: {
+            /** @enum {string} */
+            resourceKind: "artwork" | "siteLogo" | "presentation" | "editorial";
+            /** Format: uuid */
+            resourceId: string;
+            sourceVersion: string;
+            /** @constant */
+            policyVersion: "r1";
+            /** @enum {string} */
+            requestedRendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+            /** @enum {string} */
+            canonicalRendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+            source: components["schemas"]["ImageSourceFile"];
+            representation: components["schemas"]["ImageRepresentation"];
+            delivery: components["schemas"]["ImageDelivery"];
+        };
+        ImageObservation: {
+            /** @enum {string} */
+            resourceKind: "artwork" | "siteLogo" | "presentation" | "editorial";
+            /** Format: uuid */
+            resourceId: string;
+            sourceVersion: string | null;
+            displayId: string;
+            /** @enum {integer} */
+            retry: 0 | 1;
+            /** @enum {string} */
+            event: "loaded" | "failed" | "timeout" | "retry";
+            elapsedMs: number;
+            requestedRendition: ("r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500") | null;
+            selectedRendition: ("r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500") | null;
+            /** @enum {string} */
+            mode: "transformed" | "reference" | "unknown";
+            /** @enum {string|null} */
+            fallbackReason: null | "descriptor_unavailable" | "source_untransformable" | "source_limited" | "transfer_failed" | "authorization_failed" | "budget_exhausted";
+        };
+        PublicImageError: {
+            error: {
+                /** @enum {string} */
+                code: "invalid_request" | "not_found" | "rate_limited" | "service_unavailable";
+            };
         };
     };
     responses: {
@@ -4166,7 +7642,15 @@ export interface components {
             };
         };
     };
-    parameters: never;
+    parameters: {
+        CompositionArticleId: string;
+        CompositionRequestId: string;
+        CompositionProposalId: string;
+        CompositionIfMatch: string;
+        CompositionCSRF: string;
+        CompositionIdempotency: string;
+        CompositionCandidateId: string;
+    };
     requestBodies: never;
     headers: never;
     pathItems: never;
@@ -4229,6 +7713,9 @@ export interface operations {
                 limit?: number;
                 /** @description Curseur opaque signé retourné par la page précédente ; filtre et déploiement inchangés. */
                 cursor?: string;
+                display?: "plp";
+                /** @description Langue configurée ; défaut langue principale et titre source. */
+                locale?: string;
             };
             header?: never;
             path?: never;
@@ -4246,7 +7733,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PublicArtworkPage"];
+                    "application/json": components["schemas"]["PublicArtworkPage"] | components["schemas"]["PublicArtworkPagePlp"];
                 };
             };
             400: components["responses"]["BadRequest"];
@@ -4257,7 +7744,10 @@ export interface operations {
     };
     getPublishedArtwork: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Langue configurée ; défaut langue principale et titre source. */
+                locale?: string;
+            };
             header?: never;
             path: {
                 /** @description Identifiant opaque interne au déploiement. */
@@ -4313,6 +7803,45 @@ export interface operations {
                     "image/jpeg": string;
                     "image/png": string;
                 };
+            };
+            /** @description Phase direct : redirection temporaire après autorisation courante, sans corps. */
+            307: {
+                headers: {
+                    Location?: string;
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["Unavailable"];
+        };
+    };
+    getPublishedMediaMetadata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Identifiant opaque interne au déploiement. */
+                mediaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image locale après contrôle des droits au moment de la requête. Aucun redirect vers Storage, aucune URL signée ; image décodée/réencodée à l’import. */
+            200: {
+                headers: {
+                    /** @description private, no-store pour données catalogue, sessions, erreurs et médias ; aucun cache de contenu publiable. */
+                    "Cache-Control"?: string;
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description Identifiant de corrélation sans donnée personnelle. */
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             400: components["responses"]["BadRequest"];
             404: components["responses"]["NotFound"];
@@ -4763,6 +8292,101 @@ export interface operations {
             503: components["responses"]["Unavailable"];
         };
     };
+    getArtworkCatalogWorkspace: {
+        parameters: {
+            query?: {
+                /** @description Nombre maximal d’éléments. */
+                limit?: number;
+                /** @description Recherche insensible à la casse dans titre et artiste ; texte traité comme littéral. */
+                q?: string;
+                /** @description Filtre sur décision locale. */
+                publication?: "hidden" | "published";
+                /** @description Filtre sur disponibilité source. */
+                availability?: "available" | "withdrawn";
+                /** @description Collections à retourner. */
+                collection?: "both" | "published" | "reserve";
+                /** @description Curseur signé de cette collection. */
+                publishedCursor?: string;
+                /** @description Curseur signé de cette collection. */
+                reserveCursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Succès. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation sans donnée personnelle. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store pour données catalogue, sessions, erreurs et médias ; aucun cache de contenu publiable. */
+                    "Cache-Control"?: string;
+                    /** @description Version du catalogue pour précondition, pas un validateur de cache. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtworkCatalogWorkspace"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["Unavailable"];
+        };
+    };
+    placeArtworkInCatalog: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Jeton CSRF lié à la session, fourni par la page admin et comparé côté backend ; contrôle Origin supplémentaire par le BFF. */
+                "X-CSRF-Token": string;
+                /** @description ETag catalogue retourné par le workspace. */
+                "If-Match": string;
+            };
+            path: {
+                /** @description Identifiant opaque interne au déploiement. */
+                artworkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ArtworkCatalogPlacement"];
+            };
+        };
+        responses: {
+            /** @description Décision effectivement enregistrée, avec nouvelle version éditoriale. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation sans donnée personnelle. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store pour données catalogue, sessions, erreurs et médias ; aucun cache de contenu publiable. */
+                    "Cache-Control"?: string;
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtworkCatalogPlacementResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            413: components["responses"]["BadRequest"];
+            415: components["responses"]["BadRequest"];
+            428: components["responses"]["PreconditionRequired"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["Unavailable"];
+        };
+    };
     getPublicSiteContent: {
         parameters: {
             query: {
@@ -4945,7 +8569,41 @@ export interface operations {
                      *         "gallery.backToImages": "Back to images",
                      *         "gallery.viewWholeImage": "View full image",
                      *         "gallery.mobileGestureHelp": "Swipe up or down to change views, or use the timeline controls.",
-                     *         "gallery.panHelp": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection."
+                     *         "gallery.panHelp": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
+                     *         "editorial.play": "Play video",
+                     *         "editorial.pause": "Pause video",
+                     *         "editorial.fullscreen": "Fullscreen",
+                     *         "editorial.soundOn": "Unmute",
+                     *         "editorial.soundOff": "Mute",
+                     *         "editorial.videoUnavailable": "The video is unavailable.",
+                     *         "editorial.autoplayBlocked": "Press play to watch the video.",
+                     *         "editorial.previousSlide": "Previous slide",
+                     *         "editorial.nextSlide": "Next slide",
+                     *         "editorial.pauseCarousel": "Pause slideshow",
+                     *         "editorial.resumeCarousel": "Resume slideshow",
+                     *         "editorial.slide": "Slide",
+                     *         "editorial.close": "Close",
+                     *         "editorial.zoomImage": "Enlarge image",
+                     *         "editorial.imageDialog": "Enlarged image",
+                     *         "editorial.authors": "Authors",
+                     *         "editorial.authorProfile": "About the author",
+                     *         "editorial.related": "Related reading",
+                     *         "editorial.search": "Search articles",
+                     *         "editorial.noResults": "No articles match your search.",
+                     *         "editorial.loadError": "Articles are currently unavailable.",
+                     *         "editorial.retry": "Try again",
+                     *         "editorial.readArticle": "Read article",
+                     *         "editorial.previousPage": "Previous page",
+                     *         "editorial.nextPage": "Next page",
+                     *         "editorial.page": "Page",
+                     *         "editorial.allCategories": "All categories",
+                     *         "editorial.filters": "Filters",
+                     *         "editorial.resetSearch": "Reset search",
+                     *         "editorial.carousel": "Media gallery",
+                     *         "editorial.imageUnavailable": "This image is unavailable.",
+                     *         "editorial.artworkTitle": "Artwork",
+                     *         "editorial.searchTerms": "Search classifications",
+                     *         "editorial.filterLimit": "Select up to 20 classifications."
                      *       },
                      *       "logo": null
                      *     }
@@ -5044,6 +8702,10 @@ export interface operations {
                      *         {
                      *           "id": "gallery",
                      *           "label": "Catalogue et fiche immersive"
+                     *         },
+                     *         {
+                     *           "id": "editorial",
+                     *           "label": "Articles · Publications et actualités"
                      *         }
                      *       ],
                      *       "definitions": [
@@ -5898,6 +9560,210 @@ export interface operations {
                      *           "group": "gallery",
                      *           "label": "Déplacement dans l’image sur mobile",
                      *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "editorial.play",
+                     *           "group": "editorial",
+                     *           "label": "Lire la vidéo",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.pause",
+                     *           "group": "editorial",
+                     *           "label": "Mettre en pause",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.fullscreen",
+                     *           "group": "editorial",
+                     *           "label": "Plein écran",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOn",
+                     *           "group": "editorial",
+                     *           "label": "Activer le son",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOff",
+                     *           "group": "editorial",
+                     *           "label": "Couper le son",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.videoUnavailable",
+                     *           "group": "editorial",
+                     *           "label": "La vidéo est indisponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.autoplayBlocked",
+                     *           "group": "editorial",
+                     *           "label": "Lancez la lecture pour découvrir la vidéo.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousSlide",
+                     *           "group": "editorial",
+                     *           "label": "Slide précédente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextSlide",
+                     *           "group": "editorial",
+                     *           "label": "Slide suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.pauseCarousel",
+                     *           "group": "editorial",
+                     *           "label": "Arrêter le défilement",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.resumeCarousel",
+                     *           "group": "editorial",
+                     *           "label": "Reprendre le défilement",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.slide",
+                     *           "group": "editorial",
+                     *           "label": "Slide",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.close",
+                     *           "group": "editorial",
+                     *           "label": "Fermer",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.zoomImage",
+                     *           "group": "editorial",
+                     *           "label": "Agrandir l’image",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageDialog",
+                     *           "group": "editorial",
+                     *           "label": "Image agrandie",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.authors",
+                     *           "group": "editorial",
+                     *           "label": "Auteurs",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.authorProfile",
+                     *           "group": "editorial",
+                     *           "label": "À propos de l’auteur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.related",
+                     *           "group": "editorial",
+                     *           "label": "À lire aussi",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.search",
+                     *           "group": "editorial",
+                     *           "label": "Rechercher un article",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.noResults",
+                     *           "group": "editorial",
+                     *           "label": "Aucun article ne correspond à votre recherche.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.loadError",
+                     *           "group": "editorial",
+                     *           "label": "Les articles ne sont pas disponibles pour le moment.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.retry",
+                     *           "group": "editorial",
+                     *           "label": "Réessayer",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.readArticle",
+                     *           "group": "editorial",
+                     *           "label": "Lire l’article",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousPage",
+                     *           "group": "editorial",
+                     *           "label": "Page précédente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextPage",
+                     *           "group": "editorial",
+                     *           "label": "Page suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.page",
+                     *           "group": "editorial",
+                     *           "label": "Page",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.allCategories",
+                     *           "group": "editorial",
+                     *           "label": "Toutes les catégories",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.filters",
+                     *           "group": "editorial",
+                     *           "label": "Filtres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.resetSearch",
+                     *           "group": "editorial",
+                     *           "label": "Réinitialiser la recherche",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.carousel",
+                     *           "group": "editorial",
+                     *           "label": "Galerie de médias",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageUnavailable",
+                     *           "group": "editorial",
+                     *           "label": "Ce visuel n’est pas disponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.artworkTitle",
+                     *           "group": "editorial",
+                     *           "label": "Titre de l’œuvre (libellé)",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.searchTerms",
+                     *           "group": "editorial",
+                     *           "label": "Rechercher un classement",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.filterLimit",
+                     *           "group": "editorial",
+                     *           "label": "Limite des classements sélectionnés",
+                     *           "maxLength": 80
                      *         }
                      *       ],
                      *       "translations": [
@@ -7888,6 +11754,482 @@ export interface operations {
                      *           "value": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
                      *           "resolvedValue": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
                      *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.play",
+                     *           "locale": "fr",
+                     *           "value": "Lire la vidéo",
+                     *           "resolvedValue": "Lire la vidéo",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.play",
+                     *           "locale": "en",
+                     *           "value": "Play video",
+                     *           "resolvedValue": "Play video",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pause",
+                     *           "locale": "fr",
+                     *           "value": "Mettre en pause",
+                     *           "resolvedValue": "Mettre en pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pause",
+                     *           "locale": "en",
+                     *           "value": "Pause video",
+                     *           "resolvedValue": "Pause video",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.fullscreen",
+                     *           "locale": "fr",
+                     *           "value": "Plein écran",
+                     *           "resolvedValue": "Plein écran",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.fullscreen",
+                     *           "locale": "en",
+                     *           "value": "Fullscreen",
+                     *           "resolvedValue": "Fullscreen",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOn",
+                     *           "locale": "fr",
+                     *           "value": "Activer le son",
+                     *           "resolvedValue": "Activer le son",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOn",
+                     *           "locale": "en",
+                     *           "value": "Unmute",
+                     *           "resolvedValue": "Unmute",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOff",
+                     *           "locale": "fr",
+                     *           "value": "Couper le son",
+                     *           "resolvedValue": "Couper le son",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOff",
+                     *           "locale": "en",
+                     *           "value": "Mute",
+                     *           "resolvedValue": "Mute",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.videoUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "La vidéo est indisponible.",
+                     *           "resolvedValue": "La vidéo est indisponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.videoUnavailable",
+                     *           "locale": "en",
+                     *           "value": "The video is unavailable.",
+                     *           "resolvedValue": "The video is unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.autoplayBlocked",
+                     *           "locale": "fr",
+                     *           "value": "Lancez la lecture pour découvrir la vidéo.",
+                     *           "resolvedValue": "Lancez la lecture pour découvrir la vidéo.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.autoplayBlocked",
+                     *           "locale": "en",
+                     *           "value": "Press play to watch the video.",
+                     *           "resolvedValue": "Press play to watch the video.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousSlide",
+                     *           "locale": "fr",
+                     *           "value": "Slide précédente",
+                     *           "resolvedValue": "Slide précédente",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousSlide",
+                     *           "locale": "en",
+                     *           "value": "Previous slide",
+                     *           "resolvedValue": "Previous slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextSlide",
+                     *           "locale": "fr",
+                     *           "value": "Slide suivante",
+                     *           "resolvedValue": "Slide suivante",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextSlide",
+                     *           "locale": "en",
+                     *           "value": "Next slide",
+                     *           "resolvedValue": "Next slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pauseCarousel",
+                     *           "locale": "fr",
+                     *           "value": "Arrêter le défilement",
+                     *           "resolvedValue": "Arrêter le défilement",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pauseCarousel",
+                     *           "locale": "en",
+                     *           "value": "Pause slideshow",
+                     *           "resolvedValue": "Pause slideshow",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resumeCarousel",
+                     *           "locale": "fr",
+                     *           "value": "Reprendre le défilement",
+                     *           "resolvedValue": "Reprendre le défilement",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resumeCarousel",
+                     *           "locale": "en",
+                     *           "value": "Resume slideshow",
+                     *           "resolvedValue": "Resume slideshow",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.slide",
+                     *           "locale": "fr",
+                     *           "value": "Slide",
+                     *           "resolvedValue": "Slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.slide",
+                     *           "locale": "en",
+                     *           "value": "Slide",
+                     *           "resolvedValue": "Slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.close",
+                     *           "locale": "fr",
+                     *           "value": "Fermer",
+                     *           "resolvedValue": "Fermer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.close",
+                     *           "locale": "en",
+                     *           "value": "Close",
+                     *           "resolvedValue": "Close",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.zoomImage",
+                     *           "locale": "fr",
+                     *           "value": "Agrandir l’image",
+                     *           "resolvedValue": "Agrandir l’image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.zoomImage",
+                     *           "locale": "en",
+                     *           "value": "Enlarge image",
+                     *           "resolvedValue": "Enlarge image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageDialog",
+                     *           "locale": "fr",
+                     *           "value": "Image agrandie",
+                     *           "resolvedValue": "Image agrandie",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageDialog",
+                     *           "locale": "en",
+                     *           "value": "Enlarged image",
+                     *           "resolvedValue": "Enlarged image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authors",
+                     *           "locale": "fr",
+                     *           "value": "Auteurs",
+                     *           "resolvedValue": "Auteurs",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authors",
+                     *           "locale": "en",
+                     *           "value": "Authors",
+                     *           "resolvedValue": "Authors",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authorProfile",
+                     *           "locale": "fr",
+                     *           "value": "À propos de l’auteur",
+                     *           "resolvedValue": "À propos de l’auteur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authorProfile",
+                     *           "locale": "en",
+                     *           "value": "About the author",
+                     *           "resolvedValue": "About the author",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.related",
+                     *           "locale": "fr",
+                     *           "value": "À lire aussi",
+                     *           "resolvedValue": "À lire aussi",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.related",
+                     *           "locale": "en",
+                     *           "value": "Related reading",
+                     *           "resolvedValue": "Related reading",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.search",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher un article",
+                     *           "resolvedValue": "Rechercher un article",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.search",
+                     *           "locale": "en",
+                     *           "value": "Search articles",
+                     *           "resolvedValue": "Search articles",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.noResults",
+                     *           "locale": "fr",
+                     *           "value": "Aucun article ne correspond à votre recherche.",
+                     *           "resolvedValue": "Aucun article ne correspond à votre recherche.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.noResults",
+                     *           "locale": "en",
+                     *           "value": "No articles match your search.",
+                     *           "resolvedValue": "No articles match your search.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.loadError",
+                     *           "locale": "fr",
+                     *           "value": "Les articles ne sont pas disponibles pour le moment.",
+                     *           "resolvedValue": "Les articles ne sont pas disponibles pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.loadError",
+                     *           "locale": "en",
+                     *           "value": "Articles are currently unavailable.",
+                     *           "resolvedValue": "Articles are currently unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.retry",
+                     *           "locale": "fr",
+                     *           "value": "Réessayer",
+                     *           "resolvedValue": "Réessayer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.retry",
+                     *           "locale": "en",
+                     *           "value": "Try again",
+                     *           "resolvedValue": "Try again",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.readArticle",
+                     *           "locale": "fr",
+                     *           "value": "Lire l’article",
+                     *           "resolvedValue": "Lire l’article",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.readArticle",
+                     *           "locale": "en",
+                     *           "value": "Read article",
+                     *           "resolvedValue": "Read article",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousPage",
+                     *           "locale": "fr",
+                     *           "value": "Page précédente",
+                     *           "resolvedValue": "Page précédente",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousPage",
+                     *           "locale": "en",
+                     *           "value": "Previous page",
+                     *           "resolvedValue": "Previous page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextPage",
+                     *           "locale": "fr",
+                     *           "value": "Page suivante",
+                     *           "resolvedValue": "Page suivante",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextPage",
+                     *           "locale": "en",
+                     *           "value": "Next page",
+                     *           "resolvedValue": "Next page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.page",
+                     *           "locale": "fr",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.page",
+                     *           "locale": "en",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.allCategories",
+                     *           "locale": "fr",
+                     *           "value": "Toutes les catégories",
+                     *           "resolvedValue": "Toutes les catégories",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.allCategories",
+                     *           "locale": "en",
+                     *           "value": "All categories",
+                     *           "resolvedValue": "All categories",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filters",
+                     *           "locale": "fr",
+                     *           "value": "Filtres",
+                     *           "resolvedValue": "Filtres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filters",
+                     *           "locale": "en",
+                     *           "value": "Filters",
+                     *           "resolvedValue": "Filters",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resetSearch",
+                     *           "locale": "fr",
+                     *           "value": "Réinitialiser la recherche",
+                     *           "resolvedValue": "Réinitialiser la recherche",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resetSearch",
+                     *           "locale": "en",
+                     *           "value": "Reset search",
+                     *           "resolvedValue": "Reset search",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.carousel",
+                     *           "locale": "fr",
+                     *           "value": "Galerie de médias",
+                     *           "resolvedValue": "Galerie de médias",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.carousel",
+                     *           "locale": "en",
+                     *           "value": "Media gallery",
+                     *           "resolvedValue": "Media gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "Ce visuel n’est pas disponible.",
+                     *           "resolvedValue": "Ce visuel n’est pas disponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageUnavailable",
+                     *           "locale": "en",
+                     *           "value": "This image is unavailable.",
+                     *           "resolvedValue": "This image is unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.artworkTitle",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre",
+                     *           "resolvedValue": "Œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.artworkTitle",
+                     *           "locale": "en",
+                     *           "value": "Artwork",
+                     *           "resolvedValue": "Artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.searchTerms",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher un classement",
+                     *           "resolvedValue": "Rechercher un classement",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.searchTerms",
+                     *           "locale": "en",
+                     *           "value": "Search classifications",
+                     *           "resolvedValue": "Search classifications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filterLimit",
+                     *           "locale": "fr",
+                     *           "value": "Sélectionnez jusqu’à 20 classements.",
+                     *           "resolvedValue": "Sélectionnez jusqu’à 20 classements.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filterLimit",
+                     *           "locale": "en",
+                     *           "value": "Select up to 20 classifications.",
+                     *           "resolvedValue": "Select up to 20 classifications.",
+                     *           "fallback": false
                      *         }
                      *       ],
                      *       "logo": null,
@@ -7998,6 +12340,10 @@ export interface operations {
                      *         {
                      *           "id": "gallery",
                      *           "label": "Catalogue et fiche immersive"
+                     *         },
+                     *         {
+                     *           "id": "editorial",
+                     *           "label": "Articles · Publications et actualités"
                      *         }
                      *       ],
                      *       "definitions": [
@@ -8852,6 +13198,210 @@ export interface operations {
                      *           "group": "gallery",
                      *           "label": "Déplacement dans l’image sur mobile",
                      *           "maxLength": 500
+                     *         },
+                     *         {
+                     *           "key": "editorial.play",
+                     *           "group": "editorial",
+                     *           "label": "Lire la vidéo",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.pause",
+                     *           "group": "editorial",
+                     *           "label": "Mettre en pause",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.fullscreen",
+                     *           "group": "editorial",
+                     *           "label": "Plein écran",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOn",
+                     *           "group": "editorial",
+                     *           "label": "Activer le son",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOff",
+                     *           "group": "editorial",
+                     *           "label": "Couper le son",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.videoUnavailable",
+                     *           "group": "editorial",
+                     *           "label": "La vidéo est indisponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.autoplayBlocked",
+                     *           "group": "editorial",
+                     *           "label": "Lancez la lecture pour découvrir la vidéo.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousSlide",
+                     *           "group": "editorial",
+                     *           "label": "Slide précédente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextSlide",
+                     *           "group": "editorial",
+                     *           "label": "Slide suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.pauseCarousel",
+                     *           "group": "editorial",
+                     *           "label": "Arrêter le défilement",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.resumeCarousel",
+                     *           "group": "editorial",
+                     *           "label": "Reprendre le défilement",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.slide",
+                     *           "group": "editorial",
+                     *           "label": "Slide",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.close",
+                     *           "group": "editorial",
+                     *           "label": "Fermer",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.zoomImage",
+                     *           "group": "editorial",
+                     *           "label": "Agrandir l’image",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageDialog",
+                     *           "group": "editorial",
+                     *           "label": "Image agrandie",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.authors",
+                     *           "group": "editorial",
+                     *           "label": "Auteurs",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.authorProfile",
+                     *           "group": "editorial",
+                     *           "label": "À propos de l’auteur",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.related",
+                     *           "group": "editorial",
+                     *           "label": "À lire aussi",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.search",
+                     *           "group": "editorial",
+                     *           "label": "Rechercher un article",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.noResults",
+                     *           "group": "editorial",
+                     *           "label": "Aucun article ne correspond à votre recherche.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.loadError",
+                     *           "group": "editorial",
+                     *           "label": "Les articles ne sont pas disponibles pour le moment.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.retry",
+                     *           "group": "editorial",
+                     *           "label": "Réessayer",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.readArticle",
+                     *           "group": "editorial",
+                     *           "label": "Lire l’article",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousPage",
+                     *           "group": "editorial",
+                     *           "label": "Page précédente",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextPage",
+                     *           "group": "editorial",
+                     *           "label": "Page suivante",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.page",
+                     *           "group": "editorial",
+                     *           "label": "Page",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.allCategories",
+                     *           "group": "editorial",
+                     *           "label": "Toutes les catégories",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.filters",
+                     *           "group": "editorial",
+                     *           "label": "Filtres",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.resetSearch",
+                     *           "group": "editorial",
+                     *           "label": "Réinitialiser la recherche",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.carousel",
+                     *           "group": "editorial",
+                     *           "label": "Galerie de médias",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageUnavailable",
+                     *           "group": "editorial",
+                     *           "label": "Ce visuel n’est pas disponible.",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.artworkTitle",
+                     *           "group": "editorial",
+                     *           "label": "Titre de l’œuvre (libellé)",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.searchTerms",
+                     *           "group": "editorial",
+                     *           "label": "Rechercher un classement",
+                     *           "maxLength": 80
+                     *         },
+                     *         {
+                     *           "key": "editorial.filterLimit",
+                     *           "group": "editorial",
+                     *           "label": "Limite des classements sélectionnés",
+                     *           "maxLength": 80
                      *         }
                      *       ],
                      *       "translations": [
@@ -10842,6 +15392,482 @@ export interface operations {
                      *           "value": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
                      *           "resolvedValue": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection.",
                      *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.play",
+                     *           "locale": "fr",
+                     *           "value": "Lire la vidéo",
+                     *           "resolvedValue": "Lire la vidéo",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.play",
+                     *           "locale": "en",
+                     *           "value": "Play video",
+                     *           "resolvedValue": "Play video",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pause",
+                     *           "locale": "fr",
+                     *           "value": "Mettre en pause",
+                     *           "resolvedValue": "Mettre en pause",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pause",
+                     *           "locale": "en",
+                     *           "value": "Pause video",
+                     *           "resolvedValue": "Pause video",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.fullscreen",
+                     *           "locale": "fr",
+                     *           "value": "Plein écran",
+                     *           "resolvedValue": "Plein écran",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.fullscreen",
+                     *           "locale": "en",
+                     *           "value": "Fullscreen",
+                     *           "resolvedValue": "Fullscreen",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOn",
+                     *           "locale": "fr",
+                     *           "value": "Activer le son",
+                     *           "resolvedValue": "Activer le son",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOn",
+                     *           "locale": "en",
+                     *           "value": "Unmute",
+                     *           "resolvedValue": "Unmute",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOff",
+                     *           "locale": "fr",
+                     *           "value": "Couper le son",
+                     *           "resolvedValue": "Couper le son",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.soundOff",
+                     *           "locale": "en",
+                     *           "value": "Mute",
+                     *           "resolvedValue": "Mute",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.videoUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "La vidéo est indisponible.",
+                     *           "resolvedValue": "La vidéo est indisponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.videoUnavailable",
+                     *           "locale": "en",
+                     *           "value": "The video is unavailable.",
+                     *           "resolvedValue": "The video is unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.autoplayBlocked",
+                     *           "locale": "fr",
+                     *           "value": "Lancez la lecture pour découvrir la vidéo.",
+                     *           "resolvedValue": "Lancez la lecture pour découvrir la vidéo.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.autoplayBlocked",
+                     *           "locale": "en",
+                     *           "value": "Press play to watch the video.",
+                     *           "resolvedValue": "Press play to watch the video.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousSlide",
+                     *           "locale": "fr",
+                     *           "value": "Slide précédente",
+                     *           "resolvedValue": "Slide précédente",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousSlide",
+                     *           "locale": "en",
+                     *           "value": "Previous slide",
+                     *           "resolvedValue": "Previous slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextSlide",
+                     *           "locale": "fr",
+                     *           "value": "Slide suivante",
+                     *           "resolvedValue": "Slide suivante",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextSlide",
+                     *           "locale": "en",
+                     *           "value": "Next slide",
+                     *           "resolvedValue": "Next slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pauseCarousel",
+                     *           "locale": "fr",
+                     *           "value": "Arrêter le défilement",
+                     *           "resolvedValue": "Arrêter le défilement",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.pauseCarousel",
+                     *           "locale": "en",
+                     *           "value": "Pause slideshow",
+                     *           "resolvedValue": "Pause slideshow",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resumeCarousel",
+                     *           "locale": "fr",
+                     *           "value": "Reprendre le défilement",
+                     *           "resolvedValue": "Reprendre le défilement",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resumeCarousel",
+                     *           "locale": "en",
+                     *           "value": "Resume slideshow",
+                     *           "resolvedValue": "Resume slideshow",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.slide",
+                     *           "locale": "fr",
+                     *           "value": "Slide",
+                     *           "resolvedValue": "Slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.slide",
+                     *           "locale": "en",
+                     *           "value": "Slide",
+                     *           "resolvedValue": "Slide",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.close",
+                     *           "locale": "fr",
+                     *           "value": "Fermer",
+                     *           "resolvedValue": "Fermer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.close",
+                     *           "locale": "en",
+                     *           "value": "Close",
+                     *           "resolvedValue": "Close",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.zoomImage",
+                     *           "locale": "fr",
+                     *           "value": "Agrandir l’image",
+                     *           "resolvedValue": "Agrandir l’image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.zoomImage",
+                     *           "locale": "en",
+                     *           "value": "Enlarge image",
+                     *           "resolvedValue": "Enlarge image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageDialog",
+                     *           "locale": "fr",
+                     *           "value": "Image agrandie",
+                     *           "resolvedValue": "Image agrandie",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageDialog",
+                     *           "locale": "en",
+                     *           "value": "Enlarged image",
+                     *           "resolvedValue": "Enlarged image",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authors",
+                     *           "locale": "fr",
+                     *           "value": "Auteurs",
+                     *           "resolvedValue": "Auteurs",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authors",
+                     *           "locale": "en",
+                     *           "value": "Authors",
+                     *           "resolvedValue": "Authors",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authorProfile",
+                     *           "locale": "fr",
+                     *           "value": "À propos de l’auteur",
+                     *           "resolvedValue": "À propos de l’auteur",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.authorProfile",
+                     *           "locale": "en",
+                     *           "value": "About the author",
+                     *           "resolvedValue": "About the author",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.related",
+                     *           "locale": "fr",
+                     *           "value": "À lire aussi",
+                     *           "resolvedValue": "À lire aussi",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.related",
+                     *           "locale": "en",
+                     *           "value": "Related reading",
+                     *           "resolvedValue": "Related reading",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.search",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher un article",
+                     *           "resolvedValue": "Rechercher un article",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.search",
+                     *           "locale": "en",
+                     *           "value": "Search articles",
+                     *           "resolvedValue": "Search articles",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.noResults",
+                     *           "locale": "fr",
+                     *           "value": "Aucun article ne correspond à votre recherche.",
+                     *           "resolvedValue": "Aucun article ne correspond à votre recherche.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.noResults",
+                     *           "locale": "en",
+                     *           "value": "No articles match your search.",
+                     *           "resolvedValue": "No articles match your search.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.loadError",
+                     *           "locale": "fr",
+                     *           "value": "Les articles ne sont pas disponibles pour le moment.",
+                     *           "resolvedValue": "Les articles ne sont pas disponibles pour le moment.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.loadError",
+                     *           "locale": "en",
+                     *           "value": "Articles are currently unavailable.",
+                     *           "resolvedValue": "Articles are currently unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.retry",
+                     *           "locale": "fr",
+                     *           "value": "Réessayer",
+                     *           "resolvedValue": "Réessayer",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.retry",
+                     *           "locale": "en",
+                     *           "value": "Try again",
+                     *           "resolvedValue": "Try again",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.readArticle",
+                     *           "locale": "fr",
+                     *           "value": "Lire l’article",
+                     *           "resolvedValue": "Lire l’article",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.readArticle",
+                     *           "locale": "en",
+                     *           "value": "Read article",
+                     *           "resolvedValue": "Read article",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousPage",
+                     *           "locale": "fr",
+                     *           "value": "Page précédente",
+                     *           "resolvedValue": "Page précédente",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.previousPage",
+                     *           "locale": "en",
+                     *           "value": "Previous page",
+                     *           "resolvedValue": "Previous page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextPage",
+                     *           "locale": "fr",
+                     *           "value": "Page suivante",
+                     *           "resolvedValue": "Page suivante",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.nextPage",
+                     *           "locale": "en",
+                     *           "value": "Next page",
+                     *           "resolvedValue": "Next page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.page",
+                     *           "locale": "fr",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.page",
+                     *           "locale": "en",
+                     *           "value": "Page",
+                     *           "resolvedValue": "Page",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.allCategories",
+                     *           "locale": "fr",
+                     *           "value": "Toutes les catégories",
+                     *           "resolvedValue": "Toutes les catégories",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.allCategories",
+                     *           "locale": "en",
+                     *           "value": "All categories",
+                     *           "resolvedValue": "All categories",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filters",
+                     *           "locale": "fr",
+                     *           "value": "Filtres",
+                     *           "resolvedValue": "Filtres",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filters",
+                     *           "locale": "en",
+                     *           "value": "Filters",
+                     *           "resolvedValue": "Filters",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resetSearch",
+                     *           "locale": "fr",
+                     *           "value": "Réinitialiser la recherche",
+                     *           "resolvedValue": "Réinitialiser la recherche",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.resetSearch",
+                     *           "locale": "en",
+                     *           "value": "Reset search",
+                     *           "resolvedValue": "Reset search",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.carousel",
+                     *           "locale": "fr",
+                     *           "value": "Galerie de médias",
+                     *           "resolvedValue": "Galerie de médias",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.carousel",
+                     *           "locale": "en",
+                     *           "value": "Media gallery",
+                     *           "resolvedValue": "Media gallery",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageUnavailable",
+                     *           "locale": "fr",
+                     *           "value": "Ce visuel n’est pas disponible.",
+                     *           "resolvedValue": "Ce visuel n’est pas disponible.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.imageUnavailable",
+                     *           "locale": "en",
+                     *           "value": "This image is unavailable.",
+                     *           "resolvedValue": "This image is unavailable.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.artworkTitle",
+                     *           "locale": "fr",
+                     *           "value": "Œuvre",
+                     *           "resolvedValue": "Œuvre",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.artworkTitle",
+                     *           "locale": "en",
+                     *           "value": "Artwork",
+                     *           "resolvedValue": "Artwork",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.searchTerms",
+                     *           "locale": "fr",
+                     *           "value": "Rechercher un classement",
+                     *           "resolvedValue": "Rechercher un classement",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.searchTerms",
+                     *           "locale": "en",
+                     *           "value": "Search classifications",
+                     *           "resolvedValue": "Search classifications",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filterLimit",
+                     *           "locale": "fr",
+                     *           "value": "Sélectionnez jusqu’à 20 classements.",
+                     *           "resolvedValue": "Sélectionnez jusqu’à 20 classements.",
+                     *           "fallback": false
+                     *         },
+                     *         {
+                     *           "key": "editorial.filterLimit",
+                     *           "locale": "en",
+                     *           "value": "Select up to 20 classifications.",
+                     *           "resolvedValue": "Select up to 20 classifications.",
+                     *           "fallback": false
                      *         }
                      *       ],
                      *       "logo": null,
@@ -10971,6 +15997,44 @@ export interface operations {
                 content: {
                     "image/webp": string;
                 };
+            };
+            /** @description Phase direct : redirection temporaire après autorisation courante, sans corps. */
+            307: {
+                headers: {
+                    Location?: string;
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["SiteContentUnavailable"];
+        };
+    };
+    getPublicSiteLogoMetadata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                logoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image privée servie après contrôle de visibilité ; aucun 304 ni exposition de la clé Storage. */
+            200: {
+                headers: {
+                    /** @description Identifiant de corrélation. */
+                    "X-Request-Id"?: string;
+                    /** @description private, no-store ; aussi sur erreurs et images. */
+                    "Cache-Control"?: string;
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             400: components["responses"]["BadRequest"];
             404: components["responses"]["NotFound"];
@@ -12978,6 +18042,7 @@ export interface operations {
             query: {
                 pageKey: components["schemas"]["PresentationPageKey"];
                 locale: string;
+                expectedReleaseId?: string;
             };
             header?: never;
             path?: never;
@@ -13009,6 +18074,17 @@ export interface operations {
             };
             /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
             404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
                 headers: {
                     "Cache-Control"?: "private, no-store";
                     "X-Content-Type-Options"?: "nosniff";
@@ -14838,6 +19914,559 @@ export interface operations {
             };
         };
     };
+    resolvePresentationPageAddress: {
+        parameters: {
+            query: {
+                locale: string;
+                slug: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationPageAddress"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationFooter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationFooterRead"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    savePresentationFooter: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationFooterConfiguration"] | null;
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationWriteResult"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPresentationArtworkSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationArtworkSettingsRead"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    savePresentationArtworkSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresentationArtworkSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Réponse validée */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    /** @description ETag fort, requis pour la prochaine écriture de cet agrégat. */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresentationArtworkSettingsRead"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Erreur normalisée ; code et détails sur liste fermée par opération, voir README.md. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     getContactConfiguration: {
         parameters: {
             query?: never;
@@ -15643,6 +21272,9 @@ export interface operations {
                 pageSize?: number;
                 /** @description Expected catalogue revision. Mismatch: 409 catalog_changed. */
                 catalogRevision?: number;
+                display?: "plp";
+                /** @description Langue configurée ; défaut langue principale et titre source. */
+                locale?: string;
             };
             header?: never;
             path?: never;
@@ -15690,7 +21322,7 @@ export interface operations {
                      *       "catalogRevision": 7
                      *     }
                      */
-                    "application/json": components["schemas"]["GalleryCatalog"];
+                    "application/json": components["schemas"]["GalleryCatalog"] | components["schemas"]["GalleryCatalogPlp"];
                 };
             };
             /** @description invalid_request, page_out_of_range */
@@ -16263,6 +21895,28 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
+            /** @description artwork_media_changed */
+            409: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "artwork_media_changed",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
             /** @description version_conflict */
             412: {
                 headers: {
@@ -16584,6 +22238,203 @@ export interface operations {
             };
         };
     };
+    getGalleryPreviewArtworkTitles: {
+        parameters: {
+            query: {
+                /** @description Langue configurée autorisée dans cet aperçu. */
+                locale: string;
+                /** @description Au plus 100 UUID séparés par des virgules. */
+                ids: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validated response */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "scope": "preview",
+                     *       "artwork": {
+                     *         "id": "11111111-1111-4111-8111-111111111111",
+                     *         "title": "Étude 01",
+                     *         "artist": "Artiste de démonstration",
+                     *         "year": "2026",
+                     *         "medium": "Encre sur papier",
+                     *         "dimensions": "30 × 40 cm",
+                     *         "media": [
+                     *           {
+                     *             "id": "22222222-2222-4222-8222-222222222222",
+                     *             "alt": "Étude abstraite de démonstration",
+                     *             "width": 800,
+                     *             "height": 600,
+                     *             "path": "/v1/public/media/22222222-2222-4222-8222-222222222222"
+                     *           }
+                     *         ],
+                     *         "slug": "etude-01-11111111111141118111111111111111"
+                     *       },
+                     *       "locale": "fr",
+                     *       "description": "Description synthétique de démonstration.",
+                     *       "descriptionLocale": "fr",
+                     *       "catalogRevision": 7,
+                     *       "snapshotId": "55555555-5555-4555-8555-555555555555",
+                     *       "revision": "12"
+                     *     }
+                     */
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description invalid_request */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_request",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "unauthorized",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description forbidden */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "forbidden",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description not_found */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "not_found",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description rate_limited */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "rate_limited",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description service_unavailable, presentation_unavailable, presentation_configuration_mismatch */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "service_unavailable",
+                     *         "message": "Synthetic safe error.",
+                     *         "requestId": "33333333-3333-4333-8333-333333333333"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     getEditorialCapabilities: {
         parameters: {
             query?: never;
@@ -16708,7 +22559,7 @@ export interface operations {
     listEditorialArticles: {
         parameters: {
             query: {
-                kind: "publication" | "news";
+                kind: "publication" | "news" | "exhibition";
                 locale?: string;
                 q?: string;
                 lifecycle?: "editable" | "archived" | "trashed";
@@ -16852,7 +22703,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    kind: "publication" | "news";
+                    kind: "publication" | "news" | "exhibition";
                     titles?: components["schemas"]["EditorialLocalizedText"];
                 };
             };
@@ -20504,7 +26355,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EditorialTerm"];
+                    "application/json": components["schemas"]["EditorialTermCommandResult"];
                 };
             };
             /** @description Request refused; previous public content is preserved for failed mutations. */
@@ -21747,7 +27598,7 @@ export interface operations {
     listPublicEditorialArticles: {
         parameters: {
             query: {
-                kind: "publication" | "news";
+                kind: "publication" | "news" | "exhibition";
                 locale: string;
                 q?: string;
                 termIds?: string[];
@@ -21824,7 +27675,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                kind: "publication" | "news";
+                kind: "publication" | "news" | "exhibition";
                 slug: string;
             };
             cookie?: never;
@@ -22046,7 +27897,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EditorialPublicArticle"];
+                    "application/json": components["schemas"]["EditorialPreviewArticle"];
                 };
             };
             /** @description Request refused; previous public content is preserved for failed mutations. */
@@ -22205,7 +28056,7 @@ export interface operations {
     getPublicEditorialFilters: {
         parameters: {
             query: {
-                kind: "publication" | "news";
+                kind: "publication" | "news" | "exhibition";
                 locale: string;
                 vocabularyId?: string;
                 q?: string;
@@ -22276,6 +28127,10471 @@ export interface operations {
             };
         };
     };
+    readCrmInstanceBinding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current binding after verified CRM administrator action */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CrmInstanceBinding"];
+                };
+            };
+            /** @description Request refused or verification unavailable */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    manageCrmInstanceBinding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    companyId: string;
+                    /** @enum {string} */
+                    action: "confirm" | "verify" | "activate" | "suspend";
+                    expectedVersion: number;
+                    /** Format: uuid */
+                    subject?: string;
+                    ttlMinutes?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Current binding after verified CRM administrator action */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CrmInstanceBinding"];
+                };
+            };
+            /** @description Request refused or verification unavailable */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Request refused or verification unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    crmInstancePreflight: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Allowed CRM origin */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Origin refused */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description CRM origin not configured */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    confirmSiteMembership: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Jeton CSRF lié à la session, fourni par la page admin et comparé côté backend ; contrôle Origin supplémentaire par le BFF. */
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    expectedVersion: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Session révoquée localement ou révocation déjà effective, y compris sans droits courants/SSO ; supprimer les cookies BFF. Aucun accès aux données d’administration n’est accordé. */
+            204: {
+                headers: {
+                    /** @description private, no-store pour données catalogue, sessions, erreurs et médias ; aucun cache de contenu publiable. */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["Unavailable"];
+        };
+    };
+    getArtworkCatalogDisplay: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                artworkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description État confirmé du réglage, y compris PUT sans changement */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    /** @description Version indépendante, liée à cette œuvre */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpArtworkCatalogDisplay"];
+                };
+            };
+            /** @description invalid_request : corps, UUID, ETag ou représentation invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description unauthorized : session ou preuve absente/invalide */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description forbidden ou csrf_invalid : droits actuels insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description not_found : œuvre absente de cette instance */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description rate_limited : limite de mutation, Retry-After conservé */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description service_unavailable : sauvegarde non confirmée */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+        };
+    };
+    updateArtworkCatalogDisplay: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                artworkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    large: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description État confirmé du réglage, y compris PUT sans changement */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    /** @description Version indépendante, liée à cette œuvre */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpArtworkCatalogDisplay"];
+                };
+            };
+            /** @description invalid_request : corps, UUID, ETag ou représentation invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description unauthorized : session ou preuve absente/invalide */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description forbidden ou csrf_invalid : droits actuels insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description not_found : œuvre absente de cette instance */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description precondition_failed : version du réglage dépassée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description payload_too_large : corps supérieur à 1024 octets */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description unsupported_media_type : JSON requis */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description precondition_required : If-Match absent */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description rate_limited : limite de mutation, Retry-After conservé */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description service_unavailable : sauvegarde non confirmée */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+        };
+    };
+    getArtworkCatalogMode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description État confirmé du réglage, y compris PUT sans changement */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    /** @description Version indépendante, liée à cette œuvre */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpArtworkCatalogMode"];
+                };
+            };
+            /** @description invalid_request : corps, ETag ou requete invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description unauthorized : session ou preuve absente/invalide */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description forbidden ou csrf_invalid : droits actuels insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description rate_limited : limite de mutation, Retry-After conservé */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description service_unavailable : sauvegarde non confirmée */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+        };
+    };
+    updateArtworkCatalogMode: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description État confirmé du réglage, y compris PUT sans changement */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    /** @description Version indépendante, liée à cette œuvre */
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpArtworkCatalogMode"];
+                };
+            };
+            /** @description invalid_request : corps, ETag ou requete invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description unauthorized : session ou preuve absente/invalide */
+            401: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description forbidden ou csrf_invalid : droits actuels insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description precondition_failed : version du réglage dépassée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description payload_too_large : corps supérieur à 1024 octets */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description unsupported_media_type : JSON requis */
+            415: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description precondition_required : If-Match absent */
+            428: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description rate_limited : limite de mutation, Retry-After conservé */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+            /** @description service_unavailable : sauvegarde non confirmée */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlpError"];
+                };
+            };
+        };
+    };
+    getEditorialCompositionCapabilities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionCapabilities"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    listEditorialCompositionRequests: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                idempotencyKey?: string;
+            };
+            header?: never;
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionRequestPage"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    submitEditorialComposition: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": components["parameters"]["CompositionIfMatch"];
+                "X-CSRF-Token": components["parameters"]["CompositionCSRF"];
+                "Idempotency-Key": components["parameters"]["CompositionIdempotency"];
+            };
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitComposition"];
+            };
+        };
+        responses: {
+            /** @description Résultat privé */
+            202: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionRequest"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    getEditorialCompositionRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                requestId: components["parameters"]["CompositionRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionRequest"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    abandonEditorialComposition: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": components["parameters"]["CompositionCSRF"];
+                "Idempotency-Key": components["parameters"]["CompositionIdempotency"];
+            };
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                requestId: components["parameters"]["CompositionRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionRequest"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    listEditorialCompositionProposals: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionProposalPage"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    getEditorialCompositionProposal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                proposalId: components["parameters"]["CompositionProposalId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionProposal"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    applyEditorialCompositionProposal: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": components["parameters"]["CompositionIfMatch"];
+                "X-CSRF-Token": components["parameters"]["CompositionCSRF"];
+                "Idempotency-Key": components["parameters"]["CompositionIdempotency"];
+            };
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                proposalId: components["parameters"]["CompositionProposalId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyComposition"];
+            };
+        };
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        article: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "publication" | "news" | "exhibition";
+                            revision: string;
+                            /** @enum {string} */
+                            lifecycle: "editable" | "archived" | "trashed";
+                            title: string;
+                            isPublished: boolean;
+                            hasDraftChanges: boolean;
+                            publishedVersionId: string | null;
+                            pendingSchedule: components["schemas"]["EditorialScheduleSummary"] | null;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            editorialDate: string | null;
+                            completeness: {
+                                [key: string]: {
+                                    complete: boolean;
+                                    issuesCount: number;
+                                };
+                            };
+                            document: components["schemas"]["EditorialArticleDocument"];
+                            diagnostics: components["schemas"]["EditorialIssue"][];
+                            scheduleHistory: components["schemas"]["EditorialScheduleSummary"][];
+                            trashedAt: string | null;
+                            purgeAfter: string | null;
+                            exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
+                        };
+                        /** Format: uuid */
+                        clientMutationId: string;
+                        changed: boolean;
+                        /** Format: uuid */
+                        adoptionId: string;
+                        /** Format: uuid */
+                        recoveryVersionId: string | null;
+                    };
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    prepareEditorialCompositionCandidate: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": components["parameters"]["CompositionIfMatch"];
+                "X-CSRF-Token": components["parameters"]["CompositionCSRF"];
+            };
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                proposalId: components["parameters"]["CompositionProposalId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionCandidate"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    getEditorialCompositionCandidate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                candidateId: components["parameters"]["CompositionCandidateId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionCandidate"];
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    previewEditorialCompositionCandidate: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": components["parameters"]["CompositionIfMatch"];
+                "X-CSRF-Token": components["parameters"]["CompositionCSRF"];
+            };
+            path: {
+                articleId: components["parameters"]["CompositionArticleId"];
+                candidateId: components["parameters"]["CompositionCandidateId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    locale: string;
+                    /** @enum {unknown} */
+                    viewport: 375 | 1440;
+                };
+            };
+        };
+        responses: {
+            /** @description Résultat privé */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        exchangeCode: string;
+                        /** Format: date-time */
+                        expiresAt: string;
+                        /** Format: uri */
+                        exchangeUrl: string;
+                    };
+                };
+            };
+            /** @description Entrée invalide */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Session absente */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Droits/CSRF insuffisants */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Ressource absente ou autre site */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Conflit de révision, idempotence ou périmètre */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Révision du brouillon périmée */
+            412: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Sources trop volumineuses */
+            413: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Quota atteint */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+            /** @description Assistance indisponible */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompositionError"];
+                };
+            };
+        };
+    };
+    getSiteNavigation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Configuration persistée ; aucune dépendance au brouillon de présentation. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    /** @description Version forte de la seule configuration du menu, liée au site. Le BFF la recopie aussi dans X-Resource-Version. */
+                    ETag: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationConfiguration"];
+                };
+            };
+            /** @description Session/credential manquante, expirée ou preview non autorisée. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Accès ou CSRF refusé. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Limite de demandes atteinte. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Configuration ou dépendance indisponible ; jamais de fallback initial silencieux. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+        };
+    };
+    replaceSiteNavigation: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 4096 octets maximum ; sept identités exactes, aucun siteId ni revision dans le corps. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NavigationWrite"];
+            };
+        };
+        responses: {
+            /** @description État confirmé après commit, no-op inclus. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    /** @description Version forte de la seule configuration du menu, liée au site. Le BFF la recopie aussi dans X-Resource-Version. */
+                    ETag: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationConfiguration"];
+                };
+            };
+            /** @description Entrée invalide ; aucune coercition ni propriété inconnue. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Session/credential manquante, expirée ou preview non autorisée. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Accès ou CSRF refusé. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Précondition de présentation active non satisfaite, ou contribution fermée. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description ETag du menu obsolète ; comparaison/relecture requise. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Corps supérieur à4096 octets. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Content-Type non pris en charge. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description If-Match manquant. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Limite de demandes atteinte. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Configuration ou dépendance indisponible ; jamais de fallback initial silencieux. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+        };
+    };
+    getSiteNavigationContext: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Les noms sont dans la langue par défaut ; les six libellés restent dans le catalogue de traduction existant. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationAdminContext"];
+                };
+            };
+            /** @description Session/credential manquante, expirée ou preview non autorisée. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Accès ou CSRF refusé. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Limite de demandes atteinte. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Configuration ou dépendance indisponible ; jamais de fallback initial silencieux. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+        };
+    };
+    getPublicSiteNavigation: {
+        parameters: {
+            query: {
+                locale: string;
+                expectedReleaseId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liens visibles et disponibles seulement ; zéro lien est un succès valide. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationPublicProjection"];
+                };
+            };
+            /** @description Entrée invalide ; aucune coercition ni propriété inconnue. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Précondition de présentation active non satisfaite, ou contribution fermée. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Limite de demandes atteinte. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Configuration ou dépendance indisponible ; jamais de fallback initial silencieux. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+        };
+    };
+    getPreviewSiteNavigation: {
+        parameters: {
+            query: {
+                locale: string;
+                expectedSnapshotId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Capture nouvelle ou fallback historique exclusif au snapshot autorisé. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationPreviewProjection"];
+                };
+            };
+            /** @description Entrée invalide ; aucune coercition ni propriété inconnue. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Session/credential manquante, expirée ou preview non autorisée. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Accès ou CSRF refusé. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Aperçu non accessible ou snapshot attendu différent ; pas d’oracle de présence. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Limite de demandes atteinte. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+            /** @description Configuration ou dépendance indisponible ; jamais de fallback initial silencieux. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    "X-Request-Id": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationErrorResponse"];
+                };
+            };
+        };
+    };
+    getFormsPublic: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                locale?: string;
+                ownerType?: string;
+                ownerId?: string;
+                blockId?: string;
+                /** @description Optional published artwork context on the Contact page after cutover. */
+                artworkId?: string;
+            };
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsPublic"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    openFormsSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsSessionInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsSessionCreated"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    getFormsSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsSession"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    reserveFormsUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsUploadInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsUpload"];
+                };
+            };
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsUpload"];
+                };
+            };
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsUpload"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    completeFormsUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+                uploadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsUpload"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    removeFormsUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+                uploadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    previewFormsUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+                uploadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAccess"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    submitFormsSession: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsSubmissionInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsReceipt"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    recoverFormsReceipt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsReceiptRecoveryInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsReceipt"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listForms: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                q?: string;
+                kind?: "classic" | "expertise";
+                state?: "draft" | "published" | "archived";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdminPage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    createForms: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsCreateInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    getFormsAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    deleteForms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            204: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    updateFormsDraft: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsDocument"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    validateForms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsValidation"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    publishForms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    versionName?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsVersion"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    duplicateForms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsVersions: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsVersionPage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    saveFormsVersion: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsNameInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsVersion"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    getFormsVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                formId: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsVersion"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    restoreFormsVersion: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    versionId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsUsages: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsUsagePage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    archiveForms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    reopenForms: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAdmin"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsAdministratorCandidates: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsCandidatePage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    getFormsNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsNotificationSettings"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    updateFormsNotificationSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled: boolean;
+                    visitorConfirmationEnabled: boolean;
+                    recipientSubjects: string[];
+                    /** @description Confirmation of directory addresses displayed to the administrator; never a free routing address. */
+                    confirmedEmails?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsNotificationSettings"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsSubmissions: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                q?: string;
+                formId?: string;
+                originType?: "page" | "article" | "artwork";
+                from?: string;
+                to?: string;
+                read?: boolean;
+                treatment?: "new" | "in_progress" | "waiting" | "completed" | "archived";
+                assignee?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsSubmissionPage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    getFormsSubmission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsSubmissionDetail"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    deleteFormsSubmission: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    confirmDeletion: true;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    markFormsRead: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    read: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsSubmissionSummary"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    updateFormsWorkflow: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsWorkflowInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsSubmissionSummary"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsNotes: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsNotePage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    addFormsNote: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsNote"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    accessFormsAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAccess"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    bulkFormsSubmissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsBulkInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsBulkResult"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsNotifications: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsNotificationPage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    retryFormsNotification: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                notificationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    acknowledgeUncertain: boolean;
+                    confirmedEmail?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @constant */
+                        state: "pending";
+                        revision: string;
+                        etag: string;
+                    };
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    listFormsViews: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsViewPage"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    createFormsView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsViewInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            201: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsView"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    updateFormsView: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsViewInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsView"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    deleteFormsView: {
+        parameters: {
+            query?: never;
+            header: {
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            204: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    createFormsExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormsExportInput"];
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            202: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsExport"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    getFormsExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsExport"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    accessFormsExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            200: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    ETag?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsAccess"];
+                };
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    receiveFormsResendWebhook: {
+        parameters: {
+            query?: never;
+            header: {
+                "svix-id": string;
+                "svix-timestamp": string;
+                "svix-signature": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    type: string;
+                    data: {
+                        [key: string]: unknown;
+                    };
+                    /** Format: date-time */
+                    created_at?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response; no side effect on GET. */
+            204: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forms error 400; preserve user input. */
+            400: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 401; preserve user input. */
+            401: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 403; preserve user input. */
+            403: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 404; preserve user input. */
+            404: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 409; preserve user input. */
+            409: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 410; preserve user input. */
+            410: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 412; preserve user input. */
+            412: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 413; preserve user input. */
+            413: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 415; preserve user input. */
+            415: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 422; preserve user input. */
+            422: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 428; preserve user input. */
+            428: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 429; preserve user input. */
+            429: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+            /** @description Forms error 503; preserve user input. */
+            503: {
+                headers: {
+                    "Cache-Control": "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormsError"];
+                };
+            };
+        };
+    };
+    authorizePublicArtworkMedia: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Media-Display-Id"?: components["schemas"]["DisplayId"];
+            };
+            path: {
+                mediaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Autorisation fraîche, jamais un transfert binaire. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicMediaAuthorization"];
+                };
+            };
+            /** @description Entrée invalide. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Ressource non accessible, sans distinction de cause. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Limitation publique. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Service indisponible. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    authorizePublicSiteLogo: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Media-Display-Id"?: components["schemas"]["DisplayId"];
+            };
+            path: {
+                logoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Autorisation fraîche, jamais un transfert binaire. */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicMediaAuthorization"];
+                };
+            };
+            /** @description Entrée invalide. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Ressource non accessible, sans distinction de cause. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Limitation publique. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Service indisponible. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    recordPublicMediaObservation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublicMediaObservation"];
+            };
+        };
+        responses: {
+            /** @description Observation acceptée ; ne prouve ni un droit ni un transfert. */
+            204: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Entrée invalide. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Corps trop grand. */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Limitation publique. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Service indisponible. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    queryPublicImageDescriptors: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImageDescriptorQuery"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImageDescriptorResult"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Payload too large */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Rate limit */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+        };
+    };
+    authorizePublicArtworkImage: {
+        parameters: {
+            query: {
+                rendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+                version: string;
+            };
+            header?: never;
+            path: {
+                mediaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageAuthorization"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable or inaccessible */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Rate limit */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+        };
+    };
+    authorizePublicSiteLogoImage: {
+        parameters: {
+            query: {
+                rendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+                version: string;
+            };
+            header?: never;
+            path: {
+                logoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageAuthorization"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable or inaccessible */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Rate limit */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+        };
+    };
+    authorizePublicPresentationImage: {
+        parameters: {
+            query: {
+                rendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+                version: string;
+            };
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageAuthorization"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable or inaccessible */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Rate limit */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+        };
+    };
+    authorizePublicEditorialImage: {
+        parameters: {
+            query: {
+                rendition: "r1-reference" | "r1-w64" | "r1-w96" | "r1-w128" | "r1-w160" | "r1-w256" | "r1-w320" | "r1-w480" | "r1-w640" | "r1-w768" | "r1-w960" | "r1-w1280" | "r1-w1600" | "r1-w1920" | "r1-w2500";
+                version: string;
+            };
+            header?: never;
+            path: {
+                assetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageAuthorization"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable or inaccessible */
+            404: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Rate limit */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+        };
+    };
+    recordPublicImageObservation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImageObservation"];
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            204: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Payload too large */
+            413: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Rate limit */
+            429: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+            /** @description Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "private, no-store";
+                    "Referrer-Policy"?: "no-referrer";
+                    "X-Content-Type-Options"?: "nosniff";
+                    "X-Request-Id"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicImageError"];
+                };
+            };
+        };
+    };
 }
 
-export const sourceSha256 = "d41ea96578bd865142af514371e42d9aa557d9383415733cb003d62e73705fd5";
+export const sourceSha256 = "ed1cb187ea17c84bfb86cd283b3bd3d3a3c1a56dccbc01b0e2696475cc36a7da";

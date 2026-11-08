@@ -1,6 +1,6 @@
 // Generated from the versioned messages.json registry. Do not edit.
 export const messageRegistry = {
-  "version": 5,
+  "version": 8,
   "description": "Registre des textes d’interface002/003/004 ; contributions existantes préservées.",
   "groups": [
     {
@@ -46,6 +46,10 @@ export const messageRegistry = {
     {
       "id": "gallery",
       "label": "Catalogue et fiche immersive"
+    },
+    {
+      "id": "editorial",
+      "label": "Articles · Publications et actualités"
     }
   ],
   "messages": [
@@ -1467,6 +1471,346 @@ export const messageRegistry = {
       "initial": {
         "fr": "Glissez pour explorer l’image, ou utilisez les touches fléchées. Revenir aux images quitte l’examen.",
         "en": "Drag to explore the image, or use the arrow keys. Back to images exits image inspection."
+      }
+    },
+    {
+      "key": "editorial.play",
+      "group": "editorial",
+      "label": "Lire la vidéo",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Lire la vidéo",
+        "en": "Play video"
+      }
+    },
+    {
+      "key": "editorial.pause",
+      "group": "editorial",
+      "label": "Mettre en pause",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Mettre en pause",
+        "en": "Pause video"
+      }
+    },
+    {
+      "key": "editorial.fullscreen",
+      "group": "editorial",
+      "label": "Plein écran",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Plein écran",
+        "en": "Fullscreen"
+      }
+    },
+    {
+      "key": "editorial.soundOn",
+      "group": "editorial",
+      "label": "Activer le son",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Activer le son",
+        "en": "Unmute"
+      }
+    },
+    {
+      "key": "editorial.soundOff",
+      "group": "editorial",
+      "label": "Couper le son",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Couper le son",
+        "en": "Mute"
+      }
+    },
+    {
+      "key": "editorial.videoUnavailable",
+      "group": "editorial",
+      "label": "La vidéo est indisponible.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "La vidéo est indisponible.",
+        "en": "The video is unavailable."
+      }
+    },
+    {
+      "key": "editorial.autoplayBlocked",
+      "group": "editorial",
+      "label": "Lancez la lecture pour découvrir la vidéo.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Lancez la lecture pour découvrir la vidéo.",
+        "en": "Press play to watch the video."
+      }
+    },
+    {
+      "key": "editorial.previousSlide",
+      "group": "editorial",
+      "label": "Slide précédente",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Slide précédente",
+        "en": "Previous slide"
+      }
+    },
+    {
+      "key": "editorial.nextSlide",
+      "group": "editorial",
+      "label": "Slide suivante",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Slide suivante",
+        "en": "Next slide"
+      }
+    },
+    {
+      "key": "editorial.pauseCarousel",
+      "group": "editorial",
+      "label": "Arrêter le défilement",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Arrêter le défilement",
+        "en": "Pause slideshow"
+      }
+    },
+    {
+      "key": "editorial.resumeCarousel",
+      "group": "editorial",
+      "label": "Reprendre le défilement",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Reprendre le défilement",
+        "en": "Resume slideshow"
+      }
+    },
+    {
+      "key": "editorial.slide",
+      "group": "editorial",
+      "label": "Slide",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Slide",
+        "en": "Slide"
+      }
+    },
+    {
+      "key": "editorial.close",
+      "group": "editorial",
+      "label": "Fermer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Fermer",
+        "en": "Close"
+      }
+    },
+    {
+      "key": "editorial.zoomImage",
+      "group": "editorial",
+      "label": "Agrandir l’image",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Agrandir l’image",
+        "en": "Enlarge image"
+      }
+    },
+    {
+      "key": "editorial.imageDialog",
+      "group": "editorial",
+      "label": "Image agrandie",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Image agrandie",
+        "en": "Enlarged image"
+      }
+    },
+    {
+      "key": "editorial.authors",
+      "group": "editorial",
+      "label": "Auteurs",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Auteurs",
+        "en": "Authors"
+      }
+    },
+    {
+      "key": "editorial.authorProfile",
+      "group": "editorial",
+      "label": "À propos de l’auteur",
+      "maxLength": 80,
+      "initial": {
+        "fr": "À propos de l’auteur",
+        "en": "About the author"
+      }
+    },
+    {
+      "key": "editorial.related",
+      "group": "editorial",
+      "label": "À lire aussi",
+      "maxLength": 80,
+      "initial": {
+        "fr": "À lire aussi",
+        "en": "Related reading"
+      }
+    },
+    {
+      "key": "editorial.search",
+      "group": "editorial",
+      "label": "Rechercher un article",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Rechercher un article",
+        "en": "Search articles"
+      }
+    },
+    {
+      "key": "editorial.noResults",
+      "group": "editorial",
+      "label": "Aucun article ne correspond à votre recherche.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Aucun article ne correspond à votre recherche.",
+        "en": "No articles match your search."
+      }
+    },
+    {
+      "key": "editorial.loadError",
+      "group": "editorial",
+      "label": "Les articles ne sont pas disponibles pour le moment.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Les articles ne sont pas disponibles pour le moment.",
+        "en": "Articles are currently unavailable."
+      }
+    },
+    {
+      "key": "editorial.retry",
+      "group": "editorial",
+      "label": "Réessayer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Réessayer",
+        "en": "Try again"
+      }
+    },
+    {
+      "key": "editorial.readArticle",
+      "group": "editorial",
+      "label": "Lire l’article",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Lire l’article",
+        "en": "Read article"
+      }
+    },
+    {
+      "key": "editorial.previousPage",
+      "group": "editorial",
+      "label": "Page précédente",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Page précédente",
+        "en": "Previous page"
+      }
+    },
+    {
+      "key": "editorial.nextPage",
+      "group": "editorial",
+      "label": "Page suivante",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Page suivante",
+        "en": "Next page"
+      }
+    },
+    {
+      "key": "editorial.page",
+      "group": "editorial",
+      "label": "Page",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Page",
+        "en": "Page"
+      }
+    },
+    {
+      "key": "editorial.allCategories",
+      "group": "editorial",
+      "label": "Toutes les catégories",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Toutes les catégories",
+        "en": "All categories"
+      }
+    },
+    {
+      "key": "editorial.filters",
+      "group": "editorial",
+      "label": "Filtres",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Filtres",
+        "en": "Filters"
+      }
+    },
+    {
+      "key": "editorial.resetSearch",
+      "group": "editorial",
+      "label": "Réinitialiser la recherche",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Réinitialiser la recherche",
+        "en": "Reset search"
+      }
+    },
+    {
+      "key": "editorial.carousel",
+      "group": "editorial",
+      "label": "Galerie de médias",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Galerie de médias",
+        "en": "Media gallery"
+      }
+    },
+    {
+      "key": "editorial.imageUnavailable",
+      "group": "editorial",
+      "label": "Ce visuel n’est pas disponible.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Ce visuel n’est pas disponible.",
+        "en": "This image is unavailable."
+      }
+    },
+    {
+      "key": "editorial.artworkTitle",
+      "group": "editorial",
+      "label": "Titre de l’œuvre (libellé)",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Œuvre",
+        "en": "Artwork"
+      }
+    },
+    {
+      "key": "editorial.searchTerms",
+      "group": "editorial",
+      "label": "Rechercher un classement",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Rechercher un classement",
+        "en": "Search classifications"
+      }
+    },
+    {
+      "key": "editorial.filterLimit",
+      "group": "editorial",
+      "label": "Limite des classements sélectionnés",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Sélectionnez jusqu’à 20 classements.",
+        "en": "Select up to 20 classifications."
       }
     }
   ]

@@ -1,0 +1,9 @@
+import {it,expect} from "vitest";
+import {selectPresentation} from "../../lib/presentation/select-presentation";
+import {validatePublicPresentation} from "../../lib/presentation/validate-response";
+import {manifestFingerprints} from "../../clients/manifests/fingerprints.generated";
+import projection from "../../clients/default/projection.json";
+import type {PublicPresentation} from "../../lib/presentation/types";
+const initial=():PublicPresentation=>({releaseId:"19000000-0000-4000-8000-000000000001",schemaVersion:1,profileId:"default",manifestFingerprint:manifestFingerprints.default,locale:"fr",pageKey:"home",theme:structuredClone(projection) as PublicPresentation["theme"],fontFiles:[],sections:[],footer:{schemaVersion:1,scope:"public",locale:"fr",services:[],groups:[],socialLinks:[],showDescription:true,showLanguageSelector:true}});
+it("clears an old footer on explicit translated NULL and retains a whole presentation when no translation is ready",()=>{const p=initial(),translated={...p,locale:"en",footer:null};expect(selectPresentation(p,translated).footer).toBeNull();expect(selectPresentation(p,null)).toBe(p);expect(selectPresentation(p,{...translated,releaseId:"19000000-0000-4000-8000-000000000002"})).toBe(p);expect(selectPresentation(p,{...translated,profileId:"demo-gallery"})).toBe(p);});
+it("rejects footer locale/scope mismatch and accepts legacy absence",()=>{const p=initial(),expected={profileId:"default",locale:"fr",pageKey:"home" as const};expect(validatePublicPresentation(p,expected).footer).not.toBeNull();expect(()=>validatePublicPresentation({...p,footer:{...p.footer!,locale:"en"}},expected)).toThrow("invalid_footer_scope");expect(()=>validatePublicPresentation({...p,footer:{...p.footer!,scope:"preview"}},expected)).toThrow("invalid_footer_scope");delete p.footer;expect(validatePublicPresentation(p,expected).footer).toBeUndefined();});

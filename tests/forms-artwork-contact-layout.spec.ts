@@ -1,0 +1,24 @@
+import {test,expect,type Page} from "@playwright/test";
+import {readFileSync} from "node:fs";
+import {randomInt} from "node:crypto";
+test.skip(process.env.E2E_FORMS_RECIPE!=="true"||process.env.E2E_BASE_URL!=="http://127.0.0.1:3010","Requires the isolated synthetic Forms recipe.");
+const fixture=()=>JSON.parse(readFileSync("../backend/.runtime/forms-local/contact-fixture.json","utf8")) as {formId:string;blockId:string;artworkId:string;mode:string};
+async function open(page:Page){const f=fixture();expect(f.mode).toBe("mock");await page.setExtraHTTPHeaders({"x-contact-mock-visitor":`127.24.${randomInt(1,250)}.${randomInt(1,250)}`});await page.goto("/contact?artwork="+f.artworkId);await expect(page.getByRole("button",{name:"Envoyer",exact:true})).toBeEnabled();return f;}
+test("places the actual configured form beside the photo/cartel and gives the cartel padding on every side",async({page})=>{
+ test.setTimeout(90000);await page.setViewportSize({width:1440,height:1000});const f=await open(page);const section=page.locator('[data-contact-artwork-section]'),card=page.locator('[data-contact-artwork-card]'),cartel=page.locator('[data-contact-artwork-cartel]'),form=page.locator('[data-contact-configured-form]');
+ await expect(section).toHaveAttribute("id",f.blockId);await expect(page.locator("form")).toHaveCount(1);await expect(card.locator("img")).toBeVisible();await card.locator("img").evaluate((img:HTMLImageElement)=>img.decode());await page.evaluate(()=>document.fonts.ready);
+ const padding=()=>cartel.evaluate(e=>{const s=getComputedStyle(e);return [s.paddingTop,s.paddingRight,s.paddingBottom,s.paddingLeft]});expect(await padding()).toEqual(Array(4).fill("32px"));
+ let a=await card.boundingBox(),b=await form.boundingBox();expect(b!.x).toBeGreaterThan(a!.x+a!.width);expect((await cartel.boundingBox())!.x).toBeCloseTo((await card.locator('img').boundingBox())!.x-32,0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect.poll(()=>page.locator('form').evaluate(el=>{for(let e:Element|null=el;e;e=e.parentElement)if(+getComputedStyle(e).opacity<.999)return false;return true;})).toBe(true);await page.screenshot({path:'.impeccable/review/contact-integrated-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});expect(await padding()).toEqual(Array(4).fill("24px"));a=await card.boundingBox();b=await form.boundingBox();expect(b!.y).toBeGreaterThanOrEqual(a!.y+a!.height);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'.impeccable/review/contact-integrated-mobile.png',fullPage:true});
+});
+test("preserves the form placement, entered answers and artwork context through language change and actual local submission",async({page})=>{
+ test.setTimeout(90000);const created:{locale:string;placement:{ownerType:string;ownerId:string;blockId:string;artworkId:string}}[]=[];let submits=0;
+ page.on('request',r=>{if(r.method()==='POST'&&/\/api\/forms\/[^/]+\/sessions$/.test(new URL(r.url()).pathname))created.push(r.postDataJSON());if(r.method()==='POST'&&/\/api\/forms\/sessions\/[^/]+\/submit$/.test(new URL(r.url()).pathname))submits++;});
+ const f=await open(page);expect(created).toHaveLength(1);expect(created[0]?.placement).toEqual({ownerType:"page",ownerId:"contact",blockId:f.blockId,artworkId:f.artworkId});
+ await page.getByRole('textbox',{name:/^Nom/}).fill('Brouillon conservé');const locale=page.waitForRequest(r=>new URL(r.url()).pathname==='/api/site-locale');await page.getByRole('link',{name:'English',exact:true}).click();expect(new URL((await locale).url()).searchParams.get('artwork')).toBe(f.artworkId);
+ await expect(page.getByRole('button',{name:'Send',exact:true})).toBeEnabled();await expect(page.getByRole('textbox',{name:/^Name/})).toHaveValue('Brouillon conservé');await expect(page.locator('[data-contact-artwork-cartel]')).toContainText('Medium');expect(created).toHaveLength(1);
+ await page.getByRole('textbox',{name:/^Email/}).fill('contact-layout@example.test');await page.getByRole('textbox',{name:/^Subject/}).fill('Synthetic linked enquiry');await page.getByRole('textbox',{name:/^Message/}).fill('Synthetic request to verify the reused configured form.');await page.getByRole('button',{name:'Send',exact:true}).click();await expect(page.getByText(/^Reference : FORM-/)).toBeVisible();expect(submits).toBe(1);await expect(page.locator('[data-contact-artwork-card]')).toBeVisible();
+});
+test("keeps the configured form usable when the artwork photo fails",async({page})=>{
+ await page.route('**/media/*',route=>route.abort('failed'));await open(page);await expect(page.locator('[data-contact-artwork-card]')).toContainText('Image non disponible');await expect(page.locator('form')).toHaveCount(1);
+});

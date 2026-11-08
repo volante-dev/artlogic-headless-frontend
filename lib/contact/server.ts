@@ -3,7 +3,9 @@ import {randomUUID} from "node:crypto";
 import {loadConfig,stringValue,numberValue} from "../config/env";
 import {privateHeaders,uuidPattern} from "../api/client";
 import {visitorIp} from "./network-context";
+import {acceptsPublicOrigin} from "./public-origin";
 import type {ContactConfiguration} from "./types";
+import {contactArtworkFromExperience,isContactArtworkId} from "./artwork";
 const responseLimit=262144,bodyLimit=98304;
 const codes:Record<number,readonly string[]>={400:["validation_error","invalid_request"],401:["unauthorized"],403:["forbidden"],404:["not_found"],409:["idempotency_conflict"],413:["payload_too_large"],415:["unsupported_media_type"],429:["rate_limited"],503:["contact_disabled","contact_unavailable"]};
 const fields=new Set(["name","email","subject","message","locale","artworkId","proof","website"]),reasons=new Set(["required","invalid","too_long","unsupported","conflict"]);
@@ -27,7 +29,7 @@ function configuration(v:unknown):ContactConfiguration{
 export async function readContactConfiguration():Promise<ContactConfiguration|null>{try{const result=await call("config");if(!result.response.ok)return null;const config=configuration(result.body);return {...config,enabled:config.enabled&&loadConfig().CONTACT_ENABLED==="true"};}catch{return null;}}
 export async function contactConfigResponse(){const config=await readContactConfiguration();return config?Response.json(config,{headers:privateHeaders}):contactFailure(503,"contact_unavailable");}
 export async function relayContact(request:Request,path:"inquiries"|"receipt"){
- const c=loadConfig();if(request.headers.get("origin")!==stringValue(c,"SITE_ORIGIN")||request.headers.get("sec-fetch-site")==="cross-site")return contactFailure(403,"forbidden");
+ const c=loadConfig();if(!acceptsPublicOrigin(request,c))return contactFailure(403,"forbidden");
  let ip:string;try{ip=visitorIp(request);}catch{return contactFailure(403,"forbidden");}
  if(request.headers.get("content-type")?.split(";")[0]!=="application/json")return contactFailure(415,"unsupported_media_type");
  let body:unknown;try{body=JSON.parse((await bytes(request.body,bodyLimit)).toString("utf8"));}catch(e){return contactFailure(e instanceof Error&&e.message==="contact_body_limit"?413:400,e instanceof Error&&e.message==="contact_body_limit"?"payload_too_large":"validation_error");}
@@ -42,5 +44,6 @@ export async function relayContact(request:Request,path:"inquiries"|"receipt"){
 }
 
 export async function readContactArtwork(id:string,locale:string,defaultLocale:string,untitled:string){
- try{const {getArtwork}=await import("../api/artworks");const art=await getArtwork(id);return {id:art.id,title:art.title??untitled,publicReference:null,url:stringValue(loadConfig(),"SITE_ORIGIN")+(locale===defaultLocale?"":"/"+locale)+"/artworks/"+art.id};}catch{return null;}
+ if(!isContactArtworkId(id))return null;
+ try{const {getGalleryExperience}=await import("../artworks/server");return contactArtworkFromExperience(await getGalleryExperience(id,locale),untitled,defaultLocale);}catch{return null;}
 }

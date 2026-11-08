@@ -103,3 +103,13 @@ Les descriptions sont publiées avec le thème/pages. L’aperçu utilise le sna
 Pour la recette isolée : construire avec `E2E_GALLERY_BUILD=1 pnpm build` (sortie `.runtime/next-gallery-production`), puis lancer le harnais depuis backend. `E2E_GALLERY_CAPTURE=1` active les captures explicites. `pnpm build-storybook` puis `pnpm test:storybook` testent le catalogue hors ligne. Voir [les preuves005](../backend/specs/005-artwork-gallery-experience/validation-execution.md).
 
 Les cartes de la liste utilisent `cover`, y compris dans le profil client de démonstration. La fermeture de la fiche est une croix seule, avec libellé accessible conservé. La proposition mobile immersive de la spécification006 reste en phase de maquettes.
+
+## Expositions réutilisables
+
+`/exhibitions` et `/exhibitions/{slug}` réutilisent les listes, lecteurs, blocs et slots `ArticleCard`/`ArticleReader`, avec les variantes localisées prévues par le site. La période facultative dans les props est obligatoire pour une exposition publique, nullable dans un aperçu privé et absente des Publications/Actualités. Son affichage utilise les jours calendaires en UTC sans décalage de fuseau. Le changement de langue reste dynamique. Les liens vers une œuvre ouvrent la modale partagée.
+
+Les nouvelles sélections ont des rubriques `kinds` explicites. Le format historique `kind:"all"` reste Publications+Actualités et ne se réécrit pas lors d’une autre modification. Expositions nécessite une inclusion explicite. Migration025 et transition coordonnée de manifeste précèdent l’ouverture des contributions API ; le rollback conserve les lecteurs compatibles. [Runbook](../backend/specs/010-editorial-exhibitions/release.md). Les stories ExhibitionPast/Future/OneDay et Exhibitions couvrent les deux profils et langues.
+
+### Editorial immersive mode
+
+Article reading mode and block appearance choices are common to all languages. API contribution is gated by `EDITORIAL_IMMERSIVE_ENABLED` (default `false`) and a conformant frontend profile. `EDITORIAL_IMMERSIVE_RENDER_ENABLED` controls the frontend reader (default `true`); setting it to `false` renders classic flow without deleting settings. No migration or site provision is required. See `../backend/specs/012-editorial-immersive-mode/release.md` for rollout and rollback order.

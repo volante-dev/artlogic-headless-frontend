@@ -1,0 +1,10 @@
+import {createElement} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {it,expect} from 'vitest';
+import {ArticleReader} from '../../components/editorial/ArticleReader';
+import {EditorialInteractionProvider} from '../../components/editorial/immersive/EditorialInteractionProvider';
+import {editorialBlocks,eid} from '../../.storybook/editorial-fixtures';
+import type {ArticleReaderProps} from '../../components/editorial/ArticleReader';
+const article:ArticleReaderProps['article']={id:eid(1),kind:'publication',readingMode:'immersive',canonicalPath:'/publications/demo',title:'Native opening',summary:null,editorialDate:null,cover:null,authors:[],terms:[],alternatePaths:{},blocks:editorialBlocks(),relatedArticles:[],publicRevision:'1',commonRevision:'1'};
+it('server markup has a stable opening and accessible following blocks before enhancement',()=>{const html=renderToStaticMarkup(createElement(ArticleReader,{article}));expect(html).toContain('data-editorial-eligible');expect(html).not.toContain('data-editorial-immersive="true"');expect(html).not.toContain(' inert=');expect(html).toContain('La lumière comme matière');expect(html).toContain('L’image et le récit');});
+it('the render kill switch uses classic flow without changing the stored document',()=>{const before=JSON.stringify(article),props={enabled:false,children:createElement(ArticleReader,{article})},html=renderToStaticMarkup(createElement(EditorialInteractionProvider,props));expect(html).not.toContain('data-editorial-eligible');expect(html).toContain('Native opening');expect(html).toContain('La lumière comme matière');expect(JSON.stringify(article)).toBe(before);});

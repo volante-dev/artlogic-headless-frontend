@@ -1,0 +1,3 @@
+/** Ownership is chosen at gesture start and retained even when this host reaches its edge. */
+export function canConsumeInnerScroll(top:number,height:number,viewport:number,direction:number){return height>viewport+2&&(direction>0?top<height-viewport-1:direction<0&&top>1);}
+export function innerScrollCanConsume(target:Element,root:HTMLElement,direction:number){let node:Element|null=target;while(node&&node!==root){if(node instanceof HTMLElement&&node.scrollHeight>node.clientHeight+2&&/(auto|scroll)/.test(getComputedStyle(node).overflowY)){if(canConsumeInnerScroll(node.scrollTop,node.scrollHeight,node.clientHeight,direction))return true;}node=node.parentElement;}return false;}

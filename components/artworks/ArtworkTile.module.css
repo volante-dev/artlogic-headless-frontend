@@ -1,0 +1,40 @@
+/* One artwork view for the catalogue and composed selections. Layout belongs to the parent. */
+.tile{min-width:0}
+.tile .link{position:relative;display:block;color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.tile .image{position:relative;overflow:hidden;aspect-ratio:1;background:var(--surface)}
+.tile .image img{object-fit:cover}
+.tile[data-image-fit="contain"] .image{aspect-ratio:auto;background:transparent}
+.tile[data-image-fit="contain"] .image img{position:static;display:block;width:auto;max-width:100%;height:auto;max-height:80svh;object-fit:contain}
+.identity{overflow-wrap:anywhere}
+.tile .link:focus-visible{outline:2px solid currentColor;outline-offset:-3px}
+@media(min-width:768px){
+ .tile .link{overflow:hidden}
+ .tile .identity{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:24px;color:#fff;transition:opacity 180ms cubic-bezier(.23,1,.32,1),transform 220ms cubic-bezier(.23,1,.32,1)}
+ .tile .link::after{content:"";position:absolute;inset:15% 0 0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgb(0 0 0 / .02) 20%,rgb(0 0 0 / .1) 42%,rgb(0 0 0 / .3) 66%,rgb(0 0 0 / .75) 100%);transition:opacity 480ms cubic-bezier(.23,1,.32,1)}
+ .tile .identity h2{font-size:clamp(1rem,1.2vw,1.125rem);line-height:1.3;margin:0 0 6px;color:inherit;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+ .tile .identity p{font-size:.875rem;line-height:1.4;color:inherit;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .tile .link:hover h2{text-decoration:none}
+}
+@media(min-width:768px) and (hover:hover) and (pointer:fine){
+ .tile .link::after{opacity:0}
+ .tile .identity{opacity:0;transform:translateY(6px)}
+ .tile .link:hover::after{opacity:1}
+ .tile .link:hover .identity{opacity:1;transform:none;transition-delay:120ms}
+ .tile .link:focus-visible::after,.tile .link:focus-visible .identity{opacity:1;transform:none;transition:none}
+}
+/* Full-height mobile tracks retain the same identity and gradient without requiring hover. */
+@media(max-width:767px){
+ .tile[data-fill-mobile],.tile[data-fill-mobile] .link{height:100%;min-height:0}
+ .tile[data-fill-mobile] .link{overflow:hidden;background:var(--site-color-inverseSurface)}
+ .tile[data-fill-mobile] .image{height:100%;aspect-ratio:auto;background:transparent}
+ .tile[data-fill-mobile] .image img{position:absolute;inset:0;width:100%;height:100%;max-height:none;max-width:none;object-fit:cover}
+ .tile[data-fill-mobile][data-image-fit="contain"] .image img{object-fit:contain}
+ .tile[data-fill-mobile] .image>div{height:100%;min-height:0;aspect-ratio:auto;background:transparent;color:var(--site-color-inverseText)}
+ .tile[data-fill-mobile] .link::after{content:"";position:absolute;inset:15% 0 0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgb(0 0 0 / .02) 20%,rgb(0 0 0 / .1) 42%,rgb(0 0 0 / .3) 66%,rgb(0 0 0 / .75) 100%)}
+ .tile[data-fill-mobile] .identity{position:absolute;z-index:2;inset:auto 24px var(--artwork-caption-bottom,24px);padding:0;color:#fff}
+ .tile[data-fill-mobile] .identity h2{font-size:1.125rem;line-height:1.3;margin:0 0 6px;color:inherit;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+ .tile[data-fill-mobile] .identity p{font-size:.875rem;line-height:1.4;color:inherit;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .tile[data-fill-mobile] .link:hover h2{text-decoration:none}
+ .tile[data-fill-mobile] .link:focus-visible{outline-color:#fff}
+}
+@media(prefers-reduced-motion:reduce){.tile .identity,.tile .link::after{transition:none;transition-delay:0s;transform:none}}

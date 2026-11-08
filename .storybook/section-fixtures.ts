@@ -31,9 +31,10 @@ export function sectionFixture(type:SectionType,variant:string,state:FixtureStat
   const items=empty?[]:Array.from({length:3},(_,i)=>({id:fixtureId(20+i),heading,excerpt:body,link,image,alt,caption}));
   // This exhaustive map is checked against the actual generated public section union.
   const sections:{[T in SectionType]:Extract<PresentationSection,{type:T}>}={
-    heroMedia:{...common,type:"heroMedia",variant:"immersive",props:{heading,introduction:empty?undefined:long?sentence:en?"Discover the demonstration collection.":"Découvrir la collection de démonstration.",link,linkLabel,poster:image,video}},
+    form:{...common,type:"form",variant:"default",props:{formId:fixtureId(801)}},formImage:{...common,type:"formImage",variant:"default",props:{formId:fixtureId(801),imageSide:"right",image:null}},heroMedia:{...common,type:"heroMedia",variant:"immersive",props:{heading,introduction:empty?undefined:long?sentence:en?"Discover the demonstration collection.":"Découvrir la collection de démonstration.",link,linkLabel,poster:image,video}},
     text:{...common,type:"text",variant:"standard",props:empty?{}:{heading,body,link,linkLabel}},
     textImage:{...common,type:"textImage",variant:"imageLeft",props:empty?{}:{heading,body,link,linkLabel,image,alt,caption}},
+    articleSelection:{...common,type:"articleSelection",variant:"grid",props:{heading,introduction:body,articles:empty?[]:Array.from({length:3},(_,i)=>({id:fixtureId(400+i),kind:i%2?"news":"publication",canonicalPath:(en?"/en":"")+"/publications/etude-"+i,title:heading??title,summary:body??null,editorialDate:"2026-10-30",cover:i===2?null:{srcPath:"/media/"+fixtureId(3),alt},authors:[{id:fixtureId(500),name:en?"Demonstration editorial team":"Équipe éditoriale de démonstration",hasProfile:false}]}))}},
     artworkSelection:{...common,type:"artworkSelection",variant:"grid",props:{heading,introduction:body,artworks}},
     editorialCards:{...common,type:"editorialCards",variant:"grid",props:{heading,introduction:body,items}},
     imageGallery:{...common,type:"imageGallery",variant:"grid",props:{heading,items}},

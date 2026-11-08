@@ -2,6 +2,7 @@
 import {createContext,useContext,type RefObject} from "react";
 import type {MobileArtworkVisualSnapshot} from "../../lib/artworks/interaction";
 export interface ArtworkNavigation {
+  leaveForHeader?:()=>void;
   close:()=>void;changeLocale:(locale:string)=>void;
   container:RefObject<HTMLDivElement|null>;
   rememberVisual?:(scrollTop:number,token?:string|null)=>void;

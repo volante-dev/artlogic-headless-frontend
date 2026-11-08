@@ -1,0 +1,17 @@
+import {randomInt} from "node:crypto";
+import {test,expect} from "@playwright/test";
+const enabled=process.env.E2E_FORMS_RECIPE==="true"&&process.env.E2E_BASE_URL==="http://127.0.0.1:3010";
+test.skip(!enabled,"Only run on the isolated Forms recipe, never on a client deployment.");
+for(const width of [375,1440])test(`validates steps and preserves conditional answers across language and reload at ${width}px`,async({page})=>{
+ test.setTimeout(60000);await page.setViewportSize({width,height:900});await page.setExtraHTTPHeaders({"X-Contact-Mock-Visitor":`127.26.${randomInt(1,250)}.${randomInt(1,250)}`});await page.goto("/news/recette-etapes-formulaire");
+ const form=page.locator("form[data-editorial-form], [data-editorial-form] form");await expect(form).toBeVisible();
+ const name=form.getByRole("textbox",{name:"Nom",exact:false}),email=form.getByRole("textbox",{name:"Adresse e-mail",exact:false}),toggle=form.getByRole("checkbox",{name:"Ajouter un message",exact:false});
+ await form.getByRole("button",{name:"Continuer",exact:true}).click();await expect(name).toBeFocused();await name.fill("Recette étapes");await page.keyboard.press("Tab");await expect(email).toBeFocused();await page.keyboard.type("steps@example.test");await toggle.focus();await page.keyboard.press("Space");await page.keyboard.press("Tab");await page.keyboard.press("Enter");
+ const subject=form.getByRole("textbox",{name:"Sujet",exact:false}),message=form.getByRole("textbox",{name:"Message",exact:true});await expect(subject).toBeFocused();await subject.fill("Demande synthétique");await message.fill("Texte conservé même lorsque le champ est masqué.");
+ await form.getByRole("button",{name:"Précédent",exact:true}).focus();await page.keyboard.press("Enter");await toggle.uncheck();await form.getByRole("button",{name:"Continuer",exact:true}).click();await expect(subject).toHaveValue("Demande synthétique");await expect(message).toHaveCount(0);
+ await form.getByRole("button",{name:"Précédent",exact:true}).click();await toggle.check();await form.getByRole("button",{name:"Continuer",exact:true}).click();await expect(message).toHaveValue("Texte conservé même lorsque le champ est masqué.");
+ if(width<900)await page.getByRole("button",{name:/Ouvrir le menu/}).click();await page.getByRole("link",{name:"English",exact:true}).click();await expect(form.getByRole("button",{name:"Back",exact:true})).toBeVisible();await page.reload();await expect(form.getByRole("textbox",{name:"Subject",exact:false})).toHaveValue("Demande synthétique");await expect(form.getByRole("textbox",{name:"Message",exact:true})).toHaveValue("Texte conservé même lorsque le champ est masqué.");
+ const hiddenId=await page.evaluate(()=>{const key=Object.keys(sessionStorage).find(key=>key.startsWith("artlogic:forms:v1:"));if(!key)throw new Error("missing recipe session");const state=JSON.parse(sessionStorage.getItem(key)!);return state.session.document.fields.find((field:{condition?:unknown})=>field.condition)?.id as string;});expect(hiddenId).toBeTruthy();
+ await form.getByRole("button",{name:"Back",exact:true}).click();await form.getByRole("checkbox",{name:"Add a message",exact:false}).uncheck();await form.getByRole("button",{name:"Continue",exact:true}).click();
+ const request=page.waitForRequest(request=>/\/api\/forms\/sessions\/[^/]+\/submit$/.test(request.url()));await form.getByRole("button",{name:"Send",exact:true}).click();const body=(await request).postDataJSON();expect(body.answers).not.toHaveProperty(hiddenId);await expect(page.getByText(/^Reference : FORM-/)).toBeVisible();
+});

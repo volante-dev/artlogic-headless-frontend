@@ -9,9 +9,10 @@ async function json(path:string,signal?:AbortSignal){
  if(!response.ok){const status=[400,404,409,429].includes(response.status)?response.status:503,raw=value as {error?:{code?:unknown}};const code=raw?.error?.code;const allowed=status===400?["invalid_request","page_out_of_range"]:status===404?["not_found"]:status===409?["catalog_changed"]:status===429?["rate_limited"]:["service_unavailable"];throw new PublicApiError(status,typeof code==="string"&&allowed.includes(code)?code:status===503?"service_unavailable":"invalid_response",status===429&&/^[1-9][0-9]{0,3}$/.test(response.headers.get("retry-after")??"")?Number(response.headers.get("retry-after")):undefined);}
  return value;
 }
-export async function getGalleryCatalog(input:GallerySearch={}){
+export async function getGalleryCatalog(input:GallerySearch={},plp=false){
  const query=new URLSearchParams();for(const [key,value]of Object.entries(input))if(value!==undefined)query.set(key,String(value));
- const result=await json("/v1/public/artwork-catalog"+(query.size?"?"+query.toString():""));try{return parseGalleryCatalog(result);}catch{throw new PublicApiError(503,"invalid_response");}
+ if(plp)query.set("display","plp");
+ const result=await json("/v1/public/artwork-catalog"+(query.size?"?"+query.toString():""));try{return parseGalleryCatalog(result,plp);}catch{throw new PublicApiError(503,"invalid_response");}
 }
 export async function getGalleryExperience(reference:string,locale:string,signal?:AbortSignal){
  if(!/^[a-z0-9-]{1,113}$/i.test(reference)||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(locale))throw new PublicApiError(404,"not_found");

@@ -1,3 +1,5 @@
+import {loadHeaderRouteContext} from "../header/load-route-context";
+import {HeaderRouteCommit} from "../../components/header/HeaderRouteCommit";
 import "server-only";
 import {notFound} from "next/navigation";
 import {loadConfig} from "../config/env";
@@ -13,13 +15,13 @@ import {randomUUID} from "node:crypto";
 import {OriginFreshnessBeacon} from "../../components/artworks/OriginFreshnessBeacon";
 /** All I/O and current publication checks finish before data reaches replaceable views. */
 export async function PublicPage({searchParams,artworkId}:{searchParams?:Promise<CatalogParams>;artworkId?:string}={}){
-  const [presentation,site]=await Promise.all([loadPublicPresentation(),loadSiteContent()]),data:PageData={};
+  const [presentation,site]=await Promise.all([loadPublicPresentation(),loadSiteContent()]),data:PageData={},locale=presentation.locale;
   if(presentation.pageKey==="artworks"){
     const params=await(searchParams??Promise.resolve({}));
     let query:ReturnType<typeof parseCatalogQuery>;
     try{query=parseCatalogQuery(params);}catch{data.catalog={kind:"error",code:"invalid_request",q:"",pageSize:20};}
     if(!data.catalog){
-      try{data.catalog=query!.kind==="legacy"?{kind:"legacy",page:await listArtworks(query!.cursor,{restartOnChange:false})}:{kind:"numbered",page:await getGalleryCatalog(query!.query)};}
+      try{data.catalog=query!.kind==="legacy"?{kind:"legacy",page:await listArtworks(query!.cursor,{restartOnChange:false,display:"plp",locale})}:{kind:"numbered",page:await getGalleryCatalog({...query!.query,locale},true)};}
       catch(error){
         if(!(error instanceof PublicApiError))throw error;
         const code=error.code;
@@ -28,7 +30,7 @@ export async function PublicPage({searchParams,artworkId}:{searchParams?:Promise
     }
   }
   if(presentation.pageKey==="artworkDetail"){
-    if(!artworkId)notFound();try{data.artwork=await getArtwork(artworkId);}catch(error){if(error instanceof PublicApiError&&error.status===404)notFound();throw error;}
+    if(!artworkId)notFound();try{data.artwork=await getArtwork(artworkId,locale);}catch(error){if(error instanceof PublicApiError&&error.status===404)notFound();throw error;}
   }
-  return <><PageRenderer presentation={presentation} siteName={site.siteName} contactMode={loadConfig().DATA_MODE==="mock"?"captured":"live"} demonstration={loadConfig().DATA_MODE==="mock"} data={data}/><OriginFreshnessBeacon nonce={randomUUID()}/></>;
+  return <><PageRenderer presentation={presentation} siteName={site.siteName} contactMode={loadConfig().DATA_MODE==="mock"?"captured":"live"} demonstration={loadConfig().DATA_MODE==="mock"} data={data}/><OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await loadHeaderRouteContext()}/></>;
 }

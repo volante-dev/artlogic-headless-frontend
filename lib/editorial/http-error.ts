@@ -1,0 +1,2 @@
+import {privateHeaders,PublicApiError} from "../api/client";
+export function editorialHttpError(error:unknown){const status=error instanceof PublicApiError&&[400,404,409,429].includes(error.status)?error.status:503;return Response.json({error:{code:status===400?"invalid_request":status===404?"not_found":status===409?"catalog_changed":status===429?"rate_limited":"service_unavailable"}},{status,headers:privateHeaders});}

@@ -1,0 +1,28 @@
+import {describe,it,expect} from "vitest";
+import {createFormUploadStore,type UploadTransport} from "../../lib/forms/upload-store";
+const file=()=>new File([new Uint8Array(100)],"synthetic.jpg",{type:"image/jpeg"});
+const wait=async(test:()=>boolean)=>{const until=Date.now()+2000;while(!test()){if(Date.now()>until)throw new Error("upload_test_timeout");await new Promise(done=>setTimeout(done,5));}};
+function transport():UploadTransport{return {async reserve(input){return {...input,uploadId:crypto.randomUUID(),state:"reserved",upload:{url:"https://storage.example.test/synthetic",method:"PUT",headers:{},expiresAt:new Date(Date.now()+7200000).toISOString()}};},async put(){},async complete(id){return {uploadId:id,clientFileId:crypto.randomUUID(),attempt:1,state:"ready"};},async list(){return [];},async remove(){}};}
+describe("session-owned image transfer state",()=>{
+ it("keeps a resolved private preview available across folder views without sharing it with another session",async()=>{
+  const store=createFormUploadStore(transport(),()=>{}),other=createFormUploadStore(transport(),()=>{}),id=crypto.randomUUID();let loads=0;
+  try{expect(store.cachedPreview(id)).toBeNull();await store.preview(id,async()=>{loads++;return {url:"https://storage.example.test/private-preview",expiresAt:new Date(Date.now()+60000).toISOString()};});expect(store.cachedPreview(id)).toBe("https://storage.example.test/private-preview");await store.preview(id,async()=>{throw new Error("duplicate_preview_request");});expect(loads).toBe(1);expect(other.cachedPreview(id)).toBeNull();store.dispose();expect(store.cachedPreview(id)).toBeNull();}finally{store.dispose();other.dispose();}
+ });
+ it("limits the whole session to three simultaneous transfers and keeps ready files on replay",async()=>{
+  let active=0,max=0,puts=0;const t=transport();t.put=async()=>{active++;puts++;max=Math.max(max,active);await new Promise(done=>setTimeout(done,15));active--;};const store=createFormUploadStore(t,()=>{});
+  try{store.add("photos",Array.from({length:8},file));await wait(()=>store.get().every(value=>value.phase==="ready"));expect(max).toBe(3);expect(puts).toBe(8);store.refresh();await new Promise(done=>setTimeout(done,10));expect(puts).toBe(8);}finally{store.dispose();}
+ });
+ it("reuses a stable tuple after an unknown reservation result and advances only after a confirmed failure",async()=>{
+  const calls:{clientFileId:string;attempt:number}[]=[],t=transport();let n=0;t.reserve=async input=>{calls.push(input);n++;if(n===1)throw new Error("lost_response");if(n===2)return {...input,uploadId:crypto.randomUUID(),state:"failed",errorCode:"form_image_invalid"};return {...input,uploadId:crypto.randomUUID(),state:"uploaded"};};const store=createFormUploadStore(t,()=>{});
+  try{store.add("photos",[file()]);await wait(()=>store.get()[0]?.phase==="failed");const id=store.get()[0]!.clientFileId;store.retry(id);await wait(()=>store.get()[0]?.serverState==="failed");store.retry(id);await wait(()=>calls.length===3);expect(calls.map(value=>value.attempt)).toEqual([1,1,2]);expect(new Set(calls.map(value=>value.clientFileId)).size).toBe(1);}finally{store.dispose();}
+ });
+ it("rejects quota excess as a batch and never serializes a File",()=>{
+  let saved="";const store=createFormUploadStore(transport(),items=>{saved=JSON.stringify(items);});try{expect(()=>store.add("photos",Array.from({length:51},file))).toThrow("upload_count_exceeded");expect(store.get()).toHaveLength(0);expect(()=>store.add("photos",[new File(["x"],"movie.mp4",{type:"video/mp4"})])).toThrow("upload_invalid_file");store.add("photos",[file()]);expect(saved).not.toContain('"file":');expect(saved).toContain('"clientFileId"');}finally{store.dispose();}
+ });
+ it("restores a prepared file without asking the visitor to upload it again",()=>{
+  const store=createFormUploadStore(transport(),()=>{},[{clientFileId:crypto.randomUUID(),attempt:1,fieldId:"photos",name:"synthetic.jpg",byteSize:100,mimeType:"image/jpeg",uploadId:crypto.randomUUID(),serverState:"ready",phase:"ready",progress:100}]);try{expect(store.get()[0]!.phase).toBe("ready");expect(store.pending()).toBe(false);}finally{store.dispose();}
+ });
+ it("confirms a successful PUT whose response was lost, without uploading the file twice",async()=>{let puts=0;const t=transport();t.put=async()=>{puts++;throw new Error("lost_put_response");};const store=createFormUploadStore(t,()=>{});try{store.add("photos",[file()]);await wait(()=>store.get()[0]?.phase==="ready");expect(puts).toBe(1);}finally{store.dispose();}});
+ it("does not block submission for an upload in a conditionally hidden field",()=>{const store=createFormUploadStore(transport(),()=>{},[{clientFileId:crypto.randomUUID(),attempt:1,fieldId:"hidden-photos",name:"synthetic.jpg",byteSize:100,mimeType:"image/jpeg",phase:"needs-file",progress:0}]);try{expect(store.pending()).toBe(true);expect(store.pending(["visible-text"])).toBe(false);}finally{store.dispose();}});
+ it("confirms removal of an expired authorization before reserving the next attempt",async()=>{const events:string[]=[],t=transport();let calls=0;t.reserve=async input=>{events.push("reserve:"+input.attempt);if(++calls===1)throw new Error("upload_attempt_expired");return {...input,uploadId:crypto.randomUUID(),state:"uploaded"};};const id=crypto.randomUUID();t.list=async()=>[{clientFileId:store.get()[0]!.clientFileId,attempt:1,uploadId:id,state:"reserved"}];t.remove=async()=>{events.push("removed");};const store=createFormUploadStore(t,()=>{});try{store.add("photos",[file()]);await wait(()=>store.get()[0]?.phase==="failed");store.retry(store.get()[0]!.clientFileId);await wait(()=>calls===2);expect(events).toEqual(["reserve:1","removed","reserve:2"]);}finally{store.dispose();}});
+});

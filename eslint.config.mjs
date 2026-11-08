@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     ".next/**",
     ".runtime/**",
+    ".impeccable/review/**",
     "out/**",
     "build/**",
     "storybook-static/**",

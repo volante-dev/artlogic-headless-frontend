@@ -12,5 +12,7 @@ export async function getSiteContent(locale:string):Promise<SiteContent>{
   const resolved=Object.fromEntries(messageRegistry.messages.map(m=>{const value=messages[m.key];if(typeof value!=="string"||!value.trim()||Array.from(value).length>m.maxLength)throw new PublicApiError(503,"invalid_response");return [m.key,value];})) as SiteMessages;
   let logo:SiteContent["logo"]=null;
   if(raw.logo!==null){const l=object(raw.logo);if(typeof l.id!=="string"||!uuidPattern.test(l.id)||l.mimeType!=="image/webp"||![l.width,l.height,l.byteSize].every(Number.isSafeInteger)||Number(l.width)<1||Number(l.width)>1024||Number(l.height)<1||Number(l.height)>1024||Number(l.byteSize)<1||Number(l.byteSize)>2097152)throw new PublicApiError(503,"invalid_response");logo={id:l.id,width:Number(l.width),height:Number(l.height),byteSize:Number(l.byteSize),mimeType:"image/webp"};}
-  return {revision:Number(raw.revision),locale,policy:{defaultLocale:policy.defaultLocale,locales,fingerprint:policy.fingerprint},messages:resolved,logo};
+  let whiteLogo:SiteContent["whiteLogo"]=null;
+  if(raw.whiteLogo!=null){const l=object(raw.whiteLogo);if(typeof l.id!=="string"||!uuidPattern.test(l.id)||l.mimeType!=="image/webp"||![l.width,l.height,l.byteSize].every(Number.isSafeInteger)||Number(l.width)<1||Number(l.width)>1024||Number(l.height)<1||Number(l.height)>1024||Number(l.byteSize)<1||Number(l.byteSize)>2097152)throw new PublicApiError(503,"invalid_response");whiteLogo={id:l.id,width:Number(l.width),height:Number(l.height),byteSize:Number(l.byteSize),mimeType:"image/webp"};}
+  return {revision:Number(raw.revision),locale,policy:{defaultLocale:policy.defaultLocale,locales,fingerprint:policy.fingerprint},messages:resolved,logo,whiteLogo};
 }

@@ -114,6 +114,8 @@ export interface components {
             /** @constant */
             type: "text";
             text: components["schemas"]["EditorialLocalizedRichText"];
+            /** @enum {string} */
+            immersiveAnimation?: "text-fade" | "text-rise" | "text-stagger";
         } | {
             /** Format: uuid */
             id: string;
@@ -122,6 +124,8 @@ export interface components {
             /** @constant */
             type: "media";
             media: components["schemas"]["EditorialMedia"];
+            /** @enum {string} */
+            immersiveAnimation?: "media-fade" | "media-zoom-out" | "media-reveal";
         } | {
             /** Format: uuid */
             id: string;
@@ -137,6 +141,11 @@ export interface components {
             desktopMediaSide: "left" | "right";
             /** @enum {unknown} */
             mobileMediaOrder: "before" | "after";
+            /** @enum {string} */
+            immersiveAnimation?: "split-fade" | "split-cross-reveal" | "split-stagger";
+            secondMedia?: components["schemas"]["EditorialMedia"];
+            /** @enum {string} */
+            mediaLayout?: "columns" | "rows";
         } | ({
             /** Format: uuid */
             id: string;
@@ -151,7 +160,9 @@ export interface components {
                 id: string;
                 media: components["schemas"]["EditorialMedia"];
             }[];
-        } & unknown);
+            /** @enum {string} */
+            immersiveAnimation?: "carousel-fade" | "carousel-zoom-out" | "carousel-reveal";
+        } & unknown) | components["schemas"]["EditorialImageGroup"] | components["schemas"]["EditorialFormBlock"] | components["schemas"]["EditorialFormImageBlock"];
         EditorialArticleTranslation: {
             title: string;
             slug: string;
@@ -180,6 +191,89 @@ export interface components {
             }[];
             relatedArticleIds: string[];
             blocks: components["schemas"]["EditorialBlock"][];
+            exhibitionPeriod?: components["schemas"]["EditorialExhibitionPeriod"];
+            /** @enum {string} */
+            readingMode?: "classic" | "immersive";
+        };
+        EditorialExhibitionCalendarDateOrNull: null | string;
+        EditorialExhibitionPeriod: {
+            startsOn: components["schemas"]["EditorialExhibitionCalendarDateOrNull"];
+            endsOn: components["schemas"]["EditorialExhibitionCalendarDateOrNull"];
+        };
+        EditorialImageMedia: {
+            /** Format: uuid */
+            id: string;
+            source: {
+                /** @constant */
+                kind: "image";
+                /** Format: uuid */
+                assetId: string;
+            };
+            alt: components["schemas"]["EditorialLocalizedText"];
+            subtext: components["schemas"]["EditorialLocalizedRichText"] | null;
+            /** @constant */
+            showArtworkInfo: false;
+            render: {
+                desktop: components["schemas"]["EditorialRender"];
+                mobile: components["schemas"]["EditorialRender"];
+            };
+            cta: null | {
+                /** @constant */
+                kind: "link";
+                label: components["schemas"]["EditorialLocalizedText"];
+                href: string;
+            };
+        };
+        EditorialImageGroupItem: {
+            /** Format: uuid */
+            id: string;
+            media: components["schemas"]["EditorialImageMedia"];
+        };
+        EditorialImageGroup: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "imageGroup";
+            visible: boolean;
+            variant: string;
+            /** @enum {string} */
+            format: "diptych" | "triptych";
+            items: components["schemas"]["EditorialImageGroupItem"][];
+            /** @enum {string} */
+            immersiveAnimation?: "group-fade" | "group-reveal" | "group-zoom-out";
+        } & unknown;
+        EditorialFormBlock: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "form";
+            visible: boolean;
+            /** @enum {string} */
+            variant: "default";
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            immersiveAnimation?: "form-fade" | "form-rise" | "form-reveal";
+            /** @description Hide the form heading at this placement only; omitted means visible. */
+            hideTitle?: boolean;
+        };
+        EditorialFormImageBlock: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            type: "formImage";
+            visible: boolean;
+            /** @enum {string} */
+            variant: "default";
+            /** Format: uuid */
+            formId: string;
+            /** @enum {string} */
+            immersiveAnimation?: "form-fade" | "form-rise" | "form-reveal";
+            image: components["schemas"]["EditorialImageMedia"];
+            /** @enum {string} */
+            imageSide: "left" | "right";
+            /** @description Hide the form heading at this placement only; omitted means visible. */
+            hideTitle?: boolean;
         };
     };
     responses: never;
@@ -191,4 +285,4 @@ export interface components {
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;
 
-export const editorialSourceSha256 = "b0b14f46da00b3c9facf91a0c77ba3897862e55652cb4c62824c7f42052409ca";
+export const editorialSourceSha256 = "bf3f40f47fe98b8cd1ed2b9604666ead1c944906d302f02c8922f94bd2f9f6e9";

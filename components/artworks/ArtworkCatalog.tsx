@@ -1,10 +1,11 @@
 "use client";
+import {squareImageSizes} from "@/lib/media/public-image-sizes";
 import type {CSSProperties,ComponentType} from "react";
 import type {CatalogData} from "../../sections/types";
 import {useSiteContent} from "../SiteContentProvider";
 import {ArtworkCard,type ArtworkCardProps} from "../ArtworkCard";
 import {Typography} from "../ui/Typography";
-import {Button} from "../ui/Button";
+import {IconButton} from "../ui/IconButton";
 import {TextField} from "../ui/TextField";
 import {FreshLink} from "../FreshLink";
 import {localizedPath} from "../../lib/i18n/routes";
@@ -12,9 +13,11 @@ import {catalogQueryString} from "../../lib/artworks/catalog-query";
 import styles from "./ArtworkCatalog.module.css";
 import cards from "../Artwork.module.css";
 
-export interface ArtworkCatalogProps {catalog:CatalogData;columns?:number;id?:string;CardView?:ComponentType<ArtworkCardProps>}
+export interface ArtworkCatalogProps {catalog:CatalogData;columns?:number;id?:string;CardView?:ComponentType<ArtworkCardProps>;ListView?:ComponentType<CatalogListProps>}
+export interface CatalogListProps {items:ArtworkCardProps["art"][];columns:number;CardView:ComponentType<ArtworkCardProps>}
+export function CatalogList({items,columns,CardView}:CatalogListProps){return <ul className={cards.grid} style={{"--catalog-columns":columns} as CSSProperties}>{items.map((art,index)=><CardView key={art.id} art={art} imageSizes={squareImageSizes((art.media[0]?.width??1)/(art.media[0]?.height??1),columns,art.catalogLarge===true)} eager={index<columns}/>)}</ul>;}
 /** Replaceable view. Query validation and public reads stay on the server. */
-export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard}:ArtworkCatalogProps){
+export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListView=CatalogList}:ArtworkCatalogProps){
   const {messages:m,locale,defaultLocale}=useSiteContent(),path=localizedPath("/artworks",locale,defaultLocale);
   const numbered=catalog.kind==="numbered"?catalog.page:null,legacy=catalog.kind==="legacy"?catalog.page:null;
   const q=numbered?.query??(catalog.kind==="error"?catalog.q:"");
@@ -30,7 +33,7 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard}:Artwo
       <form action={path} method="get" className={styles.search} role="search" aria-label={m["gallery.searchLabel"]}>
         <TextField key={q} name="q" type="search" label={m["gallery.searchLabel"]} defaultValue={q} slotProps={{htmlInput:{maxLength:320}}}/>
         <input type="hidden" name="pageSize" value={pageSize}/>
-        <Button type="submit" variant="outlined">{m["gallery.searchSubmit"]}</Button>
+        <IconButton type="submit" className={styles.searchSubmit} aria-label={m["gallery.searchSubmit"]}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="10.75" cy="10.75" r="6.75" stroke="currentColor" strokeWidth="1.5"/><path d="m16 16 4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></IconButton>
       </form>
     </div>
     {q&&<FreshLink className={styles.clear} href={path+catalogQueryString({pageSize})}>{m["gallery.searchClear"]}</FreshLink>}
@@ -40,9 +43,7 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard}:Artwo
       <FreshLink className={styles.action} href={first}>{m[restart?"gallery.restart":"catalog.retry"]}</FreshLink>
     </div>:<>
       {legacy&&<FreshLink className={styles.clear} href={first}>{m["gallery.restart"]}</FreshLink>}
-      {items.length?<ul className={cards.grid} style={{"--catalog-columns":columns} as CSSProperties}>
-        {items.map((art,index)=><CardView key={art.id} art={art} eager={index<columns}/>)}
-      </ul>:<Typography role="status" className={styles.state}>{m[q?"gallery.noResults":"catalog.empty"]}</Typography>}
+      {items.length?<ListView items={items} columns={columns} CardView={CardView}/>:<Typography role="status" className={styles.state}>{m[q?"gallery.noResults":"catalog.empty"]}</Typography>}
       {numbered&&numbered.pageCount>0&&<nav className={styles.pagination} aria-label={m["gallery.paginationLabel"]}>
         {numbered.page>1&&<FreshLink className={styles.page} href={link(numbered.page-1)} aria-label={m["gallery.previousPage"]}><Arrow previous/></FreshLink>}
         {pages.map((page,index)=>page===null?<span key={"gap"+index} className={styles.gap} aria-hidden="true">…</span>:<FreshLink key={page} className={styles.page} href={link(page)} aria-label={m["gallery.page"]+" "+page} aria-current={numbered.page===page?"page":undefined}>{page}</FreshLink>)}

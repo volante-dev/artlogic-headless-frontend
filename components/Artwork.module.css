@@ -16,3 +16,8 @@
 .description dd { margin: 0; overflow-wrap: anywhere; }
 @media(max-width:950px) { .grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px 24px; } .details { gap: 32px; } }
 @media(max-width:600px) { .grid { grid-template-columns: 1fr; margin-top: 28px; } .details { grid-template-columns: 1fr; gap: 32px; margin-top: 28px; } .description { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px 20px; } }
+
+/* Page-builder selections choose their fit without changing other card uses. */
+.card[data-image-fit="cover"] .cardImage .image { object-fit:cover; }
+.card[data-image-fit="contain"] .cardImage { aspect-ratio:auto; background:transparent; overflow:visible; }
+.card[data-image-fit="contain"] .cardImage .image { position:static; width:auto; max-width:100%; height:auto; max-height:80svh; object-fit:contain; }

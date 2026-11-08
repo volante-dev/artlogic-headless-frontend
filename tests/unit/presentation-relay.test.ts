@@ -1,29 +1,20 @@
 import {expect,it,vi} from "vitest";
 vi.mock("server-only",()=>({}));
-vi.mock("../../lib/config/env",()=>({loadConfig:()=>({}),stringValue:()=>"http://127.0.0.1:43210",numberValue:()=>5000}));
+vi.mock("../../lib/config/env",()=>({loadConfig:()=>({DATA_MODE:"mock"}),stringValue:()=>"http://127.0.0.1:43210",numberValue:()=>5000}));
 import {relayPublicAsset} from "../../lib/presentation/relay-asset";
-const id="11111111-1111-4111-8111-111111111111",url="http://127.0.0.1:3000/presentation-assets/"+id;
-
-it("relays ranges without forwarding cookies, credentials, conditionals or arbitrary headers",async()=>{
-  const fetchSpy=vi.spyOn(globalThis,"fetch").mockResolvedValue(new Response(new Uint8Array([1,2,3]),{status:206,headers:{"content-type":"video/mp4","content-length":"3","content-range":"bytes 0-2/100","x-private-header":"secret"}}));
-  const response=await relayPublicAsset(new Request(url,{headers:{Range:"bytes=0-2",Cookie:"secret","x-bff-key":"secret","If-None-Match":"*"}}),id);
-  expect(response.status).toBe(206);expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([1,2,3]));expect(response.headers.get("x-private-header")).toBeNull();expect(response.headers.get("cache-control")).toBe("private, no-store");
-  expect(fetchSpy.mock.calls[0][1]).toMatchObject({headers:{Accept:"image/webp, video/mp4, font/woff2",Range:"bytes=0-2"},redirect:"error",cache:"no-store"});expect(Object.keys(fetchSpy.mock.calls[0][1]!.headers!)).toEqual(["Accept","Range"]);
+const id="11111111-1111-4111-8111-111111111111",url="http://127.0.0.1:3000/presentation-assets/"+id,signed="http://127.0.0.1:55321/storage/v1/object/sign/private/video.mp4?token=synthetic";
+const grant=(changes:Record<string,unknown>={})=>Response.json({url:signed,expiresAt:new Date(Date.now()+60000).toISOString(),...changes});
+it("redirects to a short-lived authorization without proxying bytes or forwarding visitor credentials and ranges",async()=>{
+ const spy=vi.spyOn(globalThis,"fetch").mockResolvedValue(grant());const response=await relayPublicAsset(new Request(url,{headers:{Range:"bytes=0-2",Cookie:"private","X-BFF-Key":"private","If-None-Match":"*"}}),id);
+ expect(response.status).toBe(307);expect(response.headers.get("location")).toBe(signed);expect(await response.text()).toBe("");expect(response.headers.get("cache-control")).toBe("private, no-store");expect(response.headers.get("referrer-policy")).toBe("no-referrer");
+ expect(spy).toHaveBeenCalledTimes(1);expect(spy.mock.calls[0][0]).toBe("http://127.0.0.1:43210/v1/public/presentation-assets/"+id+"/authorization");expect(spy.mock.calls[0][1]).toMatchObject({method:"GET",headers:{Accept:"application/json"},redirect:"error",cache:"no-store"});
 });
-it("keeps HEAD bodies empty and masks upstream error text",async()=>{
-  const fetchSpy=vi.spyOn(globalThis,"fetch").mockResolvedValueOnce(new Response(null,{status:200,headers:{"content-type":"font/woff2","content-length":"1234"}})).mockResolvedValueOnce(new Response("secret-storage-key",{status:404}));
-  const head=await relayPublicAsset(new Request(url,{method:"HEAD"}),id);expect(head.status).toBe(200);expect(head.headers.get("content-length")).toBe("1234");expect(await head.text()).toBe("");
-  const denied=await relayPublicAsset(new Request(url,{method:"HEAD"}),id);expect(denied.status).toBe(404);expect(await denied.text()).toBe("");expect(fetchSpy).toHaveBeenCalledTimes(2);
+it("keeps HEAD bodies empty and masks upstream error bodies",async()=>{
+ vi.spyOn(globalThis,"fetch").mockResolvedValueOnce(grant()).mockResolvedValueOnce(new Response("secret-storage-key",{status:404}));const head=await relayPublicAsset(new Request(url,{method:"HEAD"}),id);expect(head.status).toBe(307);expect(await head.text()).toBe("");const denied=await relayPublicAsset(new Request(url,{method:"HEAD"}),id);expect(denied.status).toBe(404);expect(await denied.text()).toBe("");expect(denied.headers.get("location")).toBeNull();
 });
-it("bounds bodies even without Content-Length and propagates cancellation",async()=>{
-  let cancelled=false;const fetchSpy=vi.spyOn(globalThis,"fetch").mockResolvedValueOnce(new Response(new ReadableStream({start(controller){controller.enqueue(new Uint8Array(20971521));controller.close();}}),{headers:{"content-type":"video/mp4"}}));
-  const oversize=await relayPublicAsset(new Request(url),id);await expect(oversize.arrayBuffer()).rejects.toThrow("asset_transfer_failed");
-  fetchSpy.mockResolvedValueOnce(new Response(new ReadableStream({pull(controller){controller.enqueue(new Uint8Array(16));},cancel(){cancelled=true;}}),{headers:{"content-type":"video/mp4"}}));
-  const response=await relayPublicAsset(new Request(url),id);const reader=response.body!.getReader();await reader.read();await reader.cancel();expect(cancelled).toBe(true);
+it("refuses expired, overlong and malformed authorizations without exposing their target",async()=>{
+ const spy=vi.spyOn(globalThis,"fetch");for(const response of [grant({expiresAt:new Date(Date.now()-1000).toISOString()}),grant({expiresAt:new Date(Date.now()+120000).toISOString()}),grant({url:"https://example.test/not-signed"}),new Response("x".repeat(16385),{headers:{"content-type":"application/json"}}),new Response("private",{headers:{"content-type":"video/mp4"}})]){spy.mockResolvedValueOnce(response);const denied=await relayPublicAsset(new Request(url),id);expect(denied.status).toBe(503);expect(denied.headers.get("location")).toBeNull();expect(await denied.text()).not.toContain("private");}
 });
-it("rejects technical path/query errors before network access and bad upstream ranges",async()=>{
-  const fetchSpy=vi.spyOn(globalThis,"fetch");
-  expect((await relayPublicAsset(new Request(url),"bad-id")).status).toBe(404);expect((await relayPublicAsset(new Request(url+"?variant=original&variant=w640"),id)).status).toBe(400);expect(fetchSpy).not.toHaveBeenCalled();
-  fetchSpy.mockResolvedValueOnce(new Response(new Uint8Array(3),{status:206,headers:{"content-type":"video/mp4","content-length":"3","content-range":"bytes 5-7/6"}}));
-  expect((await relayPublicAsset(new Request(url,{headers:{range:"bytes=0-2"}}),id)).status).toBe(503);
+it("rejects path/query errors before authorization and carries only the validated image variant",async()=>{
+ const spy=vi.spyOn(globalThis,"fetch");expect((await relayPublicAsset(new Request(url),"bad-id")).status).toBe(404);expect((await relayPublicAsset(new Request(url+"?variant=original&variant=w640"),id)).status).toBe(400);expect(spy).not.toHaveBeenCalled();spy.mockResolvedValueOnce(grant());expect((await relayPublicAsset(new Request(url+"?variant=w640"),id)).status).toBe(307);expect(spy.mock.calls[0][0]).toContain("/authorization?variant=w640");
 });

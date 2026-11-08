@@ -3,7 +3,10 @@ export type ContactConfiguration=components["schemas"]["ContactConfig"];
 export type ContactReceipt=components["schemas"]["ContactReceipt"];
 export type ContactSubmission=components["schemas"]["ContactSubmission"];
 export type ContactExecutionMode="live"|"captured"|"inert";
-export interface PublicContactArtwork{id:string;title:string;url:string}
+export interface PublicContactArtwork{
+ id:string;title:string;url:string;artist?:string|null;year?:string|null;medium?:string|null;dimensions?:string|null;
+ photo?:{id:string;alt:string|null;width:number;height:number}|null;focalPoint?:{x:number;y:number}|null;
+}
 export interface ContactFormProps{configuration:ContactConfiguration|null;artwork?:PublicContactArtwork|null;contextUnavailable?:boolean;mode:ContactExecutionMode;headingLevel?:"h1"|"h2"}
 
 export interface ContactValues{name:string;email:string;subject:string;message:string}

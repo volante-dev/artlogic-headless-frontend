@@ -1,11 +1,6 @@
 "use client";
 import {useSiteContent} from "../SiteContentProvider";
+import {ViewProgress}from'../navigation/ViewProgress';
 import styles from "./ArtworkExperience.module.css";
-export interface ArtworkProgressProps {count:number;active:number;onSelect:(index:number)=>void;className?:string}
-export function ArtworkProgress({count,active,onSelect,className}:ArtworkProgressProps){
-  const {messages:m}=useSiteContent(),total=Math.max(1,count),label=(index:number)=>`${m[index===0?"gallery.presentation":"gallery.view"]} ${index+1} ${m["gallery.of"]} ${total}`;
-  if(count===0)return null;
-  return <nav data-artwork-progress className={[styles.progress,className].filter(Boolean).join(" ")} aria-label={m["gallery.progressLabel"]}>
-    {total===1?<span className={styles.single} aria-label={label(0)} aria-current="step"><span/></span>:Array.from({length:total},(_,index)=><button type="button" key={index} className={styles.step} aria-label={label(index)} aria-current={index===active?"step":undefined} onClick={()=>onSelect(index)}><span aria-hidden="true"/></button>)}
-  </nav>;
-}
+export interface ArtworkProgressProps {count:number;active:number;onSelect:(index:number)=>void;className?:string;finale?:boolean}
+export function ArtworkProgress({count,active,onSelect,className,finale=false}:ArtworkProgressProps){const{messages:m}=useSiteContent();return <ViewProgress count={count} active={active} onSelect={onSelect} className={[styles.progress,className].filter(Boolean).join(' ')} stepClassName={styles.step} singleClassName={styles.single} dataAttributes={{'data-artwork-progress':true}} navigationLabel={m['gallery.progressLabel']} stepLabel={(index,total)=>finale&&index===total-1?"Conclusion":`${m[index===0?'gallery.presentation':'gallery.view']} ${index+1} ${m['gallery.of']} ${total}`}/>;}

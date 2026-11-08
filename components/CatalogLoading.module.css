@@ -1,2 +1,0 @@
-.loading { min-height:60svh; display:grid; place-items:center; padding:48px 24px; color:var(--site-color-text); }
-@media(prefers-reduced-motion:reduce) { .loading :global(.MuiCircularProgress-root),.loading :global(.MuiCircularProgress-circle) { animation:none; } }

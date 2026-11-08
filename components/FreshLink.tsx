@@ -6,7 +6,7 @@ export function useScopedHref(href:string){
   const {scope,defaultLocale,locales}=useSiteContent();
   if(scope!=="preview"||!href.startsWith("/")||href.startsWith("//")||href.startsWith("/preview/"))return href;
   const url=new URL(href,"https://internal.invalid"),route=classifyRoute(url.pathname,{defaultLocale,locales:locales.map(code=>({code,label:code}))});
-  return route.kind==="unknown"?href:"/preview/render/"+route.locale+(route.logicalPath==="/"?"":route.logicalPath)+url.search+url.hash;
+  return route.kind==="unknown"||route.kind==="article"?href:"/preview/render/"+route.locale+(route.logicalPath==="/"?"":route.logicalPath)+url.search+url.hash;
 }
 /** Each document visit rechecks publication. Modifier-key navigation stays native. */
 export function FreshLink({href,children,...attributes}:Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>,"href">&{href:string}){

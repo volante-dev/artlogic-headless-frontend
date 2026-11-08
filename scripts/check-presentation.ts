@@ -9,4 +9,4 @@ let names:string[]=[];
 function visit(node:ts.Node){if(ts.isVariableDeclaration(node)&&node.name.getText(source)==="sectionRegistry"&&node.initializer){const value=ts.isSatisfiesExpression(node.initializer)?node.initializer.expression:node.initializer;if(ts.isObjectLiteralExpression(value))names=value.properties.map(p=>p.name?.getText(source).replaceAll('"',"")??"");}ts.forEachChild(node,visit);}
 visit(source);
 for(const manifest of [defaultManifest,demoGalleryManifest]){if(canonicalJson(names.sort())!==canonicalJson(manifest.sections.map(s=>s.type).sort()))throw new Error("presentation_renderer_registry_mismatch");if(manifest.schemaVersion!==1||manifest.componentContractVersion!==1||!hashes[manifest.profileId])throw new Error("presentation_profile_contract_mismatch");}
-console.log("Presentation manifests and all nine section renderers agree for both profiles.");
+console.log("Presentation manifests and all registered section renderers agree for both profiles.");

@@ -1,4 +1,4 @@
-import {builtinFonts,isBuiltinFontPath} from "./font-catalog";
+import {builtinFonts,isBuiltinFontPath,builtinFontUrl,orderedBuiltinFaces} from "./font-catalog";
 import type {PresentationAsset,PresentationTheme} from "../lib/presentation/types";
 import {publicAssetPath} from "../lib/presentation/types";
 
@@ -13,9 +13,9 @@ export function fontFaces(theme:PresentationTheme,files:readonly PresentationAss
   for(const role of Object.values(theme.typography)){
     const family=fontFamily(role.familyId).split(",")[0],builtin=builtinFonts.find(font=>font.id===role.familyId);
     if(builtin){
-      for(const face of builtin.faces.filter(face=>face.weight===role.weight&&face.style===role.style)){
+      for(const face of orderedBuiltinFaces(builtin.faces.filter(face=>face.weight===role.weight&&face.style===role.style))){
         if(!isBuiltinFontPath(face.path)||!/^[U+0-9A-Fa-f,\- ]+$/.test(face.unicodeRange))throw new Error("invalid_builtin_font");
-        declarations.add(`@font-face{font-family:${family};src:url("${face.path}") format("woff2");font-weight:${face.weight};font-style:${face.style};font-display:swap;unicode-range:${face.unicodeRange};}`);
+        declarations.add(`@font-face{font-family:${family};src:url("${builtinFontUrl(face)}") format("woff2");font-weight:${face.weight};font-style:${face.style};font-display:swap;unicode-range:${face.unicodeRange};}`);
       }
     }else{
       for(const file of files.filter(file=>file.kind==="font"&&file.font?.familyId===role.familyId&&file.font.weight===role.weight&&file.font.style===role.style)){
@@ -27,4 +27,12 @@ export function fontFaces(theme:PresentationTheme,files:readonly PresentationAss
     }
   }
   return [...declarations].join("\n");
+}
+
+export function criticalBuiltinFontUrls(theme:PresentationTheme):string[]{
+ return [...new Set([theme.typography.body,theme.typography.navigation].flatMap(role=>{
+  const font=builtinFonts.find(f=>f.id===role.familyId);
+  const face=font?.faces.find(f=>f.weight===role.weight&&f.style===role.style&&f.path.includes('-latin-')&&!f.path.includes('-latin-ext-'));
+  return face?[builtinFontUrl(face)]:[];
+ }))];
 }

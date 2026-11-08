@@ -11,7 +11,9 @@ test("shared header links reach all six sections and keep artworks active on det
   }
   const fixture=JSON.parse(readFileSync(process.env.E2E_FIXTURE_PATH!,"utf8"));
   await page.goto('/artworks/'+fixture.published[0].id);
-  await expect(page.getByRole("navigation",{name:"Navigation principale"}).locator('a[aria-current="page"]')).toHaveText("Œuvres");
+  // A direct artwork entry intentionally renders only its full-screen dialog.
+  await page.getByRole("button",{name:"Fermer la fiche de l’œuvre",exact:true}).click();
+  await expect(page.locator('header a[aria-current="page"]')).toHaveText("Œuvres");
   await page.getByRole("link",{name:/Retour à l’accueil/}).click();await expect(page).toHaveURL(/\/$/);
 });
 test("compact navigation exposes all destinations and unknown routes keep a usable header",async({page})=>{

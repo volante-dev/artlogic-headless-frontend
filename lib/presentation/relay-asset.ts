@@ -5,16 +5,17 @@ import {previewHeaders,previewFailure} from "./preview-client";
 import {privateHeaders,uuidPattern} from "../api/client";
 
 export const relayPublicAsset=(request:Request,id:string)=>relayAsset(request,id);
+export const relayEditorialAsset=(request:Request,id:string)=>relayAsset(request,id,undefined,"editorial");
 export async function relayPreviewAsset(request:Request,id:string){try{return await relayAsset(request,id,await previewHandle());}catch(error){return previewFailure(error,request.method==="HEAD");}}
-async function relayAsset(request:Request,id:string,handle?:string):Promise<Response>{
+async function relayAsset(request:Request,id:string,handle?:string,source:"presentation"|"editorial"="presentation"):Promise<Response>{
   const head=request.method==="HEAD",headers=new Headers(handle?previewHeaders:privateHeaders),abort=new AbortController();
   function error(status:number){return new Response(head?null:JSON.stringify({error:{code:status===404?"not_found":status===416?"range_not_satisfiable":status===400?"invalid_request":"service_unavailable"}}),{status,headers:new Headers({...Object.fromEntries(headers),"Content-Type":"application/json"})});}
   if(!uuidPattern.test(id))return error(404);
   const query=new URL(request.url).searchParams,variant=query.get("variant"),range=request.headers.get("range");
   if([...query.keys()].some(key=>key!=="variant")||query.getAll("variant").length>1||variant!==null&&!["original","w640","w1280","w1920"].includes(variant)||range!==null&&range.length>120)return error(400);
-  const config=loadConfig(),signal=AbortSignal.any([request.signal,abort.signal,AbortSignal.timeout(numberValue(config,"REQUEST_TIMEOUT_MS"))]);
+  const config=loadConfig(),signal=AbortSignal.any([request.signal,abort.signal,AbortSignal.timeout(numberValue(config,"PUBLIC_PAGE_REQUEST_TIMEOUT_MS"))]);
   try{
-    const response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+(handle?"/v1/preview/assets/":"/v1/public/presentation-assets/")+id+"/authorization"+(variant?"?variant="+variant:""),{method:"GET",headers:{Accept:"application/json",...(handle?{"X-Preview-Key":stringValue(config,"PREVIEW_SERVICE_KEY"),"X-Preview-Session":handle}:{})},cache:"no-store",redirect:"error",signal});
+    const response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+(handle?"/v1/preview/assets/":source==="editorial"?"/v1/public/editorial/media/":"/v1/public/presentation-assets/")+id+"/authorization"+(variant?"?variant="+variant:""),{method:"GET",headers:{Accept:"application/json",...(handle?{"X-Preview-Key":stringValue(config,"PREVIEW_SERVICE_KEY"),"X-Preview-Session":handle}:{})},cache:"no-store",redirect:"error",signal});
     if(!response.ok){await response.body?.cancel();const status=[400,401,403,404,429].includes(response.status)?response.status:503;const retry=response.headers.get("retry-after");if(status===429&&retry&&/^\d{1,6}$/.test(retry))headers.set("Retry-After",retry);return error(status);}
     if(response.headers.get("content-type")?.split(";")[0]!=="application/json"){await response.body?.cancel();return error(503);}
     const reader=response.body?.getReader();if(!reader)return error(503);

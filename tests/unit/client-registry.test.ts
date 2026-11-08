@@ -15,3 +15,11 @@ it("resolves an explicit client replacement and otherwise retains the generic co
 });
 
 it("keeps Contact authorization in the controller while allowing a typed client view",()=>{expect(resolveClientComponents("demo-gallery").ContactForm).not.toBe(resolveClientComponents("default").ContactForm);});
+
+
+it("keeps independently replaceable masonry slots separate from classic client cards",()=>{
+ const generic=resolveClientComponents("default"),client=resolveClientComponents("demo-gallery");
+ expect(client.ArtworkMasonryCatalog).toBe(generic.ArtworkMasonryCatalog);
+ expect(client.ArtworkMasonryCard).toBe(generic.ArtworkMasonryCard);
+ expect(client.ArtworkCard).not.toBe(generic.ArtworkMasonryCard);
+});

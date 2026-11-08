@@ -13,7 +13,7 @@ const validatePreview=ajv.compile(presentationSchemas.PresentationPreview);
 export function validatePreviewPresentation(value:unknown,expected:{profileId:string;locale:string;pageKey:PageKey}):components["schemas"]["PresentationPreview"]{
   if(!validatePreview(value))throw new Error("invalid_preview_response");
   const data=value as components["schemas"]["PresentationPreview"];
-  assertIdentity(data,expected);assetScope(data,"/v1/preview/assets/");return data;
+  assertIdentity(data,expected);if(data.footer&&(data.footer.scope!=="preview"||data.footer.locale!==data.locale))throw new Error("invalid_footer_scope");assetScope(data,"/v1/preview/assets/");return data;
 }
 function assertIdentity(data:{profileId:string;manifestFingerprint:string;locale:string;pageKey:PageKey},expected:{profileId:string;locale:string;pageKey:PageKey}){
  const fingerprint=manifestFingerprints[expected.profileId as keyof typeof manifestFingerprints];
@@ -43,5 +43,18 @@ export function validatePublicPresentation(value:unknown,expected:{profileId:str
       Object.values(record).forEach(scope);
     }
   }
+  if(data.footer&&(data.footer.scope!=="public"||data.footer.locale!==data.locale))throw new Error("invalid_footer_scope");
   scope(data);return data;
+}
+
+const addressValidator=ajv.compile(presentationSchemas.PresentationPageAddress);
+export function validatePresentationAddress(value:unknown,expected:{profileId:string;locale:string}):components["schemas"]["PresentationPageAddress"]{
+ if(!addressValidator(value))throw new Error("invalid_page_address");const data=value as components["schemas"]["PresentationPageAddress"];
+ const safe=(path:string)=>path.startsWith("/")&&!path.startsWith("//")&&!/[?#\\\u0000-\u0020]/u.test(path);
+ if(!safe(data.canonicalPath))throw new Error("invalid_page_address");
+ if(data.kind==="canonical"){
+  validatePublicPresentation(data.presentation,{...expected,pageKey:"galerist"});
+  if(data.releaseId!==data.presentation.releaseId||data.canonicalPath!==data.presentation.pageIdentity?.canonicalPath||data.name!==data.presentation.pageIdentity?.name||JSON.stringify(data.alternatePaths)!==JSON.stringify(data.presentation.pageIdentity?.alternatePaths)||Object.values(data.alternatePaths).some(path=>!safe(path)))throw new Error("invalid_page_address");
+ }
+ return data;
 }

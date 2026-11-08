@@ -1,0 +1,12 @@
+import type {Meta,StoryObj} from "@storybook/nextjs-vite";
+import {AuthorProfile} from "./AuthorProfile";
+import {eid} from "../../.storybook/editorial-fixtures";
+const author={id:eid(2800),name:"Camille — auteur de démonstration",hasProfile:false,portraitPath:null,bio:null,link:null};
+const meta={title:"Editorial/AuthorProfile",component:AuthorProfile,tags:["autodocs"],args:{author},decorators:[Story=><div style={{padding:"80px 24px",minHeight:"100svh"}}><Story/></div>]} satisfies Meta<typeof AuthorProfile>;
+export default meta;type Story=StoryObj<typeof meta>;
+export const NameOnly:Story={};
+export const NameAndLink:Story={args:{author:{...author,link:"https://example.test/author"}}};
+export const NameAndPortrait:Story={args:{author:{...author,portraitPath:"/media/"+eid(501)}}};
+export const NameAndBio:Story={args:{author:{...author,bio:"Une biographie de démonstration."}}};
+export const Complete:Story={args:{author:{...author,hasProfile:true,portraitPath:"/media/"+eid(501),bio:"Auteur de démonstration. Ce profil illustre une biographie éditoriale commune, indépendante des comptes d’administration.",link:"https://example.test/author"}}};
+export const WithoutLink:Story={args:{author:{...author,hasProfile:true,portraitPath:"/media/"+eid(501),bio:"Une biographie de démonstration sans lien facultatif."}}};

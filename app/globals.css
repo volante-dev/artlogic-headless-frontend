@@ -1,5 +1,5 @@
  :root { color-scheme:light; --background:var(--site-color-background,#F6F7F6); --foreground:var(--site-color-text,#101314); --muted:var(--site-color-mutedText,#48544F); --surface:var(--site-color-mutedSurface,#E7EAE8); --accent:var(--site-color-accent,#3C554A); }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color:transparent; }
 html { min-height: 100%; line-height: 1.5; -webkit-text-size-adjust: 100%; }
 body { margin:0; background:var(--background); color:var(--foreground); font-family:var(--site-body-fontFamily,sans-serif); }
 header,main { width: min(1200px,100%); margin: auto; padding: 32px; }
@@ -13,11 +13,25 @@ h2 { font-family:var(--site-h2-fontFamily); font-size:var(--site-h2-fontSize); f
 h3 { font-family:var(--site-h3-fontFamily); font-size:var(--site-h3-fontSize); font-weight:var(--site-h3-fontWeight); font-style:var(--site-h3-fontStyle); line-height:var(--site-h3-lineHeight); letter-spacing:var(--site-h3-letterSpacing); }
 p { line-height:var(--site-body-lineHeight,1.5); max-width:70ch; }
 a { color: inherit; text-underline-offset: 4px; }
-:where(button:not(.MuiButton-root)),.button { font:inherit; color:var(--site-color-onAccent); background:var(--accent); border:1px solid var(--accent); border-radius:0; padding:12px 18px; min-height:44px; display:inline-flex; align-items:center; text-decoration:none; cursor:pointer; }
-:where(button:not(.MuiButton-root)):hover,.button:hover { background:var(--site-color-linkHover); } button:disabled { cursor:not-allowed; color:var(--site-color-disabledText); background:var(--site-color-mutedSurface); }
-:focus-visible { outline:3px solid var(--site-color-focus,var(--accent)); outline-offset:4px; }
+:where(button:not(.MuiButtonBase-root)),.button { font:inherit; color:var(--site-color-onAccent); background:var(--accent); border:1px solid var(--accent); border-radius:0; padding:12px 18px; min-height:44px; display:inline-flex; align-items:center; text-decoration:none; cursor:pointer; }
+:where(button:not(.MuiButtonBase-root)):hover,.button:hover { background:var(--site-color-linkHover); } button:disabled { cursor:not-allowed; color:var(--site-color-disabledText); background:var(--site-color-mutedSurface); }
+:focus-visible { outline:2px solid var(--site-color-text,var(--foreground)); outline-offset:3px; }
+/* Pointer focus remains functional; keyboard input restores native focus-visible rings. */
+html[data-focus-input="pointer"] :focus { outline:none!important; }
+html[data-focus-input="keyboard"] :where(a,button,summary,[tabindex]):focus { outline:2px solid currentColor; outline-offset:3px; }
+:focus:not(:focus-visible),.MuiInputBase-input:focus-visible { outline:none; }
+a,button,input,textarea,select { -webkit-tap-highlight-color:transparent; }
 ::selection { background:var(--site-color-selection); color:var(--site-color-onSelection); }
 .back { display: inline-flex; min-height: 44px; align-items: center; margin-bottom: 20px; }
 .skip { position: absolute; top: -100px; left: 12px; z-index: 10; background: var(--background); padding: 12px; }
 .skip:focus { top: 12px; }
 @media(max-width:600px) { header,main { padding-inline: 20px; } header { padding-block: 16px; } main { padding-block: 32px 56px; } }
+
+/* Scoped by the reader; CSS locks disappear with the article, without inline body state. */
+html:has([data-editorial-immersive="true"]){overflow:hidden;overscroll-behavior:none}
+/* Reserve the same useful area in server markup and the enhanced reader. */
+[data-editorial-layout]:has([data-editorial-eligible]){height:100dvh;display:flex;flex-direction:column}
+[data-editorial-layout]:has([data-editorial-eligible])>header{flex:none}
+[data-editorial-layout]:has([data-editorial-eligible])>main{flex:1;min-height:0;width:100%;max-width:none;margin:0;padding:0;container-type:size;--editorial-available-height:100cqh}
+[data-editorial-layout]:has([data-editorial-eligible])>footer{display:none}
+html:has([data-editorial-eligible]){scrollbar-gutter:stable}

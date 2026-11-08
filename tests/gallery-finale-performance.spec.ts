@@ -1,0 +1,10 @@
+import {test,expect} from "@playwright/test";import {readFileSync} from "node:fs";
+// The recorder captures rendered frames and distorts the frame budget itself.
+// Functional suites retain their traces; timing measurements keep the same thresholds without recording.
+test.use({trace:"off"});
+test("samples the integrated timeline without extra experience reads",async({page},info)=>{
+ const id=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,"utf8")).sites[0].finaleArtworkIds[3];await page.setViewportSize({width:1440,height:900});await page.goto('/artworks/'+id);const root=page.getByTestId('artwork-experience');await expect(root).toHaveAttribute('data-artwork-opening-phase','complete');await root.locator('[data-artwork-progress] button').nth(4).click();await page.waitForTimeout(700);
+ let requests=0;page.on('request',r=>{if(r.url().includes('/artwork-experiences/'))requests++;});
+ const samples=await page.evaluate(async()=>{const root=document.querySelector('[data-artwork-experience]')!,buttons=root.querySelectorAll<HTMLButtonElement>('[data-artwork-progress] button');const intervals:number[]=[];let previous=0,frames=0;return new Promise<{intervals:number[];frames:number}>(resolve=>{function frame(now:number){if(previous)intervals.push(now-previous);previous=now;frames++;if(frames===2)buttons[buttons.length-1].click();if(frames===115)buttons[4].click();if(frames<230)requestAnimationFrame(frame);else resolve({intervals,frames});}requestAnimationFrame(frame);});});
+ const sorted=samples.intervals.slice().sort((a,b)=>a-b),metrics={browser:info.project.name,environment:'local production build, headless; physical 60 Hz acceptance remains separate',frames:samples.frames,p95:sorted[Math.floor(sorted.length*.95)],maximum:sorted.at(-1),experienceReads:requests};console.log(JSON.stringify(metrics));await info.attach('finale-frame-intervals',{body:JSON.stringify(metrics),contentType:'application/json'});expect(metrics.experienceReads).toBe(0);expect(metrics.p95).toBeLessThanOrEqual(20);expect(metrics.maximum).toBeLessThanOrEqual(50);
+});

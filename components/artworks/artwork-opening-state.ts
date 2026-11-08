@@ -1,4 +1,4 @@
-export const artworkOpeningTiming={backdrop:500,media:700,controls:220,identity:300} as const;
+export const artworkOpeningTiming={background:900,backdrop:500,media:700,controls:360,identity:600} as const;
 export const artworkOpeningDuration=artworkOpeningTiming.backdrop+artworkOpeningTiming.media+artworkOpeningTiming.controls+artworkOpeningTiming.identity;
 export interface OpeningState {id:number;openedAt:number;revealStartedAt:number|null;completedAt:number|null}
 export type OpeningPhase="backdrop"|"waiting"|"media"|"controls"|"identity"|"complete";

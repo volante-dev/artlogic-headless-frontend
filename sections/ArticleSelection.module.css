@@ -1,0 +1,5 @@
+.section{width:min(100%,1440px);margin-inline:auto;padding:clamp(64px,8vw,128px) clamp(24px,5vw,80px)}
+.heading{max-width:70ch;margin-bottom:40px}.heading:empty{display:none}.heading h1,.heading h2{margin-block:0 24px;text-wrap:balance}
+.grid,.compact{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 32px}
+.grid>li:nth-child(n),.compact>li:nth-child(n){grid-column:auto;min-width:0}.compact{gap:32px}
+@media(max-width:899px){.grid,.compact{grid-template-columns:minmax(0,1fr);gap:40px}.heading{margin-bottom:32px}}
