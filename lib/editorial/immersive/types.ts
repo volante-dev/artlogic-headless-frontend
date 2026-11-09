@@ -22,7 +22,7 @@ export interface Viewport { readonly layout:"mobile"|"desktop"; readonly usefulH
 export interface View { readonly kind:"opening"|"block"|"related"; readonly id:string; readonly blockId?:string; readonly panel?:Panel; readonly animationId:AnimationId }
 export interface ViewContext {
  readonly viewId:string; readonly blockId?:string; readonly panel?:Panel;
- readonly preparing?:boolean; readonly active:boolean; readonly phase:ViewPhase; readonly direction:Direction;
+ readonly warming?:boolean; readonly preparing?:boolean; readonly active:boolean; readonly phase:ViewPhase; readonly direction:Direction;
  readonly reducedMotion:boolean; readonly executionMode:ExecutionMode;
  readonly suspended:boolean;
  registerScrollHost(element:HTMLElement|null):void;

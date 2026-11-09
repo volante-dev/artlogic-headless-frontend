@@ -26,6 +26,6 @@ export function viewImagePaths(view:EditorialView,article:Article,layout:"mobile
  if(view.kind!=='block'||view.panel==='text')return[];
  const block=view.block;if(block.type==='imageGroup'){if(layout==='desktop')return block.items.map(item=>item.media.source.srcPath);const index=Math.max(0,block.items.findIndex(item=>item.id===activeItemId));return (block.items.length>1?[block.items[index]!,block.items[(index+1)%block.items.length]!]:block.items).map(item=>item.media.source.srcPath);}
  if(block.type==='textMedia')return [block.media,block.secondMedia].flatMap(media=>{const source=media?.source;return source&&(source.kind==='image'||source.kind==='artwork')?[source.srcPath]:[];});
- const media=block.type==='formImage'?block.image:block.type==='media'?block.media:block.type==='carousel'?block.slides[0]?.media:null;
+ const media=block.type==='formImage'?block.image:block.type==='media'?block.media:block.type==='carousel'?(block.slides.find(slide=>slide.id===activeItemId)??block.slides[0])?.media:null;
  const source=media?.source;return source&&(source.kind==='image'||source.kind==='artwork')?[source.srcPath]:[];
 }

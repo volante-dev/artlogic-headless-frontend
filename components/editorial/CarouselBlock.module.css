@@ -46,3 +46,5 @@
  .carousel[data-full-frame-mobile] figcaption{background:transparent;padding:0;bottom:calc(64px + env(safe-area-inset-bottom))}
 }
 @media(prefers-reduced-motion:reduce){.carousel .progress button span{transition:none}}
+
+.stage[data-editorial-slide-phase=warming]{position:absolute;inset:0;visibility:hidden;pointer-events:none}
