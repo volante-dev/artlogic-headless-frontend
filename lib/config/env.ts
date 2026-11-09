@@ -12,6 +12,7 @@ export const variables: Readonly<Record<string, Rule>> = {
   MCP_RESOURCE_URL:{scopes:"AW",kind:"url"},
   MCP_OAUTH_ISSUER_URL:{scopes:"A",kind:"url"},
   MCP_CLIENT_ID:{scopes:"AW",kind:"string"},
+  MCP_ALLOWED_SCOPES_JSON:{scopes:"AW",kind:"list",default:'["site.read"]'},
   MCP_CLIENT_SECRET_HASH:{scopes:"A",kind:"string",secret:true},
   MCP_CLIENT_REDIRECT_URIS_JSON:{scopes:"A",kind:"list"},
   MCP_ALLOWED_ORIGINS_JSON:{scopes:"A",kind:"origins",default:"[]"},
@@ -115,9 +116,9 @@ export const variables: Readonly<Record<string, Rule>> = {
   EDITORIAL_AI_INPUT_CENTS_PER_MILLION: {"scopes":"AW","kind":"number","min":0,"max":100000},
   EDITORIAL_AI_OUTPUT_CENTS_PER_MILLION: {"scopes":"AW","kind":"number","min":0,"max":100000},
 
-  EDITORIAL_IMMERSIVE_ENABLED: {scopes:"A",kind:"enum",default:"false",values:["true","false"]},
+  EDITORIAL_IMMERSIVE_ENABLED: {scopes:"AW",kind:"enum",default:"false",values:["true","false"]},
   EDITORIAL_IMMERSIVE_RENDER_ENABLED: {scopes:"F",kind:"enum",default:"true",values:["true","false"]},
-  EDITORIAL_EXHIBITIONS_ENABLED: {scopes:"A",kind:"enum",default:"false",values:["true","false"]},
+  EDITORIAL_EXHIBITIONS_ENABLED: {scopes:"AW",kind:"enum",default:"false",values:["true","false"]},
   EDITORIAL_ENABLED: {scopes:"AWMFB",kind:"enum",default:"false",values:["true","false"]},
   EDITORIAL_VERSION_LIMIT: {scopes:"AWM",kind:"number",default:"20",min:3,max:100},
   EDITORIAL_TRASH_DAYS: {scopes:"AWM",kind:"number",default:"30",min:1,max:365},
@@ -162,7 +163,7 @@ export const variables: Readonly<Record<string, Rule>> = {
 
   SITE_PROFILE: {scopes:"AWMF",kind:"profile",default:"default"},
   PRESENTATION_MANIFEST_PATH: {scopes:"AWM",kind:"localpath",required:true},
-  NAVIGATION_EDITING_ENABLED: {scopes:"A",kind:"enum",default:"false",values:["true","false"]},
+  NAVIGATION_EDITING_ENABLED: {scopes:"AW",kind:"enum",default:"false",values:["true","false"]},
   PREVIEW_SERVICE_KEY: {scopes:"AF",kind:"token",required:true,secret:true},
   PREVIEW_EXCHANGE_TTL_SECONDS: {scopes:"A",kind:"number",default:"60",min:15,max:120},
   SESSION_REMEMBER_SECONDS: {scopes:"A",kind:"number",default:"2592000",min:300,max:2592000},
@@ -951,7 +952,9 @@ export function readConfig(role: Scope, env: Record<string, string | undefined> 
   }
   const config = result as Config;
   if(config.MCP_ENABLED==="true"&&(role==="A"||role==="W")){
-    for(const name of ["MCP_RESOURCE_URL","MCP_CLIENT_ID","CRM_SITE_DIRECTORY_URL","CRM_SITE_DIRECTORY_CLIENT_ID","CRM_SITE_DIRECTORY_KEY_ID","CRM_SITE_DIRECTORY_PRIVATE_KEY",...(role==="A"?["MCP_OAUTH_ISSUER_URL","MCP_CLIENT_SECRET_HASH","MCP_CLIENT_REDIRECT_URIS_JSON"]:[])])if(!config[name])fail(name,"requis pour la delegation MCP active");
+    for(const name of ["MCP_RESOURCE_URL","MCP_CLIENT_ID","CRM_SITE_DIRECTORY_URL","CRM_SITE_DIRECTORY_CLIENT_ID","CRM_SITE_DIRECTORY_KEY_ID","CRM_SITE_DIRECTORY_PRIVATE_KEY",...(role==="A"?["MCP_OAUTH_ISSUER_URL","MCP_CLIENT_SECRET_HASH","MCP_CLIENT_REDIRECT_URIS_JSON"]:["SSO_ISSUER","SSO_SUPABASE_URL","ADMIN_ORIGIN"])])if(!config[name])fail(name,"requis pour la delegation MCP active");
+    const scopes=listValue(config,"MCP_ALLOWED_SCOPES_JSON"),knownScopes=["site.read","site.draft","site.publish","site.sync","site.connector.manage"];
+    if(scopes.length<1||scopes.length>5||new Set(scopes).size!==scopes.length||scopes.some(s=>!knownScopes.includes(s))||!scopes.includes("site.read")||scopes.includes("site.publish")&&!scopes.includes("site.draft"))fail("MCP_ALLOWED_SCOPES_JSON","scopes explicites coherents incluant site.read requis");
     const resource=new URL(stringValue(config,"MCP_RESOURCE_URL"));
     if(resource.protocol!=="https:"||resource.pathname!=="/mcp"||resource.search||resource.hash||resource.username||resource.password||resource.hostname.includes("*"))fail("MCP_RESOURCE_URL","ressource HTTPS exacte /mcp requise");
     const client=stringValue(config,"MCP_CLIENT_ID");if(!client.trim()||client!==client.trim()||client.length>200||/[\r\n\0]/.test(client))fail("MCP_CLIENT_ID","client enregistre borne requis");
