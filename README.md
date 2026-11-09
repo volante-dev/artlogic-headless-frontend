@@ -113,3 +113,10 @@ Les nouvelles sélections ont des rubriques `kinds` explicites. Le format histor
 ### Editorial immersive mode
 
 Article reading mode and block appearance choices are common to all languages. API contribution is gated by `EDITORIAL_IMMERSIVE_ENABLED` (default `false`) and a conformant frontend profile. `EDITORIAL_IMMERSIVE_RENDER_ENABLED` controls the frontend reader (default `true`); setting it to `false` renders classic flow without deleting settings. No migration or site provision is required. See `../backend/specs/012-editorial-immersive-mode/release.md` for rollout and rollback order.
+
+
+## Déploiement depuis main
+
+Les changements validés sont publiés sur la branche `main`. Le projet Vercel est connecté à ce dépôt GitHub : chaque mise à jour de `main` déclenche automatiquement un build puis la mise en production sur le domaine canonique. Vérifier le résultat du déploiement et le domaine après le push.
+
+`BACKEND_URL` est défini dans les variables du projet Vercel et pointe vers l’API Render ; aucune adresse API ne doit être codée en dur. Un changement de variable nécessite un nouveau déploiement.
