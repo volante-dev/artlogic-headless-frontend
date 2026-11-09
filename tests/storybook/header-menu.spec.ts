@@ -11,7 +11,7 @@ async function visit(page:Page,width=390,height=844,story="default",theme="proje
  await expect(page.locator(".sb-errordisplay")).not.toBeVisible();
 }
 const toggle=(page:Page)=>page.locator('button[aria-controls="site-navigation"]');
-async function settled(page:Page){await expect.poll(()=>page.locator("header").evaluate(node=>node.getAnimations({subtree:true}).length)).toBe(0);}
+async function settled(page:Page){const header=page.locator("header");if(await toggle(page).isVisible()&&await header.getAttribute("data-menu-state")==="open")await expect(header).toHaveAttribute("data-menu-motion","open");await expect.poll(()=>header.evaluate(node=>node.getAnimations({subtree:true}).length)).toBe(0);}
 async function capture(page:Page,name:string){await mkdir(".impeccable/review/mobile-menu",{recursive:true});await page.screenshot({path:`.impeccable/review/mobile-menu/${name}-${test.info().project.name}.png`,scale:"css"});}
 
 test("two lines morph into a cross; keyboard and background stay inside the open menu",async({page})=>{
@@ -96,4 +96,25 @@ test("immersive and burger headers keep the same baseline with different logo pr
   expect(hero.homeCenter).toBeCloseTo(normal.homeCenter,1);expect(hero.navCenter).toBeCloseTo(normal.navCenter,1);
  }
 
+});
+
+
+test("burger lines draw the frame before revealing links and reverse without recoloring the header",async({page},info)=>{
+ await visit(page,390,844,'asymmetric-logos');
+ const header=page.locator('header'),trigger=toggle(page),first=page.getByRole('link',{name:'Actualités',exact:true});
+ const appearance=()=>header.evaluate(n=>({color:getComputedStyle(n).color,background:getComputedStyle(n).backgroundColor,logo:n.querySelector('img')?.getAttribute('src')}));
+ const before=await appearance();
+ await page.evaluate(()=>{const samples:unknown[]=[];Reflect.set(window,'menuSamples',samples);const start=performance.now();const sample=()=>{const root=document.querySelector('header')!,fill=root.querySelector<HTMLElement>('[data-menu-fill]')!,edges=root.querySelectorAll<HTMLElement>('[data-menu-edge]'),content=root.querySelector<HTMLElement>('[data-menu-content]')!;samples.push({stage:(root as HTMLElement).dataset.menuMotion,width:edges[0]!.getBoundingClientRect().width,height:edges[2]!.getBoundingClientRect().height,opacity:Number(getComputedStyle(content).opacity),fillTop:fill.getBoundingClientRect().top});if(performance.now()-start<2200)requestAnimationFrame(sample);};requestAnimationFrame(sample);});
+ await trigger.click();await expect(header).toHaveAttribute('data-menu-motion','open');
+ expect(await appearance()).toEqual(before);await expect(first).toBeVisible();
+ const samples=await page.evaluate(()=>Reflect.get(window,'menuSamples') as {stage:string;width:number;height:number;opacity:number}[]);
+ const extending=samples.filter(s=>s.stage==='extending'),descending=samples.filter(s=>s.stage==='descending');
+ expect(extending.length).toBeGreaterThan(3);expect(descending.length).toBeGreaterThan(3);
+ expect(extending.every(s=>s.height<=8.1&&s.opacity===0)).toBe(true);
+ expect(descending.every(s=>Math.abs(s.width-358)<1&&s.opacity===0)).toBe(true);
+ await page.screenshot({path:info.outputPath('menu-open.png')});
+ await trigger.click();await expect(header).toHaveAttribute('data-menu-motion','descending');expect(await appearance()).toEqual(before);
+ await expect(header).toHaveAttribute('data-menu-motion','extending');await expect(page.locator('[data-menu-content]').first()).toHaveCSS('opacity','0');
+ await expect(header).toHaveAttribute('data-menu-state','closed');expect(await appearance()).toEqual(before);
+ await expect(trigger.locator('span span').first()).toHaveCSS('opacity','1');
 });

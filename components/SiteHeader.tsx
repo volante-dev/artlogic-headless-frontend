@@ -1,5 +1,5 @@
 "use client";
-import {useHeaderMenuMotion,menuCloseMs} from "./header/useHeaderMenuMotion";
+import {useHeaderMenuMotion} from "./header/useHeaderMenuMotion";
 import type {NavigationProjection} from "../lib/navigation/types";
 import type {PublicPresentation} from "../lib/presentation/types";
 import{useEditorialSurface}from"./editorial/immersive/EditorialInteractionProvider";
@@ -21,30 +21,30 @@ export function SiteHeader({navigation,languageCount=2,galeristActive=false,site
   const compact=useSyncExternalStore(subscribeCompact,readCompact,()=>false);
   const [phase,setPhase]=useState<"closed"|"open"|"closing">("closed");
   const header=useRef<HTMLElement>(null),frame=useRef<HTMLDivElement>(null),button=useRef<HTMLButtonElement>(null),controls=useRef<HTMLDivElement>(null);
-  useHeaderMenuMotion(header,compact,phase);
+  useHeaderMenuMotion(header,compact,phase,finishClose);
   const navigationFrame=useRef(0);
-  const timer=useRef<ReturnType<typeof setTimeout>|null>(null),afterClose=useRef<(()=>void)|null>(null);
+  const afterClose=useRef<(()=>void)|null>(null);
   const active=hasCompactContent&&compact&&phase!=="closed",open=hasCompactContent&&compact&&phase==="open";
   const [previousCompact,setPreviousCompact]=useState(compact);
   if(previousCompact!==compact){setPreviousCompact(compact);setPhase("closed");}
-  useLayoutEffect(()=>{if(timer.current)clearTimeout(timer.current);timer.current=null;afterClose.current=null;},[compact]);
+  useLayoutEffect(()=>{afterClose.current=null;},[compact]);
  useEditorialSurface(active);
-  function finishClose(){timer.current=null;setPhase("closed");const next=afterClose.current;afterClose.current=null;next?.();}
+  function finishClose(){setPhase("closed");const next=afterClose.current;afterClose.current=null;next?.();}
   function close(next?:()=>void){
-    if(timer.current)clearTimeout(timer.current);afterClose.current=next??null;
+    afterClose.current=next??null;
     setPhase("closing");button.current?.focus({preventScroll:true});
-    timer.current=setTimeout(finishClose,matchMedia("(prefers-reduced-motion:reduce)").matches?120:menuCloseMs);
+
   }
   function toggle(){
     if(open){close();return;}
-    if(timer.current)clearTimeout(timer.current);timer.current=null;afterClose.current=null;button.current?.focus({preventScroll:true});setPhase("open");
+    afterClose.current=null;button.current?.focus({preventScroll:true});setPhase("open");
   }
   function navigate(){
     const node=header.current;node?.setAttribute('data-navigation-instant','');cancelAnimationFrame(navigationFrame.current);
     navigationFrame.current=requestAnimationFrame(()=>{navigationFrame.current=requestAnimationFrame(()=>{if(node&&navigationState?.mainRef.current?.getAttribute('aria-busy')!=='true'){void getComputedStyle(node).color;node.removeAttribute('data-navigation-instant');}});});
-    if(timer.current)clearTimeout(timer.current);timer.current=null;afterClose.current=null;setPhase("closed");button.current?.focus({preventScroll:true});
+    afterClose.current=null;setPhase("closed");button.current?.focus({preventScroll:true});
   }
-  useEffect(()=>()=>{if(timer.current)clearTimeout(timer.current);cancelAnimationFrame(navigationFrame.current);},[]);
+  useEffect(()=>()=>{cancelAnimationFrame(navigationFrame.current);},[]);
   useLayoutEffect(()=>{
     const node=header.current;if(!node||!navigationState)return;
     if(navigationState.status!=='ready'){node.setAttribute('data-navigation-instant','');return;}
@@ -61,7 +61,7 @@ export function SiteHeader({navigation,languageCount=2,galeristActive=false,site
     const query=matchMedia(compactQuery);let focused:EventTarget|null=document.activeElement;
     const track=(event:FocusEvent)=>{focused=event.target;};
     const reset=()=>{
-      if(timer.current)clearTimeout(timer.current);timer.current=null;afterClose.current=null;setPhase("closed");
+      afterClose.current=null;setPhase("closed");
       if(query.matches&&focused instanceof Node&&controls.current?.contains(focused))button.current?.focus();
       else if(!query.matches&&focused===button.current)controls.current?.querySelector<HTMLAnchorElement>("a")?.focus();
     };
@@ -85,14 +85,15 @@ export function SiteHeader({navigation,languageCount=2,galeristActive=false,site
     }
   }}>
     <div ref={frame} className={styles.frame} role={active?"dialog":undefined} aria-modal={active?true:undefined} aria-label={active?messages["header.navigationLabel"]:undefined}>
-      <div className={styles.menuSurface} data-menu-surface aria-hidden="true">{["top","bottom","left","right"].map(edge=><span key={edge} className={styles.menuEdge} data-menu-edge={edge}/>)}</div>
-      <HeaderLink href={menu?.scope==="preview"?"/preview/render/"+locale:localizedPath("/",locale,defaultLocale)} className={styles.home} onAccepted={navigate} aria-label={messages["header.homeLabel"]+" — "+siteName}>{(immersive&&!active?whiteLogo??logo:logo)??siteName}</HeaderLink>
+      <div className={styles.menuScrim} data-menu-scrim aria-hidden="true"/>
+      <div className={styles.menuSurface} data-menu-surface aria-hidden="true"><div className={styles.menuFill} data-menu-fill/>{["top","bottom","left","right"].map(edge=><span key={edge} className={styles.menuEdge} data-menu-edge={edge}/>)}</div>
+      <HeaderLink href={menu?.scope==="preview"?"/preview/render/"+locale:localizedPath("/",locale,defaultLocale)} className={styles.home} onAccepted={navigate} aria-label={messages["header.homeLabel"]+" — "+siteName}>{(immersive?whiteLogo??logo:logo)??siteName}</HeaderLink>
       {hasCompactContent&&<button ref={button} type="button" className={styles.toggle} aria-label={messages[open?"header.closeMenu":"header.openMenu"]} aria-expanded={open} aria-controls="site-navigation" onClick={toggle}>
-        <span className={styles.menuIcon} aria-hidden="true"><span/><span/></span>
+        <span className={styles.menuIcon} data-menu-icon aria-hidden="true"><span/><span/></span>
       </button>}
       <div ref={controls} id="site-navigation" className={styles.controls} inert={compact&&!open||undefined} aria-hidden={compact&&!open||undefined}>
-        {links.length>0&&<nav aria-label={messages["header.navigationLabel"]}><ul className={styles.links}>{links.map((item,index)=><li key={item.pageKey} style={{"--menu-item":index} as CSSProperties}><HeaderLink href={item.href} onAccepted={navigate} aria-current={(item.pageKey==="galerist"?galeristActive:section===item.pageKey)?"page":undefined}>{item.pageKey==="galerist"?item.name:messages[`nav.${item.pageKey}`]}</HeaderLink></li>)}</ul></nav>}
-        <div className={styles.languageSlot} onClick={event=>{if(open&&(event.target as Element).closest("a"))close();}}>{languageControl}</div>
+        {links.length>0&&<nav aria-label={messages["header.navigationLabel"]}><ul className={styles.links}>{links.map((item,index)=><li key={item.pageKey} data-menu-content style={{"--menu-item":index} as CSSProperties}><HeaderLink href={item.href} onAccepted={navigate} aria-current={(item.pageKey==="galerist"?galeristActive:section===item.pageKey)?"page":undefined}>{item.pageKey==="galerist"?item.name:messages[`nav.${item.pageKey}`]}</HeaderLink></li>)}</ul></nav>}
+        <div className={styles.languageSlot} data-menu-content onClick={event=>{if(open&&(event.target as Element).closest("a"))close();}}>{languageControl}</div>
       </div>
     </div>
   </header></>;
