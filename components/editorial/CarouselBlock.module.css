@@ -47,4 +47,4 @@
 }
 @media(prefers-reduced-motion:reduce){.carousel .progress button span{transition:none}}
 
-.stage[data-editorial-slide-phase=warming]{position:absolute;inset:0;visibility:hidden;pointer-events:none}
+.stage[data-editorial-slide-phase=warming]{position:absolute;inset:0;visibility:hidden;opacity:0;pointer-events:none}

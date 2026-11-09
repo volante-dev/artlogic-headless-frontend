@@ -4,8 +4,8 @@ export type GroupAppearance='group-fade'|'group-reveal'|'group-zoom-out';
 export const imageGroupMotionProposals=motionFamilies.imageGroup.animations.map(animation=>({id:animation.id,label:animation.labelFr,durationMs:animation.durationMs}));
 /** Validated image-group family. Caller owns the GSAP context and interruption lifecycle. */
 export function createImageGroupAppearance(id:GroupAppearance,surface:HTMLElement,reduced=false){
- const frames=Array.from(surface.querySelectorAll<HTMLElement>('[data-group-motion-frame]'));
- const controls=Array.from(surface.querySelectorAll<HTMLElement>('[data-editorial-motion-controls]'));
+ const frames=Array.from(surface.querySelectorAll<HTMLElement>('[data-group-motion-frame]')).filter(node=>!node.closest('[data-editorial-slide-phase=warming]'));
+ const controls=Array.from(surface.querySelectorAll<HTMLElement>('[data-editorial-motion-controls]')).filter(node=>!node.closest('[data-editorial-slide-phase=warming]'));
  const tl=gsap.timeline({paused:true,defaults:{ease:'power2.out'}});
  if(reduced){tl.set([surface,...frames,...controls],{autoAlpha:1,xPercent:0,yPercent:0,y:0,scale:1,clipPath:"inset(0% 0% 0% 0%)"});return tl;}
  const duration=imageGroupMotionProposals.find(a=>a.id===id)!.durationMs/1000;
