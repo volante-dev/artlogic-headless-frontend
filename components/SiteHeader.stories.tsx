@@ -1,3 +1,4 @@
+import {useState} from "react";
 import {sections,localizedPath} from "../lib/i18n/routes";
 import type {Meta,StoryObj} from "@storybook/nextjs-vite";
 import {SiteLogo} from "./SiteLogo";
@@ -18,3 +19,8 @@ export const Immersive:Story={args:{immersive:true},globals:{width:390}};
 
 export const AsymmetricLogos:Story={args:{immersive:true,asymmetricLogos:true},globals:{width:390}};
 export const AsymmetricLogosDefault:Story={args:{asymmetricLogos:true},globals:{width:1440}};
+
+function HeaderTransitionStory(){
+ const [immersive,setImmersive]=useState(true);return <><button type="button" onClick={()=>setImmersive(value=>!value)} style={{position:'fixed',bottom:16,right:16,zIndex:2000}}>Changer de page</button><HeaderStory immersive={immersive} asymmetricLogos/></>;
+}
+export const RouteTransition:Story={render:()=> <HeaderTransitionStory/>,globals:{width:1440}};

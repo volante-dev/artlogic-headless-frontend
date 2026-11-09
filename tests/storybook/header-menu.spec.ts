@@ -83,16 +83,16 @@ test("immersive and burger headers keep the same baseline with different logo pr
  await page.route('**/site-logos/*',async route=>{const white=new URL(route.request().url()).pathname.endsWith('2');await route.fulfill({status:200,contentType:'image/svg+xml',body:`<svg xmlns="http://www.w3.org/2000/svg" width="${white?1024:892}" height="${white?342:60}" viewBox="0 0 ${white?1024:892} ${white?342:60}"><rect width="100%" height="100%" fill="${white?'white':'black'}"/></svg>`});});
  for(const width of [320,390,440]){
   await visit(page,width,956,'asymmetric-logos');await expect(page.locator('#site-navigation')).toHaveAttribute('inert','');
-  await page.locator('header img').evaluate(async n=>{await(n as HTMLImageElement).decode();});
+  await page.locator('header img').evaluateAll(async nodes=>{await Promise.all(nodes.map(n=>(n as HTMLImageElement).decode()));});
   const header=page.locator('header'),trigger=toggle(page),before=await trigger.boundingBox(),headerBefore=await header.boundingBox();
-  await trigger.click();await expect(header).toHaveAttribute('data-menu-state','open');await settled(page);await page.locator('header img').evaluate(async n=>{await(n as HTMLImageElement).decode();});
+  await trigger.click();await expect(header).toHaveAttribute('data-menu-state','open');await settled(page);await page.locator('header img').evaluateAll(async nodes=>{await Promise.all(nodes.map(n=>(n as HTMLImageElement).decode()));});
   const after=await trigger.boundingBox(),headerAfter=await header.boundingBox();expect(after!.y).toBeCloseTo(before!.y,1);expect(headerAfter!.height).toBeCloseTo(headerBefore!.height,1);expect(headerAfter!.height).toBe(88);
   await page.keyboard.press('Escape');await expect(header).toHaveAttribute('data-menu-state','closed');expect((await trigger.boundingBox())!.y).toBeCloseTo(before!.y,1);
  }
  for(const width of [1280,1440,1920]){
   const measure=()=>page.locator('header').evaluate(n=>{const home=n.querySelector('a')!.getBoundingClientRect(),nav=n.querySelector('nav')!.getBoundingClientRect();return {homeCenter:home.y+home.height/2,navCenter:nav.y+nav.height/2};});
-  await visit(page,width,956,'asymmetric-logos');await page.locator('header img').evaluate(async n=>{await(n as HTMLImageElement).decode();});const hero=await measure();
-  await visit(page,width,956,'asymmetric-logos-default');await page.locator('header img').evaluate(async n=>{await(n as HTMLImageElement).decode();});const normal=await measure();
+  await visit(page,width,956,'asymmetric-logos');await page.locator('header img').evaluateAll(async nodes=>{await Promise.all(nodes.map(n=>(n as HTMLImageElement).decode()));});const hero=await measure();
+  await visit(page,width,956,'asymmetric-logos-default');await page.locator('header img').evaluateAll(async nodes=>{await Promise.all(nodes.map(n=>(n as HTMLImageElement).decode()));});const normal=await measure();
   expect(hero.homeCenter).toBeCloseTo(normal.homeCenter,1);expect(hero.navCenter).toBeCloseTo(normal.navCenter,1);
  }
 
@@ -117,4 +117,18 @@ test("burger lines draw the frame before revealing links and reverse without rec
  await expect(header).toHaveAttribute('data-menu-motion','extending');await expect(page.locator('[data-menu-content]').first()).toHaveCSS('opacity','0');
  await expect(header).toHaveAttribute('data-menu-state','closed');expect(await appearance()).toEqual(before);
  await expect(trigger.locator('span span').first()).toHaveCSS('opacity','1');
+});
+
+
+for(const width of [390,1440])test(`header crossfades between home and inner pages at ${width}px`,async({page},info)=>{
+ await page.route('**/site-logos/*',async route=>{const light=new URL(route.request().url()).pathname.endsWith('2');await route.fulfill({status:200,contentType:'image/svg+xml',body:`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="48"><rect width="200" height="48" fill="${light?'white':'black'}"/></svg>`});});
+ await visit(page,width,900,'route-transition');const header=page.locator('header'),node=await header.elementHandle(),dark=header.locator('[data-logo-tone="dark"]'),light=header.locator('[data-logo-tone="light"]');
+ await expect(header).toHaveAttribute('data-header-appearance','immersive');await expect(light).toHaveCSS('opacity','1');
+ await page.getByRole('button',{name:'Changer de page'}).click();await expect(header).toHaveAttribute('data-header-appearance','standard');
+ await expect(dark).toHaveCSS('opacity','1');await expect(light).toHaveCSS('opacity','0');await expect(header).toHaveCSS('position','relative');
+ expect(await node!.evaluate(n=>n===document.querySelector('header'))).toBe(true);expect(await header.evaluate(n=>n.getAnimations({subtree:true}).length)).toBe(0);
+ await page.screenshot({path:info.outputPath(`header-standard-${width}.png`)});
+ await page.getByRole('button',{name:'Changer de page'}).click();await expect(header).toHaveAttribute('data-header-appearance','immersive');await expect(light).toHaveCSS('opacity','1');await expect(dark).toHaveCSS('opacity','0');
+ await page.getByRole('button',{name:'Changer de page'}).click();await page.getByRole('button',{name:'Changer de page'}).click();await expect(light).toHaveCSS('opacity','1');
+ await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Changer de page'}).click();await expect(dark).toHaveCSS('opacity','1');expect(await header.evaluate(n=>n.getAnimations({subtree:true}).length)).toBe(0);
 });
