@@ -16,9 +16,10 @@
 .centered .invitation { width:min(80%,800px); align-items:center; }
 .centered .title { margin-inline:auto!important; }
 @media(max-width:767px) {
-  .hero { padding:max(88px,12dvh) var(--hero-edge-inset) calc(var(--hero-edge-inset) + 112px); }
+  .hero { --hero-content-bottom:max(var(--hero-edge-inset),env(safe-area-inset-bottom)); padding:max(88px,12dvh) var(--hero-edge-inset) var(--hero-content-bottom); }
   .invitation { width:100%; }
   .title { max-width:14ch!important; }
-  .controls { bottom:var(--hero-edge-inset); right:var(--hero-edge-inset); gap:24px; }
-  .hero::before { inset:20% 0 0; background:linear-gradient(to bottom,transparent 0%,color-mix(in srgb,var(--site-color-inverseSurface) 3%,transparent) 4%,color-mix(in srgb,var(--site-color-inverseSurface) 11%,transparent) 10%,color-mix(in srgb,var(--site-color-inverseSurface) 28%,transparent) 18%,color-mix(in srgb,var(--site-color-inverseSurface) 48%,transparent) 26%,color-mix(in srgb,var(--site-color-inverseSurface) 64%,transparent) 33%,color-mix(in srgb,var(--site-color-inverseSurface) 70%,transparent) 37%,color-mix(in srgb,var(--site-color-inverseSurface) 72%,transparent) 40%); }
+  .controls { bottom:var(--hero-content-bottom); right:var(--hero-edge-inset); gap:24px; }
+  .hero:has(.control) .discover { max-width:calc(100% - 76px); }
+  .hero::before { inset:50% 0 0; }
 }
