@@ -25,10 +25,24 @@
  .carousel[data-full-frame-mobile] [data-editorial-media-viewport]{height:100%;width:100%;aspect-ratio:auto;overflow:hidden;position:relative}
  .carousel[data-full-frame-mobile] [data-editorial-media-viewport] img{position:absolute;inset:0;width:100%;height:100%;object-fit:var(--media-fit)}
  .carousel[data-full-frame-mobile] figcaption{position:absolute;inset:auto 20px calc(104px + env(safe-area-inset-bottom));max-height:30%;overflow:auto;background:rgb(0 0 0 / .55);color:white;padding:16px;z-index:2}
- .carousel[data-full-frame-mobile] .navigation{position:absolute;inset:auto 0 0;z-index:3;color:white;padding:28px max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom));background:linear-gradient(transparent,rgb(0 0 0 / .72) 35%,rgb(0 0 0 / .72))}
+ .carousel[data-full-frame-mobile] .navigation{position:absolute;inset:auto 0 0;z-index:3;color:white;padding:28px max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom));background:transparent}
  .carousel[data-full-frame-mobile] .progress button span{background:rgb(255 255 255 / .55)}
  .carousel[data-full-frame-mobile] .progress button[aria-current=true] span{background:white}
  .carousel[data-full-frame-mobile] button:focus-visible{outline:2px solid white;outline-offset:2px}
 }
 
 @media(max-width:899px){.carousel[data-full-frame-mobile] figcaption a{color:inherit;border-color:currentColor}.carousel[data-full-frame-mobile] .progress button span{background:rgb(255 255 255 / .7)}}
+
+@media(max-width:899px){
+ .carousel .navigation>button:not([data-rotation-control]){display:none}
+ .carousel .navigation{justify-content:center;gap:8px}
+ .carousel .progress{flex:0 1 auto;justify-content:center;gap:0;max-width:100%;flex-wrap:wrap}
+ .carousel .progress li{flex:0 0 auto}
+ .carousel .progress button{width:44px;min-height:44px;justify-content:center}
+ .carousel .progress button span,.carousel .progress button[aria-current=true] span{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45;transition:opacity 180ms ease-out,transform 180ms ease-out}
+ .carousel .progress button[aria-current=true] span{opacity:1;transform:scale(1.25)}
+ .carousel[data-full-frame-mobile] .navigation{inset:auto 0 0;padding:0 44px max(8px,env(safe-area-inset-bottom));background:transparent}
+ .carousel[data-full-frame-mobile] figure::after{content:"";position:absolute;inset:35% 0 0;pointer-events:none;z-index:1;background:linear-gradient(to bottom,transparent 0%,rgb(0 0 0 / .025) 28%,rgb(0 0 0 / .09) 52%,rgb(0 0 0 / .24) 76%,rgb(0 0 0 / .5) 100%)}
+ .carousel[data-full-frame-mobile] figcaption{background:transparent;padding:0;bottom:calc(64px + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){.carousel .progress button span{transition:none}}
