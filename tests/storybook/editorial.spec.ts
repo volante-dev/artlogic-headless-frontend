@@ -7,7 +7,7 @@ test("the four families reserve media space, reflow on mobile and retain caption
  await page.route("**/*",route=>{if(new URL(route.request().url()).origin!==baseURL){unexpected.push(route.request().url());return route.abort();}return route.continue();});
  for(const width of [375,1440]){
   await page.setViewportSize({width,height:900});await page.goto(story("composition"));await expect(page.getByRole("heading",{name:"La lumière comme matière"})).toBeVisible();
-  for(const image of await page.locator("figure img").all()){await image.scrollIntoViewIfNeeded();await expect(image).toHaveAttribute("data-ready","true");await expect(image).toHaveCSS("opacity","1");}
+  for(const image of await page.locator("figure img").all()){await image.scrollIntoViewIfNeeded();await expect.poll(()=>image.evaluate(element=>element instanceof HTMLImageElement&&element.complete&&element.naturalWidth>0)).toBe(true);await expect(image).toHaveCSS("opacity","1");}
   await page.evaluate(()=>scrollTo(0,0));
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await mkdir(".impeccable/review/editorial",{recursive:true});await page.screenshot({path:`.impeccable/review/editorial/blocks-${width}.png`,fullPage:true,animations:"disabled"});
