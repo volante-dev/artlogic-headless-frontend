@@ -1,0 +1,9 @@
+.reader{position:relative;max-width:960px;margin:0 auto;padding:clamp(24px,5vw,72px);color:var(--site-color-text,#101314);background:var(--site-color-background,#f6f7f6);overflow-wrap:anywhere}
+.reader img{display:block;max-width:100%;width:auto;max-height:90svh;height:auto;object-fit:contain;margin:0 auto}
+.reader figure{margin:40px 0}.reader dl>div{display:grid;grid-template-columns:35% 1fr;gap:16px}.reader dd{margin:0}.reader section{margin:40px 0}
+:global(html[data-artwork-document="preparing"]) .reader,:global(html[data-artwork-document="owned"]) .reader,:global(html[data-artwork-document="cancelled"]) .reader{visibility:hidden;position:absolute;inset:0;pointer-events:none}
+:global(html[data-artwork-document="static"]) :global(div[hidden]):has(.reader){display:contents!important}
+:global(html[data-artwork-document="static"]) :global([data-artwork-dialog-shell]):has(.reader),:global(html[data-artwork-document="static"]) :global([role="dialog"]):has(.reader){position:relative!important;inset:auto!important;height:auto!important;max-height:none!important;overflow:visible!important;transform:none!important;opacity:1!important;visibility:visible!important}
+:global(html[data-artwork-document="static"]):has(.reader) :global([data-artwork-background]),:global(html[data-artwork-document="static"]):has(.reader) :global([data-artwork-dialog-controls]),:global(html[data-artwork-document="static"]):has(.reader) :global([data-artwork-loading]),:global(html[data-artwork-document="static"]):has(.reader) :global([data-artwork-route-state]),:global(html[data-artwork-document="static"]):has(.reader) :global(.MuiBackdrop-root){display:none!important}
+:global(html[data-artwork-document="static"]):has(.reader) :global(body){overflow:auto!important;height:auto!important}
+:global(html[data-artwork-document="static"]) :global(.MuiDialog-container):has(.reader){height:auto!important;display:block!important}

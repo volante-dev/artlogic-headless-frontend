@@ -37,6 +37,7 @@ it("renders a localized placeholder and escapes missing media and untrusted sour
 });
 
 it("uses the shared responsive contact image without losing its focal point or alternative",()=>{
- const html=renderToStaticMarkup(createElement(MediaDisplayProvider,{responsive:true,children:createElement(ContactArtworkCard,{artwork})}));
+ const fixtureProps={responsive:true,children:createElement(ContactArtworkCard,{artwork})};
+ const html=renderToStaticMarkup(createElement(MediaDisplayProvider,fixtureProps));
  expect(html).toContain('image=r1-');expect(html).toContain('srcSet=');expect(html).toContain('object-position:40% 20%');expect(html).toContain('alt="Sculpture"');expect(html).not.toContain('/_next/image');expect(html).not.toContain('token=');
 });

@@ -1,4 +1,6 @@
 "use client";
+import {ArtworkInitialDocument} from "./ArtworkInitialDocument";
+import {claimArtworkDocument} from "../../lib/artworks/document-state";
 import {useLayoutEffect,useRef,useState} from "react";
 import {useRouter} from "next/navigation";
 import type {GalleryExperience} from "../../lib/artworks/types";
@@ -24,6 +26,7 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
   const [reading,setReading]=useState<Reading>({generation:0,data:null,status:null});
   const visibleData=reading.data&&translated?.artwork&&reading.data.locale!==translated.locale?translated.artwork:reading.data;
   useLayoutEffect(()=>{
+    if(!claimArtworkDocument())return;
     const wrapper=content.current,epoch=generation,visualToken=visitToken?.()??null;
     readingToken.current=visualToken;
     let request:AbortController|null=null,alive=true,hasData=false;
@@ -37,13 +40,14 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
       try{
         const data=await readArtworkExperience(initial.artwork.slug,liveLocale.current.locale,signal);
         if(!alive||current!==generation.current)return;
+        if(data.artwork.id!==initial.artwork.id)throw new ArtworkReadError(503);
         if(data.presentationReleaseId!==presentation.releaseId){router.refresh();setReading({generation:current,data:null,status:503});return;}
         hasData=true;setReading({generation:current,data,status:null});
       }catch(error){if(!alive||request.signal.aborted||current!==generation.current)return;setReading({generation:current,data:null,status:error instanceof ArtworkReadError?error.status:503});}
     };
     void validate();const visibility=()=>void validate();document.addEventListener("visibilitychange",visibility);window.addEventListener("artwork-revalidate",visibility);
     return ()=>{const dialog=wrapper?.closest<HTMLElement>("[role=dialog]");if(hasData&&dialog)rememberVisual?.(dialog.scrollTop,visualToken);alive=false;request?.abort();epoch.current++;if(wrapper)wrapper.style.visibility="hidden";document.removeEventListener("visibilitychange",visibility);window.removeEventListener("artwork-revalidate",visibility);};
-  },[initial.artwork.slug,initial.locale,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation]);
+  },[initial.artwork.id,initial.artwork.slug,initial.locale,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation]);
   useLayoutEffect(()=>{
     if(!content.current)return;const valid=reading.data&&reading.generation===generation.current;content.current.style.visibility=valid?"visible":"hidden";
     document.title=valid?(visibleData!.artwork.title??untitled)+" — "+siteName:genericTitle;
@@ -53,6 +57,7 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
     }
   },[reading,visibleData,readVisual,genericTitle,untitled,siteName]);
   return <>
+    {reading.generation===0&&<ArtworkInitialDocument content={initial}/>}
     {!reading.data&&<ArtworkRouteState status={reading.status===404?"unavailable":reading.status?"error":"loading"} retry={()=>retry(n=>n+1)}/>}
     <div ref={content} style={{visibility:"hidden"}}>{visibleData&&<SiteThemeProvider theme={presentation.theme} fonts={presentation.fontFiles}><ArtworkDocumentRenderer presentation={translated?.presentation??presentation} content={visibleData} siteName={siteName} demonstration={demonstration}/></SiteThemeProvider>}</div>
   </>;

@@ -14,5 +14,5 @@ for(const viewport of [{width:375,height:812},{width:1440,height:600},{width:720
 test("changing motion preference while reading immediately exposes the static ordered views",async({page})=>{
   await page.goto("/artworks/"+artwork());const scene=page.getByRole("dialog").getByTestId("artwork-experience");await expect(scene).toHaveAttribute("data-enhanced","true");
   await page.emulateMedia({reducedMotion:"reduce"});await expect(scene).toHaveAttribute("data-enhanced","false");
-  await expect(scene.locator("[data-static-view]").first()).toBeVisible();expect(await scene.evaluate(node=>node.getAnimations({subtree:true}).length)).toBe(0);
+  await expect(scene.locator("[data-static-view]").first()).toBeVisible();await expect.poll(()=>scene.evaluate(node=>node.getAnimations({subtree:true}).length)).toBe(0);
 });

@@ -1,5 +1,4 @@
 "use client";
-import {detailImageSizes} from "@/lib/media/public-image-sizes";
 import {useId,useCallback,useContext,useRef,useState,useLayoutEffect,type ComponentType, type ReactNode} from "react";
 import {useSiteContent} from "../SiteContentProvider";
 import {ArtworkImage} from "../ArtworkImage";
@@ -54,7 +53,7 @@ export function DesktopArtworkExperience({content,id,InformationView=ArtworkInfo
     </div>
     <div className={styles.readingFlow}>
       <div ref={information} className={styles.information}>
-        <InformationView content={content} headingComponent="p"/>
+        <InformationView content={content} headingComponent="p" finaleActive={finale?.open??false}/>
       </div>
     </div>
     <div className={styles.staticViews}>

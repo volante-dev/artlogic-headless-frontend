@@ -5,7 +5,7 @@ it('resolves a complete local dictionary without mutating the global catalogue',
 import{ArtworkProgress as LegacyArtworkProgress}from'../fixtures/legacy-artwork-progress';
 import{SiteContentProvider}from'../../components/SiteContentProvider';
 import{initialMessages}from'../../lib/i18n/messages.generated';
-it('matches the frozen pre-extraction artwork DOM exactly in both languages and all supported counts',()=>{
+it('preserves the frozen artwork DOM apart from the explicit viewport count variable',()=>{
  for(const locale of ['fr','en'])for(const count of [0,1,3])for(const active of [0,1]){
   const props={count,active,onSelect:()=>{},className:'custom-progress'};
   const render=(View:ComponentType<Parameters<typeof ArtworkProgress>[0]>)=>{
@@ -13,6 +13,8 @@ it('matches the frozen pre-extraction artwork DOM exactly in both languages and 
    // eslint-disable-next-line react/no-children-prop
    return renderToStaticMarkup(createElement(SiteContentProvider,{messages:initialMessages(locale),locale,defaultLocale:'fr',children:createElement(View,props)}));
   };
-  expect(render(ArtworkProgress)).toBe(render(LegacyArtworkProgress));
+  const actual=render(ArtworkProgress),countStyle=` style="--view-progress-count:${Math.max(1,count)}"`;
+  if(count>0)expect(actual).toContain(countStyle);
+  expect(actual.replace(countStyle,"")).toBe(render(LegacyArtworkProgress));
  }
 });

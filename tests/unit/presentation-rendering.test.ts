@@ -1,6 +1,6 @@
 import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
-import {describe,expect,it} from "vitest";
+import {describe,expect,it,vi} from "vitest";
 import {PageRenderer} from "../../page-composer/PageRenderer";
 import {sectionDefinitions} from "../../page-composer/definitions";
 import {assertRenderableSection,sectionRegistry} from "../../page-composer/registry";
@@ -8,6 +8,7 @@ import {SectionImage} from "../../sections/shared";
 import {manifestFingerprints} from "../../clients/manifests/fingerprints.generated";
 import projection from "../../clients/default/projection.json";
 import type {PresentationSection,PublicPresentation,PresentationTheme,PresentationAsset} from "../../lib/presentation/types";
+vi.mock("next/navigation",async original=>({...await original<typeof import("next/navigation")>(),useRouter:()=>({push:()=>undefined})}));
 const id="11111111-1111-4111-8111-111111111111",art={id,title:"Public artwork",artist:"Artist",year:null,medium:null,dimensions:null,media:[]};
 function presentation(sections:PresentationSection[],pageKey:PublicPresentation["pageKey"]="home"):PublicPresentation{return {releaseId:id,schemaVersion:1,profileId:"default",manifestFingerprint:manifestFingerprints.default,locale:"fr",pageKey,theme:projection as PresentationTheme,fontFiles:[],sections};}
 describe("closed presentation rendering",()=>{

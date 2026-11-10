@@ -354,6 +354,7 @@ export const variables: Readonly<Record<string, Rule>> = {
     "default": "{}",
     "secret": true
   },
+  "ARTLOGIC_ARTWORK_TYPES_URL": {"scopes":"AW","kind":"url","secret":true},
   "ARTLOGIC_ARTWORKS_URL": {
     "scopes": "WM",
     "kind": "url",
@@ -1096,6 +1097,7 @@ export function readConfig(role: Scope, env: Record<string, string | undefined> 
       if (numberValue(config, name) >= deadline * 1000) fail(name, "doit etre inferieur a la deadline");
     if (!listValue(config, "ARTLOGIC_FEED_ALLOWED_ORIGINS").includes(new URL(stringValue(config, "ARTLOGIC_ARTWORKS_URL")).origin))
       fail("ARTLOGIC_FEED_ALLOWED_ORIGINS", "origine initiale absente");
+    if(config.ARTLOGIC_ARTWORK_TYPES_URL&&!listValue(config,"ARTLOGIC_FEED_ALLOWED_ORIGINS").includes(new URL(stringValue(config,"ARTLOGIC_ARTWORK_TYPES_URL")).origin))fail("ARTLOGIC_ARTWORK_TYPES_URL","origine absente des origines autorisees");
     if (Boolean(config.SOURCE_AUTH_HEADER_NAME) !== Boolean(config.SOURCE_AUTH_HEADER_VALUE))
       fail("SOURCE_AUTH_HEADER_NAME", "nom et valeur doivent etre fournis ensemble");
     const name = config.SOURCE_AUTH_HEADER_NAME;

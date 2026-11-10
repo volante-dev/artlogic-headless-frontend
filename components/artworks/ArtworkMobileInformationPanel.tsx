@@ -20,11 +20,11 @@ export function ArtworkMobileInformationPanel({content,state,InformationView,sup
   <div className={styles.informationEdges} data-artwork-frost-frame aria-hidden="true">{['top','bottom','left','right'].map(edge=><span key={edge} className={styles.informationBorder} data-information-border={edge}/>)}</div>
   <div ref={reading} className={styles.informationReader} data-mobile-information-scroll data-artwork-reading onScroll={e=>onScroll(e.currentTarget)}>
    <div className={styles.identityReading} data-information-identity><div data-artwork-frost-content><ArtworkIdentity content={content}/></div></div>
-   <div ref={body} className={`${styles.informationBody} ${styles.information}`} data-information-body data-artwork-reading onScroll={e=>onScroll(e.currentTarget)}>
-    {open&&<><InformationView content={content} showIdentity={false} showContact={false}/>{supplementalContent}</>}
+   <div ref={body} className={`${styles.informationBody} ${styles.information}`} data-information-body inert={!open||undefined} aria-hidden={!open||undefined} data-artwork-reading onScroll={e=>onScroll(e.currentTarget)}>
+    {<><InformationView content={content} showIdentity={false} showContact={false}/>{supplementalContent}</>}
    </div>
   </div>
-  <div className={styles.informationContact} data-information-contact>{open&&<ArtworkInquiryLink id={content.artwork.id} locale={content.locale}/>}</div>
+  <div className={styles.informationContact} data-information-contact inert={!open||undefined} aria-hidden={!open||undefined}>{<ArtworkInquiryLink id={content.artwork.id} locale={content.locale}/>}</div>
   <button data-artwork-frost-content data-mobile-trigger="information" className={styles.informationAction} aria-expanded={open} onClick={()=>{if(!open)send({type:'information'});else motion.toggle();}}>{messages[open?'gallery.backToImages':'gallery.openInformation']}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg></button>
  </section>;
 }

@@ -2,7 +2,7 @@ import {safeEditorialHref} from "../editorial/links";
 import {Ajv2020} from "ajv/dist/2020.js";
 import {gallerySchemas} from "./schemas.generated";
 import {parseHeroFocus} from "./focus";
-import type {GalleryArtwork,GalleryCatalog,GalleryExperience,GalleryPreviewExperience} from "./types";
+import type {ArtworkTypeFilters,GalleryArtwork,GalleryCatalog,GalleryExperience,GalleryPreviewExperience} from "./types";
 const richValidator=new Ajv2020({strict:true,coerceTypes:false,removeAdditional:false}).compile(gallerySchemas.EditorialRichText);
 const sourceKeys=["importedDescription","importedDescriptionLocale","importedProvenance","importedProvenanceLocale"] as const;
 function sourceFields(value:unknown):Pick<GalleryExperience,typeof sourceKeys[number]>{
@@ -38,12 +38,13 @@ export function parseGalleryArtwork(value:unknown):GalleryArtwork{
  return {id:artworkId,slug:a.slug,title:text(a.title),artist:text(a.artist),year:text(a.year),medium:text(a.medium),dimensions:text(a.dimensions),media:a.media.map(value=>{const m=record(value,["id","alt","width","height","path"]),mediaId=id(m.id);if(m.path!=="/v1/public/media/"+mediaId)fail();return {id:mediaId,alt:text(m.alt),width:integer(m.width,1),height:integer(m.height,1),path:m.path as string};})};
 }
 export function parseGalleryCatalog(value:unknown,plp=false):GalleryCatalog{
- const p=record(value,["items","query","page","pageSize","totalItems","pageCount","catalogRevision",...(plp?["display","layout"]:[])]);if(!Array.isArray(p.items)||typeof p.query!=="string"||Array.from(p.query).length>160||p.query!==p.query.normalize("NFC").trim())fail();
+ const hasTypes=!!value&&typeof value==="object"&&Object.hasOwn(value,"typeFilters");
+ const p=record(value,[...(hasTypes?["typeFilters"]:[]),"items","query","page","pageSize","totalItems","pageCount","catalogRevision",...(plp?["display","layout"]:[])]);if(!Array.isArray(p.items)||typeof p.query!=="string"||Array.from(p.query).length>160||p.query!==p.query.normalize("NFC").trim())fail();
  const page=integer(p.page,1,1000000),pageSize=integer(p.pageSize,1,100),totalItems=integer(p.totalItems),pageCount=integer(p.pageCount),catalogRevision=integer(p.catalogRevision);
  if(pageCount!==Math.ceil(totalItems/pageSize)||page>Math.max(1,pageCount)||p.items.length!==Math.min(pageSize,Math.max(0,totalItems-(page-1)*pageSize)))fail();
  if(plp&&(p.display!=="plp"||!["grid","masonry"].includes(String(p.layout))))fail();
  const items=p.items.map(v=>{if(!plp)return parseGalleryArtwork(v);const a=record(v,["id","slug","title","artist","year","medium","dimensions","media","catalogLarge"]);if(typeof a.catalogLarge!=="boolean")fail();const {catalogLarge,...base}=a;return {...parseGalleryArtwork(base),catalogLarge};});
- return {...(plp?{display:"plp" as const,layout:p.layout as "grid"|"masonry"}:{}),items,query:p.query,page,pageSize,totalItems,pageCount,catalogRevision};
+ return {...(hasTypes?{typeFilters:parseTypeFilters(p.typeFilters)}:{}),...(plp?{display:"plp" as const,layout:p.layout as "grid"|"masonry"}:{}),items,query:p.query,page,pageSize,totalItems,pageCount,catalogRevision};
 }
 export function parseGalleryExperience(value:unknown):GalleryExperience{
  const d=record(value,["scope","artwork","locale","description","descriptionLocale","presentationReleaseId","catalogRevision",...presentSourceKeys(value),...(value&&typeof value==="object"&&Object.hasOwn(value,"heroFocus")?["heroFocus"]:[])]);
@@ -60,4 +61,14 @@ export function parseGalleryPreviewExperience(value:unknown):GalleryPreviewExper
  if(description===null?descriptionLocale!==null:!description.trim()||Array.from(description).length>5000||!descriptionLocale||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(descriptionLocale))fail();
  const art=parseGalleryArtwork(d.artwork);
  return {...sourceFields(d),heroFocus:parseHeroFocus(d.heroFocus,art.media[0]?.id),scope:"preview",artwork:art,locale:d.locale,description,descriptionLocale,snapshotId:id(d.snapshotId),revision:d.revision,catalogRevision:integer(d.catalogRevision)};
+}
+
+function parseTypeFilters(value:unknown):ArtworkTypeFilters{
+ const v=record(value,["availability","options","requestedIds","selectedIds","ignoredIds","normalized"]);
+ if(!["ready","unavailable","unsupported"].includes(String(v.availability))||typeof v.normalized!=="boolean"||!Array.isArray(v.options)||v.options.length>10000)fail();
+ const options=v.options.map(value=>{const t=record(value,["id","name"]);if(typeof t.name!=="string"||!t.name.trim()||Array.from(t.name).length>200)fail();return {id:integer(t.id,1),name:t.name};});
+ const ids=(value:unknown)=>{if(!Array.isArray(value)||value.length>100)fail();const list=value.map(id=>integer(id,1));if(new Set(list).size!==list.length)fail();return list;};
+ const requestedIds=ids(v.requestedIds),selectedIds=ids(v.selectedIds),ignoredIds=ids(v.ignoredIds),known=new Set(options.map(t=>t.id));
+ if(known.size!==options.length||selectedIds.some(id=>!known.has(id)||!requestedIds.includes(id))||ignoredIds.some(id=>known.has(id)||!requestedIds.includes(id))||selectedIds.length+ignoredIds.length!==requestedIds.length||v.normalized!==(ignoredIds.length>0)||v.availability!=="ready"&&options.length)fail();
+ return {availability:v.availability as ArtworkTypeFilters["availability"],options,requestedIds,selectedIds,ignoredIds,normalized:v.normalized};
 }

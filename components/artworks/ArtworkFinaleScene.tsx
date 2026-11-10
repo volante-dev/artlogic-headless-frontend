@@ -1,16 +1,10 @@
 "use client";
 import {useRef,useState,useCallback,useMemo,useLayoutEffect,type RefObject} from "react";
-import {createPortal} from "react-dom";
 import gsap from "gsap";
 import {useGSAP} from "@gsap/react";
 import type {ArtworkContent} from "./ArtworkInformation";
-import {ArtworkInquiryLink} from "./ArtworkInformation";
-import {ArtworkFinale} from "./ArtworkFinale";
-import {ArtworkFinaleDetails} from "./ArtworkFinaleDetails";
 import {ArtworkFinaleMedia,setFinaleBitmap,type FinalePhoto} from "./ArtworkFinaleMedia";
-import {RichText} from "../editorial/RichText";
 import {useArtworkInteraction} from "./ArtworkInteractionBoundary";
-import {useSiteContent} from "../SiteContentProvider";
 import {finaleStack} from "../../lib/artworks/finale-stage";
 import {commonFinaleCardRect} from "../../lib/artworks/finale-geometry";
 import {useArtworkReducedMotion} from "./useArtworkViewport";
@@ -26,15 +20,12 @@ export function ArtworkFinaleScene({owner,...props}:FinaleSceneProps){
 }
 function FinaleSceneContent({article,content,anchor,open,mobile,onExited}:Omit<FinaleSceneProps,"owner">&{article:HTMLElement}){
  const [geometryVersion,setGeometryVersion]=useState(0),resume=useRef(0),prepared=useRef(false);
- const root=useRef<HTMLDivElement>(null),mobileReading=useRef<HTMLDivElement>(null),reading=useRef<HTMLDivElement>(null),timeline=useRef<gsap.core.Timeline|null>(null),driver=useRef<gsap.core.Tween|null>(null),target=useRef(open),exit=useRef(onExited),reduced=useArtworkReducedMotion();
+ const root=useRef<HTMLDivElement>(null),timeline=useRef<gsap.core.Timeline|null>(null),driver=useRef<gsap.core.Tween|null>(null),target=useRef(open),exit=useRef(onExited),reduced=useArtworkReducedMotion();
  useLayoutEffect(()=>{target.current=open;exit.current=onExited;},[open,onExited]);
  const store=useArtworkInteraction();
- const {messages:m}=useSiteContent(),art=content.artwork;
+ const art=content.artwork;
  const photos=useMemo(()=>finaleStack(art.media.map(x=>x.id),anchor).slice(1).flatMap(id=>{const media=art.media.find(x=>x.id===id)!;const original=article.querySelector<HTMLImageElement>(`[data-finale-photo="${id}"] img`);return original?.complete&&original.naturalWidth?[{...media,src:"/media/"+media.id,alt:""} satisfies FinalePhoto]:[];}),[art.media,anchor,article]);
  const slot=!mobile?article.querySelector<HTMLElement>("[data-artwork-finale-slot]"):null;
- const description=content.importedDescription?<div lang={content.importedDescriptionLocale??content.locale}><RichText document={content.importedDescription}/></div>:null;
- const provenance=content.importedProvenance?<div lang={content.importedProvenanceLocale??undefined}><RichText document={content.importedProvenance}/></div>:null;
- const label=content.locale.startsWith("fr")?"Provenance":"Provenance";
  const {contextSafe}=useGSAP((_,safe)=>{
   const scene=root.current;if(!scene)return;prepared.current=false;
   const dialog=article.closest<HTMLElement>('[role="dialog"]'),bounds=dialog?.getBoundingClientRect()??{x:0,y:0,width:innerWidth,height:innerHeight};
@@ -43,7 +34,7 @@ function FinaleSceneContent({article,content,anchor,open,mobile,onExited}:Omit<F
   const host=bitmap?.complete&&bitmap.naturalWidth?candidate:null;
   const hostRect=host?.getBoundingClientRect(),frame=hostRect?{x:hostRect.x-bounds.x,y:hostRect.y-bounds.y,width:hostRect.width,height:hostRect.height}:viewport;
   const destination=commonFinaleCardRect(viewport,mobile&&bounds.height>500,frame);
-  const readingScene=mobileReading.current??scene;
+  const readingScene=article.querySelector<HTMLElement>("[data-finale-mobile-reading-layer]")??scene;
   const identity=mobile?readingScene.querySelector<HTMLElement>("[data-finale-identity]"):article.querySelector<HTMLElement>("[data-artwork-information-identity]");
   const contact=mobile?readingScene.querySelector<HTMLElement>("[data-finale-contact]"):article.querySelector<HTMLElement>("[data-artwork-information-contact]");
   const information=article.querySelector<HTMLElement>("[data-artwork-information]"),informationFrame=information?.parentElement;
@@ -96,5 +87,5 @@ function FinaleSceneContent({article,content,anchor,open,mobile,onExited}:Omit<F
  return <><div ref={root} className={[styles.scene,integration.layer].join(" ")} data-artwork-finale data-finale-open={open} style={{pointerEvents:"none"}}>
   <div className={[styles.black,integration.backdrop].join(" ")} data-finale-black/>
   <div className={styles.camera}>{photos.toReversed().map(photo=><ArtworkFinaleMedia key={photo.id} photo={photo}/>)}</div>
- </div>{mobile&&createPortal(<div ref={mobileReading} className={[styles.scene,integration.readingLayer].join(" ")}><ArtworkFinale title={art.title??m["artwork.untitled"]} active={open} readingRef={reading} metadata={art.artist} previousDetails={<dl>{[[m["artwork.year"],art.year],[m["artwork.medium"],art.medium],[m["artwork.dimensions"],art.dimensions]].filter(row=>row[1]).map(([key,value])=><div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl>} provenanceLabel={label} provenance={provenance} contact={<ArtworkInquiryLink id={art.id} locale={content.locale}/>}>{description}</ArtworkFinale></div>,article)}{slot&&createPortal(<ArtworkFinaleDetails active={open} readingRef={reading} provenanceLabel={label} provenance={provenance}>{description}</ArtworkFinaleDetails>,slot)}</>;
+ </div></>;
 }

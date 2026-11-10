@@ -14,18 +14,18 @@ function updateDescriptionOverflow(node:HTMLDivElement){
   thumb.style.height=height+"px";thumb.style.transform=`translateY(${offset}px)`;
  }
 }
-export function ArtworkFinaleDetails({children,provenance,provenanceLabel,active,readingRef}:{children?:ReactNode;provenance?:ReactNode;provenanceLabel:string;active:boolean;readingRef?:RefObject<HTMLDivElement|null>}){
+export function ArtworkFinaleDetails({children,provenance,provenanceLabel,active,readingRef,persistent=false}:{children?:ReactNode;provenance?:ReactNode;provenanceLabel:string;active:boolean;persistent?:boolean;readingRef?:RefObject<HTMLDivElement|null>}){
  const description=useRef<HTMLDivElement>(null),text=useRef<HTMLDivElement>(null),scrollTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useLayoutEffect(()=>{
-  const node=description.current;if(!node)return;
+  const node=description.current;if(!node||!active)return;
   // Reading owns wheel gestures even at its boundaries; never hand inertia to slide navigation.
   const wheel=(event:WheelEvent)=>{if(active&&node.dataset.scrollable==="true"&&!event.ctrlKey)event.stopPropagation();};
   node.addEventListener("wheel",wheel,{passive:true});
-  const update=()=>updateDescriptionOverflow(node),observer=new ResizeObserver(update);
+  let frame=0;const update=()=>updateDescriptionOverflow(node),observer=new ResizeObserver(()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(update);});
   observer.observe(node);if(text.current)observer.observe(text.current);update();
-  return ()=>{observer.disconnect();node.removeEventListener("wheel",wheel);if(scrollTimer.current)clearTimeout(scrollTimer.current);if(node.parentElement)node.parentElement.dataset.scrolling="false";};
+  return ()=>{cancelAnimationFrame(frame);observer.disconnect();node.removeEventListener("wheel",wheel);if(scrollTimer.current)clearTimeout(scrollTimer.current);if(node.parentElement)node.parentElement.dataset.scrolling="false";};
  },[children,active]);
- return <div className={styles.details} data-finale-details inert={!active||undefined} aria-hidden={!active}>
+ return <div className={styles.details} data-finale-details data-finale-persistent={persistent||undefined} inert={!active||undefined} aria-hidden={!active}>
    {children&&<div className={styles.descriptionArea} data-finale-description-area data-scrollable="false"><div className={styles.description} data-finale-description aria-label="Description" tabIndex={-1} data-reading-active={active} ref={node=>{description.current=node;if(readingRef)readingRef.current=node;}} onScroll={event=>{
     const node=event.currentTarget;updateDescriptionOverflow(node);if(node.dataset.scrollable!=="true")return;const area=node.parentElement;if(area)area.dataset.scrolling="true";
     if(scrollTimer.current)clearTimeout(scrollTimer.current);scrollTimer.current=setTimeout(()=>{if(area?.isConnected)area.dataset.scrolling="false";},900);

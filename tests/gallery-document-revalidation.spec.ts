@@ -1,0 +1,13 @@
+import {test,expect} from '@playwright/test';import {readFileSync} from 'node:fs';
+test('masked fields are absent from the native document and its interactive conclusion',async({page,request})=>{
+ const site=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,'utf8')).sites[0],control=(data:object)=>request.post(site.controlUrl,{headers:{'x-test-control':site.controlKey},data});
+ try{expect((await control({action:'documentFields',enabled:false})).ok()).toBe(true);const response=await request.get('/artworks/'+site.finaleArtworkIds[3]);const result=await page.evaluate(html=>{const doc=new DOMParser().parseFromString(html,'text/html'),a=doc.querySelector('[data-artwork-readable]')!;return{terms:[...a.querySelectorAll('dt')].map(n=>n.textContent),provenance:a.querySelector('[data-document-provenance]'),text:a.textContent};},await response.text());expect(result.terms).not.toContain('Année');expect(result.provenance).toBeNull();expect(result.text).not.toContain('Collection synthétique A');
+ await page.goto('/artworks/'+site.finaleArtworkIds[3]);await expect(page.getByTestId('artwork-experience')).toHaveAttribute('data-artwork-opening-phase','complete');await expect(page.locator('[data-finale-provenance]')).toHaveCount(0);
+ await control({action:'visibility',artworkId:site.finaleArtworkIds[3],decision:'hidden'});await page.evaluate(()=>window.dispatchEvent(new Event('artwork-revalidate')));await expect(page.locator('[data-artwork-route-state="unavailable"]')).toBeVisible();await expect(page.locator('[data-artwork-readable]')).toHaveCount(0);await expect(page.getByTestId('artwork-experience')).toHaveCount(0);
+ }finally{await control({action:'restore'});}
+});
+for(const defect of ['locale','identity','release'])test(`a mismatched ${defect} cannot adopt an initial public document`,async({page})=>{
+ const site=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,'utf8')).sites[0];
+ await page.route('**/api/artwork-experiences/**',async route=>{const response=await route.fetch(),data=await response.json();if(defect==='locale')data.locale='en';if(defect==='release')data.presentationReleaseId='99999999-9999-4999-8999-999999999999';if(defect==='identity'){data.artwork.id='99999999-9999-4999-8999-999999999999';data.artwork.slug='other-99999999999949998999999999999999';}await route.fulfill({response,json:data});});
+ await page.goto('/artworks/'+site.finaleArtworkIds[3]);await expect(page.locator('[data-artwork-route-state="error"]')).toBeVisible();await expect(page.locator('[data-artwork-readable]')).toHaveCount(0);await expect(page.getByTestId('artwork-experience')).toHaveCount(0);
+});

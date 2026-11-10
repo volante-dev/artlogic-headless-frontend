@@ -3,7 +3,7 @@
 .heading { display:flex; align-items:flex-end; justify-content:space-between; gap:40px; }
 .heading h1 { margin:0; }
 .search { display:flex; align-items:stretch; gap:12px; width:min(100%,520px); }
-.search > :first-child { flex:1; min-width:0; }
+.search > :nth-child(2) { flex:1; min-width:0; }
 .search button { flex:none; }
 .search .searchSubmit { width:48px; min-width:48px; height:56px; padding:12px; border:0; color:var(--site-color-text); background:transparent; }
 .clear,.action { display:inline-flex; align-items:center; min-height:44px; text-underline-offset:.25em; color:var(--site-color-link); }
@@ -21,3 +21,5 @@
 .pageStatus { margin-inline-start:auto; color:var(--site-color-mutedText); }
 @media(max-width:950px) { .heading { align-items:stretch; flex-direction:column; gap:32px; } }
 @media(max-width:600px) { .search { gap:8px; } .pageStatus { flex-basis:100%; margin:16px 0 0; } .pagination { gap:4px; margin-top:32px; } }
+
+.resultStatus { display:block; font-size:12px; color:var(--site-color-mutedText); min-height:20px; margin-top:16px; }

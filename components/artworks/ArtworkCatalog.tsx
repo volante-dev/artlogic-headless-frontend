@@ -1,6 +1,8 @@
 "use client";
+import {ArtworkTypeFilters} from "./ArtworkTypeFilters";
+import {useArtworkTypeFilters} from "./useArtworkTypeFilters";
 import {squareImageSizes} from "@/lib/media/public-image-sizes";
-import type {CSSProperties,ComponentType} from "react";
+import {useId,type CSSProperties,type ComponentType} from "react";
 import type {CatalogData} from "../../sections/types";
 import {useSiteContent} from "../SiteContentProvider";
 import {ArtworkCard,type ArtworkCardProps} from "../ArtworkCard";
@@ -22,28 +24,32 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListVi
   const numbered=catalog.kind==="numbered"?catalog.page:null,legacy=catalog.kind==="legacy"?catalog.page:null;
   const q=numbered?.query??(catalog.kind==="error"?catalog.q:"");
   const pageSize=numbered?.pageSize??(catalog.kind==="error"?catalog.pageSize:20);
-  const first=path+catalogQueryString({q:q||undefined,pageSize});
-  const link=(page:number)=>path+catalogQueryString({q:q||undefined,page,pageSize,catalogRevision:numbered?.catalogRevision});
+  const filterId=useId(),formId=filterId+"-search",types=numbered?.typeFilters?.selectedIds??(catalog.kind==="error"?catalog.types:[])??[];
+  const filters=useArtworkTypeFilters(path,q,pageSize,types);
+  const first=path+catalogQueryString({q:q||undefined,pageSize,types:filters.selected});
+  const link=(page:number)=>path+catalogQueryString({q:q||undefined,types:filters.selected,page,pageSize,catalogRevision:numbered?.catalogRevision});
   const pages=numbered?paginationWindow(numbered.page,numbered.pageCount):[];
   const items=numbered?.items??legacy?.items??[];
   const restart=catalog.kind==="error"&&["catalog_changed","page_out_of_range","invalid_request"].includes(catalog.code);
   return <section id={id} className={styles.catalog} data-gallery-state={catalog.kind}>
-    <div className={styles.heading}>
+    <ArtworkTypeFilters id={filterId} formId={formId} data={numbered?.typeFilters??(catalog.kind==="legacy"?catalog.typeFilters:undefined)} selected={filters.selected} onToggle={filters.toggle} onClear={()=>filters.change([])} toolbar={trigger=><div className={styles.heading}>
       <Typography variant="h1">{m["page.artworks.title"]}</Typography>
-      <form action={path} method="get" className={styles.search} role="search" aria-label={m["gallery.searchLabel"]}>
+      <form id={formId} action={path} method="get" className={styles.search} role="search" aria-label={m["gallery.searchLabel"]}>
+        {trigger}
         <TextField key={q} name="q" type="search" label={m["gallery.searchLabel"]} defaultValue={q} slotProps={{htmlInput:{maxLength:320}}}/>
         <input type="hidden" name="pageSize" value={pageSize}/>
         <IconButton type="submit" className={styles.searchSubmit} aria-label={m["gallery.searchSubmit"]}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="10.75" cy="10.75" r="6.75" stroke="currentColor" strokeWidth="1.5"/><path d="m16 16 4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></IconButton>
       </form>
-    </div>
-    {q&&<FreshLink className={styles.clear} href={path+catalogQueryString({pageSize})}>{m["gallery.searchClear"]}</FreshLink>}
+    </div>}/>
+    <span className={styles.resultStatus} role="status">{filters.pending?m["catalog.loading"]:numbered?`${numbered.totalItems}`:""}</span>
+    {q&&<FreshLink className={styles.clear} href={path+catalogQueryString({pageSize,types:filters.selected})}>{m["gallery.searchClear"]}</FreshLink>}
     {catalog.kind==="error"?<div className={styles.state} role="status">
       <Typography variant="h2">{restart?m["catalog.unavailableTitle"]:m["catalog.errorTitle"]}</Typography>
       <Typography>{m["catalog.errorMessage"]}</Typography>
       <FreshLink className={styles.action} href={first}>{m[restart?"gallery.restart":"catalog.retry"]}</FreshLink>
     </div>:<>
       {legacy&&<FreshLink className={styles.clear} href={first}>{m["gallery.restart"]}</FreshLink>}
-      {items.length?<ListView items={items} columns={columns} CardView={CardView}/>:<Typography role="status" className={styles.state}>{m[q?"gallery.noResults":"catalog.empty"]}</Typography>}
+      {items.length?<ListView items={items} columns={columns} CardView={CardView}/>:<Typography role="status" className={styles.state}>{m[q||filters.selected.length?"gallery.noResults":"catalog.empty"]}</Typography>}
       {numbered&&numbered.pageCount>0&&<nav className={styles.pagination} aria-label={m["gallery.paginationLabel"]}>
         {numbered.page>1&&<FreshLink className={styles.page} href={link(numbered.page-1)} aria-label={m["gallery.previousPage"]}><Arrow previous/></FreshLink>}
         {pages.map((page,index)=>page===null?<span key={"gap"+index} className={styles.gap} aria-hidden="true">…</span>:<FreshLink key={page} className={styles.page} href={link(page)} aria-label={m["gallery.page"]+" "+page} aria-current={numbered.page===page?"page":undefined}>{page}</FreshLink>)}

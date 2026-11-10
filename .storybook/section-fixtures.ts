@@ -26,6 +26,7 @@ export function sectionFixture(type:SectionType,variant:string,state:FixtureStat
   const video=empty||state==="posterError"?null:state==="videoError"?{...film,path:"/v1/public/presentation-assets/"+fixtureId(405)}:film;
   const artworks=empty?[]:Array.from({length:3},(_,index)=>artworkFixture(locale,state,index));
   const data:PageData={catalog:{kind:"legacy",page:{items:artworks,nextCursor:null,catalogRevision:1,restarted:false}},artwork:artworkFixture(locale,state)};
+  if(type==="artworkCatalog")data.catalog={kind:"numbered",page:{items:artworks.map(a=>({...a,slug:"synthetic-"+a.id.replaceAll("-","")})),query:"",page:1,pageSize:20,totalItems:artworks.length,pageCount:artworks.length?1:0,catalogRevision:1,typeFilters:{availability:"ready",options:empty?[]:long?Array.from({length:101},(_,i)=>({id:i+1,name:Array.from(`Type ${i+1} — ${sentence}`).slice(0,200).join("")})):[{id:8,name:"Masque"},{id:12,name:"Sculpture"},{id:11,name:"Coupe"}],requestedIds:[],selectedIds:[],ignoredIds:[],normalized:false}}};
   const common={id:fixtureId(10),schemaVersion:1 as const};
   const alt=en?"Synthetic sculptural form":"Forme sculpturale synthétique",caption=en?"Synthetic image · demonstration":"Image synthétique · démonstration";
   const items=empty?[]:Array.from({length:3},(_,i)=>({id:fixtureId(20+i),heading,excerpt:body,link,image,alt,caption}));

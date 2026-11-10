@@ -1,6 +1,7 @@
 "use client";
 import {detailImageSizes} from "@/lib/media/public-image-sizes";
 import {useState,useRef,useId,useLayoutEffect,type CSSProperties} from "react";
+import {ArtworkFinaleReadingLayer} from "./ArtworkFinaleReadingLayer";
 import {ArtworkFinaleScene} from "./ArtworkFinaleScene";
 import {ArtworkImage} from "../ArtworkImage";
 import {ArtworkMobileInformationPanel} from "./ArtworkMobileInformationPanel";
@@ -43,6 +44,7 @@ export function MobileArtworkExperience(props:MobileArtworkViewProps){
    </div>
    <div className={styles.timelineOwner} inert={state.mode==="information"||undefined} aria-hidden={state.mode==="information"||undefined}><ProgressView finale count={Math.max(1,media.length)+1} active={state.mode==="finale"?Math.max(1,media.length):Math.max(0,index)} onSelect={choose} className={styles.timeline}/></div>
   </div>
+  <ArtworkFinaleReadingLayer content={content} active={state.mode==="finale"}/>
   {finale&&<ArtworkFinaleScene owner={root} content={content} anchor={finale.anchor} open={state.mode==="finale"} mobile onExited={()=>{setFinale(null);if(pendingFinaleSelection.current!==null){select(pendingFinaleSelection.current);pendingFinaleSelection.current=null;}}}/>}
   <span className={styles.srOnly} role="status">{state.mode==="finale"?"Conclusion":""}</span>
   <span id={hint} className={styles.srOnly}>{m[inlineZoom?"gallery.panHelp":"gallery.mobileGestureHelp"]}</span>

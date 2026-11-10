@@ -16,8 +16,9 @@ test("Forward rechecks availability and a failed read never restores stale artwo
  const site=fixture(),control=(data:object)=>request.post(site.controlUrl,{headers:{"x-test-control":site.controlKey},data});
  try{
   await page.goto("/artworks?pageSize=3");await page.getByTestId("artwork-card").getByRole("link").first().click();await expect(page.getByRole("dialog").getByTestId("artwork-experience")).toBeVisible({timeout:15000});
+  const selectedReference=new URL(page.url()).pathname.split("/").at(-1)!,selectedId=selectedReference.slice(-32).replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/,"$1-$2-$3-$4-$5");
   await page.getByRole("button",{name:"Fermer la fiche de l’œuvre",exact:true}).click();await expect(page.getByRole("dialog")).toHaveCount(0);
-  await control({action:"visibility",artworkId:site.artworkId,decision:"hidden"});await page.goForward();await expect(page.getByRole("dialog")).toBeVisible();await expect(page.getByTestId("artwork-experience")).toHaveCount(0);await expect(page.getByRole("dialog").getByText(/plus disponible/i).first()).toBeVisible();
+  await control({action:"visibility",artworkId:selectedId,decision:"hidden"});await page.goForward();await expect(page.getByRole("dialog")).toBeVisible();await expect(page.getByTestId("artwork-experience")).toHaveCount(0);await expect(page.getByRole("dialog").getByText(/plus disponible/i).first()).toBeVisible();
   await page.getByRole("button",{name:"Fermer la fiche de l’œuvre",exact:true}).click();await expect(page).toHaveURL(/pageSize=3/);
   await control({action:"restore"});await control({action:"outage",kind:"experience"});await page.goto("/artworks/"+site.artworkId);await expect(page.getByRole("dialog")).toBeVisible();await expect(page.getByTestId("artwork-experience")).toHaveCount(0);await expect(page.getByRole("button",{name:/Réessayer/})).toBeVisible();
   await control({action:"outage",kind:"none"});await page.getByRole("button",{name:/Réessayer/}).click();await expect(page.getByTestId("artwork-experience")).toBeVisible();

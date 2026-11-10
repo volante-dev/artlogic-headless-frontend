@@ -28,10 +28,10 @@ test("custom focal crop and zoom pan stay stable behind information",async({page
 });
 
 
-test("image zoom fades with shell controls above the expanding frosted plane",async({page})=>{
+test("image zoom fades before the shell as the frosted plane expands",async({page})=>{
  const scene=await openMobile(page);await scene.evaluate(n=>{const samples:{opacity:number;shell:number}[]=[];Reflect.set(window,'zoomFadeSamples',samples);const started=performance.now(),tick=()=>{const zoom=n.querySelector<HTMLElement>('[data-mobile-image-controls]')!,shell=document.querySelector<HTMLElement>('[data-artwork-dialog-controls]')!;samples.push({opacity:parseFloat(getComputedStyle(zoom).opacity),shell:parseFloat(getComputedStyle(shell).opacity)});if(performance.now()-started<2400)requestAnimationFrame(tick);};requestAnimationFrame(tick);});
  const controls=scene.locator('[data-mobile-image-controls]'),panel=scene.locator('[data-mobile-information-panel]');
- expect(await controls.evaluate(n=>Number(getComputedStyle(n).zIndex))).toBeGreaterThan(await panel.evaluate(n=>Number(getComputedStyle(n).zIndex)));
+ // The approved composition puts the frosted panel above image controls; verify the actual shared fade below.
  await scene.getByRole('button',{name:'Voir les informations',exact:true}).click();await expect(panel).toHaveAttribute('data-information-ready','true');
- const samples=await page.evaluate(()=>Reflect.get(window,'zoomFadeSamples') as {opacity:number;shell:number}[]);expect(samples.some(s=>s.opacity>.05&&s.opacity<.95)).toBe(true);expect(samples.every(s=>Math.abs(s.opacity-s.shell)<.02)).toBe(true);await expect(controls).toHaveCSS('opacity','0');
+ const samples=await page.evaluate(()=>Reflect.get(window,'zoomFadeSamples') as {opacity:number;shell:number}[]);expect(samples.some(s=>s.opacity>.05&&s.opacity<.95)).toBe(true);expect(samples.some(s=>s.shell>.05&&s.shell<.95)).toBe(true);expect(samples.findIndex(s=>s.opacity<.95)).toBeLessThan(samples.findIndex(s=>s.shell<.95));await expect(controls).toHaveCSS('opacity','0');
 });

@@ -1,0 +1,9 @@
+import {test,expect} from '@playwright/test';import{readFileSync,writeFileSync}from'node:fs';
+test.use({trace:'off'});
+test('paired old/new catalogue samples share the same API and measurement window',async({page},info)=>{
+ test.setTimeout(300000);const site=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,'utf8')).sites[0];test.skip(!site.legacyOrigin,'Requires paired immutable build');
+ const before:number[]=[],after:number[]=[],errors:string[]=[],timing:object[]=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error'&&/hydrat|react|mismatch/i.test(message.text()))errors.push(message.text());});
+ for(const origin of [site.legacyOrigin,site.siteOrigin])await page.goto(origin+'/artworks');
+ for(let i=0;i<30;i++)for(const [kind,origin,samples]of (i%2?[["after",site.siteOrigin,after],["before",site.legacyOrigin,before]]:[["before",site.legacyOrigin,before],["after",site.siteOrigin,after]]) as [string,string,number[]][]){const started=performance.now();await page.goto(origin+'/artworks?q='+encodeURIComponent(i%2?'Étude':''),{waitUntil:'domcontentloaded'});await expect(page.locator('[data-gallery-state="numbered"]')).toBeVisible();samples.push(performance.now()-started);timing.push({kind,...await page.evaluate(()=>{const n=performance.getEntriesByType('navigation')[0]as PerformanceNavigationTiming;return {response:n.responseStart-n.startTime,dom:n.domContentLoadedEventEnd-n.responseStart};})});}
+ const p95=(s:number[])=>[...s].sort((a,b)=>a-b)[Math.ceil(s.length*.95)-1],result={browser:info.project.name,before,after,beforeP95:p95(before),afterP95:p95(after),errors,timing};writeFileSync('../backend/.runtime/types029/paired-'+info.project.name+'.json',JSON.stringify(result,null,2));expect(errors).toEqual([]);expect(result.afterP95).toBeLessThanOrEqual(result.beforeP95*1.1);
+});
