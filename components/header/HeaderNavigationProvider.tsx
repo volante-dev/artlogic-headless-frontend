@@ -3,7 +3,7 @@ import {createContext,useContext,useMemo,useRef,useState,useCallback,useLayoutEf
 import {useRouter,usePathname,useSearchParams} from 'next/navigation';
 import {classifyRoute} from '../../lib/i18n/routes';
 import {HEADER_HISTORY_KEY,navigationHrefKey,readHistory,historyDecision,commitDecision,requestRefresh,type HeaderRouteSnapshot,type HeaderNavigationState} from '../../lib/header/navigation-state';
-interface Navigation {registerRecovery:(retry:()=>void)=>()=>void;mainRef:RefObject<HTMLElement|null>;snapshot:HeaderRouteSnapshot;status:HeaderNavigationState['status'];begin:(href:string)=>void;commit:(snapshot:HeaderRouteSnapshot)=>void;retry:()=>void;fail:()=>void}
+interface Navigation {entry:{target:string;source:'header'|'history';generation:number}|null;registerRecovery:(retry:()=>void)=>()=>void;mainRef:RefObject<HTMLElement|null>;snapshot:HeaderRouteSnapshot;status:HeaderNavigationState['status'];begin:(href:string)=>void;commit:(snapshot:HeaderRouteSnapshot)=>void;retry:()=>void;fail:()=>void}
 const Context=createContext<Navigation|null>(null);
 export function useHeaderNavigation(){return useContext(Context);}
 function protect(main:HTMLElement|null){if(main){main.style.visibility='hidden';main.inert=true;main.setAttribute('aria-busy','true');}}
@@ -11,12 +11,13 @@ export function HeaderNavigationProvider({initial,children}:{initial:HeaderRoute
  const mainRef=useRef<HTMLElement|null>(null),recovery=useRef<(()=>void)|null>(null),activeEntry=useRef<string|null>(null);
  const registerRecovery=useCallback((retry:()=>void)=>{recovery.current=retry;return()=>{if(recovery.current===retry)recovery.current=null;};},[]);
  const router=useRouter(),pathname=usePathname(),search=useSearchParams();
+ const [entry,setEntry]=useState<Navigation['entry']>(null);
  const [state,setState]=useState<HeaderNavigationState>({snapshot:initial,status:'ready',generation:0,intent:null});
  const current=useRef(state),seen=useRef(new Set([initial.requestId])),lastByHref=useRef(new Map([[initial.hrefKey,initial.requestId]]));
  const currentKey=useCallback(()=>navigationHrefKey(location.href,location.href,current.current.snapshot.site.policy),[]);
  const update=useCallback((next:HeaderNavigationState)=>{current.current=next;setState(next);},[]);
  const start=useCallback((target:string,source:'header'|'history',entryId:string,baselineRequestId?:string)=>{
-  protect(mainRef.current);const generation=current.current.generation+1;
+  protect(mainRef.current);const generation=current.current.generation+1;setEntry({target,source,generation});
   update({...current.current,generation,status:'navigating',intent:{generation,entryId,target,source,baselineRequestId,refreshRequested:false,deadline:Date.now()+10000}});
  },[update]);
  const begin=useCallback((href:string)=>{
@@ -71,6 +72,6 @@ export function HeaderNavigationProvider({initial,children}:{initial:HeaderRoute
  },[pathname,search,state.generation,refresh,currentKey]);
  useLayoutEffect(()=>{if(state.status!=='ready')return;const main=mainRef.current;if(main){main.style.visibility='';main.inert=Boolean(main.closest('[data-artwork-route]')?.querySelector('header[data-menu-state="open"],header[data-menu-state="closing"]'));main.removeAttribute('aria-busy');}},[state]);
  useEffect(()=>{const intent=state.intent;if(!intent)return;const timer=setTimeout(()=>{if(current.current.intent?.generation===intent.generation)fail();},Math.max(0,intent.deadline-Date.now()));return()=>clearTimeout(timer);},[state.intent,fail]);
- const value=useMemo(()=>({registerRecovery,mainRef,snapshot:state.snapshot,status:state.status,begin,commit,retry,fail}),[state.snapshot,state.status,begin,commit,retry,fail,registerRecovery]);
+ const value=useMemo(()=>({entry,registerRecovery,mainRef,snapshot:state.snapshot,status:state.status,begin,commit,retry,fail}),[entry,state.snapshot,state.status,begin,commit,retry,fail,registerRecovery]);
  return <Context value={value}>{children}</Context>;
 }

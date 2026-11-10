@@ -27,6 +27,8 @@ a,button,input,textarea,select { -webkit-tap-highlight-color:transparent; }
 .skip:focus { top: 12px; }
 @media(max-width:600px) { header,main { padding-inline: 20px; } header { padding-block: 16px; } main { padding-block: 32px 56px; } }
 
+/* Keep the outgoing footer out of pending page transitions without changing geometry. */
+[data-editorial-layout]:has(>main[aria-busy="true"])>footer{visibility:hidden}
 /* Scoped by the reader; CSS locks disappear with the article, without inline body state. */
 html:has([data-editorial-immersive="true"]){overflow:hidden;overscroll-behavior:none}
 /* Reserve the same useful area in server markup and the enhanced reader. */

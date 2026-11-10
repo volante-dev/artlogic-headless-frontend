@@ -7,7 +7,7 @@ export const editorialRenderCapabilities = {
     "formsContractVersion": 1,
     "supportsClassic": true,
     "supportsImmersive": true,
-    "sourceFingerprint": "ea0f4616dfbf511aac15060a96be91300fab1ee53e5120806a3a7f9060be61a3",
+    "sourceFingerprint": "af18407814db88418ad9a0d1dae63089dabd875941954d0f6627ca94bf7294f8",
     "animationsByBlock": {
       "text": [
         "text-fade",
@@ -53,7 +53,7 @@ export const editorialRenderCapabilities = {
     "formsContractVersion": 1,
     "supportsClassic": true,
     "supportsImmersive": true,
-    "sourceFingerprint": "ea0f4616dfbf511aac15060a96be91300fab1ee53e5120806a3a7f9060be61a3",
+    "sourceFingerprint": "af18407814db88418ad9a0d1dae63089dabd875941954d0f6627ca94bf7294f8",
     "animationsByBlock": {
       "text": [
         "text-fade",
