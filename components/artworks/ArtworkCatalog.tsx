@@ -43,7 +43,7 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListVi
         <IconButton type="submit" className={styles.searchSubmit} aria-label={m["gallery.searchSubmit"]}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="10.75" cy="10.75" r="6.75" stroke="currentColor" strokeWidth="1.5"/><path d="m16 16 4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></IconButton>
       </form>
     </div>}/>
-    <span className={styles.resultStatus} role="status">{filters.pending?m["catalog.loading"]:numbered?`${numbered.totalItems}`:""}</span>
+    <span className={styles.resultStatus} role="status">{filters.pending?m["catalog.loading"]:""}</span>
     {q&&<FreshLink className={styles.clear} href={path+catalogQueryString({pageSize,types:filters.selected})}>{m["gallery.searchClear"]}</FreshLink>}
     {catalog.kind==="error"?<div className={styles.state} role="status">
       <Typography variant="h2">{restart?m["catalog.unavailableTitle"]:m["catalog.errorTitle"]}</Typography>
