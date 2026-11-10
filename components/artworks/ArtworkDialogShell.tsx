@@ -23,7 +23,8 @@ export function ArtworkDialogShell({children,title,artworkRef,locale,suspended=f
  useLayoutEffect(()=>{if(!suspended){opening?.ensure();}},[opening,suspended]);
  const close=useCallback(()=>{setCloseRequested(true);if(navigation)navigation.close();else void (async()=>{await opening?.startClosing();window.location.replace(localizedPath("/artworks",activeLocale,site.defaultLocale));})();},[opening,navigation,activeLocale,site.defaultLocale]);
  useLayoutEffect(()=>{if(suspended)return;const escape=(event:KeyboardEvent)=>{if(event.key!=="Escape"||!opening||opening.phase==="complete")return;event.preventDefault();event.stopPropagation();close();};document.addEventListener("keydown",escape,true);return ()=>document.removeEventListener("keydown",escape,true);},[opening,close,suspended]);
- return <Dialog data-artwork-dialog-shell hideBackdrop={Boolean(opening)} open={!suspended} keepMounted fullScreen disablePortal lang={activeLocale} transitionDuration={0} container={()=>navigation?.container.current??document.body}
+ // disablePortal preserves the routed DOM; the default body container owns the page scroll lock.
+ return <Dialog data-artwork-dialog-shell hideBackdrop={Boolean(opening)} open={!suspended} keepMounted fullScreen disablePortal lang={activeLocale} transitionDuration={0}
   aria-labelledby={label+" "+heading} onClose={(_event,reason)=>{if(reason==="escapeKeyDown"&&!handler.current?.run())close();}}
   slotProps={{paper:{className:styles.paper,ref:paper,sx:{backgroundColor:"transparent"}},backdrop:{className:styles.backdrop}}}>
    <div className={styles.loading} data-artwork-loading aria-hidden="true"><LoadingIndicator decorative/></div>
