@@ -1,0 +1,10 @@
+import {expect,it,vi,beforeEach} from 'vitest';
+const state=vi.hoisted(()=>({site:{siteName:'Galerie',description:'',messages:{'page.publications.title':'Publications'}},presentation:null as null|{metaDescription:string}}));
+vi.mock('../../lib/i18n/load-site-content',()=>({loadSiteContent:async()=>state.site}));
+vi.mock('../../lib/presentation/load-public',()=>({loadPublicPresentation:async()=>state.presentation}));
+vi.mock('../../lib/presentation/load-page',()=>({PublicPage:()=>null}));
+import {sectionMetadata} from '../../components/PageShell';
+beforeEach(()=>{state.site.description='';state.presentation=null;});
+it('always provides a description for the publication index when configuration is empty',async()=>{expect(await sectionMetadata('publications')).toMatchObject({description:'Publications — Galerie',openGraph:{description:'Publications — Galerie'}});});
+it('keeps the configured page description ahead of the site description',async()=>{state.site.description='Site';state.presentation={metaDescription:' Description éditoriale '};expect((await sectionMetadata('publications')).description).toBe('Description éditoriale');});
+it('falls back past whitespace-only page descriptions',async()=>{state.site.description='Site';state.presentation={metaDescription:'  '};expect((await sectionMetadata('publications')).description).toBe('Site');});
