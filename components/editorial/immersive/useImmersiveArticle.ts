@@ -11,11 +11,13 @@ export function useImmersiveArticle(article:Article,root:RefObject<HTMLElement|n
  const mobile=useSyncExternalStore(subscribeLayout,()=>matchMedia('(max-width:899px)').matches,()=>false),reduced=useEditorialReducedMotion(),suspended=useEditorialSuspended();
  const views=useMemo(()=>buildEditorialViews(article,mobile?'mobile':'desktop'),[article,mobile]);
  const[controller]=useState(()=>new EditorialController(views.map(v=>v.id))),state=useSyncExternalStore(controller.subscribe,controller.snapshot,controller.snapshot);
- const{enhanced,failed}=state;useEditorialImagePrefetch(article,views,state.active,state.initialized&&enhanced&&!failed,state.target);const previousViews=useRef(views),previousArticle=useRef(article),focusAfter=useRef(false),scrollPositions=useRef(new Map<string,number>());
+ const{enhanced,failed}=state;useEditorialImagePrefetch(article,views,state.active,state.initialized&&enhanced&&!failed,state.target);const previousViews=useRef(views),previousArticle=useRef(article),focusAfter=useRef(false),scrollPositions=useRef(new Map<string,number>()),entryGeneration=useRef<number|null>(null);
  useLayoutEffect(()=>{const host=root.current;if(!host)return;
   const previous=controller.snapshot();
-  // Activity restores a reader; it must not reinterpret the previous page's scroll.
-  if(previous.initialized){if(previous.enhanced&&!previous.failed)window.scrollTo({top:0,left:0,behavior:'instant'});else if(entry?.target===article.canonicalPath&&entry.source==='header'&&!previous.failed){window.scrollTo({top:0,left:0,behavior:'instant'});controller.initialize(true);}return;}
+  // Every new visit starts at the opening, including a retained Activity history entry.
+  if(entry?.target===article.canonicalPath&&entryGeneration.current!==entry.generation){entryGeneration.current=entry.generation;scrollPositions.current.clear();focusAfter.current=false;host.querySelectorAll<HTMLElement>('[data-editorial-scroll-host]').forEach(element=>{element.scrollTop=0;});window.scrollTo({top:0,left:0,behavior:'instant'});controller.restart();return;}
+  // A same-visit refresh or tab return must not reinterpret the previous page's scroll.
+  if(previous.initialized){if(previous.enhanced&&!previous.failed)window.scrollTo({top:0,left:0,behavior:'instant'});return;}
   // The reader owns viewport anchoring on a soft entry, before scroll is locked.
   const clientEntry=entry?.target===article.canonicalPath;
   if(clientEntry)window.scrollTo({top:0,left:0,behavior:'instant'});
