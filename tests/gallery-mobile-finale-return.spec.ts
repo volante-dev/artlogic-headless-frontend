@@ -6,9 +6,15 @@ async function conclusion(page:Page){
  const scene=page.getByTestId('artwork-experience');await expect(scene).toHaveAttribute('data-artwork-opening-phase','complete');await scene.getByRole('button',{name:'Conclusion',exact:true}).click();await expect(scene).toHaveAttribute('data-mobile-mode','finale');await expect(scene.locator('section[data-finale-reading]')).toHaveCSS('opacity','1');
  const description=scene.locator('[data-finale-description]');await expect(description).toHaveAttribute('data-scrollable','true');return {scene,description};
 }
-test('reading focus never captures backward wheel gestures over the photo',async({page})=>{
+test('description focus still blocks slide navigation and only its visible viewport captures gestures',async({page})=>{
  const {scene,description}=await conclusion(page);await description.focus();
- const frame=scene.getByTestId('artwork-frame'),box=(await frame.boundingBox())!;await frame.dispatchEvent('wheel',{deltaY:-160,clientX:box.x+box.width*.45,clientY:box.y+box.height*.12});await expect(scene).toHaveAttribute('data-mobile-mode','gallery');await expect(page.getByRole('dialog')).toHaveJSProperty('scrollTop',0);
+ const frame=scene.getByTestId('artwork-frame'),box=(await frame.boundingBox())!;await frame.dispatchEvent('wheel',{deltaY:-160,clientX:box.x+box.width*.45,clientY:box.y+box.height*.12});await expect(scene).toHaveAttribute('data-mobile-mode','finale');
+ const title=scene.locator('[data-finale-mobile-reading-layer] [data-finale-title]'),contact=scene.getByRole('link',{name:'Demander des informations',exact:true});
+ expect(await title.evaluate(node=>{const r=node.getBoundingClientRect();return Boolean(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('[data-finale-mobile-reading-layer]'));})).toBe(false);
+ expect(await description.evaluate(node=>{const r=node.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('[data-finale-description]')===node;})).toBe(true);
+ expect(await contact.evaluate(node=>{const r=node.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('a')===node;})).toBe(true);
+ await description.evaluate(node=>node.blur());const bounds=(await title.boundingBox())!,x=bounds.x+bounds.width*.4,y=bounds.y+bounds.height*.5;
+ await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x,y+70,{steps:6});await page.mouse.up();await expect(scene).toHaveAttribute('data-mobile-mode','gallery');await expect(page.getByRole('dialog')).toHaveJSProperty('scrollTop',0);
 });
 async function fromScrolledList(page:Page){
  await page.addInitScript(()=>window.addEventListener('artwork-origin-ready',()=>Reflect.set(window,'originReady',true)));
@@ -18,7 +24,7 @@ async function fromScrolledList(page:Page){
 }
 test('locks the document throughout the conclusion and restores the listing position on close',async({page})=>{
  const {scene,origin}=await fromScrolledList(page);expect(origin).toBeGreaterThan(500);await expect(page.locator('body')).toHaveCSS('overflow-y','hidden');await scene.getByRole('button',{name:'Conclusion',exact:true}).click();await expect(scene.locator('section[data-finale-reading]')).toHaveCSS('opacity','1');await expect(page.locator('body')).toHaveCSS('overflow-y','hidden');
- await scene.locator('[data-finale-description]').focus();const frame=scene.getByTestId('artwork-frame'),box=(await frame.boundingBox())!;await frame.dispatchEvent('wheel',{deltaY:-160,clientX:box.x+100,clientY:box.y+100});await expect(scene).toHaveAttribute('data-mobile-mode','gallery');expect(await page.evaluate(()=>scrollY)).toBe(origin);
+ await scene.locator('[data-finale-description]').evaluate(node=>node.blur());const frame=scene.getByTestId('artwork-frame'),box=(await frame.boundingBox())!;await frame.dispatchEvent('wheel',{deltaY:-160,clientX:box.x+100,clientY:box.y+100});await expect(scene).toHaveAttribute('data-mobile-mode','gallery');expect(await page.evaluate(()=>scrollY)).toBe(origin);
  await page.getByRole('button',{name:'Fermer la fiche de l’œuvre',exact:true}).click();await expect(page).toHaveURL(/\/artworks$/);await expect(page.locator('[role="dialog"]:visible')).toHaveCount(0);await expect(page.locator('body')).not.toHaveCSS('overflow-y','hidden');await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(origin);
 });
 test('native reading scroll stays inside the conclusion while the document is locked',async({page,browserName})=>{
@@ -26,5 +32,7 @@ test('native reading scroll stays inside the conclusion while the document is lo
  const {scene,origin}=await fromScrolledList(page);await scene.getByRole('button',{name:'Conclusion',exact:true}).click();await expect(scene.locator('section[data-finale-reading]')).toHaveCSS('opacity','1');
  const description=scene.locator('[data-finale-description]');await description.evaluate(node=>node.scrollTop=0);const session=await page.context().newCDPSession(page),box=(await description.boundingBox())!,x=box.x+box.width*.4,y=box.y+box.height*.75;
  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});for(let i=1;i<=8;i++){await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y-i*12}]});await page.waitForTimeout(20);}await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
- await expect.poll(()=>description.evaluate(node=>node.scrollTop)).toBeGreaterThan(0);await expect(scene).toHaveAttribute('data-mobile-mode','finale');expect(await page.evaluate(()=>scrollY)).toBe(origin);await expect(page.locator('body')).toHaveCSS('overflow-y','hidden');await session.detach();
+ await expect.poll(()=>description.evaluate(node=>node.scrollTop)).toBeGreaterThan(0);
+ for(let contact=0;contact<2;contact++){await description.evaluate(node=>node.scrollTop=0);const r=(await description.boundingBox())!,start=r.y+Math.min(25,r.height*.3);await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y:start}]});for(let i=1;i<=6;i++){await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:start+i*12}]});await page.waitForTimeout(20);}await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await expect(scene).toHaveAttribute('data-mobile-mode','finale');}
+ await expect(scene).toHaveAttribute('data-mobile-mode','finale');expect(await page.evaluate(()=>scrollY)).toBe(origin);await expect(page.locator('body')).toHaveCSS('overflow-y','hidden');await session.detach();
 });
