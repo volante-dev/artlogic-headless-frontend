@@ -8,3 +8,6 @@
 @keyframes travel { to { transform:translateX(200%); } }
 @media(prefers-reduced-motion:reduce) { .track { animation:none; transform:translateX(50%); } }
 @media(forced-colors:active) { .indicator::before { opacity:1; background:GrayText; } .track { background:CanvasText; } }
+
+/* A translucent exit veil stays mounted while the destination replaces the reader. */
+.exitVeil { position:fixed; inset:var(--site-header-height, 100px) 0 0; z-index:3; background:rgb(255 255 255 / .6); opacity:0; pointer-events:none; }
