@@ -12,14 +12,16 @@ import {TextField} from "../ui/TextField";
 import {FreshLink} from "../FreshLink";
 import {localizedPath} from "../../lib/i18n/routes";
 import {catalogQueryString} from "../../lib/artworks/catalog-query";
+import type {PresentationLink} from "../../lib/presentation/types";
+import {presentationHref} from "../../lib/presentation/links";
 import styles from "./ArtworkCatalog.module.css";
 import cards from "../Artwork.module.css";
 
-export interface ArtworkCatalogProps {catalog:CatalogData;columns?:number;id?:string;CardView?:ComponentType<ArtworkCardProps>;ListView?:ComponentType<CatalogListProps>}
+export interface ArtworkCatalogProps {emptyMessage?:string;emptyLinkLabel?:string;emptyLink?:PresentationLink;catalog:CatalogData;columns?:number;id?:string;CardView?:ComponentType<ArtworkCardProps>;ListView?:ComponentType<CatalogListProps>}
 export interface CatalogListProps {items:ArtworkCardProps["art"][];columns:number;CardView:ComponentType<ArtworkCardProps>}
 export function CatalogList({items,columns,CardView}:CatalogListProps){return <ul className={cards.grid} style={{"--catalog-columns":columns} as CSSProperties}>{items.map((art,index)=><CardView key={art.id} art={art} imageSizes={squareImageSizes((art.media[0]?.width??1)/(art.media[0]?.height??1),columns,art.catalogLarge===true)} eager={index<columns}/>)}</ul>;}
 /** Replaceable view. Query validation and public reads stay on the server. */
-export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListView=CatalogList}:ArtworkCatalogProps){
+export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListView=CatalogList,emptyMessage,emptyLinkLabel,emptyLink}:ArtworkCatalogProps){
   const {messages:m,locale,defaultLocale}=useSiteContent(),path=localizedPath("/artworks",locale,defaultLocale);
   const numbered=catalog.kind==="numbered"?catalog.page:null,legacy=catalog.kind==="legacy"?catalog.page:null;
   const q=numbered?.query??(catalog.kind==="error"?catalog.q:"");
@@ -49,7 +51,11 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListVi
       <FreshLink className={styles.action} href={first}>{m[restart?"gallery.restart":"catalog.retry"]}</FreshLink>
     </div>:<>
       {legacy&&<FreshLink className={styles.clear} href={first}>{m["gallery.restart"]}</FreshLink>}
-      {items.length?<ListView items={items} columns={columns} CardView={CardView}/>:<Typography role="status" className={styles.state}>{m[q||filters.selected.length?"gallery.noResults":"catalog.empty"]}</Typography>}
+      {items.length?<ListView items={items} columns={columns} CardView={CardView}/>:q||filters.selected.length?<div className={styles.emptyState}>
+        <Typography className={styles.emptyLead} role="status">{m["gallery.noResults"]}</Typography>
+        <Typography variant="h2" className={styles.emptyMessage}>{emptyMessage?.trim()||(locale.startsWith("fr")?"Vous cherchez un objet en particulier ? Nous pouvons le chercher pour vous.":"Looking for a particular object? We can find it for you.")}</Typography>
+        <FreshLink className={styles.emptyAction} href={presentationHref(emptyLink??{kind:"page",pageKey:"contact"},locale,defaultLocale)}>{emptyLinkLabel?.trim()||(locale.startsWith("fr")?"Contactez-nous":"Contact us")}<Arrow/></FreshLink>
+      </div>:<Typography role="status" className={styles.state}>{m["catalog.empty"]}</Typography>}
       {numbered&&numbered.pageCount>0&&<nav className={styles.pagination} aria-label={m["gallery.paginationLabel"]}>
         {numbered.page>1&&<FreshLink className={styles.page} href={link(numbered.page-1)} aria-label={m["gallery.previousPage"]}><Arrow previous/></FreshLink>}
         {pages.map((page,index)=>page===null?<span key={"gap"+index} className={styles.gap} aria-hidden="true">…</span>:<FreshLink key={page} className={styles.page} href={link(page)} aria-label={m["gallery.page"]+" "+page} aria-current={numbered.page===page?"page":undefined}>{page}</FreshLink>)}

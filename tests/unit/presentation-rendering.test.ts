@@ -21,6 +21,13 @@ describe("closed presentation rendering",()=>{
       expect(html).toContain("<h1");expect(html).not.toContain("undefined");
     }
   });
+  it("renders localized configurable catalogue empty content and safe structured destinations",()=>{
+    const render=(props:Record<string,unknown>)=>renderToStaticMarkup(createElement(PageRenderer,{presentation:presentation([{id,type:"artworkCatalog",schemaVersion:1,variant:"grid",props} as PresentationSection],"artworks"),siteName:"Gallery",data:{catalog:{kind:"error",code:"service_unavailable",q:"query",pageSize:20}}}));
+    // Error recovery remains separate from the successful zero-result state.
+    expect(render({emptyMessage:"Custom request",emptyLinkLabel:"Write to us",emptyLink:{kind:"page",pageKey:"contact"}})).not.toContain("Custom request");
+    const html=renderToStaticMarkup(createElement(PageRenderer,{presentation:presentation([{id,type:"artworkCatalog",schemaVersion:1,variant:"grid",props:{emptyMessage:"<script>Custom request</script>",emptyLinkLabel:"Write to us",emptyLink:{kind:"email",value:"gallery@example.com"}}}],"artworks"),siteName:"Gallery",data:{catalog:{kind:"numbered",page:{items:[],totalItems:0,page:1,pageCount:0,pageSize:20,query:"mask",catalogRevision:1}}}}));
+    expect(html).toContain("&lt;script&gt;Custom request&lt;/script&gt;");expect(html).toContain('href="mailto:gallery@example.com"');expect(html).toContain("Write to us");
+  });
   it("escapes editorial content, retains structured links and emits one page heading",()=>{
     const html=renderToStaticMarkup(createElement(PageRenderer,{presentation:presentation([{id,type:"text",schemaVersion:1,variant:"standard",props:{heading:"<script>alert(1)</script>",body:"<img onerror=alert(1)>",link:{kind:"email",value:"gallery@example.com"},linkLabel:"Contact"}},{id:id.replace("11111111","22222222"),type:"text",schemaVersion:1,variant:"narrow",props:{heading:"Second heading"}}],"contact"),siteName:"Gallery"}));
     expect(html).toContain("&lt;script&gt;");expect(html).not.toContain("<script>");expect(html).toContain('href="mailto:gallery@example.com"');expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).toContain("Second heading</h2>");

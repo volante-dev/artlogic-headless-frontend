@@ -21,6 +21,7 @@ export const themeContrastPairs:ContrastPair[]=[
   {foreground:"inverseText",background:"inverseSurface",role:"body"},
 ];
 const labels:Record<string,[string,string]>={
+  emptyMessage:["Texte affiché sans résultat","No results message"],emptyLinkLabel:["Bouton sans résultat (par défaut : Contactez-nous)","No results button label"],emptyLink:["Lien sans résultat (par défaut : Contact)","No results destination"],
   imageFit:["Affichage des images","Image display"],formId:["Formulaire","Form"],hideTitle:["Masquer le titre du formulaire","Hide the form title"],imageSide:["Position de l’image","Image placement"],heading:["Titre","Heading"],introduction:["Introduction","Introduction"],body:["Texte","Text"],link:["Lien","Link"],linkLabel:["Libellé du lien","Link label"],
   posterId:["Image de couverture","Poster image"],videoId:["Film ordinateur","Desktop film"],mobileVideoId:["Film mobile","Mobile film"],
   imageId:["Image","Image"],alt:["Texte alternatif","Alternative text"],caption:["Légende","Caption"],decorative:["Image décorative","Decorative image"],
@@ -36,7 +37,7 @@ function fieldsFor(schema:Schema,prefix=""):EditorField[]{
     if(key==="focalPoint")return fieldsFor(s,path+".");
     const label=labels[key];if(!label)throw new Error("Missing field translation: "+key);
     const field:EditorField={id:path,path,kind:"shortText",label:{fr:label[0],en:label[1]}};
-    if(["link","destination"].includes(key))field.kind="link";
+    if(["link","destination","emptyLink"].includes(key))field.kind="link";
     else if(["imageId","posterId"].includes(key))field.kind="image";
     else if(["videoId","mobileVideoId"].includes(key))field.kind="video";
     else if(key==="artworkIds"){field.kind="artworkSelection";field.maxItems=Number(s.maxItems);}

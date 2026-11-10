@@ -5473,6 +5473,133 @@ export const presentationSchemas = {
             "type": "integer",
             "minimum": 2,
             "maximum": 4
+          },
+          "emptyMessage": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5000
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "emptyLinkLabel": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+              "maxLength": 35
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "emptyLink": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "page"
+                  },
+                  "pageKey": {
+                    "type": "string",
+                    "enum": [
+                      "home",
+                      "news",
+                      "artworks",
+                      "exhibitions",
+                      "publications",
+                      "expertise",
+                      "contact",
+                      "artworkDetail",
+                      "galerist"
+                    ]
+                  },
+                  "artworkId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "pageKey"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "email"
+                  },
+                  "value": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "phone"
+                  },
+                  "value": {
+                    "type": "string",
+                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              }
+            ]
           }
         },
         "required": []
@@ -5515,6 +5642,108 @@ export const presentationSchemas = {
             "type": "integer",
             "minimum": 2,
             "maximum": 4
+          },
+          "emptyMessage": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "emptyLinkLabel": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "emptyLink": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "page"
+                  },
+                  "pageKey": {
+                    "type": "string",
+                    "enum": [
+                      "home",
+                      "news",
+                      "artworks",
+                      "exhibitions",
+                      "publications",
+                      "expertise",
+                      "contact",
+                      "artworkDetail",
+                      "galerist"
+                    ]
+                  },
+                  "artworkId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "href": {
+                    "type": "string",
+                    "pattern": "^/(?!/)",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "pageKey"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "external"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "email"
+                  },
+                  "value": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "phone"
+                  },
+                  "value": {
+                    "type": "string",
+                    "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ]
+              }
+            ]
           }
         },
         "required": []
@@ -7066,6 +7295,133 @@ export const presentationSchemas = {
                 "type": "integer",
                 "minimum": 2,
                 "maximum": 4
+              },
+              "emptyMessage": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 5000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "emptyLinkLabel": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                  "maxLength": 35
+                },
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "emptyLink": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "page"
+                      },
+                      "pageKey": {
+                        "type": "string",
+                        "enum": [
+                          "home",
+                          "news",
+                          "artworks",
+                          "exhibitions",
+                          "publications",
+                          "expertise",
+                          "contact",
+                          "artworkDetail",
+                          "galerist"
+                        ]
+                      },
+                      "artworkId": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "pageKey"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "external"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^https://",
+                        "maxLength": 2048
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "url"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "email"
+                      },
+                      "value": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "phone"
+                      },
+                      "value": {
+                        "type": "string",
+                        "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "value"
+                    ]
+                  }
+                ]
               }
             },
             "required": []
@@ -9678,6 +10034,108 @@ export const presentationSchemas = {
                 "type": "integer",
                 "minimum": 2,
                 "maximum": 4
+              },
+              "emptyMessage": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "emptyLinkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "emptyLink": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "page"
+                      },
+                      "pageKey": {
+                        "type": "string",
+                        "enum": [
+                          "home",
+                          "news",
+                          "artworks",
+                          "exhibitions",
+                          "publications",
+                          "expertise",
+                          "contact",
+                          "artworkDetail",
+                          "galerist"
+                        ]
+                      },
+                      "artworkId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "href": {
+                        "type": "string",
+                        "pattern": "^/(?!/)",
+                        "maxLength": 2048
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "pageKey"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "external"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^https://",
+                        "maxLength": 2048
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "url"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "email"
+                      },
+                      "value": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "phone"
+                      },
+                      "value": {
+                        "type": "string",
+                        "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "value"
+                    ]
+                  }
+                ]
               }
             },
             "required": []
@@ -11780,6 +12238,133 @@ export const presentationSchemas = {
                       "type": "integer",
                       "minimum": 2,
                       "maximum": 4
+                    },
+                    "emptyMessage": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                        "maxLength": 35
+                      },
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 5000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "emptyLinkLabel": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                        "maxLength": 35
+                      },
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "emptyLink": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "const": "page"
+                            },
+                            "pageKey": {
+                              "type": "string",
+                              "enum": [
+                                "home",
+                                "news",
+                                "artworks",
+                                "exhibitions",
+                                "publications",
+                                "expertise",
+                                "contact",
+                                "artworkDetail",
+                                "galerist"
+                              ]
+                            },
+                            "artworkId": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "pageKey"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "const": "external"
+                            },
+                            "url": {
+                              "type": "string",
+                              "format": "uri",
+                              "pattern": "^https://",
+                              "maxLength": 2048
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "url"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "const": "email"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "email",
+                              "maxLength": 254
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "value"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "const": "phone"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "value"
+                          ]
+                        }
+                      ]
                     }
                   },
                   "required": []
@@ -14945,6 +15530,133 @@ export const presentationSchemas = {
                           "type": "integer",
                           "minimum": 2,
                           "maximum": 4
+                        },
+                        "emptyMessage": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                            "maxLength": 35
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 5000
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "emptyLinkLabel": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$",
+                            "maxLength": 35
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 80
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "emptyLink": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "const": "page"
+                                },
+                                "pageKey": {
+                                  "type": "string",
+                                  "enum": [
+                                    "home",
+                                    "news",
+                                    "artworks",
+                                    "exhibitions",
+                                    "publications",
+                                    "expertise",
+                                    "contact",
+                                    "artworkDetail",
+                                    "galerist"
+                                  ]
+                                },
+                                "artworkId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "pageKey"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "const": "external"
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "pattern": "^https://",
+                                  "maxLength": 2048
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "url"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "const": "email"
+                                },
+                                "value": {
+                                  "type": "string",
+                                  "format": "email",
+                                  "maxLength": 254
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "value"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "const": "phone"
+                                },
+                                "value": {
+                                  "type": "string",
+                                  "pattern": "^\\+?[0-9 ()-]{3,32}$"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "value"
+                              ]
+                            }
+                          ]
                         }
                       },
                       "required": []
@@ -16996,6 +17708,17 @@ export const presentationSchemas = {
                 "type": "integer",
                 "minimum": 2,
                 "maximum": 4
+              },
+              "emptyMessage": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "emptyLinkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "emptyLink": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
               }
             },
             "required": []
@@ -20403,6 +21126,17 @@ export const presentationSchemas = {
                 "type": "integer",
                 "minimum": 2,
                 "maximum": 4
+              },
+              "emptyMessage": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "emptyLinkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "emptyLink": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
               }
             },
             "required": []
@@ -23695,6 +24429,17 @@ export const presentationSchemas = {
                 "type": "integer",
                 "minimum": 2,
                 "maximum": 4
+              },
+              "emptyMessage": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "emptyLinkLabel": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "emptyLink": {
+                "$ref": "#/$defs/ResolvedPresentationLink"
               }
             },
             "required": []
