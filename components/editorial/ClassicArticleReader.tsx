@@ -2,7 +2,7 @@
 import{articleKindDescriptors}from"../../lib/editorial/article-kind";
 import{ExhibitionPeriod}from"./ExhibitionPeriod";
 import {useState,useEffect,type ComponentType} from "react";
-import {PublicAssetImage as Image} from "../PublicAssetImage";
+import {EditorialImage as Image} from "./EditorialImage";
 import type {components} from "../../lib/api/generated";
 import {useSiteContent} from "../SiteContentProvider";
 import {Typography} from "../ui/Typography";
@@ -20,7 +20,7 @@ export function ClassicArticleReader({article,blockRegistry,imageTimeoutMs,terms
  const date=article.editorialDate?new Intl.DateTimeFormat(locale,{dateStyle:"long",timeZone:"UTC"}).format(new Date(article.editorialDate+"T12:00:00Z")):null;
  return <article data-editorial-document className={styles.article}>
   <header className={`${styles.hero} ${article.cover?styles.withCover:styles.withoutCover}`}>
-   {article.cover&&failed!==article.cover.srcPath&&<Image key={article.cover.srcPath+":"+attempt} unoptimized fill priority sizes="100vw" src={article.cover.srcPath} alt={article.cover.alt} className={styles.cover} onLoad={()=>setCoverLoaded(article.cover!.srcPath)} onError={()=>setFailed(article.cover!.srcPath)}/>}
+   {article.cover&&failed!==article.cover.srcPath&&<Image key={article.cover.srcPath+":"+attempt} fill priority sizes="100vw" image={article.cover.image} src={article.cover.srcPath} alt={article.cover.alt} className={styles.cover} onLoad={()=>setCoverLoaded(article.cover!.srcPath)} onError={()=>setFailed(article.cover!.srcPath)}/>}
    <div className={styles.heading}>
     {article.title&&<Typography component="h1" variant="h1" className={styles.title}>{article.title}</Typography>}
     {article.exhibitionPeriod&&<ExhibitionPeriod value={article.exhibitionPeriod} locale={locale} className={styles.period}/>}

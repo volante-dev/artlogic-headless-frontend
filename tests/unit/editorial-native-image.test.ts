@@ -1,0 +1,12 @@
+import {createElement} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {it,expect} from 'vitest';
+import {EditorialImage} from '../../components/editorial/EditorialImage';
+import {MediaDisplayProvider} from '../../lib/media/MediaDisplayProvider';
+import {editorialImageDescriptor} from '../../lib/editorial/image';
+import {publicImageCacheHeaders} from '../../lib/media/public-image-cache';
+const id='00000000-0000-4000-8000-000000000002',src='/editorial-assets/'+id,image={sourceVersion:id+'.original',width:2400,height:1600,mimeType:'image/webp' as const,byteSize:250000};
+const render=(props:Parameters<typeof EditorialImage>[0])=>{const provider={responsive:true,children:createElement(EditorialImage,props)};return renderToStaticMarkup(createElement(MediaDisplayProvider,provider));};
+it('emits final native image attributes in SSR, so hydration never needs to replace an empty source',()=>{const html=render({src,image,alt:'Vue du salon',sizes:'50vw'});expect(html).toContain('src="'+src+'?image=r1-reference');expect(html).toContain('srcSet="'+src+'?image=r1-w64');expect(html).toContain('sizes="50vw"');expect(html).toContain('width="2400"');expect(html).not.toMatch(/data-image-fallback|progressbar/);expect(editorialImageDescriptor(src,image)?.sourceVersion).toBe(image.sourceVersion);});
+it('keeps old projections immediately usable, and zoom uses the full reference without a later source swap',()=>{expect(render({src,alt:'Legacy'})).toContain('src="'+src+'"');const zoom=render({src,image,forceReference:true});expect(zoom).toContain('image=r1-reference');expect(zoom).not.toContain('srcSet=');});
+it('caches successful versioned redirects within capability lifetime, leaving short-lived or invalid grants private',()=>{const now=Date.now();expect(publicImageCacheHeaders(new Date(now+604800000).toISOString(),now)['Cache-Control']).toBe('public, max-age=86400, s-maxage=86400');expect(publicImageCacheHeaders(new Date(now+120000).toISOString(),now)['Cache-Control']).toBe('public, max-age=60, s-maxage=60');expect(publicImageCacheHeaders(new Date(now+60000).toISOString(),now)['Cache-Control']).toBe('private, no-store');expect(publicImageCacheHeaders('invalid',now)['Cache-Control']).toBe('private, no-store');});

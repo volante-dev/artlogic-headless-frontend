@@ -1812,6 +1812,76 @@ export const messageRegistry = {
         "fr": "Sélectionnez jusqu’à 20 classements.",
         "en": "Select up to 20 classifications."
       }
+    },
+    {
+      "key": "gallery.typeFilters",
+      "group": "gallery",
+      "label": "Filtres",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Filtres",
+        "en": "Filters"
+      }
+    },
+    {
+      "key": "gallery.typeHeading",
+      "group": "gallery",
+      "label": "Types d’œuvres",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Types d’œuvres",
+        "en": "Artwork types"
+      }
+    },
+    {
+      "key": "gallery.typeClear",
+      "group": "gallery",
+      "label": "Effacer les filtres",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Effacer les filtres",
+        "en": "Clear filters"
+      }
+    },
+    {
+      "key": "gallery.typeEmpty",
+      "group": "gallery",
+      "label": "Aucun type disponible",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Aucun type disponible",
+        "en": "No artwork types available"
+      }
+    },
+    {
+      "key": "gallery.typeUnavailable",
+      "group": "gallery",
+      "label": "Les filtres sont momentanément indisponibles.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Les filtres sont momentanément indisponibles.",
+        "en": "Filters are temporarily unavailable."
+      }
+    },
+    {
+      "key": "gallery.typeNormalized",
+      "group": "gallery",
+      "label": "Certains filtres ne sont plus disponibles et ont été retirés.",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Certains filtres ne sont plus disponibles et ont été retirés.",
+        "en": "Some filters are no longer available and have been removed."
+      }
+    },
+    {
+      "key": "gallery.typeLimit",
+      "group": "gallery",
+      "label": "Limite de types sélectionnés",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Sélectionnez jusqu’à 100 types.",
+        "en": "Select up to 100 artwork types."
+      }
     }
   ]
 } as const;

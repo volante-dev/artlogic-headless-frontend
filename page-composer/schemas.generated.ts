@@ -9818,6 +9818,48 @@ export const presentationSchemas = {
                             "alt": {
                               "type": "string",
                               "maxLength": 4000
+                            },
+                            "image": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "description": "Immutable physical source facts for native SSR src/srcset. No storage key or signed delivery URL.",
+                              "required": [
+                                "sourceVersion",
+                                "width",
+                                "height",
+                                "mimeType"
+                              ],
+                              "properties": {
+                                "sourceVersion": {
+                                  "type": "string",
+                                  "maxLength": 128,
+                                  "pattern": "^[A-Za-z0-9._-]+$"
+                                },
+                                "width": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 100000
+                                },
+                                "height": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 100000
+                                },
+                                "mimeType": {
+                                  "type": "string",
+                                  "enum": [
+                                    "image/webp",
+                                    "image/jpeg",
+                                    "image/png",
+                                    "image/gif",
+                                    "image/svg+xml"
+                                  ]
+                                },
+                                "byteSize": {
+                                  "type": "integer",
+                                  "minimum": 1
+                                }
+                              }
                             }
                           },
                           "required": [
@@ -17113,6 +17155,9 @@ export const presentationSchemas = {
                   "alt": {
                     "type": "string",
                     "maxLength": 4000
+                  },
+                  "image": {
+                    "$ref": "#/$defs/EditorialImageMetadata"
                   }
                 },
                 "required": [
@@ -17200,6 +17245,48 @@ export const presentationSchemas = {
             }
           }
         ]
+      },
+      "EditorialImageMetadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Immutable physical source facts for native SSR src/srcset. No storage key or signed delivery URL.",
+        "required": [
+          "sourceVersion",
+          "width",
+          "height",
+          "mimeType"
+        ],
+        "properties": {
+          "sourceVersion": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9._-]+$"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "mimeType": {
+            "type": "string",
+            "enum": [
+              "image/webp",
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/svg+xml"
+            ]
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
       },
       "EditorialAuthorCard": {
         "type": "object",
@@ -20475,6 +20562,9 @@ export const presentationSchemas = {
                   "alt": {
                     "type": "string",
                     "maxLength": 4000
+                  },
+                  "image": {
+                    "$ref": "#/$defs/EditorialImageMetadata"
                   }
                 },
                 "required": [
@@ -20562,6 +20652,48 @@ export const presentationSchemas = {
             }
           }
         ]
+      },
+      "EditorialImageMetadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Immutable physical source facts for native SSR src/srcset. No storage key or signed delivery URL.",
+        "required": [
+          "sourceVersion",
+          "width",
+          "height",
+          "mimeType"
+        ],
+        "properties": {
+          "sourceVersion": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9._-]+$"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "mimeType": {
+            "type": "string",
+            "enum": [
+              "image/webp",
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/svg+xml"
+            ]
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
       },
       "EditorialAuthorCard": {
         "type": "object",
@@ -21906,6 +22038,48 @@ export const presentationSchemas = {
                         "alt": {
                           "type": "string",
                           "maxLength": 4000
+                        },
+                        "image": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "description": "Immutable physical source facts for native SSR src/srcset. No storage key or signed delivery URL.",
+                          "required": [
+                            "sourceVersion",
+                            "width",
+                            "height",
+                            "mimeType"
+                          ],
+                          "properties": {
+                            "sourceVersion": {
+                              "type": "string",
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9._-]+$"
+                            },
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 100000
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 100000
+                            },
+                            "mimeType": {
+                              "type": "string",
+                              "enum": [
+                                "image/webp",
+                                "image/jpeg",
+                                "image/png",
+                                "image/gif",
+                                "image/svg+xml"
+                              ]
+                            },
+                            "byteSize": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          }
                         }
                       },
                       "required": [
@@ -23680,6 +23854,9 @@ export const presentationSchemas = {
                   "alt": {
                     "type": "string",
                     "maxLength": 4000
+                  },
+                  "image": {
+                    "$ref": "#/$defs/EditorialImageMetadata"
                   }
                 },
                 "required": [
@@ -23767,6 +23944,48 @@ export const presentationSchemas = {
             }
           }
         ]
+      },
+      "EditorialImageMetadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Immutable physical source facts for native SSR src/srcset. No storage key or signed delivery URL.",
+        "required": [
+          "sourceVersion",
+          "width",
+          "height",
+          "mimeType"
+        ],
+        "properties": {
+          "sourceVersion": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9._-]+$"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "mimeType": {
+            "type": "string",
+            "enum": [
+              "image/webp",
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/svg+xml"
+            ]
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
       },
       "EditorialAuthorCard": {
         "type": "object",
