@@ -16,7 +16,7 @@ export function ArtworkInquiryLink({id,locale}:{id:string;locale:string}){
 export function ArtworkInformation({content,headingId,className,headingComponent="h1",showIdentity=true,showContact=true,finaleActive}:ArtworkInformationProps){
   const {messages:m}=useSiteContent(),{artwork:art,description}=content;
   const conclusion=artworkConclusion(content);
-  const details=[[m["artwork.year"],art.year],[m["artwork.medium"],art.medium],[m["artwork.dimensions"],art.dimensions]].filter((row):row is [string,string]=>row[1]!==null);
+  const details=[[m["artwork.year"],art.year],[m["artwork.medium"],art.medium],[m["artwork.dimensions"],art.dimensions]].filter((row):row is [string,string]=>Boolean(row[1]?.trim()));
   return <div className={className} data-artwork-information>
     <div data-artwork-information-identity>
     {showIdentity&&<Typography variant="h1" component={headingComponent} id={headingId} data-artwork-title>{art.title??m["artwork.untitled"]}</Typography>}

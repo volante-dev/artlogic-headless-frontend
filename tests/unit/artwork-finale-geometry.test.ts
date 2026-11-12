@@ -30,3 +30,15 @@ it("keeps the front photo crop constant throughout a uniform retreat",()=>{
   before.forEach((v,i)=>expect(after[i]).toBeCloseTo(v,6));
  }
 });
+
+it("spreads the mobile stack toward the right gutter while keeping the photo ratio and an overlap",async()=>{
+ const {mobileStackOffsets}=await import("../../lib/artworks/finale-geometry");
+ const viewport={x:0,y:0,width:390,height:844},frame={x:0,y:0,width:390,height:844},card=commonFinaleCardRect(viewport,true,frame);
+ expect(card.width/card.height).toBeCloseTo(390/844,8);expect(card.y+card.height).toBeLessThanOrEqual(844*.26);
+ const offsets=mobileStackOffsets(viewport,card,8,50,1300);
+ expect(offsets).toHaveLength(8);for(let i=1;i<offsets.length;i++)expect(offsets[i]).toBeGreaterThan(offsets[i-1]!);
+ const shrink=1300/(1300+50*8),lastRight=195+(card.x+card.width+offsets.at(-1)!-195)*shrink;
+ expect(lastRight).toBeCloseTo(390*.93,4);
+ const few=mobileStackOffsets(viewport,card,1,50,1300),fewRight=195+(card.x+card.width+few[0]!-195)*(1300/1350);
+ expect(fewRight-(card.x+card.width)).toBeLessThan(card.width);expect(mobileStackOffsets(viewport,card,0,50,1300)).toEqual([]);
+});

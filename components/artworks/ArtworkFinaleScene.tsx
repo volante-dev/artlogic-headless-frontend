@@ -6,7 +6,7 @@ import type {ArtworkContent} from "./ArtworkInformation";
 import {ArtworkFinaleMedia,setFinaleBitmap,type FinalePhoto} from "./ArtworkFinaleMedia";
 import {useArtworkInteraction} from "./ArtworkInteractionBoundary";
 import {finaleStack} from "../../lib/artworks/finale-stage";
-import {commonFinaleCardRect} from "../../lib/artworks/finale-geometry";
+import {commonFinaleCardRect,mobileStackOffsets} from "../../lib/artworks/finale-geometry";
 import {useArtworkReducedMotion} from "./useArtworkViewport";
 import styles from "./ArtworkFinale.module.css";
 import integration from "./ArtworkFinaleScene.module.css";
@@ -33,7 +33,9 @@ function FinaleSceneContent({article,content,anchor,open,mobile,onExited}:Omit<F
   const candidate=anchor?article.querySelector<HTMLElement>(`[data-finale-photo="${anchor}"]`):null,bitmap=candidate?.querySelector<HTMLImageElement>("img");
   const host=bitmap?.complete&&bitmap.naturalWidth?candidate:null;
   const hostRect=host?.getBoundingClientRect(),frame=hostRect?{x:hostRect.x-bounds.x,y:hostRect.y-bounds.y,width:hostRect.width,height:hostRect.height}:viewport;
-  const destination=commonFinaleCardRect(viewport,mobile&&bounds.height>500,frame);
+  const portraitMobile=mobile&&bounds.height>500,destination=commonFinaleCardRect(viewport,portraitMobile,frame);
+  // Matches .camera perspective (1300px) and the per-layer depth below.
+  const spread=portraitMobile?mobileStackOffsets(viewport,destination,photos.length,50,1300):[];
   const readingScene=article.querySelector<HTMLElement>("[data-finale-mobile-reading-layer]")??scene;
   const identity=mobile?readingScene.querySelector<HTMLElement>("[data-finale-identity]"):article.querySelector<HTMLElement>("[data-artwork-information-identity]");
   const contact=mobile?readingScene.querySelector<HTMLElement>("[data-finale-contact]"):article.querySelector<HTMLElement>("[data-artwork-information-contact]");
@@ -52,7 +54,7 @@ function FinaleSceneContent({article,content,anchor,open,mobile,onExited}:Omit<F
    const photo=photos.find(x=>x.id===card.dataset.mediaId);if(!photo)return;
    const layer=photos.findIndex(x=>x.id===photo.id)+1;
    setFinaleBitmap(card,frame);gsap.set(card,{x:0,y:0,z:-layer,scale:1,opacity:0});
-   tl.to(card,{x:destination.x-frame.x+layer*(mobile?18:42),y:destination.y-frame.y,z:-layer*(mobile?50:92),scale:destination.width/frame.width,duration:1.55},.12+layer*.025);
+   tl.to(card,{x:destination.x-frame.x+(portraitMobile?spread[layer-1]??0:layer*(mobile?18:42)),y:destination.y-frame.y,z:-layer*(mobile?50:92),scale:destination.width/frame.width,duration:1.55},.12+layer*.025);
    tl.to(card,{opacity:1,duration:.18,ease:"none"},.2+layer*.035);
    gsap.set(card.querySelector("img"),{filter:`blur(${layer*.6}px) brightness(${Math.max(.55,1-layer*.12)})`});
   });

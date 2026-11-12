@@ -24,15 +24,14 @@ export function ArtworkFinaleDetails({children,provenance,provenanceLabel,active
   let frame=0;const update=()=>updateDescriptionOverflow(node),observer=new ResizeObserver(()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(update);});
   observer.observe(node);if(text.current)observer.observe(text.current);update();
   return ()=>{cancelAnimationFrame(frame);observer.disconnect();node.removeEventListener("wheel",wheel);if(scrollTimer.current)clearTimeout(scrollTimer.current);if(node.parentElement)node.parentElement.dataset.scrolling="false";};
- },[children,active]);
+ },[children,provenance,active]);
  return <div className={styles.details} data-finale-details data-finale-persistent={persistent||undefined} inert={!active||undefined} aria-hidden={!active}>
-   {children&&<div className={styles.descriptionArea} data-finale-description-area data-scrollable="false"><div className={styles.description} data-finale-description aria-label="Description" tabIndex={-1} data-reading-active={active} ref={node=>{description.current=node;if(readingRef)readingRef.current=node;}} onScroll={event=>{
+   {(children||provenance)&&<div className={styles.descriptionArea} data-finale-description-area data-scrollable="false"><div className={styles.description} data-finale-description aria-label="Description" tabIndex={-1} data-reading-active={active} ref={node=>{description.current=node;if(readingRef)readingRef.current=node;}} onScroll={event=>{
     const node=event.currentTarget;updateDescriptionOverflow(node);if(node.dataset.scrollable!=="true")return;const area=node.parentElement;if(area)area.dataset.scrolling="true";
     if(scrollTimer.current)clearTimeout(scrollTimer.current);scrollTimer.current=setTimeout(()=>{if(area?.isConnected)area.dataset.scrolling="false";},900);
    }} onKeyDown={event=>{if(event.currentTarget.dataset.scrollable==="true"&&["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","PageUp","PageDown","Home","End"," "].includes(event.key))event.stopPropagation();}}
    onTouchStart={event=>{if(event.currentTarget.dataset.scrollable!=="true")return;event.stopPropagation();const area=event.currentTarget.parentElement;if(area)area.dataset.touching="true";}}
    onTouchEnd={event=>{if(event.currentTarget.dataset.scrollable!=="true")return;event.stopPropagation();const area=event.currentTarget.parentElement;if(area)area.dataset.touching="false";}}
-   onTouchCancel={event=>{if(event.currentTarget.dataset.scrollable!=="true")return;event.stopPropagation();const area=event.currentTarget.parentElement;if(area)area.dataset.touching="false";}}><div ref={text} className={styles.prose}>{children}</div></div><div className={styles.scrollTrack} aria-hidden="true"><div className={styles.scrollThumb} data-finale-scroll-thumb/></div></div>}
-   {provenance&&<div className={styles.provenance} data-finale-provenance><h2>{provenanceLabel}</h2>{provenance}</div>}
+   onTouchCancel={event=>{if(event.currentTarget.dataset.scrollable!=="true")return;event.stopPropagation();const area=event.currentTarget.parentElement;if(area)area.dataset.touching="false";}}><div ref={text} className={styles.prose}>{children}{provenance&&<div className={styles.provenance} data-finale-provenance><h2>{provenanceLabel}</h2>{provenance}</div>}</div></div><div className={styles.scrollTrack} aria-hidden="true"><div className={styles.scrollThumb} data-finale-scroll-thumb/></div></div>}
   </div>;
 }

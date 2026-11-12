@@ -11,11 +11,24 @@ export function initialCrop(bitmap:FinaleRect,frame:FinaleRect):string{
 }
 
 /** A common photographic frame, with a cover crop and no texture distortion. */
+/** Mobile: a short band (top + height share of the viewport) between the page gutters. Keep in sync with ArtworkFinale.module.css. */
+export const MOBILE_FINALE_BAND={top:40,height:.2,gutter:.07};
 export function commonFinaleCardRect(viewport:FinaleRect,mobile:boolean,reference:ImageSize):FinaleRect{
- const maxWidth=viewport.width*(mobile?.62:.28),maxHeight=viewport.height*(mobile?.28:.72);
+ const maxWidth=viewport.width*(mobile?.62:.28),maxHeight=viewport.height*(mobile?MOBILE_FINALE_BAND.height:.72);
  const ratio=reference.width/reference.height;
  const width=Math.min(maxWidth,maxHeight*ratio),height=width/ratio;
- return {x:viewport.x+viewport.width*(mobile?.08:.57),y:viewport.y+(mobile?40:(viewport.height-height)/2),width,height};
+ return {x:viewport.x+viewport.width*(mobile?MOBILE_FINALE_BAND.gutter:.57),y:viewport.y+(mobile?MOBILE_FINALE_BAND.top:(viewport.height-height)/2),width,height};
+}
+/**
+ * Mobile stack spread: horizontal offset of each back layer (1..count) so the pile spans the page width
+ * up to the right gutter, while consecutive cards still overlap. Accounts for the camera perspective,
+ * which shrinks deeper layers toward the scene centre.
+ */
+export function mobileStackOffsets(viewport:FinaleRect,card:FinaleRect,count:number,depth:number,perspective:number):number[]{
+ if(count<1)return [];
+ const origin=viewport.x+viewport.width/2,right=viewport.x+viewport.width*(1-MOBILE_FINALE_BAND.gutter),front=card.x+card.width;
+ const step=Math.min((right-front)/count,card.width*.9);
+ return Array.from({length:count},(_,i)=>{const layer=i+1,shrink=perspective/(perspective+depth*layer),target=front+step*layer;return Math.max(0,origin+(target-origin)/shrink-front);});
 }
 export function coverCardTransform(bitmap:FinaleRect,card:FinaleRect){
  const scale=Math.max(card.width/bitmap.width,card.height/bitmap.height),width=bitmap.width*scale,height=bitmap.height*scale;
