@@ -61,7 +61,8 @@
 .contact::before{content:"";position:absolute;left:0;right:0;top:-20px;height:1px;background:#64736a;opacity:var(--finale-contact-rule,0);pointer-events:none}
 
 @container(max-width:899px) and (min-height:501px){
- .reading{top:calc(20% + 64px)}.reading [data-finale-title]{margin-bottom:12px}
+ /* The title rises over the foot of the photo band (band bottom = 20% + 40px) to free room for the description. */
+ .reading{top:calc(20% - 16px)}.reading [data-finale-title]{margin-bottom:12px}
  .existing{font-size:11px;line-height:1.4;margin-top:12px}.existing dl{padding:8px 0}
 }
 @container(max-width:899px) and (max-height:500px){
@@ -94,7 +95,8 @@
 
 .mobileVeil{display:none;position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0}
 @container(max-width:899px) and (min-height:501px){
- .mobileVeil{display:block;background:linear-gradient(to bottom,rgba(8,10,9,0) 0%,rgba(8,10,9,0) calc(20% + 24px),rgba(8,10,9,.8) calc(20% + 52px),#080a09 calc(20% + 72px),#080a09 100%)}
+ /* Progressive black from the lower part of the photos, opaque under the title's first line. */
+ .mobileVeil{display:block;background:linear-gradient(to bottom,rgba(8,10,9,0) 0%,rgba(8,10,9,0) calc(20% - 118px),rgba(8,10,9,.2) calc(20% - 84px),rgba(8,10,9,.48) calc(20% - 52px),rgba(8,10,9,.75) calc(20% - 24px),rgba(8,10,9,.92) calc(20% - 4px),#080a09 calc(20% + 12px),#080a09 100%)}
 }
 
 /* WebKit needs a separate cached texture; Chromium retains its native filter cache. */
