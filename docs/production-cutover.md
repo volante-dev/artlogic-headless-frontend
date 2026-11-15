@@ -1,5 +1,11 @@
 # Passage du site Lucas Ratton en production
 
+## Bascule du 15 novembre 2026
+
+Les DNS ont été modifiés par le propriétaire du domaine et restent chez le fournisseur tiers. L’alias `www.lucasratton.com` a été ajouté au projet frontend existant. L’origine canonique choisie est `https://www.lucasratton.com` dans le frontend, l’API et l’admin. Le frontend utilise `DEPLOYMENT_ENV=production` et `DATA_MODE=real` ; les environnements d’identité API/worker sont conservés. Les paramètres prennent effet avec les déploiements Git automatiques de `main`.
+
+Les anciennes origines exactes de l’apex et de la preview restent admises temporairement par le frontend pour les onglets déjà ouverts. L’apex est redirigé vers `www` et l’ancienne preview vers le site public, en attendant la recréation d’une preview isolée.
+
 ## Préparé dans le code
 
 - `lib/seo/legacy-redirects.json` reprend les anciennes adresses de pages du sitemap Squarespace relevé le 15 novembre 2026. Les 83 pages ont une destination : 81 redirections permanentes (301), `/contact` conservé et `/legal` recréé. Les 48 adresses d’œuvres et catégories retirées rejoignent `/artworks`. Les 27 anciennes expositions ont leur correspondance exacte avec une exposition publiée. Les anciennes listes `/actualit`, `/actualit-1` et `/exposition-en-cours` rejoignent `/exhibitions`.
