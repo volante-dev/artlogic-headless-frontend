@@ -20,6 +20,7 @@
 .socials,.address {min-width:0;color:var(--site-color-mutedText);}.socials h2,.address h2 {color:var(--site-color-text);}.socials ul {display:block;}
 .addressText {font-family:var(--site-caption-fontFamily);font-size:var(--site-caption-fontSize);line-height:1.6;overflow-wrap:anywhere;}.addressText p {font:inherit;margin:0 0 12px;}.addressText h2,.addressText h3 {font:inherit;font-weight:600;margin:16px 0 8px;}.addressText ul,.addressText ol {margin:12px 0;}.addressText blockquote {margin:16px 0;padding-left:16px;}.addressText a {color:inherit;min-height:44px;display:inline-flex;align-items:center;max-width:100%;overflow-wrap:anywhere;}
 .copyright {width:100%;max-width:none;margin:24px 0 0;text-align:center;color:var(--site-color-mutedText);font-family:var(--site-caption-fontFamily);font-size:var(--site-caption-fontSize);line-height:1.5;overflow-wrap:anywhere;}
+.copyright a {display:inline-flex;align-items:center;min-height:44px;color:inherit;text-underline-offset:4px;}
 .footer a:focus-visible,.footer summary:focus-visible {outline:2px solid var(--site-color-text);outline-offset:5px;}.footer ::selection {background:var(--site-color-text);color:var(--site-color-surface);}
 @media(min-width:768px) {.group summary {pointer-events:none;}}
 @media(max-width:1100px) {.service {padding-inline:20px;}}

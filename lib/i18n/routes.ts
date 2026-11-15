@@ -6,13 +6,14 @@ import {preservedEditorialQuery} from "../editorial/query";
 export const sections=["news","artworks","exhibitions","publications","expertise","contact"] as const;
 export type Section=typeof sections[number];
 export interface RoutingPolicy{defaultLocale:string;locales:readonly {code:string;label:string}[]}
-export interface SiteRoute{locale:string;logicalPath:string;section:Section|null;kind:"home"|"section"|"artwork"|"article"|"unknown";artworkId?:string;articleKind?:"publication"|"news"|"exhibition";articleSlug?:string;explicitDefault:boolean}
+export interface SiteRoute{locale:string;logicalPath:string;section:Section|null;kind:"home"|"section"|"artwork"|"article"|"legal"|"unknown";artworkId?:string;articleKind?:"publication"|"news"|"exhibition";articleSlug?:string;explicitDefault:boolean}
 export function localizedPath(path:string,locale:string,defaultLocale:string):string{return (locale===defaultLocale?"":"/"+locale)+(path==="/"?"":path)||"/";}
 export function classifyRoute(pathname:string,policy:RoutingPolicy):SiteRoute{
   const parts=pathname.split("/").filter(Boolean),first=parts[0];
   const explicit=policy.locales.some(l=>l.code===first),locale=explicit?parts.shift()!:policy.defaultLocale;
   const path="/"+parts.join("/"),base={locale,logicalPath:path,explicitDefault:explicit&&locale===policy.defaultLocale};
   if(!parts.length)return {...base,kind:"home",section:null};
+  if(path==="/legal")return {...base,kind:"legal",section:null};
   if(parts.length===1&&sections.includes(parts[0] as Section))return {...base,kind:"section",section:parts[0] as Section};
   if(parts.length===2&&parts[0]==="artworks")return {...base,kind:"artwork",section:"artworks",artworkId:parts[1]};
   if(parts.length===2&&isEditorialSection(parts[0]??"")){

@@ -1,0 +1,6 @@
+.page {max-width:880px;margin:0 auto;padding:clamp(40px,7vw,100px) clamp(24px,5vw,64px);color:var(--site-color-text);}
+.page h1 {font-family:var(--site-h1-fontFamily);font-size:clamp(32px,5vw,56px);font-weight:var(--site-h1-fontWeight);line-height:1.15;margin:0 0 40px;}
+.page h2 {font-family:var(--site-h3-fontFamily);font-size:clamp(21px,3vw,28px);font-weight:var(--site-h3-fontWeight);line-height:1.3;margin:36px 0 16px;}
+.page p,.page li {font-family:var(--site-body-fontFamily);font-size:var(--site-body-fontSize);line-height:1.7;overflow-wrap:anywhere;}
+.page p {margin:0 0 16px;}.page ul {padding-left:24px;}.page a {color:inherit;text-underline-offset:4px;}.page a:focus-visible {outline:2px solid currentColor;outline-offset:4px;}
+.page address {font-style:normal;}.notice {padding-left:20px;border-left:1px solid var(--site-color-border);color:var(--site-color-mutedText);}

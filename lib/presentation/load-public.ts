@@ -17,6 +17,7 @@ export const loadPublicPresentation=cache(async()=>{
     const result=await getPublicPresentation("galerist",locale,release,context.get("x-vercel-id")??undefined);
     if(result.releaseId!==release||result.pageIdentity?.canonicalPath!==canonical)throw new Error("presentation_release_changed");return result;
   }
-  const pageKey:PageKey=path==="/"?"home":path.startsWith("/artworks/")?"artworkDetail":path.startsWith("/publications/")?"publications":path.startsWith("/news/")?"news":path.startsWith("/exhibitions/")?"exhibitions":path.slice(1) as PageKey;
+  // Legal pages share the contact page's published branding, navigation and footer.
+  const pageKey:PageKey=path==="/legal"?"contact":path==="/"?"home":path.startsWith("/artworks/")?"artworkDetail":path.startsWith("/publications/")?"publications":path.startsWith("/news/")?"news":path.startsWith("/exhibitions/")?"exhibitions":path.slice(1) as PageKey;
   return getPublicPresentation(pageKey,locale,undefined,context.get("x-vercel-id")??undefined);
 });

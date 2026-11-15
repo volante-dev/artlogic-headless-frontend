@@ -20,6 +20,6 @@ export function LanguageSelector({policy,locale,path,query,label,alternatePaths}
   return <nav aria-label={dynamic?messages["header.languageLabel"]:label} aria-busy={dynamic?.pending||undefined} className={styles.languages}><ul>{policy.locales.map(language=><li key={language.code}><Link prefetch={false} scroll={false} href={(dynamic?.pagePaths?.[language.code]??alternatePaths?.[language.code]??dynamic?.articlePaths?.[language.code]??(scopedPath.startsWith("/preview/render/")?"/preview/render/"+language.code+(path==="/"?"":path):localizedPath(path,language.code,policy.defaultLocale)))+linkQuery(language.code)+hash} onClick={event=>{
    if(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
    if(language.code!==current&&hasContactDraft()&&!window.confirm(messages["contact.leaveConfirm"])){event.preventDefault();return;}
-   if(dynamic){event.preventDefault();dynamic.changeLocale(language.code);}
+   if(dynamic&&route?.kind!=="legal"){event.preventDefault();dynamic.changeLocale(language.code);}
   }} lang={language.code} hrefLang={language.code} aria-label={language.label} aria-current={language.code===current?"true":undefined}>{language.code.toUpperCase()}</Link></li>)}</ul>{dynamic?.error&&<span role="status">{messages["catalog.errorMessage"]} <button type="button" onClick={()=>window.location.reload()}>{messages["catalog.retry"]}</button></span>}</nav>;
 }
