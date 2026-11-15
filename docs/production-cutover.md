@@ -2,7 +2,7 @@
 
 ## Préparé dans le code
 
-- `lib/seo/legacy-redirects.json` reprend les anciennes adresses de pages du sitemap Squarespace relevé le 15 novembre 2026. Les 83 pages ont une destination : 81 redirections permanentes (301), `/contact` conservé et `/legal` recréé. Les 48 adresses d’œuvres et catégories retirées rejoignent `/artworks`. Les expositions encore sans équivalent public rejoignent `/exhibitions` ; remplacer ces destinations par leur adresse exacte au fil des publications. `/exposition-en-cours` reste dirigé vers la liste.
+- `lib/seo/legacy-redirects.json` reprend les anciennes adresses de pages du sitemap Squarespace relevé le 15 novembre 2026. Les 83 pages ont une destination : 81 redirections permanentes (301), `/contact` conservé et `/legal` recréé. Les 48 adresses d’œuvres et catégories retirées rejoignent `/artworks`. Les 27 anciennes expositions ont leur correspondance exacte avec une exposition publiée. Les anciennes listes `/actualit`, `/actualit-1` et `/exposition-en-cours` rejoignent `/exhibitions`.
 - Les destinations sont relatives : aucun domaine de déploiement n’est figé dans les règles de redirection.
 - Le sitemap parcourt toutes les pages du catalogue public d’œuvres et des trois catalogues éditoriaux, dans chaque langue publique. Les révisions de pagination sont conservées ; une erreur n’est pas transformée en sitemap partiel réussi. Les images ne sont pas téléchargées par cette génération.
 - Les pages d’accueil et listes disposent de descriptions de repli, de canoniques et d’alternatives linguistiques. Les descriptions du CMS restent prioritaires. Les adresses absolues proviennent de `SITE_ORIGIN`.
