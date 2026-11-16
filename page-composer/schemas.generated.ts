@@ -13582,6 +13582,25 @@ export const presentationSchemas = {
                 "type": "null"
               }
             ]
+          },
+          "credit": {
+            "anyOf": [
+              {
+                "type": "object",
+                "maxProperties": 20,
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/PresentationFooterRichText"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
           }
         },
         "required": [
@@ -18266,6 +18285,17 @@ export const presentationSchemas = {
                 "type": "null"
               }
             ]
+          },
+          "credit": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterRichText"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
           }
         },
         "required": [
@@ -21684,6 +21714,17 @@ export const presentationSchemas = {
                 "type": "null"
               }
             ]
+          },
+          "credit": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterRichText"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
           }
         },
         "required": [
@@ -24987,6 +25028,17 @@ export const presentationSchemas = {
                 "type": "null"
               }
             ]
+          },
+          "credit": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationFooterRichText"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
           }
         },
         "required": [
@@ -26538,6 +26590,25 @@ export const presentationSchemas = {
             "type": "null"
           }
         ]
+      },
+      "credit": {
+        "anyOf": [
+          {
+            "type": "object",
+            "maxProperties": 20,
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/PresentationFooterRichText"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
       }
     },
     "required": [
@@ -27086,6 +27157,25 @@ export const presentationSchemas = {
                 "type": "null"
               }
             ]
+          },
+          "credit": {
+            "anyOf": [
+              {
+                "type": "object",
+                "maxProperties": 20,
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/PresentationFooterRichText"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
           }
         },
         "required": [
@@ -28086,6 +28176,17 @@ export const presentationSchemas = {
             "type": "null"
           }
         ]
+      },
+      "credit": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationFooterRichText"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Optional footer credit. Localized rich text in the draft, resolved to the requested locale in public and preview snapshots. Empty or absent content is hidden; there is no brand default."
       }
     },
     "required": [
