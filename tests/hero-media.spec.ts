@@ -36,6 +36,21 @@ test("manual pause survives a background/foreground cycle",async({page,context})
   expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);await expect(page.getByRole("button",{name:"Lire le film",exact:true})).toBeVisible();
 });
 
+for(const width of [375,1440])test("keeps the film playing when focus and page visibility are lost at "+width+"px",async({page})=>{
+ await page.setViewportSize({width,height:900});await page.goto("/");const video=page.getByTestId("hero-media").locator("video");
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused&&v.currentTime>0.1)).toBe(true);
+ await video.evaluate(v=>{v.dataset.pauses="0";v.addEventListener("pause",()=>{v.dataset.pauses=String(Number(v.dataset.pauses)+1);});});
+ await page.evaluate(()=>window.dispatchEvent(new Event("blur")));
+ expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(false);
+ await page.evaluate(()=>{Object.defineProperty(document,"hidden",{configurable:true,value:true});Object.defineProperty(document,"visibilityState",{configurable:true,value:"hidden"});document.dispatchEvent(new Event("visibilitychange"));});
+ const time=await video.evaluate((v:HTMLVideoElement)=>v.currentTime);
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.currentTime)).not.toBe(time);
+ expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(false);await expect(video).toHaveAttribute("data-pauses","0");
+ await page.evaluate(()=>{Reflect.deleteProperty(document,"hidden");Reflect.deleteProperty(document,"visibilityState");document.dispatchEvent(new Event("visibilitychange"));window.dispatchEvent(new Event("focus"));});
+ await expect(page.getByRole("button",{name:"Mettre le film en pause",exact:true})).toBeVisible();
+ await page.getByRole("button",{name:"Mettre le film en pause",exact:true}).click();await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);
+});
+
 test("reduced motion starts on the poster with an explicit play action and useful links",async({page})=>{
   await page.emulateMedia({reducedMotion:"reduce"});await page.goto("/");const hero=page.getByTestId("hero-media"),video=hero.locator("video");
   await expect(page.getByRole("button",{name:"Lire le film",exact:true})).toBeVisible();expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);expect(await video.evaluate((v:HTMLVideoElement)=>v.currentTime)).toBe(0);
