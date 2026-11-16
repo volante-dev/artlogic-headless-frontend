@@ -19,4 +19,4 @@ export function FooterView({footer,siteName,description,logo,homeHref,socialLabe
 
  <div className={styles.identity}><FooterLink className={styles.name} href={homeHref} aria-label={siteName}>{logo??siteName}</FooterLink>{description&&(!footer||footer.showDescription)&&<p>{description}</p>}</div>
 
- </div><p className={styles.copyright}>© {new Date().getFullYear()} {siteName}{legalHref&&<> · <FooterLink href={legalHref}>{legalLabel}</FooterLink></>}</p></div></footer>;}
+ </div><p className={styles.copyright}>© {new Date().getFullYear()} {siteName}{legalHref&&<> · <FooterLink href={legalHref}>{legalLabel}</FooterLink></>} · crafted by <a href="https://studio-volante.fr" target="_blank" rel="noopener noreferrer">Studio Volante</a></p></div></footer>;}
