@@ -1,3 +1,6 @@
+import {loadStoreLegalDocument,type StoreLegalDocument} from '@/lib/commerce/legal';
+import {LegalDocument} from '@/components/commerce/LegalDocument';
+import {PublicApiError} from '@/lib/api/client';
 import {Suspense} from "react";
 import {HeaderRouteCommit} from "@/components/header/HeaderRouteCommit";
 import {loadHeaderRouteContext} from "@/lib/header/load-route-context";
@@ -7,7 +10,7 @@ import styles from "./page.module.css";
 
 export async function generateMetadata(){const site=await loadSiteContent(),en=site.locale.startsWith("en"),title=(en?"Legal notice":"Mentions légales")+" — "+site.siteName,description=en?`Legal information, hosting and privacy information for ${site.siteName}.`:`Informations légales, hébergement et protection des données de la ${site.siteName}.`;return {title,description,alternates:pageAlternates("/legal",site.locale,site.policy,site.siteOrigin),openGraph:{title,description}};}
 
-async function LegalContent(){const site=await loadSiteContent(),en=site.locale.startsWith("en");return <><article className={styles.page}>
+async function LegalContent(){const site=await loadSiteContent(),en=site.locale.startsWith("en");let document:StoreLegalDocument|null=null;try{document=await loadStoreLegalDocument('legal',site.locale);}catch(error){if(!(error instanceof PublicApiError&&error.status===404))throw error;}if(document)return <><LegalDocument document={document}/><HeaderRouteCommit snapshot={await loadHeaderRouteContext()}/></>;return <><article className={styles.page}>
  <h1>{en?"Legal notice":"Mentions légales"}</h1>
  <h2>{en?"Gallery contact details":"Coordonnées de la galerie"}</h2>
  <address><p>{site.siteName}<br/>11 rue Bonaparte, 75006 Paris, France<br/><a href="mailto:contact@lucasratton.com">contact@lucasratton.com</a><br/><a href="tel:+33146330624">+33 (0)1 46 33 06 24</a></p></address>

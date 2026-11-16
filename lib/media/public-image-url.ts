@@ -2,7 +2,7 @@ import type{components}from'../api/generated';
 import{imageRenditions}from'./public-image-policy.generated';
 export type ImageResource=components['schemas']['ImageResource'];
 export type ImageDescriptor=components['schemas']['PublicImageDescriptor'];
-const roots={artwork:'media',siteLogo:'site-logos',presentation:'presentation-assets',editorial:'editorial-assets'} as const;
+const roots={artwork:'media',siteLogo:'site-logos',presentation:'presentation-assets',editorial:'editorial-assets',commerce:'commerce-assets'} as const;
 export const imageUUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 export function imageUrl(resource:ImageResource,version:string,rendition:string,retry=false){
  if(!imageUUID.test(resource.resourceId)||!imageRenditions.includes(rendition)||!/^[a-zA-Z0-9._-]{1,128}$/.test(version))throw Error('invalid_image_reference');

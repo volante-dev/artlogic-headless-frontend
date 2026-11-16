@@ -1,4 +1,5 @@
 "use client";
+import {ExternalMediaGate} from '../../privacy/ExternalMediaGate';
 import {useCallback} from "react";
 import {useEditorialPlayback,type PlayerFactory} from "./useEditorialPlayback";
 import {PlayerChrome} from "./PlayerChrome";
@@ -6,7 +7,7 @@ import {playerDeadline} from "./provider-deadline";
 import styles from "./Player.module.css";
 import {useEditorialExecution,inertEditorialPlayer} from "../../../lib/editorial/execution";
 declare global{interface Window{VimeoSeoMetadataAppended?:boolean;VimeoCheckedUrlTimeParam?:boolean;VimeoDRMEmbedsUpdated?:boolean;VimeoPlayerResizeEmbeds_?:boolean}}
-export function VimeoPlayer({videoId,privacyHash,label,autoplay=false,active=true,showSoundControl=true}:{videoId:string;privacyHash?:string|null;label:string;autoplay?:boolean;active?:boolean;showSoundControl?:boolean}){
+function VimeoPlayerAllowed({videoId,privacyHash,label,autoplay=false,active=true,showSoundControl=true}:{videoId:string;privacyHash?:string|null;label:string;autoplay?:boolean;active?:boolean;showSoundControl?:boolean}){
  const mode=useEditorialExecution();
  const factory=useCallback<PlayerFactory>(async(host,signal,events)=>{
   if(mode==="inert")return inertEditorialPlayer();
@@ -29,3 +30,5 @@ export function VimeoPlayer({videoId,privacyHash,label,autoplay=false,active=tru
  },[videoId,privacyHash,label,mode]);
  const {hostRef,...state}=useEditorialPlayback(factory,{active,autoplay});return <div data-editorial-player className={styles.player} ref={hostRef}><div className={styles.external} data-player-frame/><PlayerChrome state={state} showSoundControl={showSoundControl}/></div>;
 }
+
+export function VimeoPlayer(props:Parameters<typeof VimeoPlayerAllowed>[0]&{poster?:string}){return <ExternalMediaGate provider="Vimeo" poster={props.poster}><VimeoPlayerAllowed {...props}/></ExternalMediaGate>;}

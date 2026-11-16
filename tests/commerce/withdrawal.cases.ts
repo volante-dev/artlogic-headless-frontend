@@ -1,0 +1,10 @@
+import {expect,type Page} from '@playwright/test';
+export async function verifyWithdrawal(page:Page){
+ await page.setExtraHTTPHeaders({'x-contact-mock-visitor':'127.32.'+Math.floor(Math.random()*250)+'.'+Math.floor(Math.random()*250)});
+ const email='withdrawal-'+Date.now()+'@example.test',contract='Contrat inconnu de recette '+Date.now(),response=await page.goto('/store/withdrawal');expect(response?.headers()['cache-control']).toContain('no-store');
+ const reject=page.getByRole('button',{name:'Tout refuser',exact:true});if(await reject.isVisible())await reject.click();else{const understand=page.getByRole('button',{name:'Compris',exact:true});if(await understand.isVisible())await understand.click();}
+ await expect(page.getByRole('heading',{name:'Se rétracter d’une commande',exact:true})).toBeVisible();await page.getByRole('textbox',{name:'Nom complet',exact:true}).fill('Camille de recette');await page.getByRole('textbox',{name:'E-mail pour l’accusé de réception',exact:true}).fill(email);await page.getByRole('textbox',{name:'Numéro de commande ou description du contrat',exact:true}).fill(contract);await page.getByRole('button',{name:'Relire ma déclaration',exact:true}).click();await expect(page.getByText(contract,{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Confirmer ma rétractation',exact:true}).click();const receipt=page.getByRole('region',{name:'Accusé de rétractation',exact:true});await expect(receipt).toBeVisible();await expect(receipt).toContainText(/R-[A-F0-9]{32}/);await expect(receipt).toContainText('ne confirme ni');
+ const cookies=await page.context().cookies();expect(cookies.find(c=>c.name==='dev-store-withdrawal')?.httpOnly).toBe(true);expect(new URL(page.url()).search).toBe('');const storage=await page.evaluate(()=>JSON.stringify({...localStorage}));expect(storage).not.toContain(email);expect(storage).not.toContain(contract);
+ await page.reload();await expect(page.getByRole('region',{name:'Accusé de rétractation',exact:true})).toHaveCount(0);await expect(page.getByRole('textbox',{name:'E-mail pour l’accusé de réception',exact:true})).toHaveValue('');
+}

@@ -50,6 +50,10 @@ export const messageRegistry = {
     {
       "id": "editorial",
       "label": "Articles · Publications et actualités"
+    },
+    {
+      "id": "commerce",
+      "label": "Store"
     }
   ],
   "messages": [
@@ -1881,6 +1885,446 @@ export const messageRegistry = {
       "initial": {
         "fr": "Sélectionnez jusqu’à 100 types.",
         "en": "Select up to 100 artwork types."
+      }
+    },
+    {
+      "key": "commerce.store",
+      "group": "commerce",
+      "label": "Store",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Store",
+        "en": "Store"
+      }
+    },
+    {
+      "key": "commerce.cart",
+      "group": "commerce",
+      "label": "Panier",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Panier",
+        "en": "Bag"
+      }
+    },
+    {
+      "key": "commerce.orderTracking",
+      "group": "commerce",
+      "label": "Suivi de commande",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Suivi de commande",
+        "en": "Track an order"
+      }
+    },
+    {
+      "key": "commerce.addToCart",
+      "group": "commerce",
+      "label": "Ajouter au panier",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Ajouter au panier",
+        "en": "Add to bag"
+      }
+    },
+    {
+      "key": "commerce.addedToCart",
+      "group": "commerce",
+      "label": "Ajouté au panier",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Ajouté au panier",
+        "en": "Added to bag"
+      }
+    },
+    {
+      "key": "commerce.checkout",
+      "group": "commerce",
+      "label": "Commander",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Commander",
+        "en": "Checkout"
+      }
+    },
+    {
+      "key": "commerce.emptyCart",
+      "group": "commerce",
+      "label": "Votre panier est vide",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Votre panier est vide",
+        "en": "Your bag is empty"
+      }
+    },
+    {
+      "key": "commerce.quantity",
+      "group": "commerce",
+      "label": "Quantité",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Quantité",
+        "en": "Quantity"
+      }
+    },
+    {
+      "key": "commerce.remove",
+      "group": "commerce",
+      "label": "Retirer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Retirer",
+        "en": "Remove"
+      }
+    },
+    {
+      "key": "commerce.subtotal",
+      "group": "commerce",
+      "label": "Sous-total",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Sous-total",
+        "en": "Subtotal"
+      }
+    },
+    {
+      "key": "commerce.continueShopping",
+      "group": "commerce",
+      "label": "Continuer mes achats",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Continuer mes achats",
+        "en": "Continue shopping"
+      }
+    },
+    {
+      "key": "commerce.unavailable",
+      "group": "commerce",
+      "label": "Ce produit est indisponible",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Ce produit est indisponible",
+        "en": "This product is unavailable"
+      }
+    },
+    {
+      "key": "commerce.checking",
+      "group": "commerce",
+      "label": "Vérification en cours",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Vérification en cours",
+        "en": "Checking availability"
+      }
+    },
+    {
+      "key": "commerce.shippingAddress",
+      "group": "commerce",
+      "label": "Adresse de livraison",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Adresse de livraison",
+        "en": "Delivery address"
+      }
+    },
+    {
+      "key": "commerce.billingAddress",
+      "group": "commerce",
+      "label": "Adresse de facturation",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Adresse de facturation",
+        "en": "Billing address"
+      }
+    },
+    {
+      "key": "commerce.sameBilling",
+      "group": "commerce",
+      "label": "Utiliser la même adresse pour la facturation",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Utiliser la même adresse pour la facturation",
+        "en": "Use the same billing address"
+      }
+    },
+    {
+      "key": "commerce.email",
+      "group": "commerce",
+      "label": "Adresse e-mail",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Adresse e-mail",
+        "en": "Email address"
+      }
+    },
+    {
+      "key": "commerce.continue",
+      "group": "commerce",
+      "label": "Continuer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Continuer",
+        "en": "Continue"
+      }
+    },
+    {
+      "key": "commerce.reviewOrder",
+      "group": "commerce",
+      "label": "Vérifier ma commande",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Vérifier ma commande",
+        "en": "Review order"
+      }
+    },
+    {
+      "key": "commerce.pay",
+      "group": "commerce",
+      "label": "Payer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Payer",
+        "en": "Pay"
+      }
+    },
+    {
+      "key": "commerce.paymentPending",
+      "group": "commerce",
+      "label": "Paiement en cours de vérification",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Paiement en cours de vérification",
+        "en": "Payment is being verified"
+      }
+    },
+    {
+      "key": "commerce.paymentDeclined",
+      "group": "commerce",
+      "label": "Le paiement a été refusé",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Le paiement a été refusé",
+        "en": "Payment declined"
+      }
+    },
+    {
+      "key": "commerce.mockPayment",
+      "group": "commerce",
+      "label": "Paiement simulé",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Paiement simulé",
+        "en": "Simulated payment"
+      }
+    },
+    {
+      "key": "commerce.confirmed",
+      "group": "commerce",
+      "label": "Commande confirmée",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Commande confirmée",
+        "en": "Order confirmed"
+      }
+    },
+    {
+      "key": "commerce.processing",
+      "group": "commerce",
+      "label": "Commande en traitement",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Commande en traitement",
+        "en": "Order being prepared"
+      }
+    },
+    {
+      "key": "commerce.shipped",
+      "group": "commerce",
+      "label": "Commande expédiée",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Commande expédiée",
+        "en": "Order shipped"
+      }
+    },
+    {
+      "key": "commerce.delivered",
+      "group": "commerce",
+      "label": "Commande livrée",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Commande livrée",
+        "en": "Order delivered"
+      }
+    },
+    {
+      "key": "commerce.orderNumber",
+      "group": "commerce",
+      "label": "Numéro de commande",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Numéro de commande",
+        "en": "Order number"
+      }
+    },
+    {
+      "key": "commerce.notFound",
+      "group": "commerce",
+      "label": "Commande introuvable avec ces informations",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Commande introuvable avec ces informations",
+        "en": "No order matches these details"
+      }
+    },
+    {
+      "key": "commerce.retry",
+      "group": "commerce",
+      "label": "Réessayer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Réessayer",
+        "en": "Try again"
+      }
+    },
+    {
+      "key": "commerce.saving",
+      "group": "commerce",
+      "label": "Enregistrement en cours",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Enregistrement en cours",
+        "en": "Saving"
+      }
+    },
+    {
+      "key": "commerce.saved",
+      "group": "commerce",
+      "label": "Modifications enregistrées",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Modifications enregistrées",
+        "en": "Changes saved"
+      }
+    },
+    {
+      "key": "commerce.terms",
+      "group": "commerce",
+      "label": "Conditions générales de vente",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Conditions générales de vente",
+        "en": "Terms of sale"
+      }
+    },
+    {
+      "key": "commerce.privacy",
+      "group": "commerce",
+      "label": "Confidentialité",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Confidentialité",
+        "en": "Privacy"
+      }
+    },
+    {
+      "key": "commerce.withdrawal",
+      "group": "commerce",
+      "label": "Déclarer une rétractation",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Déclarer une rétractation",
+        "en": "Submit a withdrawal"
+      }
+    },
+    {
+      "key": "commerce.acceptTerms",
+      "group": "commerce",
+      "label": "J’accepte les conditions générales de vente",
+      "maxLength": 80,
+      "initial": {
+        "fr": "J’accepte les conditions générales de vente",
+        "en": "I accept the terms of sale"
+      }
+    },
+    {
+      "key": "commerce.cookieAccept",
+      "group": "commerce",
+      "label": "Tout accepter",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Tout accepter",
+        "en": "Accept all"
+      }
+    },
+    {
+      "key": "commerce.cookieReject",
+      "group": "commerce",
+      "label": "Tout refuser",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Tout refuser",
+        "en": "Reject all"
+      }
+    },
+    {
+      "key": "commerce.cookieCustomize",
+      "group": "commerce",
+      "label": "Personnaliser",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Personnaliser",
+        "en": "Customize"
+      }
+    },
+    {
+      "key": "commerce.cookiePreferences",
+      "group": "commerce",
+      "label": "Préférences de confidentialité",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Préférences de confidentialité",
+        "en": "Privacy preferences"
+      }
+    },
+    {
+      "key": "commerce.cookieSave",
+      "group": "commerce",
+      "label": "Enregistrer mes choix",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Enregistrer mes choix",
+        "en": "Save my choices"
+      }
+    },
+    {
+      "key": "commerce.externalMedia",
+      "group": "commerce",
+      "label": "Autorisez les médias externes pour lire ce contenu",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Autorisez les médias externes pour lire ce contenu",
+        "en": "Allow external media to view this content"
+      }
+    },
+    {
+      "key": "commerce.close",
+      "group": "commerce",
+      "label": "Fermer",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Fermer",
+        "en": "Close"
+      }
+    },
+    {
+      "key": "commerce.salesSuspended",
+      "group": "commerce",
+      "label": "Les nouvelles commandes sont momentanément suspendues",
+      "maxLength": 80,
+      "initial": {
+        "fr": "Les nouvelles commandes sont momentanément suspendues",
+        "en": "New orders are temporarily suspended"
       }
     }
   ]

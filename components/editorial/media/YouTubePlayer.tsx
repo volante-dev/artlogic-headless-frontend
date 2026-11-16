@@ -1,4 +1,5 @@
 "use client";
+import {ExternalMediaGate} from '../../privacy/ExternalMediaGate';
 import {useCallback,useEffect,useState} from "react";
 import {useEditorialPlayback,type PlayerFactory} from "./useEditorialPlayback";
 import {PlayerChrome} from "./PlayerChrome";
@@ -20,7 +21,7 @@ function youtubeApi(){
   script.src="https://www.youtube.com/iframe_api";script.async=true;script.referrerPolicy="strict-origin";script.onerror=fail;document.head.appendChild(script);
  }).catch(error=>{api=null;throw error;});return api;
 }
-export function YouTubePlayer({videoId,label,autoplay=false,active=true,showSoundControl=true}:{videoId:string;label:string;autoplay?:boolean;active?:boolean;showSoundControl?:boolean}){
+function YouTubePlayerAllowed({videoId,label,autoplay=false,active=true,showSoundControl=true}:{videoId:string;label:string;autoplay?:boolean;active?:boolean;showSoundControl?:boolean}){
  const [narrow,setNarrow]=useState(false),mode=useEditorialExecution();
  const factory=useCallback<PlayerFactory>(async(host,signal,events)=>{
   if(mode==="inert")return inertEditorialPlayer();
@@ -43,3 +44,5 @@ export function YouTubePlayer({videoId,label,autoplay=false,active=true,showSoun
  useEffect(()=>{const element=hostRef.current;if(!element)return;const observer=new ResizeObserver(entries=>setNarrow((entries[0]?.contentRect.width??0)<200));observer.observe(element);return()=>observer.disconnect();},[hostRef]);
  return <div data-editorial-player className={styles.player} ref={hostRef}><div className={styles.external} data-player-frame/><PlayerChrome state={state} showSoundControl={showSoundControl}/></div>;
 }
+
+export function YouTubePlayer(props:Parameters<typeof YouTubePlayerAllowed>[0]&{poster?:string}){return <ExternalMediaGate provider="YouTube" poster={props.poster}><YouTubePlayerAllowed {...props}/></ExternalMediaGate>;}

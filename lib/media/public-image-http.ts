@@ -5,9 +5,9 @@ import{parseImageQuery,imageUUID,type ImageResource}from'./public-image-url';
 import{validateImageDescriptor}from'./public-image-descriptor';
 import{validateImageGrant}from'./public-image-authorization';
 import{publicImageCacheHeaders}from'./public-image-cache';
-const apiRoots={artwork:'media',siteLogo:'site-logos',presentation:'presentation-assets',editorial:'editorial/media'};
+const apiRoots={artwork:'media',siteLogo:'site-logos',presentation:'presentation-assets',editorial:'editorial/media',commerce:'store/media'};
 export async function imageApi(path:string,body?:unknown,signal?:AbortSignal){
- if(!/^\/v1\/public\/(?:(?:media|site-logos|presentation-assets|editorial\/media)\/[a-f0-9-]{36}\/image-authorization\?rendition=[a-z0-9-]+&version=[a-zA-Z0-9._%-]+|image-descriptors\/query|image-observations)$/.test(path))throw Error('invalid_image_path');
+ if(!/^\/v1\/public\/(?:(?:media|site-logos|presentation-assets|editorial\/media|store\/media)\/[a-f0-9-]{36}\/image-authorization\?rendition=[a-z0-9-]+&version=[a-zA-Z0-9._%-]+|image-descriptors\/query|image-observations)$/.test(path))throw Error('invalid_image_path');
  const config=loadConfig(),timeout=path.endsWith('/image-descriptors/query')?numberValue(config,'PUBLIC_IMAGE_DESCRIPTOR_TIMEOUT_MS'):numberValue(config,'PUBLIC_PAGE_REQUEST_TIMEOUT_MS');
  const response=await fetch(stringValue(config,'BACKEND_URL').replace(/\/$/,'')+path,{method:body===undefined?'GET':'POST',body:body===undefined?undefined:JSON.stringify(body),headers:{Accept:'application/json',...(body===undefined?{}:{'Content-Type':'application/json'})},credentials:'omit',redirect:'error',cache:'no-store',signal:signal?AbortSignal.any([signal,AbortSignal.timeout(timeout)]):AbortSignal.timeout(timeout)});
  if(!response.ok){await response.body?.cancel();throw new PublicApiError([400,404,413,429].includes(response.status)?response.status:503,'image_request_failed');}

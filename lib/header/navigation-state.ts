@@ -9,7 +9,7 @@ export interface HeaderRouteSnapshot {
  version:1;requestId:string;hrefKey:string;scope:'public';locale:string;pageKey:string;section:Section|null;
  site:Awaited<ReturnType<typeof loadSiteContent>>;presentation?:PublicPresentation;navigation?:NavigationPublicProjection;
  pageIdentity?:PublicPresentation['pageIdentity'];article?:{id:string;alternatePaths:Record<string,string>};immersive:boolean;
- status:'ready'|'not-found'|'unavailable';
+ storeAvailable?:boolean;storeTrackingAvailable?:boolean;status:'ready'|'not-found'|'unavailable';
 }
 export interface HeaderHistoryEntry {version:1;entryId:string;hrefKey:string;lastRequestId?:string}
 export interface HeaderNavigationIntent {generation:number;entryId:string;target:string;source:'header'|'history';baselineRequestId?:string;refreshRequested:boolean;deadline:number}

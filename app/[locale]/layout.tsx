@@ -1,3 +1,4 @@
+import {ConsentProvider} from '@/components/privacy/ConsentProvider';
 import {ArtworkDocumentBoot} from "@/components/artworks/ArtworkDocumentBoot";
 import "@/components/artworks/ArtworkDocument.module.css";
 import {FocusVisibility} from "@/components/FocusVisibility";
@@ -6,13 +7,12 @@ import {Suspense} from "react";
 import {locale} from "next/root-params";
 import {ArtworkOpeningBoundary} from "@/components/artworks/ArtworkOpeningBoundary";
 import type {Metadata,Viewport} from "next";
-import {loadSiteContent} from "@/lib/i18n/load-site-content";
 import {SiteShell} from "@/components/SiteShell";
 import {RestoreFreshness} from "@/components/RestoreFreshness";
 import {SiteShellLoading} from "@/components/artworks/SiteShellLoading";
-import {configuredLocalePolicy,loadConfig,numberValue} from "@/lib/config/env";
+import {configuredLocalePolicy,loadConfig,numberValue,stringValue} from "@/lib/config/env";
 import "../globals.css";
 export const viewport:Viewport={width:"device-width",initialScale:1,viewportFit:"cover"};
 export function generateStaticParams(){return [{locale:"fr"},{locale:"en"}];}
-export async function generateMetadata():Promise<Metadata>{const site=await loadSiteContent();return {title:site.siteName,description:site.description,metadataBase:new URL(site.siteOrigin)};}
-export default async function RootLayout({children,artwork}:{children:React.ReactNode;artwork:React.ReactNode}){const activeLocale=await locale();return <html lang={activeLocale} data-artwork-document="static" suppressHydrationWarning><head><ArtworkDocumentBoot/></head><body data-public-responsive={loadConfig().PUBLIC_IMAGE_RESPONSIVE_ENABLED==="true"?"true":undefined}><noscript><style>{`div[hidden]:has(footer){display:contents!important}#editorial-native-link{display:block;margin:24px;padding:16px}body:not(:has([data-editorial-document])) #editorial-native-link{display:none}`}</style><a id="editorial-native-link" href="?reader=native">{activeLocale==="en"?"Read this article without JavaScript":"Lire cet article sans JavaScript"}</a></noscript><FocusVisibility/><RestoreFreshness/><MediaDisplayProvider responsive={loadConfig().PUBLIC_IMAGE_RESPONSIVE_ENABLED==="true"} descriptorTimeoutMs={numberValue(loadConfig(),"PUBLIC_IMAGE_DESCRIPTOR_TIMEOUT_MS")} budgetMs={numberValue(loadConfig(),"PUBLIC_MEDIA_LOAD_TIMEOUT_MS")}><ArtworkOpeningBoundary><Suspense fallback={<SiteShellLoading policy={configuredLocalePolicy(loadConfig())} initialLocale={activeLocale}/>}><SiteShell artwork={artwork}>{children}</SiteShell></Suspense></ArtworkOpeningBoundary></MediaDisplayProvider></body></html>;}
+export function generateMetadata():Metadata{const config=loadConfig();return {title:stringValue(config,'SITE_NAME'),description:stringValue(config,'SITE_DESCRIPTION'),metadataBase:new URL(stringValue(config,'SITE_ORIGIN'))};}
+export default async function RootLayout({children,artwork}:{children:React.ReactNode;artwork:React.ReactNode}){const activeLocale=await locale();return <html lang={activeLocale} data-artwork-document="static" suppressHydrationWarning><head><ArtworkDocumentBoot/></head><body data-public-responsive={loadConfig().PUBLIC_IMAGE_RESPONSIVE_ENABLED==="true"?"true":undefined}><noscript><style>{`div[hidden]:has(footer){display:contents!important}#editorial-native-link{display:block;margin:24px;padding:16px}body:not(:has([data-editorial-document])) #editorial-native-link{display:none}`}</style><a id="editorial-native-link" href="?reader=native">{activeLocale==="en"?"Read this article without JavaScript":"Lire cet article sans JavaScript"}</a></noscript><FocusVisibility/><RestoreFreshness/><ConsentProvider locale={activeLocale??stringValue(loadConfig(),'SITE_DEFAULT_LOCALE')} siteId={stringValue(loadConfig(),'SITE_ID')}><MediaDisplayProvider responsive={loadConfig().PUBLIC_IMAGE_RESPONSIVE_ENABLED==="true"} descriptorTimeoutMs={numberValue(loadConfig(),"PUBLIC_IMAGE_DESCRIPTOR_TIMEOUT_MS")} budgetMs={numberValue(loadConfig(),"PUBLIC_MEDIA_LOAD_TIMEOUT_MS")}><ArtworkOpeningBoundary><Suspense fallback={<SiteShellLoading policy={configuredLocalePolicy(loadConfig())} initialLocale={activeLocale}/>}><SiteShell artwork={artwork}>{children}</SiteShell></Suspense></ArtworkOpeningBoundary></MediaDisplayProvider></ConsentProvider></body></html>;}

@@ -63,7 +63,8 @@ export async function proxy(request:NextRequest){
     if(request.headers.get("rsc")==="1")return NextResponse.rewrite(new URL("/"+route.locale+route.logicalPath,request.url),{status:200,headers:privateHeaders,request:{headers:context}});
     return NextResponse.rewrite(new URL("/_not-found",request.url),{status:404,headers:privateHeaders,request:{headers:context}});
   }
-  const contactHeaders=route.section==="contact"?{...privateHeaders,"Referrer-Policy":"strict-origin","Content-Security-Policy":"form-action 'self'"}:privateHeaders;
+  const storeHeaders=route.kind==="store"&&route.logicalPath!=="/store"?{...privateHeaders,"X-Robots-Tag":"noindex, nofollow"}:privateHeaders;
+  const contactHeaders=route.section==="contact"?{...privateHeaders,"Referrer-Policy":"strict-origin","Content-Security-Policy":"form-action 'self'"}:storeHeaders;
   const target=new URL("/"+route.locale+(route.logicalPath==="/"?"":route.logicalPath),request.url);target.search=request.nextUrl.search;
   return NextResponse.rewrite(target,{status:artworkStatus===404&&request.headers.get("rsc")==="1"?200:artworkStatus,headers:contactHeaders,request:{headers:context}});
 }

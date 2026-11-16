@@ -120,3 +120,10 @@ Article reading mode and block appearance choices are common to all languages. A
 Les changements validés sont publiés sur la branche `main`. Le projet Vercel est connecté à ce dépôt GitHub : chaque mise à jour de `main` déclenche automatiquement un build puis la mise en production sur le domaine canonique. Vérifier le résultat du déploiement et le domaine après le push.
 
 `BACKEND_URL` est défini dans les variables du projet Vercel et pointe vers l’API Render ; aucune adresse API ne doit être codée en dur. Un changement de variable nécessite un nouveau déploiement.
+
+
+## Store facultatif
+
+`COMMERCE_ENABLED` est fermé par défaut. Lorsqu’il est activé et prêt, le header propose Store ; panier et suivi appartiennent à son sous-header. Le panier garde uniquement des identifiants/quantités ; le checkout invité réutilise les contrôles Forms, collecte une facturation distincte et ne charge Stripe qu’au paiement. Les images produit utilisent les URL Storage directes. Le suivi, les pièces et la rétractation restent accessibles après fermeture des ventes ; les réponses privées ne sont jamais mises en cache partagé. Le consentement des vidéos externes est indépendant de l’achat.
+
+Conserver `COMMERCE_SERVICE_KEY` uniquement côté serveur, avec `BACKEND_URL` vers l’API Render et l’origine publique exacte. Ne pas ajouter de clé Stripe secrète ni Supabase au frontend. Voir le [runbook Commerce](../backend/docs/runbooks/commerce-operations.md) et la [recette032](../backend/specs/032-optional-store-commerce/quickstart.md). Les mises à jour validées de main déclenchent l’intégration Git Vercel ; aucun déploiement implicite n’accompagne l’installation.

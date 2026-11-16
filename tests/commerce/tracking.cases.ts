@@ -1,0 +1,11 @@
+import {expect,type Page} from '@playwright/test';
+import {readFile} from 'node:fs/promises';
+export async function verifyOrderTracking(page:Page){
+ const fixture=JSON.parse(await readFile(process.env.E2E_COMMERCE_TRACKING_FIXTURE!,'utf8')) as {orders:{orderNumber:string;email:string;status:string}[]};
+ page.setDefaultTimeout(15000);await page.context().setExtraHTTPHeaders({'x-contact-mock-visitor':'127.0.'+(Math.floor(Date.now()/1000)%200+1)+'.'+(Date.now()%200+1)});
+ const requests:string[]=[];page.on('request',r=>{if(r.url().includes('/api/store/'))requests.push(r.url());});await page.goto('/store/order-tracking');await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content',/noindex/);
+ for(const order of fixture.orders){await page.getByRole('textbox',{name:'Numéro de commande',exact:true}).fill(order.orderNumber.toLowerCase());await page.getByRole('textbox',{name:/e-mail/i}).fill(order.email);await page.getByRole('button',{name:'Consulter la commande',exact:true}).click();const region=page.getByRole('region',{name:'État de la commande',exact:true});await expect(region).toBeVisible();await expect(region.locator('[aria-current="step"]')).toContainText({confirmed:'Commande confirmée',processing:'Commande en traitement',shipped:'Commande expédiée',delivered:'Commande livrée'}[order.status]!);await expect(region).not.toContainText(order.email);}
+ const download=page.waitForEvent('download');await page.getByRole('button',{name:'Télécharger la facture',exact:true}).click();expect((await download).suggestedFilename()).toMatch(/\.html$/);
+ await page.getByRole('textbox',{name:/e-mail/i}).fill('wrong@example.test');await page.getByRole('button',{name:'Consulter la commande',exact:true}).click();await expect(page.getByRole('alert').filter({hasText:'Aucune commande ne correspond'})).toBeVisible();await expect(page.getByRole('region',{name:'État de la commande',exact:true})).toBeHidden();
+ expect(requests.every(url=>!fixture.orders.some(o=>url.includes(o.orderNumber)||url.includes(o.email)))).toBe(true);await page.reload();await expect(page.getByRole('region',{name:'État de la commande',exact:true})).toBeHidden();await expect(page.getByRole('textbox',{name:'Numéro de commande',exact:true})).toBeEmpty();
+}
