@@ -11,8 +11,8 @@ export const loadSiteContent=cache(async()=>{
   const config=loadConfig(),policy=configuredLocalePolicy(config),requested=(await headers()).get("x-site-locale");
   const locale=policy.locales.some(l=>l.code===requested)?requested!:policy.defaultLocale;
   const fingerprint=createHash("sha256").update(canonicalJson({...policy,catalogue:messageRegistry}),"utf8").digest("hex");
-  let content:SiteContent;
+  let content:SiteContent,contentUnavailable=false;
   try{content=await getSiteContent(locale);if(content.policy.fingerprint!==fingerprint||canonicalJson({defaultLocale:content.policy.defaultLocale,locales:content.policy.locales})!==canonicalJson(policy))throw new Error("site_content_configuration_mismatch");}
-  catch{content={revision:1,locale,policy:{...policy,fingerprint},messages:initialMessages(locale,policy.defaultLocale),logo:null};}
-  return {...content,siteName:stringValue(config,"SITE_NAME"),siteOrigin:stringValue(config,"SITE_ORIGIN"),description:stringValue(config,"SITE_DESCRIPTION")};
+  catch{contentUnavailable=true;content={revision:1,locale,policy:{...policy,fingerprint},messages:initialMessages(locale,policy.defaultLocale),logo:null};}
+  return {...content,contentUnavailable,siteName:stringValue(config,"SITE_NAME"),siteOrigin:stringValue(config,"SITE_ORIGIN"),description:stringValue(config,"SITE_DESCRIPTION")};
 });

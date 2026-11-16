@@ -1,0 +1,7 @@
+import {it,expect} from "vitest";
+import {parseLegalPage} from "../../lib/legal/validate";
+import {renderToStaticMarkup} from "react-dom/server";
+import {createElement} from "react";
+import {RichText} from "../../components/editorial/RichText";
+it("accepts and renders contributed legal content and its links without company defaults",()=>{const input={title:"Mentions de mon atelier",locale:"fr",body:{type:"doc",content:[{type:"heading",attrs:{level:2},content:[{type:"text",text:"Notre éditeur"}]},{type:"paragraph",content:[{type:"text",text:"Atelier Exemple "},{type:"text",text:"Nous contacter",marks:[{type:"link",attrs:{href:"mailto:hello@example.org"}}]}]}]}};const p=parseLegalPage(input)!;expect(p).toEqual(input);const html=renderToStaticMarkup(createElement(RichText,{document:p.body}));expect(html).toContain("Atelier Exemple");expect(html).toContain('href="mailto:hello@example.org"');expect(html).not.toContain("RATTON");expect(parseLegalPage(null)).toBeNull();});
+it("rejects hostile links, unsupported nodes, unknown fields and oversized input",()=>{const p={title:"Mentions",locale:"fr",body:{type:"doc",content:[{type:"paragraph",content:[{type:"text",text:"Lien",marks:[{type:"link",attrs:{href:"javascript:alert(1)"}}]}]}]}};expect(()=>parseLegalPage(p)).toThrow();expect(()=>parseLegalPage({...p,body:{type:"doc",content:[{type:"script",text:"bad"}]}})).toThrow();expect(()=>parseLegalPage({...p,extra:true})).toThrow();expect(()=>parseLegalPage({...p,title:"x".repeat(161)})).toThrow();});
