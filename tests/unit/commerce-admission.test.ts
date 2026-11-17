@@ -1,0 +1,7 @@
+import {describe,it,expect} from 'vitest';
+import {commerceOperationAllowed} from '../../lib/commerce/admission';
+describe('Independent public frontend purchase admission',()=>{
+ it('blocks new purchases even when the shared API remains enabled',()=>{for(const operation of ['commerceValidateCart','commerceCreateQuote','commerceDeliveryPlan','commerceDeliveryQuote','commerceStartAttempt','commerceMockConfirmAttempt'])expect(commerceOperationAllowed(false,operation,{})).toBe(false);expect(commerceOperationAllowed(false,'commerceCreateGuestSession',{purpose:'checkout'})).toBe(false);});
+ it('preserves historical tracking, documents, cancellation, withdrawals and privacy consent',()=>{for(const operation of ['commerceReadAttempt','commerceCancelAttempt','commerceLookupOrder','commerceDeliveryLookupOrder','commerceReadOrderDocument','commerceSubmitWithdrawal','commerceRecordConsent'])expect(commerceOperationAllowed(false,operation,{})).toBe(true);expect(commerceOperationAllowed(false,'commerceCreateGuestSession',{purpose:'withdrawal'})).toBe(true);});
+ it('retains the enabled preview flow and fails closed for an invalid guest purpose',()=>{expect(commerceOperationAllowed(true,'commerceStartAttempt',{})).toBe(true);expect(commerceOperationAllowed(true,'commerceCreateGuestSession',{purpose:'checkout'})).toBe(true);expect(commerceOperationAllowed(false,'commerceCreateGuestSession',undefined)).toBe(false);expect(commerceOperationAllowed(false,'unknownFuturePurchase',{})).toBe(false);});
+});
