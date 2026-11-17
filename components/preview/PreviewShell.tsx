@@ -6,7 +6,7 @@ import {pageKeys,type PageKey} from "../../lib/presentation/types";
 import styles from "./PreviewShell.module.css";
 const subscribeHydration=()=>()=>{},clientHydrated=()=>true,serverHydrated=()=>false;
 const labels:Record<PageKey,string>={galerist:"Le galeriste",home:"Accueil",news:"Actualités",artworks:"Œuvres",exhibitions:"Expositions",publications:"Publications",expertise:"Demande d’expertise",contact:"Contact",artworkDetail:"Fiche d’œuvre"};
-export function PreviewLoading(){return <div className={styles.loading} role="status" aria-label="Chargement de l’aperçu"><LoadingIndicator decorative/></div>;}
+export function PreviewLoading(){return <div className={styles.loading} role="status" aria-label="Chargement de l’aperçu"><LoadingIndicator centered decorative/></div>;}
 export function PreviewUnavailable({adminOrigin}:{adminOrigin?:string}={}){return <main className={styles.notice}><h1>Aperçu indisponible ou expiré</h1><p>Retournez dans l’administration et ouvrez un nouvel aperçu du brouillon enregistré.</p>{adminOrigin&&<a href={adminOrigin+"/presentation"} target="_blank" rel="noopener noreferrer">Retour à l’administration</a>}</main>;}
 export function PreviewShell({initial,locales,csrfCookie,adminOrigin}:{initial:PreviewStatus;adminOrigin:string;locales:readonly {code:string;label:string}[];csrfCookie:string}){
  const article=initial.kind==="article";
