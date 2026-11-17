@@ -1,4 +1,5 @@
 import "server-only";
+import {commerceOperationAllowed} from "./admission";
 import {visitorIp} from "../contact/network-context";
 import {randomUUID} from "node:crypto";
 import {NextResponse,type NextRequest} from "next/server";
@@ -35,8 +36,10 @@ export async function relayCommerce(request:NextRequest,segments:readonly string
    if(!/^[A-Za-z0-9_-]{43}$/.test(capability))return failure(401,'unauthorized');headers.set('x-commerce-capability',capability);
   }
  }
+ if(!commerceOperationAllowed(config.COMMERCE_ENABLED==='true',op.id,body))return failure(503,'checkout_unavailable');
  try{
   const response=await fetch(stringValue(config,'BACKEND_URL').replace(/\/$/,'')+op.resolvedPath,{method:op.method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',redirect:'error',signal:AbortSignal.timeout(['commerceStartAttempt','commerceCancelAttempt'].includes(op.id)?Math.max(45000,numberValue(config,'REQUEST_TIMEOUT_MS')):numberValue(config,'REQUEST_TIMEOUT_MS'))});
+  if(op.id==='commerceInternalDeliveryCapabilities'&&response.status===404)return failure(404,'not_found');
   if(!(op.statuses as readonly number[]).includes(response.status))throw new Error('status');
   if(op.id==='commerceReadOrderDocument'&&response.ok){if(response.headers.get('content-type')?.split(';')[0]!=='text/html')throw new Error('format');return new NextResponse(new Uint8Array(await bytes(response.body,5_000_000)).buffer,{headers:{...privateHeaders,'Content-Type':'text/html; charset=utf-8','Content-Disposition':'attachment; filename="document.html"'}});}
   if(response.headers.get('content-type')?.split(';')[0]!=='application/json')throw new Error('format');

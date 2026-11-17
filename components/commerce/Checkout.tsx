@@ -3,7 +3,7 @@ import {useEffect,useRef,useState,useCallback} from 'react';
 import dynamic from 'next/dynamic';
 import {useRouter} from 'next/navigation';
 import {Controller,FormProvider,useForm,useWatch,type FieldPath} from 'react-hook-form';
-import {Button,Checkbox,FormControlLabel,FormHelperText} from '@mui/material';
+import {Button,Checkbox,FormControlLabel,FormHelperText,MenuItem} from '@mui/material';
 import {FormTextControl} from '../forms/FormField';
 import {FormStepControls} from '../forms/FormSteps';
 import {LoadingIndicator} from '../SiteLoading';
@@ -12,6 +12,7 @@ import {useHeaderNavigation} from '../header/HeaderNavigationProvider';
 import {useSiteContent} from '../SiteContentProvider';
 import {useCart} from './CartProvider';
 import {AddressFields} from './AddressFields';
+import {useDeliveryPlan,DeliveryChoice,DeliveryDetails} from './DeliveryPlan';
 import {CheckoutSummary} from './CheckoutSummary';
 import {checkoutResolver,checkoutQuoteInput,type CheckoutValues} from '../../lib/commerce/checkout-resolver';
 import {storeRequest,storeErrorMessage,StoreRequestError} from '../../lib/commerce/client';
@@ -29,6 +30,9 @@ export function Checkout({options,termsHref}:{options:S['CommerceCheckoutOptions
  const sessionPromise=useRef<Promise<Guest>|null>(null),lock=useRef(false),intent=useRef<string|null>(null),cancelKey=useRef<string|null>(null);
  const methods=useForm<CheckoutValues>({defaultValues:{email:'',shippingAddress:{...emptyAddress},billingSameAsShipping:true,billingAddress:{...emptyAddress},acceptTerms:false},resolver:checkoutResolver(options,locale,Math.min(step,3)),shouldUnregister:false}),{reset}=methods;
  const sameBilling=useWatch({control:methods.control,name:'billingSameAsShipping'}),email=useWatch({control:methods.control,name:'email'});
+ const [deliveryCountry,setDeliveryCountry]=useState(options.destinations[0]??''),delivery=useDeliveryPlan(cart.items,locale,deliveryCountry,cart.ready&&cart.checkoutReady),[reviewDelivery,setReviewDelivery]=useState<S['CommerceDeliveryPlan']|null>(null),customerShipping=useRef<S['CommerceAddress']>({...emptyAddress}),pickupMode=delivery.plan?.mode==='pickup',appliedPickup=useRef(false);
+ useEffect(()=>{if(delivery.status!=='ready'||attempt)return;if(pickupMode&&!appliedPickup.current&&delivery.plan?.pickupAddress){customerShipping.current=methods.getValues('shippingAddress');methods.setValue('shippingAddress',delivery.plan.pickupAddress);methods.setValue('billingSameAsShipping',false);appliedPickup.current=true;}else if(!pickupMode&&appliedPickup.current){methods.setValue('shippingAddress',customerShipping.current);appliedPickup.current=false;}},[delivery.status,delivery.plan,pickupMode,attempt,methods]);
+
  const confirmation=useCallback((id:string)=>{const href=localizedPath('/store/confirmation',locale,defaultLocale)+'?'+new URLSearchParams({attempt:id});navigation?.begin(href);router.push(href);},[locale,defaultLocale,navigation,router]);
  useEffect(()=>{
   if(!cart.ready||!cart.checkoutReady||cart.count===0)return;
@@ -53,11 +57,13 @@ export function Checkout({options,termsHref}:{options:S['CommerceCheckoutOptions
  }
  async function prepareQuote(){
   if(lock.current)return;lock.current=true;setBusy(true);setError('');
-  try{const result=await storeRequest<S['CommerceQuote']>(['quotes'],{body:checkoutQuoteInput(methods.getValues(),[...cart.items],locale,options.phoneRequiredCountries)});setQuote(result);intent.current=null;methods.setValue('acceptTerms',false);setStep(3);}
+  try{if(delivery.status==='loading'||delivery.status==='error')throw new Error('delivery_unavailable');const phoneCountries=delivery.plan?.groups.some(g=>g.phoneRequired)?[...options.phoneRequiredCountries,deliveryCountry]:options.phoneRequiredCountries,checkout=checkoutQuoteInput(methods.getValues(),[...cart.items],locale,phoneCountries);
+   if(delivery.status==='ready'){const result=await storeRequest<S['CommerceDeliveryQuote']>(['delivery-quotes'],{body:{checkout,delivery:{...delivery.input,mode:delivery.plan!.mode,country:checkout.shippingAddress.country}}});setQuote(result.quote);setReviewDelivery(result.delivery);}else{setQuote(await storeRequest<S['CommerceQuote']>(['quotes'],{body:checkout}));setReviewDelivery(null);}intent.current=null;methods.setValue('acceptTerms',false);setStep(3);}
   catch(e){showError(e);}finally{lock.current=false;setBusy(false);}
  }
  async function next(){
   const names:FieldPath<CheckoutValues>[]=step===0?['email']:step===1?['shippingAddress']:['billingSameAsShipping','billingAddress'];
+  if(step>=1&&(delivery.status==='loading'||delivery.status==='error'))return;
   if(!await methods.trigger(names,{shouldFocus:true}))return;
   if(step===2)await prepareQuote();else setStep(s=>s+1);
  }
@@ -80,7 +86,7 @@ export function Checkout({options,termsHref}:{options:S['CommerceCheckoutOptions
  if(!cart.ready)return <p role="status"><LoadingIndicator compact/></p>;
  if(!cart.checkoutReady)return <p>{messages['commerce.salesSuspended']}</p>;
  if(cart.count===0&&!attempt)return <section className={styles.confirmation}><h2>{messages['commerce.emptyCart']}</h2><HeaderLink href={localizedPath('/store',locale,defaultLocale)}>{messages['commerce.continueShopping']}</HeaderLink></section>;
- const pending=busy||paymentBusy;
+ const pending=busy||paymentBusy,deliveryOptions=delivery.plan?.groups.some(g=>g.phoneRequired)?{...options,phoneRequiredCountries:[...options.phoneRequiredCountries,deliveryCountry]}:options;
  const labels=fr?['Contact','Livraison','Facturation','Vérification','Paiement']:['Contact','Delivery','Billing','Review','Payment'];
  return <FormProvider {...methods}><div className={styles.layout}><form className={styles.form} noValidate onSubmit={event=>{event.preventDefault();if(step<3)void next();else if(step===3)void methods.handleSubmit(startPayment)(event);}} aria-busy={pending}>
   <h2>{labels[step]}</h2>
@@ -88,9 +94,9 @@ export function Checkout({options,termsHref}:{options:S['CommerceCheckoutOptions
   {!sessionReady&&<>{!error&&<p role="status"><LoadingIndicator compact/> {fr?'Préparation de votre session':'Preparing your session'}</p>}{error&&<Button type="button" onClick={()=>{sessionPromise.current=null;setError('');setCycle(c=>c+1);}}>{messages['commerce.retry']}</Button>}</>}
   {sessionReady&&<>
    {step===0&&<><p className={styles.secondary}>{fr?'Votre e-mail permet de confirmer et de suivre la commande. Aucun compte n’est nécessaire.':'Your email is used to confirm and track your order. No account is needed.'}</p><Controller control={methods.control} name="email" render={({field,fieldState})=><FormTextControl {...field} ref={undefined} inputRef={field.ref} label={messages['commerce.email']} type="email" autoComplete="email" required disabled={pending} error={!!fieldState.error} helperText={fieldState.error?.message} slotProps={{htmlInput:{maxLength:254,style:{boxSizing:'content-box'}}}}/>}/></>}
-   {step===1&&<AddressFields prefix="shippingAddress" options={options} locale={locale} pending={pending}/>}
-   {step===2&&<><Controller control={methods.control} name="billingSameAsShipping" render={({field})=><FormControlLabel label={messages['commerce.sameBilling']} control={<Checkbox checked={field.value} onChange={e=>field.onChange(e.target.checked)} disabled={pending}/>}/>}/>{!sameBilling&&<AddressFields prefix="billingAddress" options={options} locale={locale} pending={pending}/>}</>}
-   {step===3&&quote&&<div className={styles.review}><section><h3>{messages['commerce.shippingAddress']}</h3><Address address={quote.shippingAddress}/><p>{quote.shippingOption.label} · {quote.shippingOption.deliveryEstimate}</p></section><section><h3>{messages['commerce.billingAddress']}</h3><Address address={quote.billingAddress}/></section><p><HeaderLink href={termsHref+'?'+new URLSearchParams({version:quote.termsVersion})} target="_blank" rel="noopener noreferrer">{messages['commerce.terms']} ({quote.termsVersion})</HeaderLink></p><Controller control={methods.control} name="acceptTerms" render={({field,fieldState})=><div><FormControlLabel label={messages['commerce.acceptTerms']} control={<Checkbox checked={field.value} onChange={e=>field.onChange(e.target.checked)} disabled={pending||uncertainStart} required slotProps={{input:{ref:field.ref,'aria-describedby':fieldState.error?'checkout-terms-error':undefined}}}/>}/>{fieldState.error&&<FormHelperText id="checkout-terms-error" error>{fieldState.error.message}</FormHelperText>}</div>}/></div>}
+   {step===1&&<>{pickupMode&&options.destinations.length>1&&<FormTextControl select label={fr?'Destination envisagée pour une expédition':'Shipping destination'} value={deliveryCountry} disabled={pending} onChange={e=>{setDeliveryCountry(e.target.value);delivery.clearSelections();}}>{options.destinations.map(c=><MenuItem key={c} value={c}>{new Intl.DisplayNames([locale],{type:'region'}).of(c)??c}</MenuItem>)}</FormTextControl>}{!pickupMode&&<AddressFields prefix="shippingAddress" options={deliveryOptions} locale={locale} pending={pending} onCountryChange={c=>{setDeliveryCountry(c);delivery.clearSelections();}}/>}<DeliveryChoice state={delivery} locale={locale} disabled={pending}/></>}
+   {step===2&&<>{!pickupMode&&<Controller control={methods.control} name="billingSameAsShipping" render={({field})=><FormControlLabel label={messages['commerce.sameBilling']} control={<Checkbox checked={field.value} onChange={e=>field.onChange(e.target.checked)} disabled={pending}/>}/>}/>} {(!sameBilling||pickupMode)&&<AddressFields prefix="billingAddress" options={options} locale={locale} pending={pending}/>}</>}
+   {step===3&&quote&&<div className={styles.review}>{reviewDelivery&&<DeliveryDetails plan={reviewDelivery} locale={locale}/>}<section><h3>{messages['commerce.shippingAddress']}</h3><Address address={quote.shippingAddress}/><p>{quote.shippingOption.label} · {quote.shippingOption.deliveryEstimate}</p></section><section><h3>{messages['commerce.billingAddress']}</h3><Address address={quote.billingAddress}/></section><p><HeaderLink href={termsHref+'?'+new URLSearchParams({version:quote.termsVersion})} target="_blank" rel="noopener noreferrer">{messages['commerce.terms']} ({quote.termsVersion})</HeaderLink></p><Controller control={methods.control} name="acceptTerms" render={({field,fieldState})=><div><FormControlLabel label={messages['commerce.acceptTerms']} control={<Checkbox checked={field.value} onChange={e=>field.onChange(e.target.checked)} disabled={pending||uncertainStart} required slotProps={{input:{ref:field.ref,'aria-describedby':fieldState.error?'checkout-terms-error':undefined}}}/>}/>{fieldState.error&&<FormHelperText id="checkout-terms-error" error>{fieldState.error.message}</FormHelperText>}</div>}/></div>}
    {step<4&&<FormStepControls index={step} count={4} label={labels[step]!} pending={pending} backDisabled={uncertainStart} onBack={()=>{setQuote(null);methods.setValue('acceptTerms',false);setStep(s=>Math.max(0,s-1));}} onContinue={()=>void next()} backLabel={fr?'Précédent':'Back'} continueLabel={messages['commerce.continue']} submitLabel={uncertainStart?(fr?'Vérifier l’état du paiement':'Check payment status'):(fr?'Continuer vers le paiement':'Continue to payment')}/>}
    {step===4&&attempt?.payment&&quote&&<><p className={styles.secondary}>{fr?'Votre récapitulatif est réservé pour cette tentative.':'Your reviewed order is reserved for this payment attempt.'}</p>{attempt.payment.mode==='stripe'?<StripePayment payment={attempt.payment} quote={quote} email={email} locale={locale} onResult={()=>confirmation(attempt.id)} onBusyChange={setPaymentBusy}/>:<MockPayment attemptId={attempt.id} locale={locale} onResult={()=>confirmation(attempt.id)} onBusyChange={setPaymentBusy}/>}<Button type="button" disabled={pending} onClick={()=>void editPayment()}>{fr?'Modifier la commande':'Edit order'}</Button></>}
   </>}
