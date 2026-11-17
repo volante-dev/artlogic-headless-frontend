@@ -17,11 +17,15 @@ OWN-WORLD: Projection conserve ses rôles de thème, sa typographie régulière,
 
 STORY: Lire l’invitation, utiliser le lien de découverte ou poursuivre le défilement normal de la page. Le contrôle de lecture reste disponible. Un formulaire placé sous un titre éditorial peut commencer directement par son introduction et ses champs.
 
-FIRST VIEWPORT: Média en couverture avec point focal configuré, invitation en bas à gauche et lecture en bas à droite. Le hero tient dans la hauteur dynamique de la fenêtre, y compris en paysage ; Explorer, son séparateur, le filet inférieur et la ligne de démonstration sont supprimés.
+FIRST VIEWPORT: Média en couverture avec point focal configuré, invitation en bas à gauche et lecture en bas à droite. Le hero conserve la hauteur maximale du navigateur, y compris en paysage ; Explorer, son séparateur, le filet inférieur et la ligne de démonstration sont supprimés.
 
 FORM: Extension du système existant. Le paramètre `hideTitle` appartient au placement `form` ou `formImage`, dans une page ou un bloc éditorial ; il est désactivé par défaut.
 
 FINISH: La revue finale et les preuves locales sont liées ci-dessous ; aucun déploiement n’est attesté par ce brief.
+
+## Hauteur stable, 17 novembre 2026
+
+Le hero utilise désormais `100lvh`, avec repli `100vh`. La vidéo, le poster et le WebP centré conservent leur cadre pendant le défilement et les mouvements des barres du navigateur. La différence `100lvh - 100svh` est ajoutée au retrait inférieur de l’invitation et du contrôle de lecture pour les garder dans la zone visible lorsque les barres sont déployées. Les retraits supérieurs utilisent aussi la hauteur stable. La taille suit toujours un changement réel d’orientation ou de fenêtre. Cette règle remplace la hauteur dynamique décrite dans l’historique ci-dessous. Tests : `home-media-height.spec.ts`, Chromium et WebKit, bureau, portrait et paysage ; simulation géométrique des barres de navigation, sans prétendre à une recette sur téléphone physique.
 
 ## Grammaire réalisée — 6 novembre 2026
 
