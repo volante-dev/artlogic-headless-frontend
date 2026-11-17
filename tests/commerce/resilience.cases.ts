@@ -11,7 +11,7 @@ export async function verifyLargeCart(page:Page){
  await page.route('**/api/store/cart/validate',async route=>{const body=route.request().postDataJSON();await route.fulfill({json:{cartRevision:body.cartRevision,currency:'EUR',lines:body.items.map((i:{productId:string;quantity:number})=>({...i,requestedQuantity:i.quantity,maxPurchasableQuantity:99,status:'valid',grossUnitAmount:2000}))}});});
  await page.addInitScript(({siteId,items})=>localStorage.setItem('commerce:cart:'+siteId,JSON.stringify({version:1,items,expiresAt:Date.now()+86400000})),{siteId,items});
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/store');
- const cart=page.getByRole('button',{name:/Panier/});await expect(cart).toContainText('50');await expect(page.getByRole('button',{name:'Ajouter au panier'}).first()).toBeEnabled();await cart.click();
+ const cart=page.getByRole('button',{name:/Panier/});await expect(cart).toContainText('50');await expect(page.getByRole('button',{name:'Détails',exact:true}).first()).toBeEnabled();await cart.click();
  const dialog=page.getByRole('dialog',{name:'Panier',exact:true});await expect(dialog).toBeVisible();await expect(dialog.getByRole('listitem')).toHaveCount(50);
  expect(await dialog.evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight+1;})).toBe(true);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

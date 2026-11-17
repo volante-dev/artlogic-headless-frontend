@@ -1,3 +1,4 @@
+import {addCatalogProduct} from './commerce/product.cases';
 import {verifyOrderTracking} from './commerce/tracking.cases';
 import {test,expect} from '@playwright/test';
 import {verifyCatalogCart,verifyRejectedAndStaleCart} from './commerce/catalog.cases';
@@ -30,5 +31,5 @@ if(process.env.E2E_COMMERCE_ACTIVATION_SCENARIO)test('Activation matrix closes s
 
 test.describe('Store touch interaction',()=>{
  test.use({hasTouch:true,isMobile:true,viewport:{width:375,height:812}});
- test('Touch cart opens inside the viewport without keyboard focus decoration',async({page})=>{await page.goto('/store');await page.getByRole('button',{name:'Ajouter au panier'}).first().tap();const cart=page.getByRole('button',{name:/Panier/});await expect(page.getByRole('dialog',{name:'Panier',exact:true})).toBeVisible();expect(await cart.evaluate(e=>e.matches(':focus-visible'))).toBe(false);await page.getByRole('dialog',{name:'Panier',exact:true}).getByRole('button',{name:'Fermer',exact:true}).tap();await expect(page.getByRole('dialog',{name:'Panier',exact:true})).toBeHidden();});
+ test('Touch cart opens inside the viewport without keyboard focus decoration',async({page})=>{await page.goto('/store');await addCatalogProduct(page,undefined,true);const cart=page.getByRole('button',{name:/Panier/});await expect(page.getByRole('dialog',{name:'Panier',exact:true})).toBeVisible();expect(await cart.evaluate(e=>e.matches(':focus-visible'))).toBe(false);await page.getByRole('dialog',{name:'Panier',exact:true}).getByRole('button',{name:'Fermer',exact:true}).tap();await expect(page.getByRole('dialog',{name:'Panier',exact:true})).toBeHidden();});
 });

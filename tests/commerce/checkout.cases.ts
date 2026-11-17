@@ -1,3 +1,4 @@
+import {addCatalogProduct} from './product.cases';
 import {expect,type Page} from '@playwright/test';
 export async function verifyGuestCheckout(page:Page){
  const started=Date.now();
@@ -5,7 +6,7 @@ export async function verifyGuestCheckout(page:Page){
  const stripeRequests:string[]=[];page.on('request',request=>{if(/https:\/\/(?:js|api)\.stripe\.com/.test(request.url()))stripeRequests.push(request.url());});
  await page.goto('/store');await expect(page.getByRole('heading',{name:/Store/})).toBeVisible();
  await page.getByRole('button',{name:'Tout refuser',exact:true}).click();
- for(const name of ['Livre de recette','Sac de recette']){await page.getByRole('article').filter({has:page.getByRole('heading',{name,exact:true})}).getByRole('button',{name:'Ajouter au panier'}).click();await expect(page.getByRole('dialog',{name:'Panier'})).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('dialog',{name:'Panier'})).toBeHidden();}
+ for(const name of ['Livre de recette','Sac de recette']){await addCatalogProduct(page,name);await expect(page.getByRole('dialog',{name:'Panier'})).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('dialog',{name:'Panier'})).toBeHidden();}
  const cart=page.getByRole('button',{name:/Panier/});await expect(cart).toContainText('2');await cart.click();
  await page.evaluate(()=>{(window as unknown as Record<string,unknown>).commerceCheckoutDocument='same';});
  await page.getByRole('dialog',{name:'Panier'}).getByRole('link',{name:'Commander',exact:true}).click();await expect(page.getByRole('heading',{name:'Contact',exact:true})).toBeVisible();

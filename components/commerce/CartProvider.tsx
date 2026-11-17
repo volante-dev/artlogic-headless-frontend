@@ -4,7 +4,7 @@ import {useSiteContent} from '../SiteContentProvider';
 import {cartCount,changeCartQuantity,parseStoredCart,consumePaidCart,parseCartConfirmations,CART_TTL_MS,CartValidationSequence,type CartItem} from '../../lib/commerce/cart';
 import type {components} from '../../lib/commerce/contract-types.generated';
 type Product=components['schemas']['CommerceProductPublic'];type Validation=components['schemas']['CommerceCartValidation'];
-interface CartContext {salesEnabled:boolean;items:readonly CartItem[];products:ReadonlyMap<string,Product>;count:number;subtotal:number;ready:boolean;pending:boolean;error:string|null;open:boolean;checkoutReady:boolean;paymentLocked:boolean;setPaymentLocked:(value:boolean)=>void;clearPurchased:(attemptId:string,lines:readonly CartItem[])=>void;setOpen:(value:boolean)=>void;change:(id:string,quantity:number,show?:boolean)=>Promise<boolean>;add:(product:Product)=>Promise<boolean>;dismissError:()=>void}
+interface CartContext {salesEnabled:boolean;items:readonly CartItem[];products:ReadonlyMap<string,Product>;count:number;subtotal:number;ready:boolean;pending:boolean;error:string|null;open:boolean;checkoutReady:boolean;paymentLocked:boolean;setPaymentLocked:(value:boolean)=>void;clearPurchased:(attemptId:string,lines:readonly CartItem[])=>void;setOpen:(value:boolean)=>void;change:(id:string,quantity:number,show?:boolean)=>Promise<boolean>;add:(product:Product,show?:boolean)=>Promise<boolean>;dismissError:()=>void}
 const Context=createContext<CartContext|null>(null);
 export function useCart(){const c=useContext(Context);if(!c)throw new Error('store_cart_provider_required');return c;}
 export function CartProvider({siteId,initialProducts,checkoutReady,children,salesEnabled=true}:{salesEnabled?:boolean;siteId:string;initialProducts:Product[];checkoutReady:boolean;children:ReactNode}){
@@ -52,7 +52,7 @@ export function CartProvider({siteId,initialProducts,checkoutReady,children,sale
   return()=>{alive=false;validationSequence.invalidate();};
  },[key,hydrateProducts,validate,initialProducts,salesEnabled]);
  const change=useCallback(async(id:string,quantity:number,show=false)=>{if(paymentLocked){setError(locale==='fr'?'Modifiez la commande depuis le paiement pour clôturer la tentative en cours.':'Edit the order from payment to close the current attempt.');return false;}try{return await validate(changeCartQuantity(desired.current,id,quantity),show);}catch{setError(messages['commerce.unavailable']);return false;}},[messages,validate,paymentLocked,locale]);
- const add=useCallback(async(product:Product)=>{const next=new Map(productsRef.current);next.set(product.id,product);productsRef.current=next;setProducts(next);return change(product.id,(desired.current.find(i=>i.productId===product.id)?.quantity??0)+1,true);},[change]);
+ const add=useCallback(async(product:Product,show=true)=>{const next=new Map(productsRef.current);next.set(product.id,product);productsRef.current=next;setProducts(next);return change(product.id,(desired.current.find(i=>i.productId===product.id)?.quantity??0)+1,show);},[change]);
  const subtotal=items.reduce((n,i)=>n+(products.get(i.productId)?.grossUnitAmount??0)*i.quantity,0);
  return <Context value={{salesEnabled,items,products,count:cartCount(items),subtotal,ready,pending,error,open,checkoutReady,paymentLocked,setPaymentLocked,clearPurchased,setOpen,change,add,dismissError:()=>setError(null)}}>{children}</Context>;
 }
