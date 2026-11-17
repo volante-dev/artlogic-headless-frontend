@@ -80,7 +80,7 @@ function ProductPanel({product,titleId,closing,reduced,onClose,onAdded,locale,cl
     </div></div>
     <footer className={styles.purchase}><div className={styles.price}><span>{price}</span><small>{product.taxDisplayLabel}</small></div>
      <button type='button' className={styles.add} disabled={closing||!cart.ready||cart.pending||!cart.salesEnabled||cart.paymentLocked||product.availability!=='available'} onClick={()=>void add()}>{product.availability==='available'?messages[cart.pending?'commerce.checking':'commerce.addToCart']:messages['commerce.unavailable']}</button>
-     <button type='button' className={styles.toggle} onClick={detailToggle} aria-expanded={expanded} aria-controls={detailsId} disabled={closing}>{expanded?(fr?'Fermer les détails':'Close details'):(fr?'Détails':'Details')}<svg viewBox='0 0 16 16' aria-hidden='true'><path d={expanded?'M3 8h10':'M3 8h10M8 3v10'}/></svg></button>
+     <button type='button' className={styles.toggle} onClick={detailToggle} aria-expanded={expanded} aria-controls={detailsId} disabled={closing}><span className={styles.toggleLabels}><span className={styles.toggleSizer} aria-hidden='true'>{fr?'Fermer les détails':'Close details'}</span><span>{expanded?(fr?'Fermer les détails':'Close details'):(fr?'Détails':'Details')}</span></span><svg viewBox='0 0 16 16' aria-hidden='true'><path d={expanded?'M3 8h10':'M3 8h10M8 3v10'}/></svg></button>
     </footer>
     {cart.error&&<p role='alert' className={styles.error}>{cart.error}</p>}
    </section>
