@@ -4,6 +4,7 @@ import {loadStripe} from '@stripe/stripe-js/pure';
 import type {Stripe} from '@stripe/stripe-js';
 import {CheckoutElementsProvider,PaymentElement,useCheckoutElements} from '@stripe/react-stripe-js/checkout';
 import {Button} from '@mui/material';
+import {useTheme} from '@mui/material/styles';
 import {LoadingIndicator} from '../SiteLoading';
 import {useSiteContent} from '../SiteContentProvider';
 import type {components} from '../../lib/commerce/contract-types.generated';
@@ -12,11 +13,12 @@ import styles from './Checkout.module.css';
 type S=components['schemas'];
 export interface StripePaymentProps {payment:S['CommercePayment'];quote:S['CommerceQuote'];email:string;locale:string;onResult:()=>void;onBusyChange:(busy:boolean)=>void}
 export function StripePayment(props:StripePaymentProps){
+ const theme=useTheme();
  const [stripe,setStripe]=useState<Stripe|null>(null),[failed,setFailed]=useState(false);
  useEffect(()=>{let alive=true;void loadStripe(props.payment.publishableKey,{locale:props.locale==='fr'?'fr':'en'}).then(value=>{if(alive){setStripe(value);if(!value)setFailed(true);}}).catch(()=>{if(alive)setFailed(true);});return()=>{alive=false;};},[props.payment.publishableKey,props.locale]);
  if(failed)return <p role="alert">{props.locale==='fr'?'Le paiement ne peut pas être chargé. Votre panier est conservé.':'Payment could not be loaded. Your bag is preserved.'}</p>;
  if(!stripe)return <div role="status"><LoadingIndicator compact/> {props.locale==='fr'?'Préparation du paiement':'Preparing payment'}</div>;
- return <CheckoutElementsProvider stripe={stripe} options={{clientSecret:props.payment.clientSecret,adaptivePricing:{allowed:false},elementsOptions:{appearance:{theme:'flat',variables:{borderRadius:'0px',fontFamily:'system-ui, sans-serif'}},savedPaymentMethod:{enableSave:'never',enableRedisplay:'never'}},defaultValues:{email:props.email,billingAddress:stripeContact(props.quote.billingAddress),shippingAddress:stripeContact(props.quote.shippingAddress),...(props.quote.shippingAddress.phone?{phoneNumber:props.quote.shippingAddress.phone}:{})}}}><Payment {...props}/></CheckoutElementsProvider>;
+ return <CheckoutElementsProvider stripe={stripe} options={{clientSecret:props.payment.clientSecret,adaptivePricing:{allowed:false},elementsOptions:{appearance:{theme:'flat',variables:{borderRadius:'0px',fontFamily:theme.typography.fontFamily,colorPrimary:theme.palette.primary.main,colorText:theme.palette.text.primary,colorBackground:theme.palette.background.paper,colorDanger:theme.palette.error.main},rules:{'.Input':{border:'1px solid '+theme.palette.divider,boxShadow:'none'},'.Input:focus':{border:'1px solid '+theme.palette.text.primary,boxShadow:'none'},'.Label':{fontSize:'14px',color:theme.palette.text.secondary}}},savedPaymentMethod:{enableSave:'never',enableRedisplay:'never'}},defaultValues:{email:props.email,billingAddress:stripeContact(props.quote.billingAddress),shippingAddress:stripeContact(props.quote.shippingAddress),...(props.quote.shippingAddress.phone?{phoneNumber:props.quote.shippingAddress.phone}:{})}}}><Payment {...props}/></CheckoutElementsProvider>;
 }
 function Payment({quote,email,locale,onResult,onBusyChange}:StripePaymentProps){
  const result=useCheckoutElements(),{messages}=useSiteContent(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[uncertain,setUncertain]=useState(false),fr=locale==='fr';
