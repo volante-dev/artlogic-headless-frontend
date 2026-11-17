@@ -1,4 +1,5 @@
 "use client";
+import {SiteLoaderProvider} from "../components/SiteLoaderProvider";
 import {preload} from "react-dom";
 import {useMemo} from "react";
 import {useSiteLocale} from "../components/SiteLocaleBoundary";
@@ -10,7 +11,7 @@ import type {PresentationAsset,PresentationTheme} from "../lib/presentation/type
 import {createSiteTheme,siteVariables} from "./create-site-theme";
 import {fontFaces,criticalBuiltinFontUrls} from "./font-faces";
 
-export function SiteThemeProvider({theme,fonts,scope="public",children}:{theme:PresentationTheme;fonts:readonly PresentationAsset[];scope?:"public"|"preview";children:React.ReactNode}){
+export function SiteThemeProvider({theme,fonts,loader,scope="public",children}:{loader?:PresentationAsset|null;theme:PresentationTheme;fonts:readonly PresentationAsset[];scope?:"public"|"preview";children:React.ReactNode}){
   const translated=useSiteLocale()?.translation?.presentation;
   const current=scope==="public"&&translated?.pageKey==="galerist"?translated:null;
   const proposedTheme=current?.theme??theme,proposedFonts=current?.fontFiles??fonts;
@@ -20,5 +21,5 @@ export function SiteThemeProvider({theme,fonts,scope="public",children}:{theme:P
   for(const href of criticalBuiltinFontUrls(activeTheme))preload(href,{as:"font",type:"font/woff2",crossOrigin:"anonymous"});
   const mui=useMemo(()=>createSiteTheme(activeTheme),[activeTheme]);
   const css=useMemo(()=>fontFaces(activeTheme,activeFonts,scope)+siteVariables(activeTheme),[activeTheme,activeFonts,scope]);
-  return <AppRouterCacheProvider options={{key:"gallery",enableCssLayer:true}}><ThemeProvider theme={mui}><CssBaseline/><GlobalStyles styles={css}/>{children}</ThemeProvider></AppRouterCacheProvider>;
+  return <AppRouterCacheProvider options={{key:"gallery",enableCssLayer:true}}><ThemeProvider theme={mui}><CssBaseline/><GlobalStyles styles={css}/><SiteLoaderProvider asset={current?.loader??loader} scope={scope}>{children}</SiteLoaderProvider></ThemeProvider></AppRouterCacheProvider>;
 }

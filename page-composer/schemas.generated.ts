@@ -1080,6 +1080,17 @@ export const presentationSchemas = {
           ]
         },
         "maxItems": 12
+      },
+      "loaderImageId": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "required": [
@@ -1597,6 +1608,17 @@ export const presentationSchemas = {
           ]
         },
         "maxItems": 12
+      },
+      "loaderImageId": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "required": []
@@ -2040,6 +2062,17 @@ export const presentationSchemas = {
             "required": [
               "x",
               "y"
+            ]
+          },
+          "overlayId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },
@@ -2577,6 +2610,191 @@ export const presentationSchemas = {
             ]
           },
           "mobileVideo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "image",
+                      "video",
+                      "font"
+                    ]
+                  },
+                  "path": {
+                    "type": "string",
+                    "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                    "maxLength": 200
+                  },
+                  "mimeType": {
+                    "type": "string",
+                    "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+                    "maxLength": 80
+                  },
+                  "byteSize": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20971520
+                  },
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "font": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "familyId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "weight": {
+                        "type": "integer",
+                        "enum": [
+                          100,
+                          200,
+                          300,
+                          400,
+                          500,
+                          600,
+                          700,
+                          800,
+                          900
+                        ]
+                      },
+                      "style": {
+                        "type": "string",
+                        "enum": [
+                          "normal",
+                          "italic"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "familyId",
+                      "weight",
+                      "style"
+                    ]
+                  },
+                  "variants": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "variant": {
+                          "type": "string",
+                          "enum": [
+                            "w640",
+                            "w1280",
+                            "w1920"
+                          ]
+                        },
+                        "path": {
+                          "type": "string",
+                          "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                          "maxLength": 200
+                        },
+                        "width": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "height": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      },
+                      "required": [
+                        "variant",
+                        "path",
+                        "width",
+                        "height"
+                      ]
+                    },
+                    "maxItems": 3
+                  }
+                },
+                "required": [
+                  "id",
+                  "kind",
+                  "path",
+                  "mimeType",
+                  "byteSize"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "kind": {
+                          "const": "font"
+                        }
+                      },
+                      "required": [
+                        "kind"
+                      ]
+                    },
+                    "then": {
+                      "properties": {
+                        "font": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "familyId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "weight": {
+                              "type": "integer",
+                              "enum": [
+                                100,
+                                200,
+                                300,
+                                400,
+                                500,
+                                600,
+                                700,
+                                800,
+                                900
+                              ]
+                            },
+                            "style": {
+                              "type": "string",
+                              "enum": [
+                                "normal",
+                                "italic"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "familyId",
+                            "weight",
+                            "style"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "font"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "overlay": {
             "anyOf": [
               {
                 "type": "object",
@@ -6059,6 +6277,17 @@ export const presentationSchemas = {
                   "x",
                   "y"
                 ]
+              },
+              "overlayId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "required": []
@@ -8332,6 +8561,191 @@ export const presentationSchemas = {
                 ]
               },
               "mobileVideo": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video",
+                          "font"
+                        ]
+                      },
+                      "path": {
+                        "type": "string",
+                        "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                        "maxLength": 200
+                      },
+                      "mimeType": {
+                        "type": "string",
+                        "pattern": "^(?:image/webp|font/woff2|video/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,63})$",
+                        "maxLength": 80
+                      },
+                      "byteSize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 20971520
+                      },
+                      "width": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "height": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "font": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "familyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "weight": {
+                            "type": "integer",
+                            "enum": [
+                              100,
+                              200,
+                              300,
+                              400,
+                              500,
+                              600,
+                              700,
+                              800,
+                              900
+                            ]
+                          },
+                          "style": {
+                            "type": "string",
+                            "enum": [
+                              "normal",
+                              "italic"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "familyId",
+                          "weight",
+                          "style"
+                        ]
+                      },
+                      "variants": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "variant": {
+                              "type": "string",
+                              "enum": [
+                                "w640",
+                                "w1280",
+                                "w1920"
+                              ]
+                            },
+                            "path": {
+                              "type": "string",
+                              "pattern": "^/v1/(public/presentation-assets|preview/assets)/[0-9a-f-]{36}(?:\\?variant=[a-z0-9-]+)?$",
+                              "maxLength": 200
+                            },
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "variant",
+                            "path",
+                            "width",
+                            "height"
+                          ]
+                        },
+                        "maxItems": 3
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind",
+                      "path",
+                      "mimeType",
+                      "byteSize"
+                    ],
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "kind": {
+                              "const": "font"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ]
+                        },
+                        "then": {
+                          "properties": {
+                            "font": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "familyId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "weight": {
+                                  "type": "integer",
+                                  "enum": [
+                                    100,
+                                    200,
+                                    300,
+                                    400,
+                                    500,
+                                    600,
+                                    700,
+                                    800,
+                                    900
+                                  ]
+                                },
+                                "style": {
+                                  "type": "string",
+                                  "enum": [
+                                    "normal",
+                                    "italic"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "familyId",
+                                "weight",
+                                "style"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "font"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "overlay": {
                 "anyOf": [
                   {
                     "type": "object",
@@ -11002,6 +11416,17 @@ export const presentationSchemas = {
                         "x",
                         "y"
                       ]
+                    },
+                    "overlayId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
                     }
                   },
                   "required": []
@@ -13095,6 +13520,17 @@ export const presentationSchemas = {
               "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
+          },
+          "loaderImageId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": []
@@ -13331,6 +13767,17 @@ export const presentationSchemas = {
               "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
+          },
+          "loaderImageId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -14312,6 +14759,17 @@ export const presentationSchemas = {
                           "required": [
                             "x",
                             "y"
+                          ]
+                        },
+                        "overlayId": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            {
+                              "type": "null"
+                            }
                           ]
                         }
                       },
@@ -16480,6 +16938,17 @@ export const presentationSchemas = {
         "type": "string",
         "minLength": 1,
         "maxLength": 320
+      },
+      "loader": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationPublicAsset"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Only returned when X-Presentation-Animated-Webp: 1 is requested. The historical response is preserved otherwise."
       }
     },
     "required": [
@@ -16557,6 +17026,17 @@ export const presentationSchemas = {
               "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
+          },
+          "loaderImageId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -17031,6 +17511,16 @@ export const presentationSchemas = {
                 ]
               },
               "mobileVideo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "overlay": {
                 "anyOf": [
                   {
                     "$ref": "#/$defs/PresentationPublicAsset"
@@ -19495,6 +19985,22 @@ export const presentationSchemas = {
             "const": 1
           }
         }
+      },
+      "animatedWebp": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "writable",
+          "contractVersion"
+        ],
+        "properties": {
+          "writable": {
+            "const": true
+          },
+          "contractVersion": {
+            "const": 1
+          }
+        }
       }
     },
     "required": [
@@ -19908,6 +20414,17 @@ export const presentationSchemas = {
         "type": "string",
         "minLength": 1,
         "maxLength": 320
+      },
+      "loader": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PresentationPublicAsset"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Only returned when X-Presentation-Animated-Webp: 1 is requested. The historical response is preserved otherwise."
       }
     },
     "required": [
@@ -19986,6 +20503,17 @@ export const presentationSchemas = {
               "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
+          },
+          "loaderImageId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -20460,6 +20988,16 @@ export const presentationSchemas = {
                 ]
               },
               "mobileVideo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "overlay": {
                 "anyOf": [
                   {
                     "$ref": "#/$defs/PresentationPublicAsset"
@@ -23223,6 +23761,17 @@ export const presentationSchemas = {
             "type": "string",
             "minLength": 1,
             "maxLength": 320
+          },
+          "loader": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresentationPublicAsset"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Only returned when X-Presentation-Animated-Webp: 1 is requested. The historical response is preserved otherwise."
           }
         },
         "required": [
@@ -23300,6 +23849,17 @@ export const presentationSchemas = {
               "$ref": "#/$defs/PresentationFontFamily"
             },
             "maxItems": 12
+          },
+          "loaderImageId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -23774,6 +24334,16 @@ export const presentationSchemas = {
                 ]
               },
               "mobileVideo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PresentationPublicAsset"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "overlay": {
                 "anyOf": [
                   {
                     "$ref": "#/$defs/PresentationPublicAsset"

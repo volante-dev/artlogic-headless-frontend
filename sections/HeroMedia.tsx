@@ -1,4 +1,5 @@
 "use client";
+import {AnimatedAssetImage} from "../components/AnimatedAssetImage";
 import {presentationImageDescriptor} from "../lib/media/presentation-image-descriptor";
 import {useMediaDisplayContext} from "../lib/media/MediaDisplayProvider";
 import {detailImageSizes} from "../lib/media/public-image-sizes";
@@ -15,7 +16,7 @@ export type HeroMediaSection=Extract<PresentationSection,{type:"heroMedia"}>;
 export interface HeroMediaProps {section:HeroMediaSection;siteName?:string;demonstration?:boolean;exploreTarget?:string;headingLevel?:"h1"|"h2"}
 export function HeroMedia({section,siteName,headingLevel="h1"}:HeroMediaProps){
   const responsive=useMediaDisplayContext()?.responsive;
-  const {poster,video,mobileVideo,heading,introduction,link,linkLabel,focalPoint}=section.props;
+  const {poster,video,mobileVideo,overlay,heading,introduction,link,linkLabel,focalPoint}=section.props;
   const {video:videoRef,playing,toggle}=useHeroPlayback(Boolean(video||mobileVideo),(video?.id??"")+":"+(mobileVideo?.id??"")),{messages,locale,defaultLocale,scope}=useSiteContent();
   const href=presentationHref(link??{kind:"page",pageKey:"artworks"},locale,defaultLocale),posterPath=poster?presentationAssetPath(poster.path,scope):undefined;
   const title=heading?.trim();
@@ -27,6 +28,7 @@ export function HeroMedia({section,siteName,headingLevel="h1"}:HeroMediaProps){
       {mobileVideo&&<source src={presentationAssetPath(mobileVideo.path,scope)} type={mobileVideo.mimeType} media="(max-width: 767px)"/>}
       <source src={presentationAssetPath((video??mobileVideo)!.path,scope)} type={(video??mobileVideo)!.mimeType}/>
     </video>}
+    {overlay&&<AnimatedAssetImage key={overlay.id} asset={overlay} scope={scope} paused={Boolean(video||mobileVideo)&&!playing} className={styles.overlay}/>}
     <div className={styles.invitation}>
       {/* Title and introduction are optional (link only, introduction + link, title + link). A disabled title keeps an accessible page heading. */}
       <Typography id={section.id+"-heading"} variant="h1" component={headingLevel} className={title?styles.title:styles.srOnly}>{title||siteName||messages["nav.artworks"]}</Typography>

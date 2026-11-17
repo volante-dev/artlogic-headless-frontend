@@ -58,6 +58,8 @@ const sectionSchemas=[presentationSchemas.PresentationHeroMediaSection,presentat
 const optionalContent:Partial<Record<string,ReadonlySet<string>>>={heroMedia:new Set(["heading"])};
 export const sectionDefinitions=sectionSchemas.map(schema=>{
   const type=schema.properties.type.const;
+  // Optional animated assets are negotiated independently of provisioned manifests.
+  const propsSchema=type==="heroMedia"?{...schema.properties.props,properties:Object.fromEntries(Object.entries(schema.properties.props.properties).filter(([key])=>key!=="overlayId"))}:schema.properties.props;
   const requiredOn:PageKey[]=type==="artworkCatalog"?["artworks"]:type==="artworkDetails"?["artworkDetail"]:[];
   const allowedPages:PageKey[]=type==="heroMedia"?["home"]:requiredOn.length?requiredOn:[...pageKeys];
   const contrastPairs:ContrastPair[]=type==="heroMedia"?[
@@ -65,5 +67,5 @@ export const sectionDefinitions=sectionSchemas.map(schema=>{
     {foreground:"inverseText",background:"inverseSurface",role:"control",mediaOverlay:.72},
   ]:[{foreground:"text",background:"background",role:"body"},{foreground:"link",background:"background",role:"button"}];
   return {type,schemaVersion:1 as const,variants:[...schema.properties.variant.enum],allowedPages,requiredOn,
-    ...(type==="heroMedia"||requiredOn.length?{maxPerPage:1}:{}),fields:fieldsFor(schema.properties.props,"",optionalContent[type]),contrastPairs,propsSchema:schema.properties.props};
+    ...(type==="heroMedia"||requiredOn.length?{maxPerPage:1}:{}),fields:fieldsFor(propsSchema,"",optionalContent[type]),contrastPairs,propsSchema};
 });
