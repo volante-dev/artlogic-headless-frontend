@@ -1,5 +1,6 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from "react";
+import {onPageReturn} from "../lib/media/onPageReturn";
 
 /** Native playback is the truth; user pause is independent of temporary suspension. */
 export function useHeroPlayback(enabled:boolean,sourceKey=""){
@@ -19,18 +20,23 @@ export function useHeroPlayback(enabled:boolean,sourceKey=""){
     renewed.current=false;failed.current=false;
     const preference=window.matchMedia("(prefers-reduced-motion: reduce)");reduced.current=preference.matches;
     const pause=()=>{pendingPlay.current=null;element.pause();};
-    const reconcile=()=>{if(!intersecting.current||manuallyPaused.current||(reduced.current&&!userStarted.current))pause();else void attempt();};
-    // Switching apps must not pause a running film. Reconcile on return in case
-    // the browser itself suspended playback while the document was hidden.
-    const visibility=()=>{if(document.visibilityState==="visible")reconcile();};
+    const reconcile=()=>{if(document.visibilityState!=="visible")return;if(!intersecting.current||manuallyPaused.current||(reduced.current&&!userStarted.current))pause();else void attempt();};
+    const detachReturn=onPageReturn(()=>{
+      // Hidden documents may report a false intersection or retain an unsettled
+      // play promise. Neither should block a fresh attempt after suspension.
+      const bounds=element.getBoundingClientRect();
+      intersecting.current=bounds.width>0&&bounds.height>0&&bounds.bottom>0&&bounds.top<window.innerHeight&&bounds.right>0&&bounds.left<window.innerWidth;
+      if(element.paused)pendingPlay.current=null;
+      reconcile();
+    });
     const change=()=>{reduced.current=preference.matches;if(reduced.current){userStarted.current=false;pause();}else reconcile();};
     const started=()=>setPlaying(true),stopped=()=>setPlaying(false);
     const unavailable=()=>{stopped();if(renewed.current){failed.current=true;pause();return;}renewed.current=true;pendingPlay.current=null;element.load();reconcile();};
     element.addEventListener("play",started);element.addEventListener("pause",stopped);element.addEventListener("error",unavailable);
-    document.addEventListener("visibilitychange",visibility);preference.addEventListener("change",change);
-    const observer=new IntersectionObserver(entries=>{intersecting.current=entries[0]?.isIntersecting??false;reconcile();},{threshold:.05});observer.observe(element);
+    preference.addEventListener("change",change);
+    const observer=new IntersectionObserver(entries=>{if(document.visibilityState!=="visible")return;intersecting.current=entries[0]?.isIntersecting??false;reconcile();},{threshold:.05});observer.observe(element);
     reconcile();
-    return()=>{pause();observer.disconnect();document.removeEventListener("visibilitychange",visibility);preference.removeEventListener("change",change);element.removeEventListener("play",started);element.removeEventListener("pause",stopped);element.removeEventListener("error",unavailable);};
+    return()=>{detachReturn();pause();observer.disconnect();preference.removeEventListener("change",change);element.removeEventListener("play",started);element.removeEventListener("pause",stopped);element.removeEventListener("error",unavailable);};
   },[enabled,sourceKey,attempt]);
   const toggle=useCallback(()=>{
     const element=video.current;if(!element)return;

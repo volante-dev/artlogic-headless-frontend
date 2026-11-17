@@ -36,6 +36,48 @@ test("manual pause survives a background/foreground cycle",async({page,context})
   expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);await expect(page.getByRole("button",{name:"Lire le film",exact:true})).toBeVisible();
 });
 
+for(const resumeEvent of ["visibilitychange","pageshow"] as const)test("resumes a browser suspension delivered after "+resumeEvent,async({page})=>{
+ await page.setViewportSize({width:375,height:812});await page.goto("/");const video=page.getByTestId("hero-media").locator("video");
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused&&v.currentTime>.1)).toBe(true);
+ const source=await video.evaluate((v:HTMLVideoElement)=>v.currentSrc);
+ await video.evaluate(v=>{v.dataset.loads="0";v.addEventListener("loadstart",()=>{v.dataset.loads=String(Number(v.dataset.loads)+1);});});
+ await page.evaluate(event=>{
+  Object.defineProperty(document,"visibilityState",{configurable:true,value:"hidden"});document.dispatchEvent(new Event("visibilitychange"));
+  Object.defineProperty(document,"visibilityState",{configurable:true,value:"visible"});
+  if(event==="pageshow")window.dispatchEvent(new PageTransitionEvent("pageshow"));else document.dispatchEvent(new Event(event));
+ },resumeEvent);
+ // Mobile browsers may deliver their media suspension after the foreground event.
+ await page.waitForTimeout(100);await video.evaluate((v:HTMLVideoElement)=>v.pause());
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused)).toBe(true);
+ await expect(page.getByRole("button",{name:"Mettre le film en pause",exact:true})).toBeVisible();
+ expect(await video.evaluate((v:HTMLVideoElement)=>v.currentSrc)).toBe(source);await expect(video).toHaveAttribute("data-loads","0");
+});
+
+test("a user pause during foreground recovery is never undone",async({page})=>{
+ await page.goto("/");const video=page.getByTestId("hero-media").locator("video");await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused)).toBe(true);
+ await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent("pageshow")));
+ await page.getByRole("button",{name:"Mettre le film en pause",exact:true}).click();await page.waitForTimeout(1500);
+ expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);
+});
+
+test("a suspended play promise cannot hold foreground recovery indefinitely",async({page})=>{
+ await page.goto("/");const video=page.getByTestId("hero-media").locator("video");await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused&&v.currentTime>.1)).toBe(true);
+ await video.evaluate((v:HTMLVideoElement)=>{
+  v.pause();const play=v.play.bind(v);let suspended=true;
+  v.play=()=>{if(suspended){suspended=false;return new Promise<void>(()=>{});}return play();};
+  Object.defineProperty(document,"visibilityState",{configurable:true,value:"hidden"});document.dispatchEvent(new Event("visibilitychange"));
+  Object.defineProperty(document,"visibilityState",{configurable:true,value:"visible"});document.dispatchEvent(new Event("visibilitychange"));
+ });
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused)).toBe(true);
+});
+
+test("returning to a page scrolled below the hero does not restart its film",async({page})=>{
+ await page.setViewportSize({width:375,height:812});await page.goto("/");const video=page.getByTestId("hero-media").locator("video");await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused)).toBe(true);
+ await page.evaluate(()=>window.scrollTo(0,window.innerHeight+100));await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);
+ await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent("pageshow")));await page.waitForTimeout(1500);
+ expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);
+});
+
 for(const width of [375,1440])test("keeps the film playing when focus and page visibility are lost at "+width+"px",async({page})=>{
  await page.setViewportSize({width,height:900});await page.goto("/");const video=page.getByTestId("hero-media").locator("video");
  await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>!v.paused&&v.currentTime>0.1)).toBe(true);
