@@ -59,7 +59,7 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
   return <>
     {reading.generation===0&&<ArtworkInitialDocument content={initial}/>}
     {!reading.data&&<ArtworkRouteState status={reading.status===404?"unavailable":reading.status?"error":"loading"} retry={()=>retry(n=>n+1)}/>}
-    <div ref={content} style={{visibility:"hidden"}}>{visibleData&&<SiteThemeProvider theme={presentation.theme} fonts={presentation.fontFiles}><ArtworkDocumentRenderer presentation={translated?.presentation??presentation} content={visibleData} siteName={siteName} demonstration={demonstration}/></SiteThemeProvider>}</div>
+    <div ref={content} style={{visibility:"hidden"}}>{visibleData&&<SiteThemeProvider theme={presentation.theme} fonts={presentation.fontFiles} loader={presentation.loader}><ArtworkDocumentRenderer presentation={translated?.presentation??presentation} content={visibleData} siteName={siteName} demonstration={demonstration}/></SiteThemeProvider>}</div>
   </>;
 }
 

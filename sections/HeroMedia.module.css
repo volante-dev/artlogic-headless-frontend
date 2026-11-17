@@ -25,3 +25,6 @@
   .hero:has(.control) .discover { max-width:calc(100% - 76px); }
   .hero::before { inset:50% 0 0; }
 }
+
+.overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:-1; }
+.overlay img { display:block; width:min(50vw,480px); height:auto; max-height:40%; object-fit:contain; }
