@@ -11,7 +11,7 @@ for(const viewport of [{width:375,height:812},{width:667,height:375},{width:1440
    const discover=hero.querySelector("a")!.getBoundingClientRect(),button=hero.querySelector("button")!.getBoundingClientRect();
    const selection=document.querySelector("[data-selection-viewport]")!,selectionBox=selection.getBoundingClientRect();
    const caption=selection.querySelector("[data-artwork-caption]")!.getBoundingClientRect();
-   return {large,small,heroHeight:box.height,discover:{top:discover.top-box.top,bottom:discover.bottom-box.top},button:{top:button.top-box.top,bottom:button.bottom-box.top},selectionHeight:selectionBox.height,captionBottom:caption.bottom-selectionBox.top};
+   return {large,small,heroHeight:box.height,discover:{top:discover.top-box.top,bottom:discover.bottom-box.top},button:{top:button.top-box.top,bottom:button.bottom-box.top},selectionHeight:selectionBox.height,captionTop:caption.top-selectionBox.top,progressBottom:selection.lastElementChild!.getBoundingClientRect().bottom-selectionBox.top,captionBottom:caption.bottom-selectionBox.top};
   });
   expect(geometry.heroHeight).toBeCloseTo(geometry.large,0);
   expect(geometry.discover.top).toBeGreaterThan(0);expect(geometry.button.top).toBeGreaterThan(0);
@@ -20,7 +20,8 @@ for(const viewport of [{width:375,height:812},{width:667,height:375},{width:1440
   await hero.screenshot({path:test.info().outputPath("hero.png")});
   if(viewport.width<768){
    expect(geometry.selectionHeight).toBeCloseTo(geometry.large,0);
-   expect(geometry.captionBottom).toBeLessThanOrEqual(geometry.small-55);
+   expect(geometry.captionTop-geometry.progressBottom).toBeGreaterThanOrEqual(12);
+   expect(geometry.captionBottom).toBeLessThanOrEqual(geometry.small-24);
    const selection=page.locator("[data-selection-viewport]").first();
    await selection.screenshot({path:test.info().outputPath("selection.png")});
   }
@@ -41,11 +42,11 @@ test("expanded browser toolbars leave captions and playback controls inside the 
    for(const {style,original} of declarations)style.cssText=original.replace(/(\d*\.?\d+)(lvh|svh|dvh)\b/g,(_,amount,unit)=>`${Number(amount)*({lvh:large,svh:small,dvh:dynamic}[unit as "lvh"|"svh"|"dvh"])/100}px`);
    const hero=document.querySelector('[data-testid="hero-media"]')!,selection=document.querySelector("[data-selection-viewport]")!;
    const h=hero.getBoundingClientRect(),s=selection.getBoundingClientRect(),caption=selection.querySelector("[data-artwork-caption]")!.getBoundingClientRect();
-   return {hero:h.height,selection:s.height,discover:hero.querySelector("a")!.getBoundingClientRect().bottom-h.top,playback:hero.querySelector("button")!.getBoundingClientRect().bottom-h.top,caption:caption.bottom-s.top,progress:selection.lastElementChild!.getBoundingClientRect().bottom-s.top};
+   return {hero:h.height,selection:s.height,discover:hero.querySelector("a")!.getBoundingClientRect().bottom-h.top,playback:hero.querySelector("button")!.getBoundingClientRect().bottom-h.top,captionTop:caption.top-s.top,caption:caption.bottom-s.top,progress:selection.lastElementChild!.getBoundingClientRect().bottom-s.top};
   });
  });
  const first=states[0]!;expect(first).toEqual(states[1]);
  expect(first.hero).toBe(812);expect(first.selection).toBe(812);
  expect(first.discover).toBeLessThanOrEqual(636);expect(first.playback).toBeLessThanOrEqual(636);
- expect(first.caption).toBeLessThanOrEqual(604);expect(first.progress).toBeLessThanOrEqual(636);
+ expect(first.captionTop-first.progress).toBeGreaterThanOrEqual(12);expect(first.caption).toBeLessThanOrEqual(604);expect(first.progress).toBeLessThanOrEqual(636);
 });

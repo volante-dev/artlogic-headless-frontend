@@ -1,6 +1,6 @@
 import {test,expect} from "@playwright/test";
 test("desktop selection reveals its caption on hover and keyboard focus",async({page})=>{await page.setViewportSize({width:1440,height:1000});await page.goto("/");await page.getByRole("button",{name:"Compris",exact:true}).focus();await page.keyboard.press("Enter");const section=page.locator("[data-artwork-selection]").first(),card=section.locator("[data-artwork-card]").first(),caption=card.locator("[data-artwork-caption]");await section.scrollIntoViewIfNeeded();await page.mouse.move(0,0);expect(await caption.evaluate(el=>getComputedStyle(el).opacity)).toBe("0");await card.hover();await expect(caption).toHaveCSS("opacity","1");await expect(caption.getByRole("heading")).toHaveCSS("color","rgb(255, 255, 255)");expect(await card.getByRole("link").evaluate(el=>getComputedStyle(el,"::after").transitionDuration)).toBe("0.48s");expect(await caption.evaluate(el=>getComputedStyle(el).transitionDuration)).toContain("0.18s");await section.screenshot({path:test.info().outputPath("selection-desktop.png")});await page.mouse.move(0,0);await card.getByRole("link").focus();await expect(caption).toHaveCSS("opacity","1");await expect(section.getByRole("button",{name:"Œuvre suivante",exact:true})).toBeHidden();});
-test("mobile selection scrolls freely and keeps artwork information visible",async({page})=>{
+test("mobile selection snaps horizontally with information below the top progress marks",async({page})=>{
  await page.setViewportSize({width:375,height:812});await page.goto("/");await page.getByRole("button",{name:"Compris",exact:true}).focus();await page.keyboard.press("Enter");
  const section=page.locator("[data-artwork-selection]").first(),viewport=section.locator("[data-selection-viewport]"),cards=section.locator("[data-artwork-card]"),track=viewport.locator("ul");
  await expect(viewport).toBeVisible();expect(await cards.count()).toBeGreaterThan(1);
@@ -11,10 +11,16 @@ test("mobile selection scrolls freely and keeps artwork information visible",asy
  await viewport.evaluate(el=>window.scrollTo({top:window.scrollY+el.getBoundingClientRect().top,behavior:"instant"}));
  const caption=cards.first().locator("[data-artwork-caption]");
  await expect(caption).toHaveCSS("opacity","1");await expect(caption.getByRole("heading")).toHaveCSS("font-size","18px");
- expect(await track.evaluate(el=>getComputedStyle(el).scrollSnapType)).toBe("none");
- await track.evaluate(el=>el.scrollTo({left:el.clientWidth*.37,behavior:"instant"}));await page.waitForTimeout(400);
- expect(Math.abs(await track.evaluate(el=>el.scrollLeft)-375*.37)).toBeLessThanOrEqual(1);
+ expect(await track.evaluate(el=>getComputedStyle(el).scrollSnapType)).toBe("x mandatory");
+ await track.evaluate(el=>el.scrollTo({left:el.clientWidth*.37,behavior:"instant"}));
+ await expect.poll(()=>track.evaluate(el=>el.scrollLeft)).toBe(0);
  await track.evaluate(el=>el.scrollTo({left:0,behavior:"instant"}));
+ const positions=await viewport.evaluate(el=>{
+  const box=el.getBoundingClientRect(),caption=el.querySelector('[data-artwork-caption]')!.getBoundingClientRect(),progress=el.lastElementChild!.getBoundingClientRect();
+  return {progressTop:progress.top-box.top,progressBottom:progress.bottom-box.top,captionTop:caption.top-box.top};
+ });
+ expect(positions.progressTop).toBeCloseTo(24,0);
+ expect(positions.captionTop-positions.progressBottom).toBeGreaterThanOrEqual(12);
  await viewport.screenshot({path:test.info().outputPath("selection-mobile.png")});
  await expect(section.getByRole("button")).toHaveCount(0);expect((await viewport.boundingBox())!.width).toBe(375);
  const artist=caption.locator('p'),counter=caption.locator('[aria-hidden="true"]');
