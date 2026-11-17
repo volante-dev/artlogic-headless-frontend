@@ -115,9 +115,15 @@ Les nouvelles sélections ont des rubriques `kinds` explicites. Le format histor
 Article reading mode and block appearance choices are common to all languages. API contribution is gated by `EDITORIAL_IMMERSIVE_ENABLED` (default `false`) and a conformant frontend profile. `EDITORIAL_IMMERSIVE_RENDER_ENABLED` controls the frontend reader (default `true`); setting it to `false` renders classic flow without deleting settings. No migration or site provision is required. See `../backend/specs/012-editorial-immersive-mode/release.md` for rollout and rollback order.
 
 
-## Déploiement depuis main
+## Déploiement de recette et production
 
-Les changements validés sont publiés sur la branche `main`. Le projet Vercel est connecté à ce dépôt GitHub : chaque mise à jour de `main` déclenche automatiquement un build puis la mise en production sur le domaine canonique. Vérifier le résultat du déploiement et le domaine après le push.
+Les déploiements courants utilisent la branche `staging`, suivie par le projet Vercel `lucasratton-preview-frontend` sur `preview.lucasratton.com`. Mettre à jour cette branche puis vérifier le build et le domaine. Cette preview n’est pas indexable ; ses flags peuvent différer de ceux du site public.
+
+Le projet public `lucasratton-frontend` reste relié à `main`. Une mise en production explicitement demandée passe par une mise à jour de `main` et le déploiement automatique Git. Ne pas publier sur `main` une modification demandée uniquement pour la preview.
+
+La preview partage actuellement l’API et les données du site : les contenus et produits administrés sont communs. `COMMERCE_ENABLED=true` sur la preview et l’API partagée ne modifie pas le flag du frontend public. Conserver la configuration canonique du site et autoriser explicitement les origines de la preview côté BFF, sans domaine codé en dur dans les composants.
+
+Les [règles communes de compatibilité](../backend/docs/rolling-upgrades.md) imposent qu’un frontend nouveau fonctionne avec l’API précédente au moyen de capacités et de fallbacks explicites.
 
 `BACKEND_URL` est défini dans les variables du projet Vercel et pointe vers l’API Render ; aucune adresse API ne doit être codée en dur. Un changement de variable nécessite un nouveau déploiement.
 
