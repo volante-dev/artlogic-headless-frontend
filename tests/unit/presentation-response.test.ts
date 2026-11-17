@@ -26,3 +26,11 @@ it("exempts exactly the installed fonts and valid media routes from locale rewri
   expect(publicAssetPath("/v1/public/presentation-assets/"+uuid+"?variant=w640")).toBe("/presentation-assets/"+uuid+"?variant=w640");
   for(const path of ["https://storage.invalid/asset","/v1/preview/assets/"+uuid,"/v1/public/presentation-assets/"+uuid+"?token=secret"])expect(()=>publicAssetPath(path)).toThrow();
 });
+
+it("accepts absent animated media from V0 and validates opted-in asset scopes",()=>{
+ const input=value(),asset={id:uuid,kind:"image",path:"/v1/public/presentation-assets/"+uuid+"?variant=original",mimeType:"image/webp",byteSize:100,width:80,height:80};
+ expect(validatePublicPresentation(input,expected)).not.toHaveProperty("loader");
+ Object.assign(input,{loader:asset});Object.assign(input.sections[0].props,{overlay:asset});
+ expect(validatePublicPresentation(input,expected)).toHaveProperty("loader.path",asset.path);
+ asset.path="/v1/preview/assets/"+uuid+"?variant=original";expect(()=>validatePublicPresentation(input,expected)).toThrow("invalid_presentation_asset_scope");
+});

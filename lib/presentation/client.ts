@@ -18,7 +18,7 @@ async function presentationJson<T>(operation:'presentation'|'page-address',query
  const log=(phase:PresentationReadEvent['phase'],extra:Partial<PresentationReadEvent>={})=>presentationReadLog({...base,phase,durationMs:performance.now()-started,...extra});
  log('start');
  let response:Response;
- try{response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+"/v1/public/presentation"+(operation==='page-address'?"/page-address":"")+"?"+query,{headers:{Accept:"application/json","X-Presentation-Read-Id":readId},cache:"no-store",redirect:"error",signal:AbortSignal.timeout(timeoutMs)});}
+ try{response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+"/v1/public/presentation"+(operation==='page-address'?"/page-address":"")+"?"+query,{headers:{Accept:"application/json","X-Presentation-Read-Id":readId,"X-Presentation-Animated-Webp":"1"},cache:"no-store",redirect:"error",signal:AbortSignal.timeout(timeoutMs)});}
  catch(error){log('fetch',failureKind(error));throw new PublicApiError(503,"presentation_unavailable");}
  const headersMs=performance.now()-started;
  const upstream={headersMs,apiInstanceId:diagnosticId(response.headers.get('x-api-instance-id')),apiInitializationId:diagnosticId(response.headers.get('x-api-initialization-id')),status:response.status,apiRequestId:diagnosticId(response.headers.get('x-request-id')),apiEdgeId:diagnosticId(response.headers.get('x-vercel-id'))};

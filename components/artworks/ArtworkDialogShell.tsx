@@ -27,7 +27,7 @@ export function ArtworkDialogShell({children,title,artworkRef,locale,suspended=f
  return <Dialog data-artwork-dialog-shell hideBackdrop={Boolean(opening)} open={!suspended} keepMounted fullScreen disablePortal lang={activeLocale} transitionDuration={0}
   aria-labelledby={label+" "+heading} onClose={(_event,reason)=>{if(reason==="escapeKeyDown"&&!handler.current?.run())close();}}
   slotProps={{paper:{className:styles.paper,ref:paper,sx:{backgroundColor:"transparent"}},backdrop:{className:styles.backdrop}}}>
-   <div className={styles.loading} data-artwork-loading aria-hidden="true"><LoadingIndicator decorative/></div>
+   <div className={styles.loading} data-artwork-loading aria-hidden="true"><LoadingIndicator centered decorative/></div>
    <span id={label} className={styles.srOnly}>{title??site.messages["gallery.presentation"]}</span>
    <div ref={controls} className={styles.controls} data-artwork-dialog-controls>
     <div className={styles.deferredControls}>{artworkRef&&<ArtworkLanguageSelector artworkRef={artworkRef} locale={activeLocale}/>}</div>
