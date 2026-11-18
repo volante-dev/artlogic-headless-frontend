@@ -3,6 +3,9 @@ vi.mock("server-only",()=>({}));
 const api=vi.hoisted(()=>({fetch:vi.fn()}));
 vi.mock("@/lib/api/client",async original=>({...await original<typeof import("@/lib/api/client")>(),publicFetch:api.fetch}));
 vi.mock("@/lib/config/env",()=>({loadConfig:()=>({}),configuredLocalePolicy:()=>({defaultLocale:"fr",locales:[{code:"fr"},{code:"en"}]})}));
+import {NextRequest} from "next/server";
+import {proxy} from "@/proxy";
+import {isTechnicalPath} from "@/lib/i18n/routes";
 import {GET} from "@/app/api/artwork-catalog/route";
 import {infiniteCatalogPage} from "../fixtures/infinite-catalog";
 beforeEach(()=>api.fetch.mockReset());
@@ -20,3 +23,5 @@ it("does not expose malformed or private upstream content and preserves catalogu
  api.fetch.mockResolvedValueOnce(Response.json({error:{code:"catalog_changed",message:"PRIVATE"}},{status:409}));const conflict=await call("locale=fr&page=2");expect(conflict.status).toBe(409);expect((await conflict.json()).error.code).toBe("catalog_changed");
 });
 it("preserves a bounded retry-after for rate limiting",async()=>{api.fetch.mockResolvedValueOnce(Response.json({error:{code:"rate_limited"}},{status:429,headers:{"Retry-After":"12"}}));const result=await call("locale=fr&page=2");expect(result.status).toBe(429);expect(result.headers.get("retry-after")).toBe("12");});
+
+it("passes the exact JSON route through the proxy without localization or upstream reads",async()=>{expect(isTechnicalPath("/api/artwork-catalog")).toBe(true);expect(isTechnicalPath("/api/artwork-catalog/private")).toBe(false);const response=await proxy(new NextRequest("http://gallery.test/api/artwork-catalog?locale=en&page=2"));expect(response.headers.get("x-middleware-next")).toBe("1");expect(response.headers.get("x-middleware-rewrite")).toBeNull();expect(api.fetch).not.toHaveBeenCalled();});

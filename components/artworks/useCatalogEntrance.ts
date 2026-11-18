@@ -26,10 +26,11 @@ export function useCatalogEntrance(root:RefObject<HTMLElement|null>){
     for(const row of rows.values())row.sort((a,b)=>a.offsetLeft-b.offsetLeft).forEach((card,index)=>ranks.set(card,index));
     for(const card of cards){if(seen.current.has(card)||tracked.has(card))continue;tracked.add(card);if(card.getBoundingClientRect().bottom<0){seen.current.add(card);continue;}gsap.set(card,{opacity:.55,x:desktop?-18:0,y:desktop?12:10});observer.observe(card);}
    });
+   let width=list.clientWidth;const resize=new ResizeObserver(()=>{const next=list.clientWidth;if(next!==width){width=next;scan();}});resize.observe(list);
    scan();const additions=new MutationObserver(scan);additions.observe(list,{childList:true});
    const focus=(event:FocusEvent)=>{const card=(event.target as Element)?.closest<HTMLElement>("[data-artwork-card]");if(card){gsap.killTweensOf(card);reveal(card,false);gsap.set(card,{clearProps:"opacity,transform"});}};
    list.addEventListener("focusin",focus);
-   return()=>{observer.disconnect();additions.disconnect();list.removeEventListener("focusin",focus);};
+   return()=>{observer.disconnect();additions.disconnect();resize.disconnect();list.removeEventListener("focusin",focus);};
   });
   return()=>media.revert();
  },{scope:root});

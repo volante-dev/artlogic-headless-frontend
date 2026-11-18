@@ -30,7 +30,7 @@ Ces changements frontend et admin fonctionnent avec l’API existante. Aucune mi
 
 ## Recette
 
-Resserrement et défilement continu du 18 novembre : neuf contrôles unitaires (projection publique, requêtes et tailles responsives), quatorze scénarios Chromium/WebKit (dont cascade mesurée pendant l’ajout d’un lot, préchargement, reprise, changement de recherche, réduction des mouvements et espacements mobiles), lint ciblé et build frontend validés. Les médias utilisés sont locaux.
+Resserrement et défilement continu du 18 novembre : dix contrôles unitaires (projection publique, requêtes et tailles responsives), quatorze scénarios Chromium/WebKit (dont cascade mesurée pendant l’ajout d’un lot, préchargement, reprise, changement de recherche, réduction des mouvements et espacements mobiles), lint ciblé et build frontend validés. Les médias utilisés sont locaux.
 
 20 tests unitaires concernés, quatre scénarios de grille Chromium/WebKit avec mesures aux seuils 390, 767, 768, 950, 951 et 1440 px, et deux parcours du vrai fournisseur de session de formulaire avec API synthétique ont réussi. Les builds frontend et admin ont été vérifiés. Les captures utilisent les médias de démonstration du Storybook local, sans transformation d’images du site public ni envoi réel de demande.
 
