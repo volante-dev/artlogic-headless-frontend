@@ -13,8 +13,14 @@ test('portrait masonry retains its ratio at responsive boundaries and uses compa
   await page.setViewportSize({width,height:1000});await page.goto('/iframe.html?id=gallery-artworkmasonrycatalog--mixed&viewMode=story&globals=width:1440');
   const grid=page.locator('[data-catalog-layout="masonry"]');await expect(grid).toBeVisible();
   const measured=await grid.evaluate(node=>{const style=getComputedStyle(node);return {columns:style.gridTemplateColumns.split(' ').length,gap:Number.parseFloat(style.columnGap),left:node.getBoundingClientRect().left,frames:[...node.querySelectorAll('[data-artwork-card-image]')].map(n=>{const r=n.getBoundingClientRect();return {w:r.width,h:r.height};})};});
-  expect(measured.columns).toBe(width<=600?1:width<=950?2:3);expect(measured.gap).toBe(width<=767?8:16);if(width<=767)expect(measured.left).toBeCloseTo(12,0);
+  expect(measured.columns).toBe(width<=600?1:width<=950?2:3);expect(measured.gap).toBe(width<=767?8:12);if(width<=767)expect(measured.left).toBeCloseTo(8,0);
   for(const frame of measured.frames)expect(Math.abs(frame.h-frame.w*1.25)).toBeLessThan(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
+});
+
+test('mobile captions stay close to their image with breathing room before the next artwork',async({page})=>{
+ await page.setViewportSize({width:390,height:1000});await page.emulateMedia({reducedMotion:"reduce"});await page.goto('/iframe.html?id=gallery-artworkmasonrycatalog--mixed&viewMode=story&globals=width:1440');await expect(page.getByTestId('artwork-card').first()).toBeVisible();
+ const gaps=await page.getByTestId('artwork-card').evaluateAll(nodes=>{const first=nodes[0]!,second=nodes[1]!,image=first.querySelector('[data-artwork-card-image]')!.getBoundingClientRect(),title=first.querySelector('h2')!.getBoundingClientRect(),artist=first.querySelector('p')!.getBoundingClientRect();return {imageToTitle:title.top-image.bottom,titleToArtist:artist.top-title.bottom,next:second.getBoundingClientRect().top-first.getBoundingClientRect().bottom};});
+ expect(gaps.imageToTitle).toBeCloseTo(8,0);expect(gaps.titleToArtist).toBeCloseTo(4,0);expect(gaps.next).toBeCloseTo(24,0);
 });

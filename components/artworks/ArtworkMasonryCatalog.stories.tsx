@@ -1,10 +1,12 @@
+import {useState} from "react";
+import {infiniteCatalogPage} from "../../tests/fixtures/infinite-catalog";
 import type {Meta,StoryObj} from "@storybook/nextjs-vite";
 import {ArtworkMasonryCatalog} from "./ArtworkMasonryCatalog";
 import {ArtworkCatalog} from "./ArtworkCatalog";
 import {galleryCatalog} from "../../.storybook/gallery-fixtures";
 function Composition({pattern="mixed",columns=3,classic=false,long=false,missing=false}:{pattern?:"none"|"mixed"|"all"|"consecutive";columns?:number;classic?:boolean;long?:boolean;missing?:boolean}){
  const source=galleryCatalog("fr"),page={...source,display:"plp" as const,layout:"masonry" as const,items:source.items.map((a,i)=>({...a,catalogLarge:pattern==="all"||pattern==="mixed"&&i%3===0||pattern==="consecutive"&&i<2,title:long?Array(6).fill(a.title).join(" — "):a.title,media:missing?[]:a.media}))};
- const Catalog=classic?ArtworkCatalog:ArtworkMasonryCatalog;return <Catalog catalog={{kind:"numbered",page}} columns={columns}/>;
+ const Catalog=classic?ArtworkCatalog:ArtworkMasonryCatalog;return <Catalog infiniteScroll={false} catalog={{kind:"numbered",page}} columns={columns}/>;
 }
 const meta={title:"Gallery/ArtworkMasonryCatalog",component:Composition,tags:["autodocs"]} satisfies Meta<typeof Composition>;
 export default meta;type Story=StoryObj<typeof meta>;
@@ -19,3 +21,6 @@ export const TwoColumns:Story={args:{columns:2}};
 export const FourColumns:Story={args:{columns:4}};
 export const Mobile:Story={globals:{viewport:{value:"mobile1",isRotated:false}}};
 export const ClientOverride:Story={globals:{profile:"demo-gallery"}};
+
+function InfiniteComposition(){const [query,setQuery]=useState("");return <><button onClick={()=>{window.scrollTo(0,0);setQuery("nouveau");}}>Autre recherche</button><ArtworkMasonryCatalog catalog={{kind:"numbered",page:infiniteCatalogPage(1,query)}}/></>;}
+export const Infinite:Story={render:()=> <InfiniteComposition/>};

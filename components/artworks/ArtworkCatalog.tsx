@@ -2,7 +2,7 @@
 import {ArtworkTypeFilters} from "./ArtworkTypeFilters";
 import {useArtworkTypeFilters} from "./useArtworkTypeFilters";
 import {squareImageSizes} from "@/lib/media/public-image-sizes";
-import {useId,type CSSProperties,type ComponentType} from "react";
+import {useId,useRef,type CSSProperties,type ComponentType} from "react";
 import type {CatalogData} from "../../sections/types";
 import {useSiteContent} from "../SiteContentProvider";
 import {ArtworkCard,type ArtworkCardProps} from "../ArtworkCard";
@@ -14,15 +14,23 @@ import {localizedPath} from "../../lib/i18n/routes";
 import {catalogQueryString} from "../../lib/artworks/catalog-query";
 import type {PresentationLink} from "../../lib/presentation/types";
 import {presentationHref} from "../../lib/presentation/links";
+import {useInfiniteArtworkCatalog} from "./useInfiniteArtworkCatalog";
+import {useCatalogEntrance} from "./useCatalogEntrance";
+import {LoadingIndicator} from "../SiteLoading";
 import styles from "./ArtworkCatalog.module.css";
 import cards from "../Artwork.module.css";
 
-export interface ArtworkCatalogProps {emptyMessage?:string;emptyLinkLabel?:string;emptyLink?:PresentationLink;catalog:CatalogData;columns?:number;id?:string;CardView?:ComponentType<ArtworkCardProps>;ListView?:ComponentType<CatalogListProps>}
-export interface CatalogListProps {items:ArtworkCardProps["art"][];columns:number;CardView:ComponentType<ArtworkCardProps>}
-export function CatalogList({items,columns,CardView}:CatalogListProps){return <ul className={cards.grid} style={{"--catalog-columns":columns} as CSSProperties}>{items.map((art,index)=><CardView key={art.id} art={art} imageSizes={squareImageSizes((art.media[0]?.width??1)/(art.media[0]?.height??1),columns,art.catalogLarge===true)} eager={index<columns}/>)}</ul>;}
+export interface ArtworkCatalogProps {infiniteScroll?:boolean;emptyMessage?:string;emptyLinkLabel?:string;emptyLink?:PresentationLink;catalog:CatalogData;columns?:number;id?:string;CardView?:ComponentType<ArtworkCardProps>;ListView?:ComponentType<CatalogListProps>}
+export interface CatalogListProps {eagerFrom?:number;items:ArtworkCardProps["art"][];columns:number;CardView:ComponentType<ArtworkCardProps>}
+export function CatalogList({items,columns,CardView,eagerFrom=0}:CatalogListProps){const root=useRef<HTMLUListElement>(null);useCatalogEntrance(root);return <ul ref={root} className={cards.grid} style={{"--catalog-columns":columns} as CSSProperties}>{items.map((art,index)=><CardView key={art.id} art={art} imageSizes={squareImageSizes((art.media[0]?.width??1)/(art.media[0]?.height??1),columns,art.catalogLarge===true)} eager={index<columns||index>=eagerFrom&&index<eagerFrom+columns}/>)}</ul>;}
 /** Replaceable view. Query validation and public reads stay on the server. */
-export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListView=CatalogList,emptyMessage,emptyLinkLabel,emptyLink}:ArtworkCatalogProps){
-  const {messages:m,locale,defaultLocale}=useSiteContent(),path=localizedPath("/artworks",locale,defaultLocale);
+export function ArtworkCatalog(props:ArtworkCatalogProps){
+ const {locale}=useSiteContent(),catalog=props.catalog,page=catalog.kind==="numbered"?catalog.page:null;
+ const key=JSON.stringify([locale,catalog.kind,page?.query,page?.page,page?.pageSize,page?.catalogRevision,page?.typeFilters?.selectedIds]);
+ return <ArtworkCatalogView key={key} {...props}/>;
+}
+function ArtworkCatalogView({catalog,columns=3,id,CardView=ArtworkCard,ListView=CatalogList,emptyMessage,emptyLinkLabel,emptyLink,infiniteScroll=true}:ArtworkCatalogProps){
+  const {messages:m,locale,defaultLocale,scope}=useSiteContent(),path=localizedPath("/artworks",locale,defaultLocale);
   const numbered=catalog.kind==="numbered"?catalog.page:null,legacy=catalog.kind==="legacy"?catalog.page:null;
   const q=numbered?.query??(catalog.kind==="error"?catalog.q:"");
   const pageSize=numbered?.pageSize??(catalog.kind==="error"?catalog.pageSize:20);
@@ -31,7 +39,9 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListVi
   const first=path+catalogQueryString({q:q||undefined,pageSize,types:filters.selected});
   const link=(page:number)=>path+catalogQueryString({q:q||undefined,types:filters.selected,page,pageSize,catalogRevision:numbered?.catalogRevision});
   const pages=numbered?paginationWindow(numbered.page,numbered.pageCount):[];
-  const items=numbered?.items??legacy?.items??[];
+  const continuationRef=useRef<HTMLDivElement>(null);
+  const infinite=useInfiniteArtworkCatalog(numbered,locale,infiniteScroll&&scope==="public"&&!filters.pending,continuationRef);
+  const items=numbered?infinite.items:legacy?.items??[];
   const restart=catalog.kind==="error"&&["catalog_changed","page_out_of_range","invalid_request"].includes(catalog.code);
   return <section id={id} className={styles.catalog} data-gallery-state={catalog.kind}>
     <ArtworkTypeFilters id={filterId} formId={formId} data={numbered?.typeFilters??(catalog.kind==="legacy"?catalog.typeFilters:undefined)} selected={filters.selected} onToggle={filters.toggle} onClear={()=>filters.change([])} toolbar={trigger=><div className={styles.heading}>
@@ -50,13 +60,20 @@ export function ArtworkCatalog({catalog,columns=3,id,CardView=ArtworkCard,ListVi
       <Typography>{m["catalog.errorMessage"]}</Typography>
       <FreshLink className={styles.action} href={first}>{m[restart?"gallery.restart":"catalog.retry"]}</FreshLink>
     </div>:<>
-      {legacy&&<FreshLink className={styles.clear} href={first}>{m["gallery.restart"]}</FreshLink>}
-      {items.length?<ListView items={items} columns={columns} CardView={CardView}/>:q||filters.selected.length?<div className={styles.emptyState}>
+      {(legacy||infinite.active&&numbered&&numbered.page>1)&&<FreshLink className={styles.clear} href={first}>{m["gallery.restart"]}</FreshLink>}
+      {items.length?<ListView items={items} columns={columns} CardView={CardView} eagerFrom={infinite.eagerFrom}/>:q||filters.selected.length?<div className={styles.emptyState}>
         <Typography className={styles.emptyLead} role="status">{m["gallery.noResults"]}</Typography>
         <Typography variant="h2" className={styles.emptyMessage}>{emptyMessage?.trim()||(locale.startsWith("fr")?"Vous cherchez un objet en particulier ? Nous pouvons le chercher pour vous.":"Looking for a particular object? We can find it for you.")}</Typography>
         <FreshLink className={styles.emptyAction} href={presentationHref(emptyLink??{kind:"page",pageKey:"contact"},locale,defaultLocale)}>{emptyLinkLabel?.trim()||(locale.startsWith("fr")?"Contactez-nous":"Contact us")}<Arrow/></FreshLink>
       </div>:<Typography role="status" className={styles.state}>{m["catalog.empty"]}</Typography>}
-      {numbered&&numbered.pageCount>0&&<nav className={styles.pagination} aria-label={m["gallery.paginationLabel"]}>
+      {infinite.active&&infinite.hasMore&&<div ref={continuationRef} className={styles.continuation} data-catalog-continuation aria-busy={infinite.loading}>
+        <span className={styles.resultStatus} role="status">{infinite.loading?m["catalog.loading"]:""}</span>
+        {infinite.loading&&<LoadingIndicator decorative/>}{infinite.error==="catalog_changed"?<><Typography role="status">{m["catalog.unavailableTitle"]}</Typography><FreshLink className={styles.action} href={first}>{m["gallery.restart"]}</FreshLink></>:<>
+          {infinite.error&&<Typography role="status">{infinite.error==="rate_limited"?(locale.startsWith("fr")?"Réessayez dans quelques instants.":"Please try again shortly."):m["catalog.errorMessage"]}</Typography>}
+          <a className={styles.loadMore} href={link(infinite.nextPage)} aria-disabled={infinite.loading||infinite.retryAt>0||undefined} onClick={event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();void infinite.load(true);}}>{infinite.error?m["catalog.retry"]:m["catalog.next"]}<Arrow/></a>
+        </>}
+      </div>}
+      {numbered&&numbered.pageCount>0&&<nav hidden={infinite.active} className={styles.pagination} aria-label={m["gallery.paginationLabel"]}>
         {numbered.page>1&&<FreshLink className={styles.page} href={link(numbered.page-1)} aria-label={m["gallery.previousPage"]}><Arrow previous/></FreshLink>}
         {pages.map((page,index)=>page===null?<span key={"gap"+index} className={styles.gap} aria-hidden="true">…</span>:<FreshLink key={page} className={styles.page} href={link(page)} aria-label={m["gallery.page"]+" "+page} aria-current={numbered.page===page?"page":undefined}>{page}</FreshLink>)}
         {numbered.page<numbered.pageCount&&<FreshLink className={styles.page} href={link(numbered.page+1)} aria-label={m["gallery.nextPage"]}><Arrow/></FreshLink>}

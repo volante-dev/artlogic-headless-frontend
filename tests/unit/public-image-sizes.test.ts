@@ -8,9 +8,9 @@ it('bounds a free-height contain selection by both its column and the 80svh imag
 });
 it('sizes the portrait masonry crop and 2x2 spans with the denser gaps',()=>{
  const portrait=masonryImageSizes(.8,3),landscape=masonryImageSizes(2,3,true);
- expect(portrait).toContain('(max-width: 600px) calc((100vw - 24px - 0px) / 1 * 1 * 1 + 0px)');
- expect(portrait).toContain('(max-width: 767px) calc((100vw - 24px - 8px) / 2');
- expect(landscape).toContain('/ 3 * 2 * 2.5 + 40px)');
+ expect(portrait).toContain('(max-width: 600px) calc((100vw - 16px - 0px) / 1 * 1 * 1 + 0px)');
+ expect(portrait).toContain('(max-width: 767px) calc((100vw - 16px - 8px) / 2');
+ expect(landscape).toContain('/ 3 * 2 * 2.5 + 30px)');
  expect(squareImageSizes(2)).toContain('/ 3 * 1 + 0px) * 2');
 });
 it('keeps a cover crop and mobile full-height contain frame independently sized',()=>{
