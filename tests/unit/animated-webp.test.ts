@@ -22,7 +22,7 @@ it("overrides only centered page loaders while retaining their accessible label"
  const legacy=renderToStaticMarkup(createElement(LoadingIndicator));expect(legacy).not.toContain("<picture");expect(legacy).toContain("track");
 });
 it("keeps button and icon-button loading indicators unchanged with a contributed WebP",()=>{
- for(const Component of [Button,IconButton]){const html=renderToStaticMarkup(createElement(SiteLoaderProvider,{asset,scope:"public"},createElement(Component,{loading:true,"aria-label":"Envoi"})));expect(html).not.toContain("<picture");expect(html).toContain("track");}
+ for(const indicator of [createElement(Button,{loading:true,"aria-label":"Envoi"}),createElement(IconButton,{loading:true,"aria-label":"Envoi"})]){const html=renderToStaticMarkup(createElement(SiteLoaderProvider,{asset,scope:"public"},indicator));expect(html).not.toContain("<picture");expect(html).toContain("track");}
 });
 it("renders the optional hero overlay as decorative media without removing content",()=>{
  const html=renderToStaticMarkup(createElement(HeroMedia,{section:{id,type:"heroMedia",schemaVersion:1,variant:"immersive",props:{overlay:{...asset,path:asset.variants![0].path},heading:"Galerie",linkLabel:"Découvrir"}}}));

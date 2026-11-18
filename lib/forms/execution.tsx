@@ -10,7 +10,7 @@ const Context=createContext<FormExecutionMode>("live");
 export function FormExecutionProvider({mode,children}:{mode:FormExecutionMode;children:React.ReactNode}){const inherited=useContext(Context);return <Context value={inherited==="inert"?"inert":mode}>{children}</Context>;}
 /** Existing page/editorial previews already carry the common inert Contact boundary. */
 export function useFormExecutionMode(requested:FormExecutionMode="live"):FormExecutionMode{const inherited=useContext(Context),contact=useContactExecutionMode("live"),site=useSiteContent(),editorial=useEditorialExecution();return formExecutionMode({requested,inherited,contact,scope:site.scope,editorial});}
-type Owner=Pick<components["schemas"]["FormsPlacement"],"ownerType"|"ownerId"|"artworkId">;
+type Owner=Pick<components["schemas"]["FormsPlacement"],"ownerType"|"ownerId"|"artworkId">&{inquiryArtwork?:Pick<import('../contact/types').PublicContactArtwork,'title'|'artist'>};
 const OwnerContext=createContext<Owner|null>(null);
 export function FormOwnerProvider({owner,children}:{owner:Owner;children:React.ReactNode}){return <OwnerContext value={owner}>{children}</OwnerContext>;}
 export function useFormOwner(){return useContext(OwnerContext);}

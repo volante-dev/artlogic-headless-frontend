@@ -1,4 +1,5 @@
 .catalog { width:min(100%,1440px); margin-inline:auto; padding:clamp(56px,7vw,112px) clamp(24px,5vw,80px); }
+@media(max-width:767px) { .catalog:has([data-catalog-layout="masonry"]) { padding-inline:12px; } }
 .catalog [data-artwork-card] img { object-fit:cover; }
 .heading { display:flex; align-items:flex-end; justify-content:space-between; gap:40px; }
 .heading h1 { margin:0; }
