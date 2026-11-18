@@ -12,7 +12,7 @@ Le catalogue numéroté reste rendu côté serveur avec ses liens de pagination,
 
 Recherche, types, langue, taille de page et révision sont conservés. Une nouvelle recherche réinitialise la liste ; une révision différente ou des doublons ne sont jamais fusionnés avec les œuvres affichées. Une panne conserve la liste et propose une reprise explicite, sans boucle automatique ; une limitation respecte `Retry-After`. Les requêtes sont annulées en quittant le catalogue. Le chargement automatique est suspendu lorsque l’onglet ou le fond d’une modale est inactif. Le mode de prévisualisation éditoriale conserve sa pagination existante.
 
-GSAP révèle chaque carte une seule fois. Sur desktop, les éléments d’une même rangée arrivent de gauche à droite avec un décalage de 120 ms, une translation de 18 px et une pose de 550 ms. Sur mobile, l’apparition est plus légère et sans décalage latéral. L’ajout d’une page n’interrompt pas les animations en cours. Les cartes restent visibles en l’absence de JavaScript et la réduction des mouvements désactive ces effets.
+GSAP révèle chaque carte une seule fois, avec un fondu d’opacité de zéro à un. Sur desktop, les éléments d’une même rangée arrivent de gauche à droite avec un décalage de 120 ms, une translation de 18 px et une pose de 550 ms. Sur mobile, l’apparition est plus légère et sans décalage latéral. L’ajout d’une page n’interrompt pas les animations en cours. Les cartes restent visibles en l’absence de JavaScript et la réduction des mouvements désactive ces effets.
 
 La nouvelle route frontend réutilise le contrat public existant de l’API. Elle valide les paramètres et les réponses et ne relaie ni cookie ni identifiant privé. Aucune migration ni livraison simultanée du backend n’est nécessaire.
 

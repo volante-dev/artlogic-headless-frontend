@@ -10,11 +10,12 @@ test("reveals each desktop row from left to right while the next page is appende
  await page.goto(url);await expect(page.getByTestId("artwork-card")).toHaveCount(18);
  const cascade=await page.evaluate(async()=>{
   const row=[...document.querySelectorAll<HTMLElement>("[data-artwork-card]")].slice(9,12),samples:number[][]=[];
+  const startsTransparent=row.every(node=>getComputedStyle(node).opacity==="0");
   scrollTo({top:row[0]!.getBoundingClientRect().top+scrollY-innerHeight+100,behavior:"instant"});
   await new Promise<void>(resolve=>{const started=performance.now();const frame=()=>{samples.push(row.map(node=>Number(getComputedStyle(node).opacity)));if(performance.now()-started<1000)requestAnimationFrame(frame);else resolve();};requestAnimationFrame(frame);});
-  return {ordered:samples.some(([left,middle,right])=>left!>middle!+.03&&middle!>right!+.03),settled:row.every(node=>getComputedStyle(node).opacity==="1"&&getComputedStyle(node).transform==="none")};
+  return {startsTransparent,ordered:samples.some(([left,middle,right])=>left!>middle!+.03&&middle!>right!+.03),settled:row.every(node=>getComputedStyle(node).opacity==="1"&&getComputedStyle(node).transform==="none")};
  });
- expect(cascade).toEqual({ordered:true,settled:true});await expect(page.getByTestId("artwork-card")).toHaveCount(36);
+ expect(cascade).toEqual({startsTransparent:true,ordered:true,settled:true});await expect(page.getByTestId("artwork-card")).toHaveCount(36);
 });
 test("anticipates one page, appends in order without moving existing cards, then stops at the end",async({page})=>{
  const calls:number[]=[];
