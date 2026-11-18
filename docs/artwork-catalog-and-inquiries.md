@@ -2,7 +2,7 @@
 
 ## Masonry
 
-Les images du catalogue masonry ont un ratio largeur/hauteur de 4/5. Sur desktop, les colonnes sont séparées de 8 px et les lignes de 10 px : cette proportion maintient exactement le ratio des cartes occupant deux colonnes et deux lignes. L’ordre source reste conservé, sans remplissage dense.
+Les images du catalogue masonry ont un ratio largeur/hauteur de 4/5. Sur desktop, les colonnes sont séparées de 2 px et les lignes de 2,5 px : cette proportion maintient exactement le ratio des cartes occupant deux colonnes et deux lignes. L’ordre source reste conservé, sans remplissage dense.
 
 Sous 951 px, les grands formats reprennent une cellule normale. Jusqu’à 767 px, les colonnes sont séparées de 8 px et les bords du catalogue passent à 8 px. Le titre est à 8 px de son image, l’artiste à 4 px du titre, et les œuvres sont séparées verticalement de 24 px. Le catalogue classique et les sélections de page conservent leur géométrie propre. `masonryImageSizes` reflète ces dimensions et le recadrage portrait dans les tailles d’images responsives.
 

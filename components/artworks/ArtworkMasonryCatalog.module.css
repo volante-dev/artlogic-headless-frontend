@@ -1,7 +1,7 @@
 .container { min-width:0; }
 .tile { min-width:0; }
 /* Grid geometry only; ArtworkTile owns the shared image and identity. */
-.grid { column-gap:8px; row-gap:10px; }
+.grid { column-gap:2px; row-gap:2.5px; }
 .grid .tile [data-artwork-card-image] { aspect-ratio:4/5; }
 @media(max-width:767px) {
  .grid { column-gap:8px; row-gap:24px; }
@@ -11,7 +11,7 @@
  @media(min-width:951px) {
   .container { container-type:inline-size; }
   /* Scale row gaps with the portrait ratio so a 2×2 tile is also exactly 4/5. */
-  .grid { --masonry-gap:8px; grid-auto-flow:row; grid-auto-rows:calc((100cqw - (var(--catalog-columns,3) - 1)*var(--masonry-gap))/var(--catalog-columns,3)*1.25); column-gap:var(--masonry-gap); row-gap:calc(var(--masonry-gap)*1.25); }
+  .grid { --masonry-gap:2px; grid-auto-flow:row; grid-auto-rows:calc((100cqw - (var(--catalog-columns,3) - 1)*var(--masonry-gap))/var(--catalog-columns,3)*1.25); column-gap:var(--masonry-gap); row-gap:calc(var(--masonry-gap)*1.25); }
   .grid .tile { grid-column:span 1; grid-row:span 1; }
   .grid .tile[data-catalog-large="true"] { grid-column:span 2; grid-row:span 2; }
   .grid .tile [data-artwork-card-image] { height:100%; aspect-ratio:auto; }
