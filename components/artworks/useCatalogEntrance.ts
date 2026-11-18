@@ -24,7 +24,7 @@ export function useCatalogEntrance(root:RefObject<HTMLElement|null>){
     // Read geometry before writing transforms; offsetTop preserves actual grid rows.
     for(const card of cards){const top=card.offsetTop;rows.set(top,[...rows.get(top)??[],card]);}
     for(const row of rows.values())row.sort((a,b)=>a.offsetLeft-b.offsetLeft).forEach((card,index)=>ranks.set(card,index));
-    for(const card of cards){if(seen.current.has(card)||tracked.has(card))continue;tracked.add(card);if(card.getBoundingClientRect().bottom<0){seen.current.add(card);continue;}gsap.set(card,{opacity:0,x:desktop?-18:0,y:desktop?12:10});observer.observe(card);}
+    for(const card of cards){if(seen.current.has(card)||tracked.has(card))continue;tracked.add(card);if(card.getBoundingClientRect().bottom<0){seen.current.add(card);continue;}gsap.set(card,{opacity:0,y:desktop?24:12});observer.observe(card);}
    });
    let width=list.clientWidth;const resize=new ResizeObserver(()=>{const next=list.clientWidth;if(next!==width){width=next;scan();}});resize.observe(list);
    scan();const additions=new MutationObserver(scan);additions.observe(list,{childList:true});
