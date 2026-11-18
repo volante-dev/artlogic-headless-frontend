@@ -13,7 +13,7 @@ test('portrait masonry retains its ratio at responsive boundaries and uses compa
   await page.setViewportSize({width,height:1000});await page.goto('/iframe.html?id=gallery-artworkmasonrycatalog--mixed&viewMode=story&globals=width:1440');
   const grid=page.locator('[data-catalog-layout="masonry"]');await expect(grid).toBeVisible();
   const measured=await grid.evaluate(node=>{const style=getComputedStyle(node);return {columns:style.gridTemplateColumns.split(' ').length,gap:Number.parseFloat(style.columnGap),left:node.getBoundingClientRect().left,frames:[...node.querySelectorAll('[data-artwork-card-image]')].map(n=>{const r=n.getBoundingClientRect();return {w:r.width,h:r.height};})};});
-  expect(measured.columns).toBe(width<=600?1:width<=950?2:3);expect(measured.gap).toBe(width<=767?8:12);if(width<=767)expect(measured.left).toBeCloseTo(8,0);
+  expect(measured.columns).toBe(width<=600?1:width<=950?2:3);expect(measured.gap).toBe(8);if(width<=767)expect(measured.left).toBeCloseTo(8,0);
   for(const frame of measured.frames)expect(Math.abs(frame.h-frame.w*1.25)).toBeLessThan(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }

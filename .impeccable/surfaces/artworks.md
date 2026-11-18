@@ -1,6 +1,6 @@
 # Œuvres005 — Cartel suspendu
 
-> **Catalogue au 18 novembre 2026.** La masonry utilise des images 4/5, y compris pour les grands formats 2×2. Espaces desktop : 12 px horizontalement et 15 px verticalement ; mobile : colonnes et bords de 8 px, titres rapprochés à 8 px des images et séparation verticale de 24 px entre les œuvres. Cette évolution est limitée au catalogue masonry et ne modifie pas la modale ni les sélections de page. Détails et recette : [artwork-catalog-and-inquiries.md](../../docs/artwork-catalog-and-inquiries.md).
+> **Catalogue au 18 novembre 2026.** La masonry utilise des images 4/5, y compris pour les grands formats 2×2. Espaces desktop : 8 px horizontalement et 10 px verticalement ; mobile : colonnes et bords de 8 px, titres rapprochés à 8 px des images et séparation verticale de 24 px entre les œuvres. Cette évolution est limitée au catalogue masonry et ne modifie pas la modale ni les sélections de page. Détails et recette : [artwork-catalog-and-inquiries.md](../../docs/artwork-catalog-and-inquiries.md).
 
 > **Portée historique 005.** Le relevé ci-dessous, ses mesures et ses gates sont conservés. Pour le comportement mobile livré, l’ouverture commune et les transitions médias au 29 octobre 2026, la section [Œuvres006 — Cartel flottant](#œuvres006--cartel-flottant) fait désormais autorité. Elle remplace les anciennes affirmations de flux mobile natif et d’entrée à 480ms ; elle ne clôt aucun gate 005 ni 006. `../../DESIGN.md` et `../design.json` gardent l’autorité sur le système global, inchangé.
 
