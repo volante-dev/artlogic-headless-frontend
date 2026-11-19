@@ -1,0 +1,9 @@
+.media{position:relative;display:block;height:100%;overflow:hidden}
+.primary{position:relative;display:block;width:100%;height:100%;transform:translateX(0)}
+.secondary{position:absolute;display:block;inset:0;transform:translateX(100%)}
+@media(hover:hover) and (pointer:fine){
+ .primary,.secondary{transition:transform 250ms cubic-bezier(.23,1,.32,1)}
+ .media[data-preview-active] .primary{transform:translateX(-100%)}
+ .media[data-preview-active] .secondary{transform:translateX(0)}
+}
+@media(prefers-reduced-motion:reduce){.primary,.secondary{transition:none}}

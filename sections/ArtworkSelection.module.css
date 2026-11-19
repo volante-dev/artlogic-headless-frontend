@@ -1,7 +1,7 @@
 .selection{overflow:clip}
 .introduction{max-width:70ch;margin-bottom:clamp(32px,4vw,64px)}
 .viewport{position:relative;min-width:0}
-.track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 32px;list-style:none;padding:0;margin:0;align-items:start}
+.track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;list-style:none;padding:0;margin:0;align-items:start}
 .strip{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(240px,32%);overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:thin}
 .track>li{min-width:0;scroll-snap-align:start;scroll-snap-stop:always}
 .controls,.count{display:none}
@@ -12,7 +12,7 @@
  .multiple .introduction{padding-inline:24px}
  /* Keep the artwork height stable; information sits below the top progress marks. */
  .multiple .viewport{--selection-controls-top:max(24px,env(safe-area-inset-top,0px));height:100vh;height:100lvh;background:var(--site-color-inverseSurface);color:var(--site-color-inverseText)}
- .multiple .track{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:100%;gap:0;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x pan-y pinch-zoom;position:relative}
+ .multiple .track{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:100%;gap:2px;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x pan-y pinch-zoom;position:relative}
  .multiple .track::-webkit-scrollbar{display:none}
  .multiple .track{--artwork-caption-top:calc(var(--selection-controls-top) + 34px);--artwork-caption-bottom:auto;--artwork-shade-inset:0 0 15%;--artwork-shade-direction:to top}
  .controls{position:absolute;z-index:3;inset:var(--selection-controls-top) 24px auto;display:block;color:var(--site-color-inverseText)}

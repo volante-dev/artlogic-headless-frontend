@@ -1,7 +1,7 @@
 /* One artwork view for the catalogue and composed selections. Layout belongs to the parent. */
 .tile{min-width:0}
 .tile .link{position:relative;display:block;color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
-.tile .image{position:relative;overflow:hidden;aspect-ratio:1;background:var(--surface)}
+.tile .image{position:relative;overflow:hidden;aspect-ratio:4/5;background:var(--surface)}
 .tile .image img{object-fit:cover}
 .tile[data-image-fit="contain"] .image{aspect-ratio:auto;background:transparent}
 .tile[data-image-fit="contain"] .image img{position:static;display:block;width:auto;max-width:100%;height:auto;max-height:80svh;object-fit:contain}
