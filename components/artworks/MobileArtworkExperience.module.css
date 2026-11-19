@@ -106,3 +106,12 @@
 .mobile[data-mobile-mode="information"] .media { visibility:visible; }
 
 .informationEdges { position:absolute; inset:0; pointer-events:none; }
+
+/* Horizontal photographs retain a soft cover behind the full, sharp composition. */
+.landscapeBackdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:blur(24px) brightness(.45);transform:scale(1.08);pointer-events:none;visibility:hidden}
+.landscapeBackdrop[data-ready="true"]{visibility:visible}
+.image[data-landscape="true"]>div{position:relative;z-index:1;background:transparent}
+.mobile:not([data-inline-zoom="true"]) .image[data-landscape="true"] img{object-fit:contain;object-position:center}
+.mobile:not([data-inline-zoom="true"]) .image[data-landscape="true"] .introDrift{animation:none;transform:none}
+.media[data-artwork-focus="true"] .landscapeBackdrop{object-position:var(--artwork-focus-x) var(--artwork-focus-y)}
+.mobile[data-inline-zoom="true"] .landscapeBackdrop{visibility:hidden}
