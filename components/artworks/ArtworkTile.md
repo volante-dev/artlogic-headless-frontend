@@ -9,3 +9,7 @@ Le parent possède uniquement la disposition : colonnes, grandes cases, bande ho
 Vérification du 8 novembre 2026 : build de production, lint ciblé, 182 tests unitaires, quatre parcours de sélection et six parcours de grille dans Chromium/WebKit. Les captures ordinateur/mobile des sélections sont dans `test-results/`, les reçus de livraison dans `../backend/.runtime/artwork-tile-release/`.
 
 Le média partagé `ArtworkCardMedia` gère la seconde vue au survol : chargement seulement avec un pointeur précis, mesure de sa résolution selon son propre ratio et le cadre réel, glissement horizontal de 250ms, retour réversible à la première vue. Pas de téléchargement de seconde vue sur écran tactile. Les erreurs ou une ancienne réponse ne contenant qu’un média conservent la première vue. Le mouvement réduit conserve le changement de vue sans transition. Les liens et leurs interactions clavier restent inchangés.
+
+Le catalogue (`CatalogList` et `MasonryList`) transmet `previewOnHover={false}` : ses cartes restent sur leur première image, sans chargement de seconde vue. Les sélections dans les sections de page conservent la prévisualisation au survol.
+
+Sur mobile (jusqu’à 767px), le catalogue transmet `mobileLandscape` si la première photo est horizontale : son cadre est en 5/4 et son calcul de variantes suit ce recadrage. Les premières photos verticales ou carrées restent en 4/5 ; les sections de page et le bureau conservent leurs formats.

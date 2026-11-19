@@ -29,3 +29,10 @@ it('sizes portrait image galleries for their grid and strip layouts',()=>{
  expect(sectionImageSizes(2,'grid')).toContain('- 4px) / 3 * 2.5');
  expect(sectionImageSizes(2,'strip')).toContain('* .85 * 2.5');
 });
+
+it('uses 5/4 crops for horizontal first images in the mobile catalogue only',()=>{
+ expect(masonryImageSizes(2)).toContain('(max-width: 600px) calc((100vw - 16px - 0px) / 1 * 1 * 1.6 + 0px)');
+ expect(masonryImageSizes(2)).toContain('/ 3 * 1 * 2.5');
+ expect(squareImageSizes(2)).toContain('(max-width: 767px)');
+ expect(squareImageSizes(2,3,false,'cover',true)).not.toContain('* 1.6');
+});

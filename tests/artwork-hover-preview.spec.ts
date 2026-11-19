@@ -45,3 +45,20 @@ test.describe("touch",()=>{
   await expect(section.locator("ul")).toHaveCSS("scroll-snap-type","x mandatory");
  });
 });
+
+test("the artworks listing keeps the original image on hover",async({page})=>{
+ await page.setViewportSize({width:1440,height:1000});await page.goto("/artworks");
+ const card=page.locator("[data-artwork-card]").first(),image=card.locator("[data-artwork-primary] img");await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBeGreaterThan(0);
+ const source=await image.evaluate((img:HTMLImageElement)=>img.currentSrc);await card.hover();await page.waitForTimeout(350);
+ await expect(card.locator("[data-artwork-preview]")).toHaveCount(0);await expect(card.locator("[data-artwork-media]")).not.toHaveAttribute("data-preview-active","true");
+ expect(await image.evaluate((img:HTMLImageElement)=>img.currentSrc)).toBe(source);await expect(card.locator("[data-artwork-primary]")).toHaveCSS("transform","matrix(1, 0, 0, 1, 0, 0)");
+});
+
+test.describe("mobile listing",()=>{
+ test.use({isMobile:true,hasTouch:true,viewport:{width:375,height:812}});
+ test("the first horizontal image uses a 5/4 frame",async({page})=>{
+  await page.goto("/artworks");const card=page.locator("[data-artwork-card]").first(),frame=card.locator("[data-artwork-card-image]");
+  await expect(card).toHaveAttribute("data-mobile-landscape","true");const box=(await frame.boundingBox())!;expect(box.width/box.height).toBeCloseTo(1.25,2);
+  await expect(card.locator("[data-artwork-preview]")).toHaveCount(0);await frame.screenshot({path:test.info().outputPath("mobile-listing-landscape.png")});
+ });
+});

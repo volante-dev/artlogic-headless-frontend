@@ -39,3 +39,5 @@
  .tile[data-fill-mobile] .link:focus-visible{outline-color:#fff}
 }
 @media(prefers-reduced-motion:reduce){.tile .identity,.tile .link::after{transition:none;transition-delay:0s;transform:none}}
+
+@media(max-width:767px){.tile[data-mobile-landscape="true"] .image{aspect-ratio:5/4}}

@@ -21,3 +21,5 @@
 .card[data-image-fit="cover"] .cardImage .image { object-fit:cover; }
 .card[data-image-fit="contain"] .cardImage { aspect-ratio:auto; background:transparent; overflow:visible; }
 .card[data-image-fit="contain"] .cardImage .image { position:static; width:auto; max-width:100%; height:auto; max-height:80svh; object-fit:contain; }
+
+@media(max-width:767px){.card[data-mobile-landscape="true"] .cardImage{aspect-ratio:5/4}}
