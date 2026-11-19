@@ -13,7 +13,7 @@ export async function GET(request:Request){
   const input:CatalogParams={};for(const key of params.keys())input[key]=params.getAll(key).length===1?params.get(key)!:params.getAll(key);
   let query;try{query=parseCatalogQuery(input);}catch{throw new PublicApiError(400,"invalid_request");}
   if(query.kind!=="numbered")throw new PublicApiError(400,"invalid_request");
-  return Response.json(await getGalleryCatalog({...query.query,locale},true,request.signal),{headers:privateHeaders});
+  return Response.json(await getGalleryCatalog({...query.query,locale},true,request.signal,request.headers.get("x-artwork-card-focus")==="1"),{headers:privateHeaders});
  }catch(error){
   const status=error instanceof PublicApiError&&[400,409,429].includes(error.status)?error.status:503;
   const code=status===400?"invalid_request":status===409?"catalog_changed":status===429?"rate_limited":"service_unavailable";

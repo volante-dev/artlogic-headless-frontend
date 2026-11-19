@@ -43,7 +43,7 @@ export function parseGalleryCatalog(value:unknown,plp=false):GalleryCatalog{
  const page=integer(p.page,1,1000000),pageSize=integer(p.pageSize,1,100),totalItems=integer(p.totalItems),pageCount=integer(p.pageCount),catalogRevision=integer(p.catalogRevision);
  if(pageCount!==Math.ceil(totalItems/pageSize)||page>Math.max(1,pageCount)||p.items.length!==Math.min(pageSize,Math.max(0,totalItems-(page-1)*pageSize)))fail();
  if(plp&&(p.display!=="plp"||!["grid","masonry"].includes(String(p.layout))))fail();
- const items=p.items.map(v=>{if(!plp)return parseGalleryArtwork(v);const a=record(v,["id","slug","title","artist","year","medium","dimensions","media","catalogLarge"]);if(typeof a.catalogLarge!=="boolean")fail();const {catalogLarge,...base}=a;return {...parseGalleryArtwork(base),catalogLarge};});
+ const items=p.items.map(v=>{if(!plp)return parseGalleryArtwork(v);const a=record(v,["id","slug","title","artist","year","medium","dimensions","media","catalogLarge",...(v&&typeof v==="object"&&Object.hasOwn(v,"heroFocus")?["heroFocus"]:[])]);if(typeof a.catalogLarge!=="boolean")fail();const {catalogLarge,heroFocus,...base}=a,art=parseGalleryArtwork(base);return {...art,catalogLarge,...(Object.hasOwn(a,"heroFocus")?{heroFocus:parseHeroFocus(heroFocus,art.media[0]?.id)}:{})};});
  return {...(hasTypes?{typeFilters:parseTypeFilters(p.typeFilters)}:{}),...(plp?{display:"plp" as const,layout:p.layout as "grid"|"masonry"}:{}),items,query:p.query,page,pageSize,totalItems,pageCount,catalogRevision};
 }
 export function parseGalleryExperience(value:unknown):GalleryExperience{

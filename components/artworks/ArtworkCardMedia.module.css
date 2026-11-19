@@ -1,4 +1,4 @@
-.media{position:relative;display:block;height:100%;overflow:hidden}
+.media{position:relative;display:block;width:100%;height:100%;overflow:hidden}
 .primary{position:relative;display:block;width:100%;height:100%;transform:translateX(0)}
 .secondary{position:absolute;display:block;inset:0;transform:translateX(100%)}
 @media(hover:hover) and (pointer:fine){
@@ -7,3 +7,5 @@
  .media[data-preview-active] .secondary{transform:translateX(0)}
 }
 @media(prefers-reduced-motion:reduce){.primary,.secondary{transition:none}}
+
+@media(min-width:768px){.media[data-artwork-focus=true] .primary img{object-fit:cover;object-position:var(--artwork-focus-x) var(--artwork-focus-y)}}

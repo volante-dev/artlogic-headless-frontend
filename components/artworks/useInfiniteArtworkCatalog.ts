@@ -16,7 +16,7 @@ export function useInfiniteArtworkCatalog(initial:GalleryCatalog|null,locale:str
   const controller=new AbortController();request.current=controller;setLoading(true);setError(null);
   try{
    const query=catalogQueryString({q:initial?.query||undefined,types:initial?.typeFilters?.selectedIds,page:last.page+1,pageSize:last.pageSize,catalogRevision:last.catalogRevision});
-   const response=await fetch("/api/artwork-catalog"+query+"&locale="+encodeURIComponent(locale),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(45000)]),headers:{Accept:"application/json"}});
+   const response=await fetch("/api/artwork-catalog"+query+"&locale="+encodeURIComponent(locale),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(45000)]),headers:{Accept:"application/json","X-Artwork-Card-Focus":"1"}});
    if(!response.ok){if(response.status===429){const delay=Number(response.headers.get("retry-after"));setRetryAt(Date.now()+(Number.isFinite(delay)&&delay>0?Math.min(delay,3600):60)*1000);}throw new Error(response.status===409?"catalog_changed":response.status===429?"rate_limited":"service_unavailable");}
    const page=parseGalleryCatalog(await response.json(),true);
    const ids=new Set(pages.flatMap(page=>page.items.map(item=>item.id)));

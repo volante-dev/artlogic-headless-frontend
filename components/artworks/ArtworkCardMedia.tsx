@@ -1,15 +1,18 @@
 "use client";
 import {useEffect,useRef,useState} from "react";
+import type {HeroFocus} from "@/lib/artworks/focus";
+import {useArtworkFocus} from "./useArtworkFocus";
 import type {Artwork} from "@/lib/api/artworks";
 import {ArtworkImage} from "../ArtworkImage";
 import styles from "./ArtworkCardMedia.module.css";
 
-interface Props {media:Artwork["media"];title:string|null;sizes?:string;eager?:boolean;previewOnHover?:boolean}
+interface Props {heroFocus?:HeroFocus|null;media:Artwork["media"];title:string|null;sizes?:string;eager?:boolean;previewOnHover?:boolean}
 export function ArtworkCardMedia(props:Props){
  return <MediaPreview key={props.media.slice(0,2).map(image=>image.id).join(":")} {...props}/>;
 }
-function MediaPreview({media,title,sizes,eager=false,previewOnHover=true}:Props){
+function MediaPreview({heroFocus,media,title,sizes,eager=false,previewOnHover=true}:Props){
  const root=useRef<HTMLDivElement>(null),secondary=media[1];
+ useArtworkFocus(root,heroFocus?.mediaId===media[0]?.id?heroFocus:null,media[0]);
  const [requested,setRequested]=useState(false),[hovered,setHovered]=useState(false),[ready,setReady]=useState(false),[failed,setFailed]=useState(false),[previewSizes,setPreviewSizes]=useState(sizes);
  useEffect(()=>{
   const link=root.current?.closest("a");if(!previewOnHover||!link||!secondary)return;

@@ -8,6 +8,7 @@ import {ArtworkProgress,type ArtworkProgressProps} from "./ArtworkProgress";
 import {useArtworkEntrance} from "./useArtworkEntrance";
 import {ArtworkFinaleScene} from "./ArtworkFinaleScene";
 import {useArtworkScroll} from "./useArtworkScroll";
+import {useArtworkDesktopShape} from "./useArtworkDesktopShape";
 import {ArtworkHeadingContext} from "./ArtworkHeadingContext";
 import {useArtworkInteraction} from "./ArtworkInteractionBoundary";
 import {ArtworkZoomImage} from "./ArtworkZoomImage";
@@ -26,13 +27,15 @@ export function DesktopArtworkExperience({content,id,InformationView=ArtworkInfo
   const [finale,setFinale]=useState<{anchor:string|null;open:boolean}|null>(null),pendingFinaleSelection=useRef<number|null>(null),selected=useRef(0);
  const changeFinale=useCallback((open:boolean)=>{store?.send({type:open?"finale":"gallery"},art.media.map(m=>m.id));setFinale(prior=>open?{anchor:art.media[selected.current]?.id??null,open:true}:prior?{...prior,open:false}:null);},[art.media,store]);
  const {root,information,active,goTo,restoreTo,enhanced}=useArtworkScroll(count,{active:finale!==null,change:changeFinale});useLayoutEffect(()=>{selected.current=active;},[active]);useArtworkEntrance(root);
+ const landscape=!!art.media[active]&&art.media[active]!.width>art.media[active]!.height;
+ useArtworkDesktopShape(root,landscape,enhanced);
   const [selection,setSelection]=useState({from:active,to:active}),restoring=useRef<number|null>(null);
   if(selection.to!==active)setSelection({from:selection.to,to:active});
   const previous=selection.to===active?selection.from:selection.to;
   useLayoutEffect(()=>{const index=art.media.findIndex(m=>m.id===store?.read().selectedMediaId);restoring.current=Math.max(0,index);restoreTo(Math.max(0,index));if(store?.read().mode==="finale"){selected.current=Math.max(0,index);changeFinale(true);}},[store,restoreTo,art.media,changeFinale]);
   useLayoutEffect(()=>{if(restoring.current!==null){if(active!==restoring.current)return;restoring.current=null;}const media=art.media[active];if(store&&media&&store.read().selectedMediaId!==media.id){store.send({type:"select",id:media.id,now:performance.now()},art.media.map(m=>m.id));store.send({type:"commit",epoch:store.read().epoch},art.media.map(m=>m.id));}},[active,art.media,store]);
   const introduction=description&&Array.from(description).length>240?Array.from(description).slice(0,237).join("")+"…":description;
-  return <article id={id} ref={root} className={styles.experience} data-artwork-experience data-testid="artwork-experience" data-enhanced={String(enhanced)} data-artwork-layout="desktop" aria-labelledby={heading}>
+  return <article id={id} ref={root} className={styles.experience} data-artwork-experience data-testid="artwork-experience" data-enhanced={String(enhanced)} data-artwork-landscape={String(landscape)} data-artwork-layout="desktop" aria-labelledby={heading}>
     <h1 id={heading} tabIndex={-1} data-artwork-focus-heading className={styles.srOnly}>{art.title??m["artwork.untitled"]}</h1>
     <div className={styles.stage}>
       <div className={styles.frame} data-artwork-entry-media data-testid="artwork-frame">

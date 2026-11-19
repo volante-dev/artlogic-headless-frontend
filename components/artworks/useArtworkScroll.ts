@@ -14,7 +14,7 @@ export function useArtworkScroll(count:number,finale?:{active:boolean;change:(op
  useLayoutEffect(()=>{
   const element=root.current,info=information.current;if(!element||!info)return;
   const scroller=element.closest<HTMLElement>("[role=dialog]")??window,preference=matchMedia("(prefers-reduced-motion: reduce)"),compact=matchMedia("(max-width: 767px), (max-height: 639px)");
-  let frame=0,animation=0,alive=true,lastActive=-1,lastY=0,motion:Motion|null=null,gestureClaimed=false,touchY=0,pendingSelection:number|null=null;
+  let frame=0,animation=0,alive=true,lastActive=-1,lastY=0,motion:Motion|null=null,gestureClaimed=false,touchY=0,pendingSelection:number|null=null,shapeMeasurePending=false;
   const wheelGesture=createArtworkWheelGesture();
   const scrollTop=()=>scroller===window?window.scrollY:(scroller as HTMLElement).scrollTop;
   const position=()=>Math.max(0,scrollTop()-(geometry.current?.start??0));
@@ -30,7 +30,7 @@ export function useArtworkScroll(count:number,finale?:{active:boolean;change:(op
   }
   function finish(){
    cancelAnimationFrame(animation);animation=0;const target=motion?.to,queued=pendingSelection;motion=null;pendingSelection=null;
-   element!.dataset.scrollMotion="idle";if(target!==undefined)write(target);paint();if(queued!==null&&alive&&!document.hidden)select.current(queued);
+   element!.dataset.scrollMotion="idle";if(target!==undefined)write(target);paint();if(shapeMeasurePending&&element!.dataset.artworkShapeTransition!=="running")measure();if(queued!==null&&alive&&!document.hidden)select.current(queued);
   }
   function animateTo(to:number){
    const g=geometry.current;if(!g||motion)return;
@@ -57,6 +57,9 @@ export function useArtworkScroll(count:number,finale?:{active:boolean;change:(op
   function measure(){
    // The finale temporarily fixes the information panel; it must not change photo offsets.
    if(geometry.current&&finaleRef.current?.active)return;
+   if(element!.dataset.artworkShapeTransition==="running"){shapeMeasurePending=true;return;}
+   if(shapeMeasurePending&&motion)return;
+   const preserveIndex=shapeMeasurePending?lastActive:null;shapeMeasurePending=false;
    if(motion)finish();
    const viewport=scroller===window?window.innerHeight:(scroller as HTMLElement).clientHeight,offset=scroller===window?0:(scroller as HTMLElement).getBoundingClientRect().top;
    const start=element!.getBoundingClientRect().top-offset+scrollTop(),reading=Math.max(viewport,info!.scrollHeight+160),enhanced=!preference.matches&&!compact.matches;
@@ -65,6 +68,7 @@ export function useArtworkScroll(count:number,finale?:{active:boolean;change:(op
    geometry.current={scroller,start,viewport,reading,enhanced,staticOffsets};element!.dataset.enhanced=String(enhanced);setEnhanced(enhanced);
    const infoTop=Math.min(80,viewport-info!.scrollHeight-80);
    element!.style.setProperty("--artwork-reading-distance",reading+"px");element!.style.setProperty("--artwork-flow-height",reading+Math.max(0,count-1)*viewport+"px");element!.style.setProperty("--artwork-info-top",infoTop+"px");element!.style.setProperty("--artwork-heading-top",80+Math.max(0,infoTop)+"px");
+   if(preserveIndex!==null&&preserveIndex>=0&&enhanced){write(artworkStageOffsets(viewport,reading,count)[preserveIndex]??0);paint();return;}
    lastY=position();
    if(enhanced&&artworkScrollUnsettled(lastY,viewport,reading,count)){const target=artworkScrollTarget(lastY,viewport,reading,count,1);if(target!==null){animateTo(target);return;}}
    schedule();
@@ -114,12 +118,13 @@ export function useArtworkScroll(count:number,finale?:{active:boolean;change:(op
    if(g.enhanced)animateTo(target);else{write(target);schedule();}
   };
   restore.current=index=>{const g=geometry.current;if(!g||index<0||index>=Math.max(1,count))return;if(motion)finish();const target=g.enhanced?artworkStageOffsets(g.viewport,g.reading,count)[index]!:index===0?0:g.staticOffsets[index-1]??0;write(target);paint();};
+  const shapeSettled=()=>{shapeMeasurePending=true;measure();};element.addEventListener("artwork-shape-settled",shapeSettled);
   const observer=new ResizeObserver(measure);observer.observe(info);observer.observe(element);if(scroller!==window)observer.observe(scroller as HTMLElement);
   scroller.addEventListener("scroll",onScroll,{passive:true});window.addEventListener("wheel",wheel,{passive:false,capture:true});scroller.addEventListener("keydown",keyboard as EventListener);
   scroller.addEventListener("touchstart",touchStart as EventListener,{passive:true});scroller.addEventListener("touchmove",touchMove as EventListener,{passive:false});
   window.addEventListener("resize",measure,{passive:true});document.addEventListener("visibilitychange",visibility);preference.addEventListener("change",measure);compact.addEventListener("change",measure);element.dataset.scrollMotion="idle";
   measure();
-  return ()=>{alive=false;cancelAnimationFrame(frame);cancelAnimationFrame(animation);motion=null;wheelGesture.dispose();observer.disconnect();scroller.removeEventListener("scroll",onScroll);window.removeEventListener("wheel",wheel,true);scroller.removeEventListener("keydown",keyboard as EventListener);scroller.removeEventListener("touchstart",touchStart as EventListener);scroller.removeEventListener("touchmove",touchMove as EventListener);window.removeEventListener("resize",measure);document.removeEventListener("visibilitychange",visibility);preference.removeEventListener("change",measure);compact.removeEventListener("change",measure);geometry.current=null;select.current=()=>{};restore.current=()=>{};};
+  return ()=>{alive=false;cancelAnimationFrame(frame);cancelAnimationFrame(animation);motion=null;wheelGesture.dispose();observer.disconnect();element.removeEventListener("artwork-shape-settled",shapeSettled);scroller.removeEventListener("scroll",onScroll);window.removeEventListener("wheel",wheel,true);scroller.removeEventListener("keydown",keyboard as EventListener);scroller.removeEventListener("touchstart",touchStart as EventListener);scroller.removeEventListener("touchmove",touchMove as EventListener);window.removeEventListener("resize",measure);document.removeEventListener("visibilitychange",visibility);preference.removeEventListener("change",measure);compact.removeEventListener("change",measure);geometry.current=null;select.current=()=>{};restore.current=()=>{};};
  },[count,opening]);
  const goTo=useCallback((index:number)=>select.current(index),[]);
  const restoreTo=useCallback((index:number)=>restore.current(index),[]);
