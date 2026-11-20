@@ -3,6 +3,7 @@ import {useLayoutEffect,useRef,type ReactNode} from "react";
 import {useArtworkInteraction} from "./ArtworkInteractionBoundary";
 import {ArtworkIdentity} from "./ArtworkIdentity";
 import {ArtworkInquiryLink} from "./ArtworkInformation";
+import {ArtworkAvailability} from "./ArtworkAvailability";
 import {useArtworkMobileInformationMotion} from "./useArtworkMobileInformationMotion";
 import type {MobileArtworkViewProps} from "./ArtworkMobileController";
 import {useSiteContent} from "../SiteContentProvider";
@@ -11,7 +12,7 @@ export function ArtworkMobileInformationPanel({content,state,InformationView,sup
  const store=useArtworkInteraction()!,{messages}=useSiteContent(),panel=useRef<HTMLElement>(null),reading=useRef<HTMLDivElement>(null),body=useRef<HTMLDivElement>(null),owner=useRef<HTMLElement|null>(null),open=state.mode==='information';
  const save=()=>{if(open&&owner.current)store.send({type:'reading',top:owner.current.scrollTop},[]);};
  const restore=()=>{const p=panel.current,n=p?.dataset.informationCompact==='true'?reading.current:body.current;if(!n)return;owner.current=n;n.scrollTop=Math.min(store.read().informationScrollTop,Math.max(0,n.scrollHeight-n.clientHeight));};
- const motion=useArtworkMobileInformationMotion(panel,{open,reduced,revision:`${content.locale}:${content.description}:${content.artwork.title}:${open}`,onBeforeMeasure:save,onClosed:()=>{save();owner.current=null;send({type:'gallery'});},onReading:()=>{restore();if(!panel.current?.querySelector('[data-information-body]')?.contains(document.activeElement)&&!panel.current?.querySelector('[data-information-contact]')?.contains(document.activeElement))panel.current?.querySelector<HTMLElement>('[data-artwork-title]')?.focus({preventScroll:true});}});
+ const motion=useArtworkMobileInformationMotion(panel,{open,reduced,revision:`${content.locale}:${content.description}:${content.artwork.title}:${content.availableForSale}:${open}`,onBeforeMeasure:save,onClosed:()=>{save();owner.current=null;send({type:'gallery'});},onReading:()=>{restore();if(!panel.current?.querySelector('[data-information-body]')?.contains(document.activeElement)&&!panel.current?.querySelector('[data-information-contact]')?.contains(document.activeElement))panel.current?.querySelector<HTMLElement>('[data-artwork-title]')?.focus({preventScroll:true});}});
  useLayoutEffect(()=>registerInformationDismiss?.(motion.dismiss),[registerInformationDismiss,motion.dismiss]);
  useLayoutEffect(()=>{if(!open)return;const saveNow=()=>{if(owner.current?.isConnected)store.send({type:'reading',top:owner.current.scrollTop},[]);};document.addEventListener('visibilitychange',saveNow,true);window.addEventListener('artwork-revalidate',saveNow,true);return()=>{saveNow();document.removeEventListener('visibilitychange',saveNow,true);window.removeEventListener('artwork-revalidate',saveNow,true);};},[open,store]);
  const onScroll=(node:HTMLElement)=>{if(open&&panel.current?.dataset.informationReady==='true'&&node===owner.current)store.send({type:'reading',top:node.scrollTop},[]);};
@@ -24,7 +25,7 @@ export function ArtworkMobileInformationPanel({content,state,InformationView,sup
     {<><InformationView content={content} showIdentity={false} showContact={false}/>{supplementalContent}</>}
    </div>
   </div>
-  <div className={styles.informationContact} data-information-contact inert={!open||undefined} aria-hidden={!open||undefined}>{<ArtworkInquiryLink id={content.artwork.id} locale={content.locale}/>}</div>
+  <div className={styles.informationContact} data-information-contact inert={!open||undefined} aria-hidden={!open||undefined}><ArtworkInquiryLink id={content.artwork.id} locale={content.locale}/><ArtworkAvailability availableForSale={content.availableForSale} locale={content.locale}/></div>
   <button data-artwork-frost-content data-mobile-trigger="information" className={styles.informationAction} aria-expanded={open} onClick={()=>{if(!open)send({type:'information'});else motion.toggle();}}>{messages[open?'gallery.backToImages':'gallery.openInformation']}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg></button>
  </section>;
 }

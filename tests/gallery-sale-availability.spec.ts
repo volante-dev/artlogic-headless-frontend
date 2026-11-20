@@ -5,12 +5,24 @@ for(const width of [390,1440])test(`availability stays below the fixed inquiry b
  const site=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,'utf8')).sites[0];
  test.skip(!site.finaleArtworkIds,'Requires --finale fixtures');
  const artworkId=site.finaleArtworkIds[3];
- const set=async(availableForSale:boolean|null)=>{const r=await request.post(site.controlUrl,{headers:{'X-Test-Control':site.controlKey},data:{action:'saleAvailability',artworkId,availableForSale}});expect(r.ok()).toBe(true);};
+ let expectedAvailability:boolean|null=null;
+ const set=async(availableForSale:boolean|null)=>{const r=await request.post(site.controlUrl,{headers:{'X-Test-Control':site.controlKey},data:{action:'saleAvailability',artworkId,availableForSale}});expect(r.ok()).toBe(true);expectedAvailability=availableForSale;};
  await page.setViewportSize({width,height:900});
  await page.goto('/artworks');await page.getByRole('button',{name:'Compris',exact:true}).press('Enter');
  const open=async(locale='fr')=>{
   await page.goto((locale==='en'?'/en':'')+'/artworks/'+artworkId);
   const scene=page.getByTestId('artwork-experience');await expect(scene).toHaveAttribute('data-artwork-opening-phase','complete');
+  if(width<768){
+   await scene.locator('[data-mobile-trigger="information"]').click();const panel=scene.locator('[data-mobile-information-panel]');await expect(panel).toHaveAttribute('data-information-ready','true');
+   const contact=panel.locator('[data-information-contact]'),badge=contact.locator('[data-artwork-availability]');
+   if(expectedAvailability===true){
+    await expect(badge).toHaveText(locale==='en'?'AVAILABLE':'DISPONIBLE');const position=await badge.boundingBox(),button=await contact.locator('a').boundingBox();expect(position!.y-button!.y-button!.height).toBeCloseTo(12,0);
+    await expect(panel.locator('[data-information-body] [data-artwork-availability]')).toHaveCount(0);
+    await panel.locator('[data-information-body]').evaluate(n=>{n.scrollTop=n.scrollHeight;});expect((await badge.boundingBox())!.y).toBeCloseTo(position!.y,1);
+    if(locale==='fr')await page.screenshot({path:info.outputPath('information-available.png'),style:'nextjs-portal { visibility:hidden; }'});
+   }else await expect(badge).toHaveCount(0);
+   await panel.locator('[data-mobile-trigger="information"]').click();await expect(scene).toHaveAttribute('data-mobile-mode','gallery');
+  }
   await scene.locator('[data-artwork-progress] button').last().click();
   const reading=scene.locator('[data-finale-description]').filter({visible:true});await expect(reading).toBeVisible();
   await expect(scene.locator('[data-finale-black]')).toHaveCSS('opacity','1');

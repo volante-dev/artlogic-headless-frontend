@@ -9,8 +9,6 @@
  letter-spacing:.08em;
 }
 .availability strong { font-weight:700; }
-.finaleOnly { display:none; }
-:global([data-finale-scene="true"]) .finaleOnly { display:flex; }
 .dot {
  flex:none;
  width:7px;
