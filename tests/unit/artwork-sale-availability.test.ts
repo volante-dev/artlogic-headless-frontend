@@ -22,10 +22,10 @@ describe('optional sale availability',()=>{
   expect(fr).toContain('<strong>DISPONIBLE</strong>');expect(fr).toContain('aria-hidden="true"');
   expect(renderToStaticMarkup(createElement(ArtworkAvailability,{availableForSale:true,locale:'en'}))).toContain('<strong>AVAILABLE</strong>');
  });
- it('appends availability after imported description, including when text is absent',()=>{
+ it('keeps availability out of the scrollable description, including when text is absent',()=>{
   const content={...parseGalleryExperience({...legacy,availableForSale:true}),importedDescription:{type:'doc' as const,content:[{type:'paragraph' as const,content:[{type:'text' as const,text:'Description finale synthétique'}]}]}};
   const html=renderToStaticMarkup(artworkConclusion(content).description);
-  expect(html.indexOf('DISPONIBLE')).toBeGreaterThan(html.indexOf('Description finale synthétique'));
-  expect(renderToStaticMarkup(artworkConclusion({...content,importedDescription:null}).description)).toContain('DISPONIBLE');
+  expect(html).toContain('Description finale synthétique');expect(html).not.toContain('DISPONIBLE');
+  expect(artworkConclusion({...content,importedDescription:null}).description).toBeNull();
  });
 });

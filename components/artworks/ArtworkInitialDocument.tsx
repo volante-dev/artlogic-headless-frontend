@@ -9,6 +9,7 @@ import {localizedPath} from '../../lib/i18n/routes';
 import {artworkDocumentContent} from '../../lib/artworks/document-content';
 import {artworkDocumentImage} from '../../lib/artworks/document-media';
 import {artworkConclusion} from './ArtworkDocumentContent';
+import {ArtworkAvailability} from './ArtworkAvailability';
 import styles from './ArtworkDocument.module.css';
 export function ArtworkInitialDocument({content}:{content:ArtworkContent}){
  const mediaContext=useMediaDisplayContext();
@@ -22,5 +23,6 @@ export function ArtworkInitialDocument({content}:{content:ArtworkContent}){
   {rich.description&&<section data-document-description>{rich.description}</section>}
   {rich.provenance&&<section data-document-provenance><h2>Provenance</h2>{rich.provenance}</section>}
   <a href={localizedPath('/contact',content.locale,site.defaultLocale)+'?artwork='+art.id}>{site.messages['contact.artworkCta']}</a>
+  <ArtworkAvailability availableForSale={content.availableForSale} locale={content.locale}/>
  </article>;
 }

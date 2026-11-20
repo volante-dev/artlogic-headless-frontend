@@ -1,5 +1,6 @@
 "use client";
 import {ArtworkFinaleDetails} from "./ArtworkFinaleDetails";
+import {ArtworkAvailability} from "./ArtworkAvailability";
 import {artworkConclusion} from "./ArtworkDocumentContent";
 import type {GalleryExperience} from "../../lib/artworks/types";
 import {useSiteContent} from "../SiteContentProvider";
@@ -23,6 +24,6 @@ export function ArtworkInformation({content,headingId,className,headingComponent
     {showIdentity&&art.artist&&<Typography data-artwork-artist>{art.artist}</Typography>}
     {description&&<Typography component="div" lang={content.descriptionLocale??content.locale} style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere",maxWidth:"70ch"}}>{description}</Typography>}
     {details.length>0&&<dl>{details.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>}
-    </div><div data-artwork-finale-slot>{finaleActive!==undefined&&<ArtworkFinaleDetails persistent active={finaleActive} provenanceLabel="Provenance" provenance={conclusion.provenance}>{conclusion.description}</ArtworkFinaleDetails>}</div>{showContact&&<div data-artwork-information-contact><ArtworkInquiryLink id={art.id} locale={content.locale}/></div>}
+    </div><div data-artwork-finale-slot>{finaleActive!==undefined&&<ArtworkFinaleDetails persistent active={finaleActive} provenanceLabel="Provenance" provenance={conclusion.provenance}>{conclusion.description}</ArtworkFinaleDetails>}</div>{showContact&&<div data-artwork-information-contact><ArtworkInquiryLink id={art.id} locale={content.locale}/><ArtworkAvailability availableForSale={content.availableForSale} locale={content.locale} finaleOnly/></div>}
   </div>;
 }

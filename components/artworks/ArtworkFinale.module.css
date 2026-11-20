@@ -110,3 +110,12 @@
 .provenance{font-size:inherit;line-height:inherit;margin:1.6em 0 0;padding:0;border:0;color:inherit}
 .provenance h2{font-size:inherit;line-height:inherit;font-weight:500;color:inherit;margin:0 0 .4em}
 .provenance p{margin:0 0 .6em}
+
+/* Keep the availability below the fixed contact, clear of the reading viewport. */
+.contact{color:#f6f7f6}
+@container(max-width:899px) and (min-height:501px){
+ .reading:has(.contact [data-artwork-availability]) .details{bottom:124px}
+}
+@container(max-width:899px) and (max-height:500px){
+ .reading:has(.contact [data-artwork-availability]) .details{bottom:108px}
+}
