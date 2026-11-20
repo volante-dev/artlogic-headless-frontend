@@ -7,13 +7,14 @@ import {preservedEditorialQuery} from "../editorial/query";
 export const sections=["news","artworks","exhibitions","publications","expertise","contact"] as const;
 export type Section=typeof sections[number];
 export interface RoutingPolicy{defaultLocale:string;locales:readonly {code:string;label:string}[]}
-export interface SiteRoute{locale:string;logicalPath:string;section:Section|null;kind:"home"|"section"|"artwork"|"article"|"legal"|"store"|"unknown";artworkId?:string;articleKind?:"publication"|"news"|"exhibition";articleSlug?:string;explicitDefault:boolean}
+export interface SiteRoute{locale:string;logicalPath:string;section:Section|null;kind:"home"|"section"|"artwork"|"article"|"legal"|"store"|"link-in-bio"|"unknown";artworkId?:string;articleKind?:"publication"|"news"|"exhibition";articleSlug?:string;explicitDefault:boolean}
 export function localizedPath(path:string,locale:string,defaultLocale:string):string{return (locale===defaultLocale?"":"/"+locale)+(path==="/"?"":path)||"/";}
 export function classifyRoute(pathname:string,policy:RoutingPolicy):SiteRoute{
   const parts=pathname.split("/").filter(Boolean),first=parts[0];
   const explicit=policy.locales.some(l=>l.code===first),locale=explicit?parts.shift()!:policy.defaultLocale;
   const path="/"+parts.join("/"),base={locale,logicalPath:path,explicitDefault:explicit&&locale===policy.defaultLocale};
   if(!parts.length)return {...base,kind:"home",section:null};
+  if(path==="/link-in-bio")return {...base,kind:"link-in-bio",section:null};
   if(["/legal","/terms","/privacy"].includes(path))return {...base,kind:"legal",section:null};
   if(parts[0]==="store"&&(parts.length===1||parts.length===2&&["checkout","confirmation","order-tracking","withdrawal"].includes(parts[1]!)))return {...base,kind:"store",section:null};
   if(parts.length===1&&sections.includes(parts[0] as Section))return {...base,kind:"section",section:parts[0] as Section};
@@ -25,8 +26,11 @@ export function classifyRoute(pathname:string,policy:RoutingPolicy):SiteRoute{
   }
   return {...base,kind:"unknown",section:null};
 }
-export function isTechnicalPath(path:string):boolean{return /^\/api\/store\/products\/[a-f0-9-]{36}$/i.test(path)||path.startsWith("/api/store/")&&Boolean(publicCommerceOperation("GET",path.slice(11).split("/"))??publicCommerceOperation("POST",path.slice(11).split("/")))||path.startsWith("/api/forms/")&&Boolean(publicFormOperation("GET",path.slice(11).split("/"))??publicFormOperation("POST",path.slice(11).split("/"))??publicFormOperation("DELETE",path.slice(11).split("/")))||/^\/api\/artwork-experiences\/[a-z0-9-]{1,113}$/i.test(path)||["/api/artwork-catalog","/api/privacy/policy","/api/image-observations","/api/image-descriptors/query","/api/media-observations","/api/site-locale","/api/editorial/articles","/api/editorial/filters","/api/contact/config","/api/contact/inquiries","/api/contact/receipt"].includes(path)||path.startsWith("/_next/")||["/favicon.ico","/robots.txt","/sitemap.xml"].includes(path)||isBuiltinFontPath(path)||/^\/(?:media|site-logos|presentation-assets|editorial-assets)\/[0-9a-f-]{36}$/i.test(path);}
+export function isTechnicalPath(path:string):boolean{return /^\/api\/store\/products\/[a-f0-9-]{36}$/i.test(path)||path.startsWith("/api/store/")&&Boolean(publicCommerceOperation("GET",path.slice(11).split("/"))??publicCommerceOperation("POST",path.slice(11).split("/")))||path.startsWith("/api/forms/")&&Boolean(publicFormOperation("GET",path.slice(11).split("/"))??publicFormOperation("POST",path.slice(11).split("/"))??publicFormOperation("DELETE",path.slice(11).split("/")))||/^\/api\/artwork-experiences\/[a-z0-9-]{1,113}$/i.test(path)||["/api/link-in-bio","/api/artwork-catalog","/api/privacy/policy","/api/image-observations","/api/image-descriptors/query","/api/media-observations","/api/site-locale","/api/editorial/articles","/api/editorial/filters","/api/contact/config","/api/contact/inquiries","/api/contact/receipt"].includes(path)||path.startsWith("/_next/")||["/favicon.ico","/robots.txt","/sitemap.xml"].includes(path)||isBuiltinFontPath(path)||/^\/(?:media|site-logos|presentation-assets|editorial-assets)\/[0-9a-f-]{36}$/i.test(path);}
 export function preservedQuery(route:SiteRoute,query:URLSearchParams):string{
+  if(route.kind==='link-in-bio'){
+    const safe=new URLSearchParams(),cursor=query.get('cursor');if(query.getAll('cursor').length===1&&cursor&&cursor.length<=4096)safe.set('cursor',cursor);return safe.size?'?'+safe.toString():'';
+  }
   if(route.kind==='store'){
     const safe=new URLSearchParams(),name=route.logicalPath==='/store'?'cursor':route.logicalPath==='/store/confirmation'?'attempt':null;
     if(name&&query.getAll(name).length===1){const value=query.get(name)!;if(name==='cursor'?value.length>0&&value.length<=1024:/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value))safe.set(name,value);}

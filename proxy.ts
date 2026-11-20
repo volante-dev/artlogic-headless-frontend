@@ -14,10 +14,23 @@ export async function proxy(request:NextRequest){
     const parts=pathname.split("/");if(parts[2]==="render"){context.set("x-site-locale",parts[3]!);context.set("x-site-path","/"+parts.slice(4).join("/"));}
     return NextResponse.next({headers:previewHeaders,request:{headers:context}});
   }
+  if(pathname==='/api/link-in-bio')return NextResponse.next({request:{headers:context}});
   if(isTechnicalPath(pathname))return NextResponse.next({headers:privateHeaders,request:{headers:context}});
-  const policy=configuredLocalePolicy(loadConfig()),route=classifyRoute(pathname,policy);
+  const policy=configuredLocalePolicy(loadConfig());let route=classifyRoute(pathname,policy);
   const publicQuery=new URLSearchParams(request.nextUrl.searchParams);publicQuery.delete("_rsc");
   context.set("x-site-locale",route.locale);context.set("x-site-path",route.logicalPath);context.set("x-site-section",route.section??"");context.set("x-site-query",preservedQuery(route,publicQuery));
+  if(route.kind==='link-in-bio'){
+    if(loadConfig().LINK_IN_BIO_ENABLED!=='true')route={...route,kind:'unknown'};
+    else try{
+      const {loadLinkInBioCapabilities}=await import('./lib/link-in-bio/load-public');const capability=await loadLinkInBioCapabilities();
+      if(!capability?.routeClaimed)route={...route,kind:'unknown'};
+      else if(!capability.enabled||!capability.published||!capability.locales.includes(route.locale)){
+        context.set('x-site-error','page');context.set('x-site-page-status','404');return NextResponse.rewrite(new URL('/_not-found',request.url),{status:404,headers:privateHeaders,request:{headers:context}});
+      }else context.set('x-site-page-key','link-in-bio');
+    }catch{
+      context.set('x-site-error','page');context.set('x-site-page-status','503');return NextResponse.rewrite(new URL('/'+route.locale+route.logicalPath,request.url),{status:request.headers.get('rsc')==='1'?200:503,headers:privateHeaders,request:{headers:context}});
+    }
+  }
   if(route.explicitDefault&&route.kind!=="unknown"&&route.kind!=="artwork"&&route.kind!=="article"){
     const canonical=new URL(localizedPath(route.logicalPath,route.locale,policy.defaultLocale),request.url);canonical.search=request.nextUrl.search;
     return NextResponse.redirect(canonical,{status:308,headers:privateHeaders});

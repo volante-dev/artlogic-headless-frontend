@@ -18,6 +18,6 @@ export const loadPublicPresentation=cache(async()=>{
     if(result.releaseId!==release||result.pageIdentity?.canonicalPath!==canonical)throw new Error("presentation_release_changed");return result;
   }
   // Legal pages share the contact page's published branding, navigation and footer.
-  const pageKey:PageKey=["/legal","/terms","/privacy"].includes(path)||path==='/store'||path.startsWith('/store/')?"contact":path==="/"?"home":path.startsWith("/artworks/")?"artworkDetail":path.startsWith("/publications/")?"publications":path.startsWith("/news/")?"news":path.startsWith("/exhibitions/")?"exhibitions":path.slice(1) as PageKey;
+  const pageKey:PageKey=["/legal","/terms","/privacy","/link-in-bio"].includes(path)||path==='/store'||path.startsWith('/store/')?"contact":path==="/"?"home":path.startsWith("/artworks/")?"artworkDetail":path.startsWith("/publications/")?"publications":path.startsWith("/news/")?"news":path.startsWith("/exhibitions/")?"exhibitions":path.slice(1) as PageKey;
   return getPublicPresentation(pageKey,locale,undefined,context.get("x-vercel-id")??undefined);
 });

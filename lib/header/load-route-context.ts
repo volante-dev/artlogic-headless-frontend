@@ -23,8 +23,8 @@ export const loadHeaderRouteContext=cache(async():Promise<HeaderRouteSnapshot>=>
   if(article){result.article={id:article.id,alternatePaths:article.alternatePaths};}
   if(['/legal','/terms','/privacy'].includes(path))result.pageKey='legal';
   result.immersive=presentation.pageKey==='home'&&(!presentation.sections.length||presentation.sections[0]?.type==='heroMedia'&&presentation.sections[0].variant==='immersive');
-  if(path==='/store'||path.startsWith('/store/')||['/legal','/terms','/privacy'].includes(path)){
-   result.pageKey=path.startsWith('/store')?'store':'legal';result.immersive=false;result.hrefKey=localizedPath(path,site.locale,site.policy.defaultLocale)+(context.get('x-site-query')??'');delete result.pageIdentity;
+  if(path==='/link-in-bio'&&context.get('x-site-page-key')!=='galerist'||path==='/store'||path.startsWith('/store/')||['/legal','/terms','/privacy'].includes(path)){
+   result.pageKey=path==='/link-in-bio'?'link-in-bio':path.startsWith('/store')?'store':'legal';result.immersive=false;result.hrefKey=localizedPath(path,site.locale,site.policy.defaultLocale)+(context.get('x-site-query')??'');delete result.pageIdentity;
   }
  }catch{result.status='unavailable';delete result.presentation;delete result.navigation;delete result.pageIdentity;delete result.article;}
  return result;

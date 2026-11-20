@@ -5,7 +5,7 @@ import {classifyRoute} from "../../lib/i18n/routes";
 import {pageAlternates} from "../../lib/seo/metadata";
 import nextConfig from "../../next.config";
 
-const state=vi.hoisted(()=>({gallery:vi.fn(),editorial:vi.fn(),presentation:vi.fn(),config:{SITE_ORIGIN:"https://canonical.example",EDITORIAL_ENABLED:"true"}}));
+const state=vi.hoisted(()=>({gallery:vi.fn(),editorial:vi.fn(),presentation:vi.fn(),linkInBio:vi.fn(),config:{SITE_ORIGIN:"https://canonical.example",EDITORIAL_ENABLED:"true",LINK_IN_BIO_ENABLED:"false"}}));
 const policy={defaultLocale:"fr",locales:[{code:"fr",label:"Français"},{code:"en",label:"English"}]};
 vi.mock("next/server",()=>({connection:async()=>{}}));
 vi.mock("../../lib/config/env",()=>({loadConfig:()=>state.config,stringValue:(c:Record<string,string>,k:string)=>c[k],configuredLocalePolicy:()=>policy}));
@@ -13,10 +13,12 @@ vi.mock("../../lib/api/client",()=>({PublicApiError:class extends Error {status=
 vi.mock("../../lib/presentation/client",()=>({getPublicPresentation:state.presentation}));
 vi.mock("../../lib/artworks/server",()=>({getGalleryCatalog:state.gallery}));
 vi.mock("../../lib/editorial/server",()=>({getEditorialPage:state.editorial}));
+vi.mock("../../lib/link-in-bio/load-public",()=>({loadLinkInBioCapabilities:state.linkInBio}));
+vi.mock("server-only",()=>({}));
 import sitemap from "../../app/sitemap";
 
 beforeEach(()=>{
- vi.clearAllMocks();
+ vi.clearAllMocks();state.config.LINK_IN_BIO_ENABLED="false";state.linkInBio.mockResolvedValue({schemaVersion:1,supported:true,enabled:true,published:true,routeClaimed:true,locales:["fr","en"]});
  state.presentation.mockResolvedValue({releaseId:"published-release",pageIdentity:{alternatePaths:{fr:"/lucas-ratton",en:"/en/lucas-ratton"}}});
  state.gallery.mockImplementation(async({page}:{page:number})=>({items:[{slug:page===1?"published-one":"published-two"}],page,pageSize:100,pageCount:2,totalItems:101,catalogRevision:9}));
  state.editorial.mockImplementation(async(kind:string,locale:string)=>({items:[{canonicalPath:(locale==="en"?"/en":"")+"/"+({publication:"publications",news:"news",exhibition:"exhibitions"}[kind])+"/published-article"}],pageSize:48,total:1,catalogRevision:"17"}));
@@ -64,4 +66,8 @@ it("includes every published artwork page, legal pages and articles in each publ
 it("fails instead of advertising a silently truncated or inconsistent catalogue",async()=>{
  state.gallery.mockRejectedValueOnce(new Error("catalog_changed"));
  await expect(sitemap()).rejects.toThrow("catalog_changed");
+});
+
+it("advertises Link in bio only when its frontend flag, publication and route are active",async()=>{
+ expect((await sitemap()).some(i=>i.url.endsWith('/link-in-bio'))).toBe(false);expect(state.linkInBio).not.toHaveBeenCalled();state.config.LINK_IN_BIO_ENABLED='true';expect((await sitemap()).filter(i=>i.url.endsWith('/link-in-bio'))).toHaveLength(2);state.linkInBio.mockResolvedValueOnce(null);expect((await sitemap()).some(i=>i.url.endsWith('/link-in-bio'))).toBe(false);state.linkInBio.mockResolvedValueOnce({schemaVersion:1,supported:true,enabled:true,published:false,routeClaimed:false,locales:['fr','en']});expect((await sitemap()).some(i=>i.url.endsWith('/link-in-bio'))).toBe(false);state.linkInBio.mockRejectedValueOnce(Error('source-unavailable'));await expect(sitemap()).rejects.toThrow('source-unavailable');
 });

@@ -6,7 +6,8 @@ export const privateHeaders={"Cache-Control":"private, no-store","X-Content-Type
 export async function publicFetch(path:string,signal?:AbortSignal,options?:{method?:"GET"|"HEAD";displayId?:string;cardFocus?:boolean;saleAvailability?:boolean}):Promise<Response>{
   const editorial=/^\/v1\/public\/editorial\/(?:articles(?:\/(?:publication|news|exhibition)\/[^/?#]+)?|article-addresses\/[a-f0-9-]{36}|media\/[a-f0-9-]{36}\/authorization|filters)(?:\?[^#]*)?$/i;
   const commerce=/^\/v1\/public\/store(?:\/products(?:\/[a-f0-9-]{36})?|\/documents\/(?:legal|terms|privacy|withdrawal)|\/consent-policy|\/checkout-options)?(?:\?[^#]*)?$/i;
-  if(!commerce.test(path)&&!editorial.test(path)&&!/^\/v1\/public\/(?:artworks(?:\/[0-9a-f-]{36})?|artwork-catalog|artwork-experiences\/[a-z0-9-]{1,113}|(?:media|site-logos)\/[0-9a-f-]{36}(?:\/authorization)?|site-content)(?:\?[^#]*|$)$/i.test(path))throw new PublicApiError(400,"invalid_request");
+  const linkInBio=/^\/v1\/public\/link-in-bio(?:\/capabilities)?(?:\?[^#]*)?$/;
+  if(!linkInBio.test(path)&&!commerce.test(path)&&!editorial.test(path)&&!/^\/v1\/public\/(?:artworks(?:\/[0-9a-f-]{36})?|artwork-catalog|artwork-experiences\/[a-z0-9-]{1,113}|(?:media|site-logos)\/[0-9a-f-]{36}(?:\/authorization)?|site-content)(?:\?[^#]*|$)$/i.test(path))throw new PublicApiError(400,"invalid_request");
   const config=loadConfig();
   // Private media still passes through authorization on every read. Its bounded
   // deadline also covers API cold starts, which can exceed ordinary JSON reads.
