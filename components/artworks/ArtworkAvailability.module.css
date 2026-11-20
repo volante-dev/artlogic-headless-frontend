@@ -1,0 +1,19 @@
+.availability {
+ display:flex;
+ align-items:center;
+ gap:8px;
+ margin-block:20px 0;
+ color:inherit;
+ font-size:11px;
+ line-height:1.5;
+ letter-spacing:.08em;
+}
+.availability strong { font-weight:700; }
+.dot {
+ flex:none;
+ width:7px;
+ height:7px;
+ border-radius:50%;
+ /* Vert d’eau explicitly requested for the availability indicator. */
+ background:#98cbbb;
+}

@@ -277,6 +277,13 @@ export const gallerySchemas = {
             "type": "null"
           }
         ]
+      },
+      "availableForSale": {
+        "type": [
+          "boolean",
+          "null"
+        ],
+        "description": "Only returned when X-Artwork-Sale-Availability: 1 is requested. True only for Artlogic stock/consignment (status 1/2) with availability 1. Null means unknown or not synchronized by a compatible worker. Missing on older APIs; hide the availability indicator unless exactly true."
       }
     },
     "$defs": {
@@ -700,6 +707,13 @@ export const gallerySchemas = {
             "type": "null"
           }
         ]
+      },
+      "availableForSale": {
+        "type": [
+          "boolean",
+          "null"
+        ],
+        "description": "Only returned when X-Artwork-Sale-Availability: 1 is requested. True only for Artlogic stock/consignment (status 1/2) with availability 1. Null means unknown or not synchronized by a compatible worker. Missing on older APIs; hide the availability indicator unless exactly true."
       }
     },
     "$defs": {

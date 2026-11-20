@@ -7,7 +7,7 @@ import {Typography} from "../ui/Typography";
 import {FreshLink} from "../FreshLink";
 import {localizedPath} from "../../lib/i18n/routes";
 import {useContactExecutionMode} from "../../lib/contact/execution";
-export type ArtworkContent=Pick<GalleryExperience,"artwork"|"locale"|"description"|"descriptionLocale"|"heroFocus"|"importedDescription"|"importedDescriptionLocale"|"importedProvenance"|"importedProvenanceLocale">;
+export type ArtworkContent=Pick<GalleryExperience,"availableForSale"|"artwork"|"locale"|"description"|"descriptionLocale"|"heroFocus"|"importedDescription"|"importedDescriptionLocale"|"importedProvenance"|"importedProvenanceLocale">;
 export interface ArtworkInformationProps {content:ArtworkContent;headingId?:string;className?:string;headingComponent?:"h1"|"p";showIdentity?:boolean;showContact?:boolean;finaleActive?:boolean}
 export function ArtworkInquiryLink({id,locale}:{id:string;locale:string}){
   const {messages,defaultLocale,scope}=useSiteContent(),mode=useContactExecutionMode("live"),inert=mode==="inert"||scope==="preview";

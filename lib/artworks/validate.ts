@@ -4,6 +4,13 @@ import {gallerySchemas} from "./schemas.generated";
 import {parseHeroFocus} from "./focus";
 import type {ArtworkTypeFilters,GalleryArtwork,GalleryCatalog,GalleryExperience,GalleryPreviewExperience} from "./types";
 const richValidator=new Ajv2020({strict:true,coerceTypes:false,removeAdditional:false}).compile(gallerySchemas.EditorialRichText);
+function saleAvailability(value:unknown):{availableForSale?:boolean|null}{
+ const v=value as Record<string,unknown>;
+ if(!Object.hasOwn(v,"availableForSale"))return {};
+ if(v.availableForSale!==null&&typeof v.availableForSale!=="boolean")fail();
+ return {availableForSale:v.availableForSale as boolean|null};
+}
+function saleAvailabilityKeys(value:unknown){return value&&typeof value==="object"&&Object.hasOwn(value,"availableForSale")?["availableForSale"]:[];}
 const sourceKeys=["importedDescription","importedDescriptionLocale","importedProvenance","importedProvenanceLocale"] as const;
 function sourceFields(value:unknown):Pick<GalleryExperience,typeof sourceKeys[number]>{
  const v=value as Record<string,unknown>,result:Record<string,unknown>={};
@@ -47,20 +54,20 @@ export function parseGalleryCatalog(value:unknown,plp=false):GalleryCatalog{
  return {...(hasTypes?{typeFilters:parseTypeFilters(p.typeFilters)}:{}),...(plp?{display:"plp" as const,layout:p.layout as "grid"|"masonry"}:{}),items,query:p.query,page,pageSize,totalItems,pageCount,catalogRevision};
 }
 export function parseGalleryExperience(value:unknown):GalleryExperience{
- const d=record(value,["scope","artwork","locale","description","descriptionLocale","presentationReleaseId","catalogRevision",...presentSourceKeys(value),...(value&&typeof value==="object"&&Object.hasOwn(value,"heroFocus")?["heroFocus"]:[])]);
+ const d=record(value,["scope","artwork","locale","description","descriptionLocale","presentationReleaseId","catalogRevision",...saleAvailabilityKeys(value),...presentSourceKeys(value),...(value&&typeof value==="object"&&Object.hasOwn(value,"heroFocus")?["heroFocus"]:[])]);
  if(d.scope!=="public"||typeof d.locale!=="string"||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(d.locale))fail();
  const description=text(d.description),descriptionLocale=text(d.descriptionLocale),release=d.presentationReleaseId===null?null:id(d.presentationReleaseId);
  if(description===null?descriptionLocale!==null:!description.trim()||Array.from(description).length>5000||!descriptionLocale||!release)fail();
  const art=parseGalleryArtwork(d.artwork);
- return {...sourceFields(d),heroFocus:parseHeroFocus(d.heroFocus,art.media[0]?.id),scope:"public",artwork:art,locale:d.locale,description,descriptionLocale,presentationReleaseId:release,catalogRevision:integer(d.catalogRevision)};
+ return {...sourceFields(d),...saleAvailability(d),heroFocus:parseHeroFocus(d.heroFocus,art.media[0]?.id),scope:"public",artwork:art,locale:d.locale,description,descriptionLocale,presentationReleaseId:release,catalogRevision:integer(d.catalogRevision)};
 }
 export function parseGalleryPreviewExperience(value:unknown):GalleryPreviewExperience{
- const d=record(value,["scope","artwork","locale","description","descriptionLocale","snapshotId","revision","catalogRevision",...presentSourceKeys(value),...(value&&typeof value==="object"&&Object.hasOwn(value,"heroFocus")?["heroFocus"]:[])]);
+ const d=record(value,["scope","artwork","locale","description","descriptionLocale","snapshotId","revision","catalogRevision",...saleAvailabilityKeys(value),...presentSourceKeys(value),...(value&&typeof value==="object"&&Object.hasOwn(value,"heroFocus")?["heroFocus"]:[])]);
  if(d.scope!=="preview"||typeof d.locale!=="string"||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(d.locale)||typeof d.revision!=="string"||!/^[1-9][0-9]{0,19}$/.test(d.revision))fail();
  const description=text(d.description),descriptionLocale=text(d.descriptionLocale);
  if(description===null?descriptionLocale!==null:!description.trim()||Array.from(description).length>5000||!descriptionLocale||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(descriptionLocale))fail();
  const art=parseGalleryArtwork(d.artwork);
- return {...sourceFields(d),heroFocus:parseHeroFocus(d.heroFocus,art.media[0]?.id),scope:"preview",artwork:art,locale:d.locale,description,descriptionLocale,snapshotId:id(d.snapshotId),revision:d.revision,catalogRevision:integer(d.catalogRevision)};
+ return {...sourceFields(d),...saleAvailability(d),heroFocus:parseHeroFocus(d.heroFocus,art.media[0]?.id),scope:"preview",artwork:art,locale:d.locale,description,descriptionLocale,snapshotId:id(d.snapshotId),revision:d.revision,catalogRevision:integer(d.catalogRevision)};
 }
 
 function parseTypeFilters(value:unknown):ArtworkTypeFilters{
