@@ -1,0 +1,2 @@
+export function teamEmailHref(email?:string|null){return email&&!/[\u0000-\u001f\u007f]/u.test(email)&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)?'mailto:'+encodeURIComponent(email).replace(/%40/gi,'@'):undefined;}
+export function teamPhoneHref(phone?:string|null){if(!phone||!/^\+?[0-9 ().-]+$/.test(phone))return undefined;const digits=phone.replace(/\D/g,'');return digits.length>=6&&digits.length<=15?'tel:'+(phone.startsWith('+')?'+':'')+digits:undefined;}

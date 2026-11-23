@@ -1,3 +1,4 @@
+import {withPublicTeam} from "./team-client";
 import "server-only";
 import {diagnosticId,failureKind,presentationReadLog,type PresentationReadEvent} from "./diagnostics";
 import {loadConfig,stringValue,numberValue} from "../config/env";
@@ -5,12 +6,14 @@ import {PublicApiError} from "../api/client";
 import {pageKeys,type PageKey} from "./types";
 import {validatePresentationAddress,validatePublicPresentation} from "./validate-response";
 
-export async function getPublicPresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string){
+async function getPublicBasePresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string){
   const config=loadConfig();
   if(!pageKeys.includes(pageKey)||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(locale)||locale.length>35)throw new PublicApiError(400,"invalid_request");
   const query=new URLSearchParams({pageKey,locale});if(expectedReleaseId)query.set("expectedReleaseId",expectedReleaseId);
   return presentationJson("presentation",query,locale,raw=>validatePublicPresentation(raw,{profileId:stringValue(config,"SITE_PROFILE"),pageKey,locale}),pageKey,renderId);
 }
+
+export async function getPublicPresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string){const load=()=>getPublicBasePresentation(pageKey,locale,expectedReleaseId,renderId);return withPublicTeam(await load(),load);}
 
 async function presentationJson<T>(operation:'presentation'|'page-address',query:URLSearchParams,locale:string,validate:(raw:unknown)=>T,pageKey?:string,renderId?:string):Promise<T>{
  const config=loadConfig(),readId=crypto.randomUUID(),timeoutMs=numberValue(config,"PUBLIC_PAGE_REQUEST_TIMEOUT_MS"),started=performance.now();

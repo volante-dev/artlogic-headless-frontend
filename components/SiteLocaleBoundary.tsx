@@ -1,4 +1,5 @@
 "use client";
+import {validateTeamProjection} from "../lib/presentation/validate-team-response";
 import {validateNavigation} from "../lib/navigation/validate";
 import type {NavigationPublicProjection} from "../lib/navigation/types";
 import type {PublicPresentation} from "../lib/presentation/types";
@@ -49,14 +50,16 @@ export function SiteLocaleBoundary({locale,messages,policy,profileId,siteName,ch
   setPending(true);setError(false);
   void(async()=>{
    try{
-    const response=await fetch("/api/site-locale?"+query,{cache:"no-store",credentials:"omit",redirect:"error",signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)])});
+    const response=await fetch("/api/site-locale?"+query,{headers:{"X-Presentation-Team":"1"},cache:"no-store",credentials:"omit",redirect:"error",signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)])});
     if(!response.ok){if(response.status===404&&route.kind==="artwork")window.dispatchEvent(new Event("artwork-revalidate"));throw new Error("locale_unavailable");}
     const reader=response.body?.getReader();if(!reader)throw new Error("locale_unavailable");
     let bytes=0,text="";const decoder=new TextDecoder();
     try{for(;;){const part=await reader.read();if(part.done)break;bytes+=part.value.byteLength;if(bytes>10485760)throw new Error("locale_too_large");text+=decoder.decode(part.value,{stream:true});}text+=decoder.decode();}finally{await reader.cancel().catch(()=>undefined);reader.releaseLock();}
     const value=JSON.parse(text) as LocalePayload;
     if(value.locale!==next||!value.messages||messageRegistry.messages.some(m=>typeof value.messages[m.key]!=="string"||!value.messages[m.key].trim()||Array.from(value.messages[m.key]).length>m.maxLength))throw new Error("invalid_locale");
-    value.presentation=validatePublicPresentation(value.presentation,{profileId,pageKey,locale:next});
+    const {teamExtension,...basePresentation}=value.presentation;
+    value.presentation=validatePublicPresentation(basePresentation,{profileId,pageKey,locale:next});
+    if(teamExtension)try{value.presentation.teamExtension=validateTeamProjection(teamExtension,{scope:"public",id:value.presentation.releaseId,pageKey,locale:next});}catch{value.presentation.teamExtension=null;}
     value.navigation=validateNavigation(value.navigation,{scope:"public",locale:next,id:value.presentation.releaseId,policy}) as NavigationPublicProjection;
     if(route.kind==="artwork"){
      value.artwork=parseGalleryExperience(value.artwork);

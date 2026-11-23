@@ -1,0 +1,12 @@
+import type {Meta,StoryObj} from "@storybook/nextjs-vite";
+import {OurTeam} from "./OurTeam";
+import type {TeamSection} from "../lib/presentation/team-types";
+export const fixtureTeam=(founders=2,total=8):TeamSection=>{const people=Array.from({length:total},(_,i)=>({id:`10000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`,firstName:'Personne',lastName:`de recette ${i+1}`,focalPoint:{x:.5,y:.5},photo:{id:'11111111-1111-4111-8111-111111111111',kind:'image' as const,path:'/v1/public/presentation-assets/11111111-1111-4111-8111-111111111111?variant=w640',mimeType:'image/webp' as const,byteSize:100,width:640,height:800}}));return {id:'10000000-0000-4000-8000-000000000099',title:'Notre équipe',afterSectionId:null,founders:people.slice(0,founders),members:people.slice(founders)};};
+const meta={title:'Sections/OurTeam',component:OurTeam,args:{section:fixtureTeam()},tags:['autodocs']} satisfies Meta<typeof OurTeam>;export default meta;
+type Story=StoryObj<typeof meta>;
+export const TwoFounders:Story={};
+export const OneFounder:Story={args:{section:fixtureTeam(1,5)}};
+export const WithoutFounders:Story={args:{section:fixtureTeam(0,6)}};
+export const OnlyFounders:Story={args:{section:fixtureTeam(2,2)}};
+export const ThirtyPeople:Story={args:{section:fixtureTeam(4,30)}};
+export const Empty:Story={args:{section:fixtureTeam(0,0)}};

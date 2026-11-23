@@ -1,3 +1,4 @@
+import {readTeamPreview} from "./team-preview-client";
 import {validateNavigation} from "../navigation/validate";
 import type {NavigationPreviewProjection} from "../navigation/types";
 import {configuredLocalePolicy} from "../config/env";
@@ -36,7 +37,7 @@ export async function readPreviewStatus():Promise<PreviewStatus>{const data=awai
 export async function closePreview(csrf:string){await call("close",{handle:await previewHandle(),csrf});}
 export async function readPreviewArtwork(){const data=await call("artwork",{handle:await previewHandle()});try{return parseGalleryPreviewExperience(data);}catch{throw new PublicApiError(503,"invalid_response");}}
 export async function readPreviewPresentation(pageKey:PageKey,locale:string){
- const data=await call("presentation",{handle:await previewHandle(),query:new URLSearchParams({pageKey,locale})});return validatePreviewPresentation(data,{profileId:stringValue(loadConfig(),"SITE_PROFILE"),pageKey,locale});
+ const data=await call("presentation",{handle:await previewHandle(),query:new URLSearchParams({pageKey,locale})});const presentation=validatePreviewPresentation(data,{profileId:stringValue(loadConfig(),"SITE_PROFILE"),pageKey,locale});return {...presentation,teamExtension:await readTeamPreview(presentation.snapshotId,pageKey,locale)};
 }
 
 export async function readPreviewNavigation(locale:string,snapshotId:string):Promise<NavigationPreviewProjection>{const value=await call("navigation",{handle:await previewHandle(),query:new URLSearchParams({locale,expectedSnapshotId:snapshotId})});return validateNavigation(value,{scope:"preview",locale,id:snapshotId,policy:configuredLocalePolicy(loadConfig())}) as NavigationPreviewProjection;}

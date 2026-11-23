@@ -17,6 +17,7 @@ function ArtworkContents({presentation,content,siteName,demonstration}:ArtworkDo
   const required=presentation.sections.filter(section=>section.type==="artworkDetails");
   if(required.length!==1)throw new Error("artwork_scene_required");
   const sections=presentation.sections.filter(section=>section.type!=="artworkDetails");
-  const supplementalContent=sections.length>0?<PageRenderer presentation={{...presentation,sections}} data={{artwork:content.artwork}} siteName={siteName} demonstration={demonstration} includeContactForm={false} contactMode={contactMode} applyTranslation={false}/>:undefined;
+  const extension=presentation.teamExtension;const teamExtension=extension?{...extension,section:extension.section?{...extension.section,afterSectionId:extension.section.afterSectionId===required[0]!.id?null:extension.section.afterSectionId}:null,...("diagnostic" in extension?{diagnostic:extension.diagnostic?{...extension.diagnostic,afterSectionId:extension.diagnostic.afterSectionId===required[0]!.id?null:extension.diagnostic.afterSectionId}:null}:{})}:undefined;
+  const supplementalContent=sections.length>0||teamExtension?.section||teamExtension&&"diagnostic" in teamExtension&&teamExtension.diagnostic?<PageRenderer presentation={{...presentation,sections,teamExtension}} data={{artwork:content.artwork}} siteName={siteName} demonstration={demonstration} includeContactForm={false} contactMode={contactMode} applyTranslation={false}/>:undefined;
   return <ArtworkExperience id={required[0]!.id} content={content} InformationView={ArtworkInformation} ProgressView={ArtworkProgress} supplementalContent={supplementalContent}/>;
 }

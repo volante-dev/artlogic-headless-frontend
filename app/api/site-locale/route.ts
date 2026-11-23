@@ -32,7 +32,9 @@ export async function GET(request:Request){
   const [site,presentation,artwork]=await Promise.all([getSiteContent(locale),localizedPresentation(),reference?getGalleryExperience(reference,locale,request.signal):null]);
   if(site.policy.defaultLocale!==policy.defaultLocale||canonicalJson(site.policy.locales)!==canonicalJson(policy.locales)||artwork&&artwork.presentationReleaseId!==presentation.releaseId)throw new PublicApiError(503,"invalid_response");
   const navigation=await getPublicNavigation(locale,presentation.releaseId);
-  return Response.json({navigation,locale,messages:site.messages,presentation,artwork,article,editorialPage,editorialFilters,editorialQuery},{headers:privateHeaders});
+  const legacyPresentation={...presentation};delete legacyPresentation.teamExtension;
+  const negotiatedPresentation=request.headers.get("x-presentation-team")==="1"?presentation:legacyPresentation;
+  return Response.json({navigation,locale,messages:site.messages,presentation:negotiatedPresentation,artwork,article,editorialPage,editorialFilters,editorialQuery},{headers:privateHeaders});
  }catch(error){
   const status=error instanceof PublicApiError&&[400,404,429].includes(error.status)?error.status:503;
   return Response.json({error:{code:status===400?"invalid_request":status===404?"not_found":status===429?"rate_limited":"service_unavailable"}},{status,headers:privateHeaders});

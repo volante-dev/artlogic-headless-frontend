@@ -1,5 +1,5 @@
 import type {components} from "../api/generated";
-export type PublicPresentation=components["schemas"]["PresentationPublic"];
+export type PublicPresentation=components["schemas"]["PresentationPublic"]&{teamExtension?:import("./team-types").TeamExtension|null};
 export type PresentationTheme=components["schemas"]["PresentationTheme"];
 export type PresentationAsset=components["schemas"]["PresentationPublicAsset"];
 export type PresentationSection=components["schemas"]["ResolvedPresentationSection"];
