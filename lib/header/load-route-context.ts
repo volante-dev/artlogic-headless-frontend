@@ -7,14 +7,19 @@ import {loadPublicPresentation} from '../presentation/load-public';
 import {loadPublicNavigation} from '../navigation/load-public';
 import {loadPublicArticle} from '../editorial/load-article';
 import {localizedPath,sections,type Section} from '../i18n/routes';
-import type {HeaderRouteSnapshot} from './navigation-state';
+import type {HeaderCommerceAvailability,HeaderRouteSnapshot} from './navigation-state';
 import {loadConfig} from '../config/env';
 import {loadStoreCapabilities} from '../commerce/catalog';
+// Stream secondary links independently; a Store outage must not delay public pages.
+const loadHeaderCommerce=cache(async(locale:string):Promise<HeaderCommerceAvailability>=>{
+ const config=loadConfig();try{const store=await loadStoreCapabilities(locale),storeAvailable=config.COMMERCE_ENABLED==='true'&&store.enabled;return {storeAvailable,storeTrackingAvailable:store.trackingAvailable||storeAvailable};}
+ catch{return {storeAvailable:false,storeTrackingAvailable:false};}
+});
 export const loadHeaderRouteContext=cache(async():Promise<HeaderRouteSnapshot>=>{
  const context=await headers(),path=context.get('x-site-path')??'/',section=context.get('x-site-section');
  const [site,presentationRead]=await Promise.all([loadSiteContent(),context.get('x-site-error')==='page'?Promise.resolve(null):loadPublicPresentation().catch(()=>null)]);
  const result:HeaderRouteSnapshot={version:1,requestId:randomUUID(),scope:'public',site,locale:site.locale,hrefKey:localizedPath(path,site.locale,site.policy.defaultLocale)+(context.get('x-site-query')??''),pageKey:'unknown',section:sections.includes(section as Section)?section as Section:null,immersive:false,status:'ready'};
- const config=loadConfig();if(config.COMMERCE_ENABLED==='true'||config.COMMERCE_SERVICE_KEY)try{const store=await loadStoreCapabilities(site.locale);result.storeAvailable=config.COMMERCE_ENABLED==='true'&&store.enabled;result.storeTrackingAvailable=store.trackingAvailable||result.storeAvailable;}catch{result.storeAvailable=false;result.storeTrackingAvailable=false;}
+ const config=loadConfig();if(config.COMMERCE_ENABLED==='true'||config.COMMERCE_SERVICE_KEY)result.commerce=loadHeaderCommerce(site.locale);
  if(context.get('x-site-error')==='page'){result.status=context.get('x-site-page-status')==='404'?'not-found':'unavailable';return result;}
  try{
   const presentation=presentationRead;if(!presentation)throw new Error('presentation_unavailable');result.presentation=presentation;result.pageKey=presentation.pageKey;result.pageIdentity=presentation.pageIdentity;

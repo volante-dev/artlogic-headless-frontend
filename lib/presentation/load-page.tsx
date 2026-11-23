@@ -16,6 +16,7 @@ import {randomUUID} from "node:crypto";
 import {OriginFreshnessBeacon} from "../../components/artworks/OriginFreshnessBeacon";
 /** All I/O and current publication checks finish before data reaches replaceable views. */
 export async function PublicPage({searchParams,artworkId}:{searchParams?:Promise<CatalogParams>;artworkId?:string}={}){
+  const routeContext=loadHeaderRouteContext();
   const [presentation,site]=await Promise.all([loadPublicPresentation(),loadSiteContent()]),data:PageData={},locale=presentation.locale;
   if(presentation.pageKey==="artworks"){
     const params:CatalogParams=await(searchParams??Promise.resolve({}));
@@ -35,5 +36,5 @@ export async function PublicPage({searchParams,artworkId}:{searchParams?:Promise
     if(!artworkId)notFound();try{data.artwork=await getArtwork(artworkId,locale);}catch(error){if(error instanceof PublicApiError&&error.status===404)notFound();throw error;}
   }
   const content=<PageRenderer presentation={presentation} siteName={site.siteName} contactMode={loadConfig().DATA_MODE==="mock"?"captured":"live"} demonstration={loadConfig().DATA_MODE==="mock"} data={data}/>;
-  return <>{presentation.pageKey==="artworks"?<div data-native-catalog-page>{content}<noscript><style>{`body:has([data-native-catalog-page]){display:flex;flex-direction:column}body:has([data-native-catalog-page]) div:has(footer),body:has([data-native-catalog-page]) div[hidden]:has([data-native-catalog-page]){display:contents!important}body:has([data-native-catalog-page]) main:has([data-testid="catalog-loading"]){display:contents}body:has([data-native-catalog-page]) [data-testid="catalog-loading"]{display:none}body:has([data-native-catalog-page]) [data-native-catalog-page]{order:1;width:100%}body:has([data-native-catalog-page]) footer{order:2}`}</style></noscript></div>:content}<OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await loadHeaderRouteContext()}/></>;
+  return <>{presentation.pageKey==="artworks"?<div data-native-catalog-page>{content}<noscript><style>{`body:has([data-native-catalog-page]){display:flex;flex-direction:column}body:has([data-native-catalog-page]) div:has(footer),body:has([data-native-catalog-page]) div[hidden]:has([data-native-catalog-page]){display:contents!important}body:has([data-native-catalog-page]) main:has([data-testid="catalog-loading"]){display:contents}body:has([data-native-catalog-page]) [data-testid="catalog-loading"]{display:none}body:has([data-native-catalog-page]) [data-native-catalog-page]{order:1;width:100%}body:has([data-native-catalog-page]) footer{order:2}`}</style></noscript></div>:content}<OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await routeContext}/></>;
 }

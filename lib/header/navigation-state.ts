@@ -5,11 +5,13 @@ import type {Section} from '../i18n/routes';
 import type {loadSiteContent} from '../i18n/load-site-content';
 export const HEADER_HISTORY_KEY='__siteHeaderNavigation';
 export interface HeaderDestination {href:string;kind:'home'|'menu'|'same-document'|'external';scope:'public'|'preview';pageKey?:string}
+export interface HeaderCommerceAvailability {storeAvailable:boolean;storeTrackingAvailable:boolean}
 export interface HeaderRouteSnapshot {
  version:1;requestId:string;hrefKey:string;scope:'public';locale:string;pageKey:string;section:Section|null;
  site:Awaited<ReturnType<typeof loadSiteContent>>;presentation?:PublicPresentation;navigation?:NavigationPublicProjection;
  pageIdentity?:PublicPresentation['pageIdentity'];article?:{id:string;alternatePaths:Record<string,string>};immersive:boolean;
  storeAvailable?:boolean;storeTrackingAvailable?:boolean;status:'ready'|'not-found'|'unavailable';
+ commerce?:Promise<HeaderCommerceAvailability>;
 }
 export interface HeaderHistoryEntry {version:1;entryId:string;hrefKey:string;lastRequestId?:string}
 export interface HeaderNavigationIntent {generation:number;entryId:string;target:string;source:'header'|'history';baselineRequestId?:string;refreshRequested:boolean;deadline:number}
