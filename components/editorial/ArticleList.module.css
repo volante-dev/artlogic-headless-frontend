@@ -9,6 +9,8 @@
 .loading,.empty,.error{position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}.error{min-height:160px;color:var(--site-color-error)}.loader{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;color:var(--site-color-mutedText)}.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 @media(max-width:899px){.heading{align-items:start;flex-direction:column;gap:24px}.title{font-size:clamp(2.75rem,12vw,5rem)!important}.search{width:100%}.cards{display:flex;flex-direction:column;gap:40px}.lead .cardLink{min-height:500px}.lead .cardTitle{font-size:clamp(2.25rem,8vw,3.5rem)!important}.lead .cardText{padding-top:300px}.byline{gap:8px 16px}.byline>span:before{display:none}.cardTitle{font-size:1.75rem!important}.filterBar{gap:8px 20px}.compact .cardLink{grid-template-columns:96px minmax(0,1fr);gap:16px}.compact .cardTitle{font-size:1.125rem!important}}
+/* Match the artwork catalogue’s mobile page gutters. */
+@media(max-width:767px){.list{padding-inline:8px}}
 @media(prefers-reduced-motion:reduce){.image{transition:none}.cardLink:hover .image{transform:none}}
 
 .period{margin:1rem 0;font-size:clamp(1rem,1.5vw,1.4rem);line-height:1.5;color:inherit;}
