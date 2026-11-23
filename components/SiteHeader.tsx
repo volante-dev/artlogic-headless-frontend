@@ -3,7 +3,9 @@ import {useHeaderMenuMotion} from "./header/useHeaderMenuMotion";
 import type {NavigationProjection} from "../lib/navigation/types";
 import type {PublicPresentation} from "../lib/presentation/types";
 import{useEditorialSurface}from"./editorial/immersive/EditorialInteractionProvider";
-import {useEffect,useLayoutEffect,useRef,useState,useSyncExternalStore,type CSSProperties} from "react";
+import {Suspense,useEffect,useLayoutEffect,useRef,useState,useSyncExternalStore,type CSSProperties} from "react";
+import {HeaderCommerceBoundary} from "./header/HeaderCommerceBoundary";
+import type {HeaderCommerceAvailability} from "../lib/header/navigation-state";
 import {HeaderLink} from "./header/HeaderLink";
 import type {SiteMessages} from "@/lib/i18n/messages.generated";
 import {localizedPath,type Section} from "@/lib/i18n/routes";
@@ -13,10 +15,10 @@ import {useSiteLocale} from "./SiteLocaleBoundary";
 const compactQuery="(max-width:1099px)";
 const subscribeCompact=(notify:()=>void)=>{const query=matchMedia(compactQuery);query.addEventListener("change",notify);return ()=>query.removeEventListener("change",notify);};
 const readCompact=()=>matchMedia(compactQuery).matches;
-export interface SiteHeaderProps{storeHref?:string;storeActive?:boolean;navigation?:NavigationProjection;languageCount?:number;galeristNavigation?:PublicPresentation["galeristNavigation"];galeristActive?:boolean;siteName:string;locale:string;defaultLocale:string;messages:SiteMessages;section:Section|null;languageControl?:React.ReactNode;logo?:React.ReactNode;whiteLogo?:React.ReactNode;immersive?:boolean}
-export function SiteHeader({storeHref,storeActive=false,navigation,languageCount=2,galeristActive=false,siteName,locale:initialLocale,defaultLocale,messages:initialMessages,section,languageControl,logo,whiteLogo,immersive=false}:SiteHeaderProps){
+export interface SiteHeaderProps{commerce?:Promise<HeaderCommerceAvailability>;storeHref?:string;storeActive?:boolean;navigation?:NavigationProjection;languageCount?:number;galeristNavigation?:PublicPresentation["galeristNavigation"];galeristActive?:boolean;siteName:string;locale:string;defaultLocale:string;messages:SiteMessages;section:Section|null;languageControl?:React.ReactNode;logo?:React.ReactNode;whiteLogo?:React.ReactNode;immersive?:boolean}
+export function SiteHeader({commerce,storeHref,storeActive=false,navigation,languageCount=2,galeristActive=false,siteName,locale:initialLocale,defaultLocale,messages:initialMessages,section,languageControl,logo,whiteLogo,immersive=false}:SiteHeaderProps){
   const site=useSiteContent(),dynamic=useSiteLocale(),locale=dynamic?site.locale:initialLocale,messages=dynamic?site.messages:initialMessages;
-  const menu=dynamic?.translation?.navigation??navigation,links=menu?.items??[],hasCompactContent=links.length>0||Boolean(storeHref)||languageCount>1;
+  const menu=dynamic?.translation?.navigation??navigation,links=menu?.items??[],hasCompactContent=links.length>0||Boolean(storeHref||commerce)||languageCount>1;
   const compact=useSyncExternalStore(subscribeCompact,readCompact,()=>false);
   const [phase,setPhase]=useState<"closed"|"open"|"closing">("closed");
   const header=useRef<HTMLElement>(null),frame=useRef<HTMLDivElement>(null),button=useRef<HTMLButtonElement>(null),controls=useRef<HTMLDivElement>(null);
@@ -63,6 +65,7 @@ export function SiteHeader({storeHref,storeActive=false,navigation,languageCount
     root.style.overflow="hidden";body.style.overflow="hidden";for(const {node}of background)node.inert=true;
     return ()=>{root.style.overflow=overflow;body.style.overflow=bodyOverflow;for(const {node,inert}of background)node.inert=node.id==="contenu"&&node.hasAttribute("data-header-state")?node.getAttribute("data-header-state")!=="ready":inert;};
   },[active]);
+  const storeEntry=<li data-menu-content style={{'--menu-item':links.length} as CSSProperties}><HeaderLink href={storeHref??localizedPath('/store',locale,defaultLocale)} onAccepted={navigate} aria-current={storeActive?'page':undefined}>{messages['commerce.store']}</HeaderLink></li>;
   return <><a className="skip" href="#contenu">{messages["header.skipToContent"]}</a><header ref={header} className={`${styles.header} ${immersive?styles.immersive:""}`} data-menu-state={compact?phase:"closed"} data-header-appearance={immersive?"immersive":"standard"} onKeyDown={event=>{
     if(!active)return;
     if(event.key==="Escape"){event.preventDefault();close();}
@@ -80,7 +83,7 @@ export function SiteHeader({storeHref,storeActive=false,navigation,languageCount
         <span className={styles.menuIcon} data-menu-icon aria-hidden="true"><span/><span/></span>
       </button>}
       <div ref={controls} id="site-navigation" className={styles.controls} inert={compact&&!open||undefined} aria-hidden={compact&&!open||undefined}>
-        {(links.length>0||storeHref)&&<nav aria-label={messages["header.navigationLabel"]}><ul className={styles.links}>{links.map((item,index)=><li key={item.pageKey} data-menu-content style={{"--menu-item":index} as CSSProperties}><HeaderLink href={item.href} onAccepted={navigate} aria-current={(item.pageKey==="galerist"?galeristActive:section===item.pageKey)?"page":undefined}>{item.pageKey==="galerist"?item.name:messages[`nav.${item.pageKey}`]}</HeaderLink></li>)}{storeHref&&<li data-menu-content style={{'--menu-item':links.length} as CSSProperties}><HeaderLink href={storeHref} onAccepted={navigate} aria-current={storeActive?'page':undefined}>{messages['commerce.store']}</HeaderLink></li>}</ul></nav>}
+        {(links.length>0||storeHref||commerce)&&<nav aria-label={messages["header.navigationLabel"]}><ul className={styles.links}>{links.map((item,index)=><li key={item.pageKey} data-menu-content style={{"--menu-item":index} as CSSProperties}><HeaderLink href={item.href} onAccepted={navigate} aria-current={(item.pageKey==="galerist"?galeristActive:section===item.pageKey)?"page":undefined}>{item.pageKey==="galerist"?item.name:messages[`nav.${item.pageKey}`]}</HeaderLink></li>)}{commerce?<Suspense fallback={null}><HeaderCommerceBoundary availability={commerce} render={value=>value.storeAvailable?storeEntry:null}/></Suspense>:storeHref&&storeEntry}</ul></nav>}
         <div className={styles.languageSlot} data-menu-content onClick={event=>{if(open&&(event.target as Element).closest("a"))close();}}>{languageControl}</div>
       </div>
     </div>

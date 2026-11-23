@@ -16,10 +16,11 @@ import {OriginFreshnessBeacon} from "../artworks/OriginFreshnessBeacon";
 import {randomUUID} from "node:crypto";
 export async function EditorialListPage({kind,searchParams}:{kind:ArticleKind;searchParams:Promise<Record<string,string|string[]|undefined>>}){
  if(loadConfig().EDITORIAL_ENABLED!=="true")return <PageShell section={articleKindDescriptors[kind].section}/>;
- const site=await loadSiteContent(),presentation=await loadPublicPresentation();let query;try{query=parseEditorialQuery(editorialSearchParams(await searchParams));}catch{return <><ArticleList kind={kind} initialPage={null} initialFilters={null} initialQuery={{page:1,pageSize:24}} initialError="invalid_request"/><HeaderRouteCommit snapshot={await loadHeaderRouteContext()}/></>;}
+ const routeContext=loadHeaderRouteContext();
+ const [site,presentation]=await Promise.all([loadSiteContent(),loadPublicPresentation()]);let query;try{query=parseEditorialQuery(editorialSearchParams(await searchParams));}catch{return <><ArticleList kind={kind} initialPage={null} initialFilters={null} initialQuery={{page:1,pageSize:24}} initialError="invalid_request"/><HeaderRouteCommit snapshot={await routeContext}/></>;}
  let page:ArticlePage|null=null,filters:ArticleFilters|null=null,error:string|undefined;
  const locale=(await headers()).get("x-site-locale")??site.locale,results=await Promise.allSettled([getEditorialPage(kind,locale,query),getEditorialFilters(kind,locale)]);
  if(results[0].status==="fulfilled")page=results[0].value;else error=results[0].reason instanceof PublicApiError?results[0].reason.code:"service_unavailable";
  if(results[1].status==="fulfilled")filters=results[1].value;else error??="service_unavailable";
- return <><ArticleList kind={kind} initialPage={page} initialFilters={filters} initialQuery={query} initialError={error}/>{presentation.sections.length>0&&<PageRenderer presentation={presentation} siteName={site.siteName} includePageTitle={false}/>}<OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await loadHeaderRouteContext()}/></>;
+ return <><ArticleList kind={kind} initialPage={page} initialFilters={filters} initialQuery={query} initialError={error}/>{presentation.sections.length>0&&<PageRenderer presentation={presentation} siteName={site.siteName} includePageTitle={false}/>}<OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await routeContext}/></>;
 }
