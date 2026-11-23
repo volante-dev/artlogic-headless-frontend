@@ -5,6 +5,7 @@ import{parseImageQuery,imageUUID,type ImageResource}from'./public-image-url';
 import{validateImageDescriptor}from'./public-image-descriptor';
 import{validateImageGrant}from'./public-image-authorization';
 import{publicImageCacheHeaders}from'./public-image-cache';
+import{relayInventoryPublicMedia}from'./inventory-public-media';
 const apiRoots={artwork:'media',siteLogo:'site-logos',presentation:'presentation-assets',editorial:'editorial/media',commerce:'store/media'};
 export async function imageApi(path:string,body?:unknown,signal?:AbortSignal){
  if(!/^\/v1\/public\/(?:(?:media|site-logos|presentation-assets|editorial\/media|store\/media)\/[a-f0-9-]{36}\/image-authorization\?rendition=[a-z0-9-]+&version=[a-zA-Z0-9._%-]+|image-descriptors\/query|image-observations)$/.test(path))throw Error('invalid_image_path');
@@ -22,6 +23,7 @@ export async function relayResponsiveImage(request:Request,id:string,kind:ImageR
    const descriptor=validateImageDescriptor(item.descriptor,resource);const candidate=descriptor.candidates.find(c=>c.rendition===q.rendition);const mime=q.rendition==='r1-reference'||descriptor.candidates.every(c=>c.mode==='reference')?descriptor.source.mimeType:candidate?.mode==='reference'?descriptor.source.mimeType:undefined;if(mime&&!['image/webp','image/jpeg','image/png','image/gif','image/svg+xml'].includes(mime))throw Error();return new Response(null,{status:200,headers:{...privateHeaders,...(mime?{'Content-Type':mime}:{})}});
   }
   const value=await imageApi('/v1/public/'+apiRoots[kind]+'/'+resource.resourceId+'/image-authorization?rendition='+q.rendition+'&version='+encodeURIComponent(q.version),undefined,request.signal),grant=validateImageGrant(value,resource,q.version,q.rendition,listValue(loadConfig(),'PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON'));
+  if('transport' in grant.delivery)return await relayInventoryPublicMedia(request,resource.resourceId,grant.delivery.sourceVersion,grant.delivery.rendition);
   return new Response(null,{status:307,headers:{...privateHeaders,...publicImageCacheHeaders(grant.delivery.expiresAt),Location:grant.delivery.url}});
  }catch(e){const status=e instanceof PublicApiError?e.status:e instanceof Error&&e.message==='invalid_request'?400:503;return head?new Response(null,{status,headers:privateHeaders}):Response.json({error:{code:status===404?'not_found':status===400?'invalid_request':'service_unavailable'}},{status,headers:privateHeaders});}
 }

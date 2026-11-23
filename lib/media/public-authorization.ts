@@ -1,7 +1,11 @@
 export interface PublicMediaGrant{resourceId:string;version:string;url:string;expiresAt:string;mimeType:"image/webp";byteSize:number}
+export interface InventoryPublicMediaGrant{transport:"inventory_relay";resourceId:string;version:string;expiresAt:string;mimeType:"image/webp";byteSize:number}
 const keys=["resourceId","version","url","expiresAt","mimeType","byteSize"];
-export function validatePublicMediaGrant(value:unknown,id:string,origins:readonly string[],now=Date.now()):PublicMediaGrant{
+export function validatePublicMediaGrant(value:unknown,id:string,origins:readonly string[],now?:number,allowInventory?:false):PublicMediaGrant;
+export function validatePublicMediaGrant(value:unknown,id:string,origins:readonly string[],now:number|undefined,allowInventory:boolean):PublicMediaGrant|InventoryPublicMediaGrant;
+export function validatePublicMediaGrant(value:unknown,id:string,origins:readonly string[],now=Date.now(),allowInventory=false):PublicMediaGrant|InventoryPublicMediaGrant{
  if(!value||typeof value!=="object"||Array.isArray(value))throw Error("invalid_response");const g=value as PublicMediaGrant;
+ if("transport" in g){const n=value as InventoryPublicMediaGrant,fields=["transport","resourceId","version","expiresAt","mimeType","byteSize"],expiry=Date.parse(n.expiresAt);if(!allowInventory||Object.keys(n).length!==fields.length||!fields.every(key=>Object.hasOwn(n,key))||n.transport!=="inventory_relay"||n.resourceId!==id||n.version!==id||n.mimeType!=="image/webp"||!Number.isSafeInteger(n.byteSize)||n.byteSize<1||n.byteSize>25000000||!Number.isFinite(expiry)||expiry<now+5000||expiry-now>60000)throw Error("invalid_response");return n;}
  if(Object.keys(g).length!==keys.length||!keys.every(k=>Object.hasOwn(g,k))||g.resourceId!==id||g.version!==id||g.mimeType!=="image/webp"||!Number.isSafeInteger(g.byteSize)||g.byteSize<1||typeof g.url!=="string"||g.url.length>8192||typeof g.expiresAt!=="string")throw Error("invalid_response");
  const url=new URL(g.url),q=url.searchParams;
  if(!origins.includes(url.origin)||url.username||url.password||url.hash||!/^\/storage\/v1\/object\/sign\/[^/]+\/.+/.test(url.pathname)||!["https:","http:"].includes(url.protocol))throw Error("invalid_response");

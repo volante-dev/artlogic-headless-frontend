@@ -10,6 +10,11 @@ export function validateImageGrant(value:unknown,resource:ImageResource,version:
  const s=exact(g.source,['width','height','mimeType','byteSize']);if(!positive(s.width)||!positive(s.height)||!positive(s.byteSize)||!['image/webp','image/jpeg','image/png','image/gif','image/svg+xml'].includes(String(s.mimeType)))throw Error('invalid_image_response');
  const c=canonicalImageCandidate(s as Grant['source'],rendition),p=exact(g.representation,['mode','expectedWidth','expectedHeight','mimeType','byteSize']);
  if(g.canonicalRendition!==c.rendition||p.mode!==c.mode||p.expectedWidth!==c.expectedWidth||p.expectedHeight!==c.expectedHeight||p.mimeType!==(c.mode==='transformed'?null:s.mimeType)||p.byteSize!==(c.mode==='transformed'?null:s.byteSize))throw Error('invalid_image_response');
+ if(g.delivery&&typeof g.delivery==='object'&&'transport' in g.delivery){
+  const d=exact(g.delivery,['transport','resourceId','sourceVersion','rendition','expiresAt']),expiry=typeof d.expiresAt==='string'?Date.parse(d.expiresAt):NaN;
+  if(d.transport!=='inventory_relay'||resource.resourceKind!=='artwork'||s.mimeType!=='image/webp'||d.resourceId!==g.resourceId||d.sourceVersion!==version||d.rendition!==c.rendition||!Number.isFinite(expiry)||expiry<now+5000||expiry-now>60000)throw Error('invalid_image_response');
+  return value as Grant;
+ }
  const d=exact(g.delivery,['url','expiresAt']);if(typeof d.url!=='string'||d.url.length>8192||typeof d.expiresAt!=='string')throw Error('invalid_image_response');
  const u=new URL(d.url),prefix='/storage/v1/'+(c.mode==='transformed'?'render/image':'object')+'/sign/';if(!origins.includes(u.origin)||u.username||u.password||u.hash||!u.pathname.startsWith(prefix)||![...u.searchParams.keys()].every(k=>k==='token')||u.searchParams.getAll('token').length!==1||!['https:','http:'].includes(u.protocol))throw Error('invalid_image_response');
  const token=u.searchParams.get('token')!;if(!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token))throw Error('invalid_image_response');

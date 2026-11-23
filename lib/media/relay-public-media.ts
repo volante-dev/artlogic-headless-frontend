@@ -1,3 +1,4 @@
+import {relayInventoryPublicMedia} from "./inventory-public-media";
 import "server-only";
 import {loadConfig,listValue} from "../config/env";
 import {publicFetch,PublicApiError,privateHeaders,uuidPattern} from "../api/client";
@@ -14,7 +15,8 @@ export async function relayPublicMedia(request:Request,id:string,resourceKind:"a
   if(direct){
    const reader=response.body?.getReader();if(!reader)throw Error();let size=0;const chunks:Uint8Array[]=[];
    try{for(;;){const c=await reader.read();if(c.done)break;size+=c.value.length;if(size>16384)throw Error();chunks.push(c.value);}}finally{await reader.cancel().catch(()=>{});}
-   const grant=validatePublicMediaGrant(JSON.parse(Buffer.concat(chunks).toString("utf8")),id,listValue(config,"PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON"));
+   const grant=validatePublicMediaGrant(JSON.parse(Buffer.concat(chunks).toString("utf8")),id,listValue(config,"PUBLIC_MEDIA_DELIVERY_ORIGINS_JSON"),undefined,resourceKind==="artwork");
+   if("transport" in grant)return await relayInventoryPublicMedia(request,id,id+".ref","r1-reference");
    console.info(JSON.stringify({event:"public_media_authorization",resourceKind,resourceId:id,displayId:display.displayId,retry:display.retry,result:"authorized",durationMs:Math.round(performance.now()-started),expiresAt:grant.expiresAt,readId:uuidPattern.test(response.headers.get("x-request-id")??"")?response.headers.get("x-request-id"):undefined}));
    return new Response(null,{status:307,headers:{...privateHeaders,Location:grant.url}});
   }

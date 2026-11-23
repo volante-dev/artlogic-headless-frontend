@@ -415,7 +415,9 @@
     ".runtime/next-public-62b556dc-c379-4e01-b1b4-b06600dc823b/types/**/*.ts",
     ".runtime/next-public-62b556dc-c379-4e01-b1b4-b06600dc823b/dev/types/**/*.ts",
     ".runtime/next-public-034a459c-aaff-464f-9817-585a6a244f68/types/**/*.ts",
-    ".runtime/next-public-034a459c-aaff-464f-9817-585a6a244f68/dev/types/**/*.ts"
+    ".runtime/next-public-034a459c-aaff-464f-9817-585a6a244f68/dev/types/**/*.ts",
+    ".runtime/next-public-4fe9745f-04a6-47af-97a9-44ae4aead709/types/**/*.ts",
+    ".runtime/next-public-4fe9745f-04a6-47af-97a9-44ae4aead709/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
