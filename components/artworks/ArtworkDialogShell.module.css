@@ -16,6 +16,9 @@
 .backdrop { position:fixed; inset:0; z-index:1299; pointer-events:none; background:color-mix(in srgb,var(--site-color-background) 10%,transparent); }
 .paper[data-artwork-opening-phase]:not([data-artwork-opening-phase="complete"]) { background:transparent; }
 .deferredControls { pointer-events:auto; }
+.surface { position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none; background:var(--site-color-background); }
+.paper[data-artwork-opening-phase="complete"] .surface { opacity:1; }
+.paper[data-artwork-opening-strategy="simple"] .controls { position:absolute; inset:0 0 auto; }
 .paper:has([data-artwork-layout="mobile"]) { overflow:hidden; touch-action:auto; }
 .paper:has([data-artwork-view="lucas-ratton"]) { overflow:hidden; }
 .paper:has([data-artwork-view="lucas-ratton"]) .controls { position:absolute; inset:0 0 auto; }

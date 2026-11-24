@@ -16,7 +16,7 @@ import {useArtworkOpening} from "./ArtworkOpeningBoundary";
 import {useSiteLocale} from "../SiteLocaleBoundary";
 
 const stateKey="artlogicArtworkVisit";
-type Pending={reference:string;locale:string;status:number|null};
+type Pending={reference:string;locale:string;status:number|null;href?:string};
 type Restore={origin:ArtworkOrigin};
 export function ArtworkNavigationBoundary({children,artwork,canonical}:{children:ReactNode;artwork:ReactNode;canonical:ReactNode}){
   const opening=useArtworkOpening(),site=useSiteContent(),dynamic=useSiteLocale(),router=useRouter(),pathname=usePathname(),segments=useSelectedLayoutSegments("artwork"),slot=segments.join("|");
@@ -41,6 +41,7 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       const href=localizedPath("/artworks/"+data.artwork.slug,request.locale,site.defaultLocale),commit=visits.current!.complete(request.id,href);
       if(!commit)return;
       if(commit.action!=="none"){
+        setPending({reference:request.reference,locale:request.locale,status:null,href});
         committing.current={href,token:commit.token,refresh:commit.action==="replace"};
         if(commit.action==="push")router.push(href,{scroll:false});else router.replace(href,{scroll:false});
       }else setPending(null);
@@ -90,7 +91,9 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       const commit=committing.current;
       if(commit&&commit.href===location.pathname){
         if(commit.cancelled){committing.current=null;router.back();return;}
-        history.replaceState({...history.state,[stateKey]:commit.token},"",location.href);committing.current=null;setPending(null);if(commit.refresh)router.refresh();
+        history.replaceState({...history.state,[stateKey]:commit.token},"",location.href);committing.current=null;
+        // Retain the pending surface until the streamed route has mounted its frame.
+        if(opening?.strategy!=="simple")queueMicrotask(()=>setPending(null));if(commit.refresh)router.refresh();
       }else visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,route.artworkId!,route.locale);
     }else if(restoringRef.current){
       const restore=restoringRef.current,url=new URL(restore.origin.href,location.origin);
@@ -156,11 +159,13 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const active=isArtwork||pending!==null||restoring!==null;
  useEditorialSurface(active);
   useLayoutEffect(()=>{if(active&&background.current)return opening?.register("background",background.current);},[active,opening]);
+  const frameReady=useCallback(()=>{if(opening?.strategy==="simple"){setPending(null);}},[opening]);
+  const handoff=opening?.strategy==="simple"&&pending?.href===pathname;
   const pendingShell=Boolean(pending&&(!isArtwork||pending.locale!==route.locale||pending.reference!==route.artworkId||pending.status));
-  return <ArtworkNavigationContext value={{leaveForHeader,close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
+  return <ArtworkNavigationContext value={{leaveForHeader,close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),frameReady,activeReference:pending?.reference??(isArtwork?route.artworkId:undefined),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
     <div ref={background} className={styles.origin} data-editorial-layout data-artwork-background inert={active||undefined} aria-hidden={active||undefined}>{!(isArtwork&&!intercepted)&&children}</div>
-    {!pendingShell&&isArtwork&&(!intercepted?canonical:artwork)}
-    {pendingShell&&!restoring&&<ArtworkDialogShell artworkRef={pending?.reference} locale={pending?.locale}>
+    {(!pendingShell||handoff)&&isArtwork&&(!intercepted?canonical:artwork)}
+    {pendingShell&&!restoring&&<ArtworkDialogShell transient artworkRef={pending?.reference} locale={pending?.locale}>
       <ArtworkRouteState status={pending?.status===404?"unavailable":pending?.status?"error":"loading"} retry={()=>{const request=visits.current!.retry();if(request)void resolve(request);}}/>
     </ArtworkDialogShell>}
     <ArtworkReturnOverlay/>

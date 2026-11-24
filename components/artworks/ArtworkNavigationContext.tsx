@@ -13,6 +13,8 @@ export interface ArtworkNavigation {
   activation?:number;
   restoring?:boolean;
   activeLocale?:string;
+  activeReference?:string;
+  frameReady?:()=>void;
 }
 export const ArtworkNavigationContext=createContext<ArtworkNavigation|null>(null);
 export function useArtworkNavigation(){return useContext(ArtworkNavigationContext);}

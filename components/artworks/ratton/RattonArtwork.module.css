@@ -1,20 +1,21 @@
 /* This variant extends the configured gallery theme, without changing generic scenes. */
-.experience{position:relative;display:grid;grid-template-columns:minmax(0,64fr) minmax(320px,36fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"media identity" "media reading" "media actions";height:100dvh;min-height:0;isolation:isolate;background:var(--site-color-background);color:var(--site-color-text);overflow:hidden}
+.experience{position:relative;display:grid;grid-template-columns:minmax(0,64fr) minmax(320px,36fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"media identity" "media reading" "media actions";height:100dvh;min-height:0;isolation:isolate;background:transparent;color:var(--site-color-text);overflow:hidden}
 .viewport{display:contents}
 .identity{grid-area:identity;min-width:0;padding:clamp(88px,10svh,120px) clamp(24px,3vw,48px) 28px}
 .identity h1{margin:0;font-family:var(--site-h1-fontFamily);font-size:clamp(1.8rem,2.5vw,3rem);font-weight:var(--site-h1-fontWeight);font-style:var(--site-h1-fontStyle);line-height:1.12;letter-spacing:var(--site-h1-letterSpacing);text-wrap:balance;overflow-wrap:anywhere}
 .identity p{margin:12px 0 0;font-family:var(--site-body-fontFamily);font-size:var(--site-body-fontSize);line-height:1.45;color:var(--site-color-mutedText);overflow-wrap:anywhere}
 .media{grid-area:media;min-width:0;min-height:0;padding:24px;background:var(--site-color-surface)}
-.carousel{display:flex;flex-direction:column;height:100%;min-width:0;min-height:0}
-.photos{position:relative;flex:1;min-width:0;min-height:0;touch-action:pan-y pinch-zoom}
-.photo{position:absolute;inset:0;visibility:hidden;opacity:0;pointer-events:none;transition:opacity 100ms ease-out,visibility 0s linear 100ms}
+.carousel{position:relative;display:flex;flex-direction:column;height:100%;min-width:0;min-height:0;--ratton-navigation-space:0px}
+.carousel[data-ratton-has-navigation="true"]{--ratton-navigation-space:56px}
+.photos{position:relative;flex:1;min-width:0;min-height:0;margin-bottom:var(--ratton-navigation-space);touch-action:pan-y pinch-zoom}
+.photo{position:absolute;inset:var(--ratton-photo-top,0px) 0 var(--ratton-photo-bottom,0px);visibility:hidden;opacity:0;pointer-events:none;transition:opacity 100ms ease-out,visibility 0s linear 100ms}
 .photo[data-current="true"]{visibility:visible;opacity:1;pointer-events:auto;transition:opacity 100ms ease-out}
 .photo img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
 .photo>div{height:100%}
 .empty{display:grid;place-items:center;height:100%;color:var(--site-color-mutedText)}
 .empty>div{min-height:0;background:transparent;aspect-ratio:auto}
-.navigation{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:16px;width:min(240px,100%);margin:12px auto 0}
-.navigation button{display:grid;place-items:center;min-width:44px;min-height:44px;padding:8px;border:0;background:transparent;color:inherit;cursor:pointer;touch-action:manipulation;transition:opacity 160ms ease}
+.navigation{position:absolute;bottom:0;left:max(0px,calc((100% - 240px)/2));display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:16px;width:min(240px,100%);height:44px;pointer-events:none}
+.navigation button{display:grid;place-items:center;min-width:44px;min-height:44px;padding:8px;border:0;background:transparent;color:inherit;cursor:pointer;touch-action:manipulation;transition:opacity 160ms ease;pointer-events:auto}
 .navigation button:disabled{opacity:.28;cursor:default}
 .counter{text-align:center;white-space:nowrap;font-family:var(--site-caption-fontFamily);font-size:var(--site-caption-fontSize);font-variant-numeric:tabular-nums;color:var(--site-color-mutedText)}
 .reading{grid-area:reading;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;padding:0 clamp(24px,3vw,48px) 32px;scrollbar-width:thin;scrollbar-color:var(--site-color-border) transparent;overflow-wrap:anywhere}
@@ -36,6 +37,7 @@
 .native figure{height:40svh;margin:16px 0 32px}
 .native figure img{width:100%;height:100%;margin:0;object-fit:contain}
 .native nav{display:flex;flex-wrap:wrap;gap:16px;margin-top:24px}
+.timelineFrame{display:none}
 @media(max-width:959px),(max-height:639px){
  .experience{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"viewport" "actions"}
  .viewport{grid-area:viewport;display:block;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--site-color-border) transparent}
@@ -47,6 +49,17 @@
  .actions{gap:4px;padding:10px 20px max(12px,env(safe-area-inset-bottom))}
  .information dl{gap:12px;margin-bottom:24px}
  .information dl>div{grid-template-columns:minmax(80px,.7fr) minmax(0,1fr)}
- .navigation{margin-top:4px}
+ .carousel[data-ratton-has-navigation="true"]{--ratton-navigation-space:48px}
+ .carousel[data-ratton-expanded="true"] .photos{touch-action:pinch-zoom}
+ .carousel[data-ratton-expanded="true"] .navigation{inset:0 12px;width:auto;height:auto;display:block}
+ .carousel[data-ratton-expanded="true"] .navigation button{position:absolute;top:50%;transform:translateY(-50%)}
+ .carousel[data-ratton-expanded="true"] .navigation button:first-child{left:0}
+ .carousel[data-ratton-expanded="true"] .navigation button:last-child{right:0}
+ .carousel[data-ratton-expanded="true"] .counter{position:absolute;bottom:max(78px,calc(env(safe-area-inset-bottom) + 62px));inset-inline:0}
+ .timelineFrame{display:block;position:absolute;inset-inline:max(16px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));height:44px;opacity:0;visibility:hidden;color:var(--site-color-text)}
+ .timeline{display:flex;align-items:center;justify-content:center;width:100%;height:44px}
+ .timelineStep{display:grid;place-items:center;flex:1;min-width:0;min-height:44px;max-width:64px;padding:0 2px;border:0;background:transparent;color:inherit;cursor:pointer;touch-action:manipulation}
+ .timelineStep>span{display:block;height:2px;width:min(32px,80%);border-radius:999px;background:currentColor;opacity:.3;transition:opacity 160ms ease}
+ .timelineStep[aria-current]>span{opacity:1}
 }
 @media(prefers-reduced-motion:reduce){.photo,.photo[data-current="true"],.navigation button{transition:none}}
