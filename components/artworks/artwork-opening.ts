@@ -4,6 +4,7 @@ type Kind="root"|"paper"|"background"|"backdrop"|"media"|"controls"|"timeline"|"
 interface Layer {node:HTMLElement;kind:Kind;animation?:Animation;timer?:ReturnType<typeof setTimeout>;inert:boolean;opacity:string;willChange:string;filter:string;contentFilter:string}
 /** One document-owned entrance, surviving pending/canonical and freshness subtree replacement. */
 export class ArtworkOpening {
+ constructor(readonly strategy:"generic"|"simple"="generic"){}
  readonly returning=new ArtworkClosing(()=>this.publish());
  private closingMotion:Promise<boolean>|null=null;
  private attachment=0;private sessionOpen=false;
@@ -16,13 +17,13 @@ export class ArtworkOpening {
  get hasPaper(){return [...this.layers.values()].some(layer=>layer.kind==="paper");}
  get phase(){return this.state?openingPhase(this.state,performance.now()):"complete";}
  ensure=()=>{if(!this.state||!this.sessionOpen)this.begin();};
- begin=()=>{this.returning.reset();this.closingMotion=null;this.release();this.sessionOpen=true;this.state=beginOpening(++this.serial,performance.now());this.publish();};
+ begin=()=>{this.returning.reset();this.closingMotion=null;this.release();this.sessionOpen=true;this.state=beginOpening(++this.serial,performance.now());if(this.strategy==="simple"){this.state=readyOpening(this.state,this.state.openedAt);this.schedule();}this.publish();};
  close=()=>{this.returning.reset();this.closingMotion=null;this.finish();this.release();this.sessionOpen=false;this.publish();};
  startClosing=(retainSnapshot=false)=>{if(this.returning.phase!=='idle')return this.closingMotion??Promise.resolve(true);this.finish();this.closingMotion=this.returning.roll([...this.layers.values()].filter(l=>l.kind==='paper').map(l=>l.node),retainSnapshot);return this.closingMotion;};
  revealOrigin=async()=>{if(this.returning.phase==='rolling'&&this.closingMotion&&!await this.closingMotion)return false;const completed=await this.returning.reveal([...this.layers.values()].filter(l=>l.kind==='background').map(l=>l.node),[...this.layers.values()].filter(l=>l.kind==='backdrop').map(l=>l.node));if(completed)this.close();return completed;};
  finish=()=>{if(!this.state||this.state.completedAt!==null)return;this.state=completeOpening(this.state,performance.now());this.clearTimers();for(const layer of this.layers.values()){this.restore(layer);if(layer.kind==="background")layer.node.style.filter="blur(8px)";}this.publish();};
  private publish(){this.version++;for(const {node,kind}of this.layers.values())if(kind==="root"||kind==="paper"){
-  node.dataset.artworkOpeningPhase=this.phase;node.dataset.artworkOpeningId=String(this.state?.id??0);node.dataset.entranceDuration=String(artworkOpeningDuration);node.dataset.artworkOpeningBackdropDuration=String(timing.backdrop);
+  node.dataset.artworkOpeningPhase=this.phase;node.dataset.artworkOpeningId=String(this.state?.id??0);node.dataset.entranceDuration=String(this.strategy==="simple"?200:artworkOpeningDuration);node.dataset.artworkOpeningBackdropDuration=String(timing.backdrop);
   node.dataset.artworkClosePhase=this.returning.phase;
   if(this.state){node.dataset.artworkOpeningStart=String(this.state.openedAt);node.dataset.artworkOpeningReady=String(this.state.revealStartedAt??"");node.dataset.artworkOpeningEnd=String(this.state.completedAt??"");}
  }for(const notify of this.listeners)notify();}
@@ -43,19 +44,21 @@ export class ArtworkOpening {
  };
  private schedule(){
   this.clearTimers();const state=this.state;if(!state||state.completedAt!==null||state.revealStartedAt===null)return;
+  if(this.strategy==="simple"){this.timers.push(setTimeout(()=>{if(this.state?.id===state.id)this.finish();},Math.max(0,state.openedAt+200-performance.now())));return;}
   for(const at of [state.revealStartedAt,state.revealStartedAt+timing.media,state.revealStartedAt+timing.media+timing.controls,state.revealStartedAt+artworkOpeningDuration-timing.backdrop])this.timers.push(setTimeout(()=>{
    if(this.state?.id!==state.id)return;if(at===state.revealStartedAt!+artworkOpeningDuration-timing.backdrop)this.finish();else this.publish();
   },Math.max(0,Math.ceil(at-performance.now()))));
  }
  private animate(layer:Layer){
   const state=this.state;if(!state||layer.kind==="root"||layer.kind==="paper")return;if(state.completedAt!==null){if(layer.kind==="background")layer.node.style.filter="blur(8px)";return;}
+  if(this.strategy==="simple"&&!["background","backdrop"].includes(layer.kind)){this.restore(layer);return;}
   layer.animation?.cancel();if(layer.timer)clearTimeout(layer.timer);
   const {node,kind}=layer,now=performance.now(),reveal=state.revealStartedAt;
   const atmosphere=kind==="backdrop"||kind==="background";
   if(!atmosphere){node.style.opacity="0";if(kind!=="media")node.inert=true;}
   if(!atmosphere&&reveal===null)return;
   const start=atmosphere?state.openedAt:reveal!+(kind==="media"?0:kind==="controls"?timing.media:timing.media+timing.controls);
-  const duration=kind==="background"?timing.background:atmosphere?timing.backdrop:kind==="media"?timing.media:kind==="controls"?timing.controls:timing.identity;
+  const duration=this.strategy==="simple"?200:kind==="background"?timing.background:atmosphere?timing.backdrop:kind==="media"?timing.media:kind==="controls"?timing.controls:timing.identity;
   if(now>=start+duration){this.restore(layer);if(kind==="background")node.style.filter="blur(8px)";return;}
   if(matchMedia("(prefers-reduced-motion:reduce)").matches){this.restore(layer);if(kind==="background")node.style.filter="blur(8px)";return;}
   let frames:Keyframe[];

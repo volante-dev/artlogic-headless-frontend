@@ -17,6 +17,8 @@
 .paper[data-artwork-opening-phase]:not([data-artwork-opening-phase="complete"]) { background:transparent; }
 .deferredControls { pointer-events:auto; }
 .paper:has([data-artwork-layout="mobile"]) { overflow:hidden; touch-action:auto; }
+.paper:has([data-artwork-view="lucas-ratton"]) { overflow:hidden; }
+.paper:has([data-artwork-view="lucas-ratton"]) .controls { position:absolute; inset:0 0 auto; }
 @media(max-width:767px) { .controls { padding-top:env(safe-area-inset-top); padding-right:max(12px,env(safe-area-inset-right)); gap:8px; } }
 
 .loading { position:fixed; inset:0; display:grid; place-items:center; z-index:2; pointer-events:none; visibility:hidden; opacity:0; color:var(--site-color-text); transition:opacity 160ms ease; }
@@ -24,6 +26,7 @@
 .paper:has([data-artwork-media-ready="false"]) .loading,
 .paper[data-artwork-opening-phase="backdrop"]:not(:has([data-artwork-route-state="error"],[data-artwork-route-state="unavailable"])) .loading,
 .paper[data-artwork-opening-phase="waiting"]:not(:has([data-artwork-route-state="error"],[data-artwork-route-state="unavailable"])) .loading { visibility:visible; opacity:1; }
+.paper:has([data-artwork-view="lucas-ratton"]) .loading { visibility:hidden; opacity:0; }
 .errorState { position:relative; margin:clamp(100px,20dvh,180px) auto 24px; padding:32px; width:min(70ch,calc(100% - 48px)); background:var(--site-color-background); color:var(--site-color-text); }
 @media(prefers-reduced-motion:reduce) { .loading { transition:none; } }
 

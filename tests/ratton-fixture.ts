@@ -1,0 +1,6 @@
+import {readFileSync} from "node:fs";
+import {expect,type Page} from "@playwright/test";
+export interface RattonSite {siteOrigin:string;apiOrigin:string;adminOrigin:string;artworkId:string;artworkView:"generic"|"lucas-ratton";rattonArtworkIds?:Record<string,string>;profile:string;controlUrl:string;controlKey:string}
+export const rattonSites=()=>JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,"utf8")).sites as RattonSite[];
+export const rattonWork=(count:number,site=rattonSites()[0]!)=>{const id=site.rattonArtworkIds?.[String(count)];if(!id)throw new Error("Ratton fixtures required: --ratton");return id;};
+export async function openRatton(page:Page,count=12){const site=rattonSites()[0]!;await page.goto(site.siteOrigin+"/artworks",{waitUntil:"domcontentloaded"});const notice=page.getByRole("button",{name:"Compris",exact:true});if(!await page.evaluate(()=>Object.keys(localStorage).some(key=>key.startsWith("site-privacy:")&&key.endsWith(":info")))){await expect(notice).toBeVisible();await notice.click();}await page.goto(site.siteOrigin+"/artworks/"+rattonWork(count,site),{waitUntil:"domcontentloaded"});const root=page.locator('[data-artwork-view="lucas-ratton"]');await expect(root).toBeVisible();return root;}

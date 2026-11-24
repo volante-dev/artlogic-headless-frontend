@@ -8,6 +8,7 @@ export type ConfigValue = string | number | string[] | Record<string, string>;
 export type Config = Readonly<Record<string, ConfigValue | undefined>> & { readonly role: Scope };
 type Rule = { scopes: string; kind: string; required?: boolean; optionalScopes?: string; default?: string; values?: string[]; min?: number; max?: number; secret?: boolean };
 export const variables: Readonly<Record<string, Rule>> = {
+  PRESENTATION_ARTWORK_VIEW:{scopes:"F",kind:"string",default:"generic"},
   LINK_IN_BIO_ENABLED:{scopes:'AWMFB',kind:'enum',default:'false',values:['true','false']},
   LINK_IN_BIO_STATE_NAMESPACE:{scopes:'AWM',kind:'string'},
   LINK_IN_BIO_ENCRYPTION_KEY_ID:{scopes:'AW',kind:'string'},

@@ -1,3 +1,5 @@
+import {resolveArtworkView} from "./artwork-view";
+import {rattonArtworkImageSizes} from "./ratton-artwork-image";
 import "server-only";
 import {PublicImagePreload} from "../media/public-image-preload";
 import {Suspense} from "react";
@@ -19,6 +21,7 @@ async function Document({params}:ArtworkRouteProps){
   await connection();
   const {artworkRef}=await params,site=await loadSiteContent();let document;
   try{document=await resolveArtworkDocument(artworkRef,site.locale);}catch(error){if(error instanceof PublicApiError&&error.status===404)return <ArtworkRouteState status="unavailable"/>;throw error;}
-  return <><PublicImagePreload media={document.experience.artwork.media[0]}/><ArtworkFreshnessBoundary initial={document.experience} presentation={document.presentation} siteName={site.siteName} demonstration={loadConfig().DATA_MODE==="mock"}/></>;
+  const first=document.experience.artwork.media[0],sizes=first&&resolveArtworkView(loadConfig().PRESENTATION_ARTWORK_VIEW)==="lucas-ratton"?rattonArtworkImageSizes(first.width/first.height):undefined;
+  return <><PublicImagePreload media={first} sizes={sizes}/><ArtworkFreshnessBoundary initial={document.experience} presentation={document.presentation} siteName={site.siteName} demonstration={loadConfig().DATA_MODE==="mock"}/></>;
 }
 export function ArtworkPage(props:ArtworkRouteProps){return <Suspense fallback={<ArtworkRouteState/>}><Document {...props}/></Suspense>;}

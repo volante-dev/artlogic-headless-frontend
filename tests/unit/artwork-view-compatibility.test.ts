@@ -1,0 +1,10 @@
+import {readFileSync} from "node:fs";
+import {it,expect} from "vitest";
+import {jsx} from "react/jsx-runtime";
+import {renderToStaticMarkup} from "react-dom/server";
+import {parseGalleryExperience} from "../../lib/artworks/validate";
+import {ArtworkViewProvider} from "../../components/artworks/ArtworkViewProvider";
+import {ArtworkInitialDocument} from "../../components/artworks/ArtworkInitialDocument";
+const legacy=JSON.parse(readFileSync(new URL("../fixtures/artwork-document-v0.json",import.meta.url),"utf8"));
+it.each(["generic","lucas-ratton"] as const)("keeps %s readable with the N-1 document and no optional claims",mode=>{const content=parseGalleryExperience(legacy);expect(content.availableForSale).toBeUndefined();expect(content.importedDescription).toBeNull();const html=renderToStaticMarkup(jsx(ArtworkViewProvider,{mode,children:jsx(ArtworkInitialDocument,{content})}));expect(html).toContain("Étude API N-1");expect(html).toContain("Description du contrat précédent.");expect(html).toContain("/contact?artwork="+legacy.artwork.id);expect(html).toContain("/media/"+legacy.artwork.media[0].id);});
+it("does not reinterpret an invalid old document as a valid fallback",()=>{expect(()=>parseGalleryExperience({...legacy,artwork:{...legacy.artwork,id:"invalid"}})).toThrow("invalid_gallery_response");});

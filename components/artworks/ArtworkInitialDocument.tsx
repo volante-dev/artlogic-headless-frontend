@@ -1,5 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element -- Public native URLs preserve the existing media authorization and srcset policy. */
+import {useArtworkView} from "./ArtworkViewProvider";
+import {RattonArtworkInitialDocument} from "./ratton/RattonArtworkInitialDocument";
 import {useMediaDisplayContext} from '../../lib/media/MediaDisplayProvider';
 import {useContext,useId} from 'react';
 import type {ArtworkContent} from './ArtworkInformation';
@@ -11,7 +13,8 @@ import {artworkDocumentImage} from '../../lib/artworks/document-media';
 import {artworkConclusion} from './ArtworkDocumentContent';
 import {ArtworkAvailability} from './ArtworkAvailability';
 import styles from './ArtworkDocument.module.css';
-export function ArtworkInitialDocument({content}:{content:ArtworkContent}){
+export function ArtworkInitialDocument({content}:{content:ArtworkContent}){const view=useArtworkView();return view==="lucas-ratton"?<RattonArtworkInitialDocument content={content}/>:<GenericArtworkInitialDocument content={content}/>;}
+function GenericArtworkInitialDocument({content}:{content:ArtworkContent}){
  const mediaContext=useMediaDisplayContext();
  const site=useSiteContent(),generated=useId(),heading=useContext(ArtworkHeadingContext)??generated,text=artworkDocumentContent(content),rich=artworkConclusion(content),art=content.artwork;
  return <article className={styles.reader} data-artwork-readable aria-labelledby={heading}>

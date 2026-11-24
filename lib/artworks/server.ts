@@ -1,4 +1,5 @@
 import "server-only";
+import {artworkApiReference} from "./artwork-api-reference";
 import {publicFetch,PublicApiError} from "../api/client";
 import {parseGalleryCatalog,parseGalleryExperience} from "./validate";
 import type {GallerySearch} from "./types";
@@ -16,5 +17,5 @@ export async function getGalleryCatalog(input:GallerySearch={},plp=false,signal?
 }
 export async function getGalleryExperience(reference:string,locale:string,signal?:AbortSignal){
  if(!/^[a-z0-9-]{1,113}$/i.test(reference)||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(locale))throw new PublicApiError(404,"not_found");
- const result=await json("/v1/public/artwork-experiences/"+encodeURIComponent(reference)+"?locale="+encodeURIComponent(locale),signal,false,true);try{const d=parseGalleryExperience(result);if(d.locale!==locale)throw new Error();return d;}catch{throw new PublicApiError(503,"invalid_response");}
+ const result=await json("/v1/public/artwork-experiences/"+encodeURIComponent(artworkApiReference(reference))+"?locale="+encodeURIComponent(locale),signal,false,true);try{const d=parseGalleryExperience(result);if(d.locale!==locale)throw new Error();return d;}catch{throw new PublicApiError(503,"invalid_response");}
 }

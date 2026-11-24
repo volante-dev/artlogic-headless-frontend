@@ -1,0 +1,26 @@
+{
+  "scope": "public",
+  "artwork": {
+    "id": "00000000-0000-4000-8000-000000007382",
+    "slug": "etude-n1-00000000000040008000000000007382",
+    "title": "Étude API N-1",
+    "artist": null,
+    "year": "2026",
+    "medium": null,
+    "dimensions": null,
+    "media": [
+      {
+        "id": "00000000-0000-4000-8000-000000009301",
+        "alt": "Vue de démonstration N-1",
+        "width": 900,
+        "height": 1200,
+        "path": "/v1/public/media/00000000-0000-4000-8000-000000009301"
+      }
+    ]
+  },
+  "locale": "fr",
+  "description": "Description du contrat précédent.",
+  "descriptionLocale": "fr",
+  "presentationReleaseId": "00000000-0000-4000-8000-000000009399",
+  "catalogRevision": 1
+}
