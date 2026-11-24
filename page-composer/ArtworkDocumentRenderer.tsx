@@ -1,4 +1,6 @@
 "use client";
+import {useArtworkView} from "../components/artworks/ArtworkViewProvider";
+import {RattonArtworkExperience} from "../components/artworks/ratton/RattonArtworkExperience";
 import {useContactExecutionMode} from "../lib/contact/execution";
 import {ClientComponentsProvider,useClientComponents} from "../clients/ClientComponentsProvider";
 import {PageRenderer} from "./PageRenderer";
@@ -11,6 +13,7 @@ export function ArtworkDocumentRenderer({presentation,content,siteName,demonstra
   return <ClientComponentsProvider profileId={presentation.profileId}><ArtworkContents presentation={presentation} content={content} siteName={siteName} demonstration={demonstration}/></ClientComponentsProvider>;
 }
 function ArtworkContents({presentation,content,siteName,demonstration}:ArtworkDocumentRendererProps){
+  const view=useArtworkView();
   const contactMode=useContactExecutionMode("live");
   const {ArtworkExperience,ArtworkInformation,ArtworkProgress}=useClientComponents();
   for(const section of presentation.sections)assertRenderableSection(section);
@@ -18,5 +21,6 @@ function ArtworkContents({presentation,content,siteName,demonstration}:ArtworkDo
   if(required.length!==1)throw new Error("artwork_scene_required");
   const sections=presentation.sections.filter(section=>section.type!=="artworkDetails");
   const supplementalContent=sections.length>0?<PageRenderer presentation={{...presentation,sections}} data={{artwork:content.artwork}} siteName={siteName} demonstration={demonstration} includeContactForm={false} contactMode={contactMode} applyTranslation={false}/>:undefined;
+  if(view==="lucas-ratton")return <RattonArtworkExperience id={required[0]!.id} content={content} supplementalContent={supplementalContent}/>;
   return <ArtworkExperience id={required[0]!.id} content={content} InformationView={ArtworkInformation} ProgressView={ArtworkProgress} supplementalContent={supplementalContent}/>;
 }

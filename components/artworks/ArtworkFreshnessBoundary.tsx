@@ -1,4 +1,6 @@
 "use client";
+import {useArtworkView} from "./ArtworkViewProvider";
+import {RattonArtworkVisitBoundary} from "./ratton/RattonArtworkVisitBoundary";
 import {ArtworkInitialDocument} from "./ArtworkInitialDocument";
 import {claimArtworkDocument} from "../../lib/artworks/document-state";
 import {useLayoutEffect,useRef,useState} from "react";
@@ -63,4 +65,4 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
   </>;
 }
 
-export function ArtworkFreshnessBoundary(props:Parameters<typeof ArtworkFreshnessContent>[0]){return <ArtworkInteractionBoundary key={props.initial.artwork.id} artworkId={props.initial.artwork.id} mediaIds={props.initial.artwork.media.map(m=>m.id)}><ArtworkFreshnessContent {...props}/></ArtworkInteractionBoundary>;}
+export function ArtworkFreshnessBoundary(props:Parameters<typeof ArtworkFreshnessContent>[0]){const view=useArtworkView();if(view==="lucas-ratton")return <RattonArtworkVisitBoundary artworkId={props.initial.artwork.id} mediaIds={props.initial.artwork.media.map(m=>m.id)}><ArtworkFreshnessContent {...props}/></RattonArtworkVisitBoundary>;return <ArtworkInteractionBoundary key={props.initial.artwork.id} artworkId={props.initial.artwork.id} mediaIds={props.initial.artwork.media.map(m=>m.id)}><ArtworkFreshnessContent {...props}/></ArtworkInteractionBoundary>;}

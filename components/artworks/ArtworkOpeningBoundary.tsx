@@ -1,5 +1,6 @@
 "use client";
 import {createContext,useContext,useState,useEffect,useLayoutEffect,useRef,useSyncExternalStore,type ReactNode} from "react";
+import {useArtworkView} from "./ArtworkViewProvider";
 import {ArtworkOpening} from "./artwork-opening";
 import styles from "./ArtworkDialogShell.module.css";
 const Context=createContext<ArtworkOpening|null>(null);
@@ -14,7 +15,8 @@ function OpeningBackdrop({opening}:{opening:ArtworkOpening}){
  return visible?<div ref={node} data-artwork-backdrop className={styles.backdrop} aria-hidden="true"/>:null;
 }
 export function ArtworkOpeningBoundary({children}:{children:ReactNode}){
- const [opening]=useState(()=>new ArtworkOpening());
+ const view=useArtworkView();
+ const [opening]=useState(()=>new ArtworkOpening(view==="lucas-ratton"?"simple":"generic"));
  useEffect(()=>{const detach=opening.attach();const reduced=matchMedia("(prefers-reduced-motion:reduce)"),finish=()=>{if(opening.returning.phase!=='idle')opening.returning.skipMotion();else opening.finish();},changed=()=>{if(document.hidden||reduced.matches&&opening.phase!=="backdrop"&&opening.phase!=="waiting")finish();};const resize=()=>finish();document.addEventListener("visibilitychange",changed);reduced.addEventListener("change",changed);window.addEventListener("resize",resize);return ()=>{document.removeEventListener("visibilitychange",changed);reduced.removeEventListener("change",changed);window.removeEventListener("resize",resize);detach();};},[opening]);
  return <Context value={opening}>{children}<OpeningBackdrop opening={opening}/></Context>;
 }

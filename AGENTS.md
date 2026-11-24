@@ -10,6 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Livraison et compatibilité
 
+- Ne jamais créer de worktree isolé. Utiliser le checkout courant et fusionner les changements sur `staging` pour les livraisons preview.
 - Les déploiements frontend courants utilisent `staging` vers `lucasratton-preview-frontend` sur `preview.lucasratton.com`. `main` reste réservé au frontend public et à une mise en production explicitement demandée.
 - Appliquer les [règles communes de mises à jour compatibles](../backend/docs/rolling-upgrades.md). Le frontend V1 doit continuer à fonctionner avec l’API V0 : négocier les capacités et prévoir un fallback explicite pour chaque module nouveau.
 - L’absence d’une capacité nouvelle ne doit pas interrompre les pages, la navigation ou les parcours existants. Préserver les validations, autorisations et contrôles de paiement.
