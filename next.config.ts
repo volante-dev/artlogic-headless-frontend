@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   // The isolated browser harness can coexist with the developer's local server.
   distDir: process.env.E2E_GALLERY_BUILD==="1"?(/^\.runtime\/next-gallery-[a-z0-9-]+$/.test(process.env.E2E_GALLERY_DIST_DIR??"")?process.env.E2E_GALLERY_DIST_DIR:".runtime/next-gallery-production"):process.env.DEPLOYMENT_ENV === "test" && process.env.NODE_ENV === "development" ? ".runtime/next-public-"+(/^[0-9a-f-]{36}$/i.test(process.env.SITE_ID??"")?process.env.SITE_ID:"preview") : ".next",
   cacheComponents: true,
+  // Lighthouse in DevTools uses the browser UA; keep metadata in the initial head for every client.
+  htmlLimitedBots: /.*/,
   typescript:{tsconfigPath:process.env.E2E_GALLERY_BUILD==="1"?"tsconfig.gallery.json":"tsconfig.json"},
   experimental: {globalNotFound:true},
   partialPrefetching: true,
