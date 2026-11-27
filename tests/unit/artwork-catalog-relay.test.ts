@@ -1,4 +1,4 @@
-vi.mock('@/lib/i18n/runtime-policy',()=>({readRuntimeLanguagePolicy:async()=>({kind:'legacy'})}));
+vi.mock('@/lib/i18n/runtime-policy',async()=>{const {managedLanguageRead}=await import('../fixtures/language-policy');return {readRuntimeLanguagePolicy:async()=>managedLanguageRead()};});
 import {beforeEach,expect,it,vi} from "vitest";
 vi.mock("server-only",()=>({}));
 const api=vi.hoisted(()=>({fetch:vi.fn()}));

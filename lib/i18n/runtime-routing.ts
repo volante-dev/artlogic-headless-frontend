@@ -2,11 +2,10 @@ import type {RoutingPolicy} from './routes';
 import type {RuntimePolicyRead} from './runtime-policy-transport';
 import {decodeLanguagePolicy,type PublicLanguagePolicy} from './language-policy-protocol';
 export const languageContextHeader='x-site-language-context';
-export type RoutingLanguageRead={kind:'ready';policy:RoutingPolicy;runtime:PublicLanguagePolicy|null;remainingMs?:number}|{kind:'unavailable';reason:string};
-/** Environment secondaries are consulted only after confirmed pre-adoption absence. */
-export function routingLanguagePolicy(read:RuntimePolicyRead,legacy:()=>RoutingPolicy):RoutingLanguageRead{
+export type RoutingLanguageRead={kind:'ready';policy:RoutingPolicy;runtime:PublicLanguagePolicy;remainingMs:number}|{kind:'unavailable';reason:string};
+/** SQL publication is the single source of routing locales. */
+export function routingLanguagePolicy(read:RuntimePolicyRead):RoutingLanguageRead{
  if(read.kind==='unavailable')return read;
- if(read.kind==='legacy')return {kind:'ready',policy:legacy(),runtime:null};
  return {kind:'ready',policy:{defaultLocale:read.policy.defaultLocale,locales:read.policy.locales.map(({code,label})=>({code,label}))},runtime:read.policy,remainingMs:read.remainingMs};
 }
 /** Internal request projection contains at most eight locales, never retired history. */

@@ -23,8 +23,9 @@ describe('US3 runtime proxy classification',()=>{
   read.mockResolvedValue({kind:'unavailable',reason:'access_denied'});const response=await proxy(new NextRequest('https://frontend.example.test/en/artworks'));
   expect(response.status).toBe(503);expect(response.headers.get('x-middleware-rewrite')).toBe('https://frontend.example.test/fr');expect(response.headers.get('x-middleware-request-x-site-locale')).toBe('fr');expect(response.headers.get('x-middleware-request-x-site-language-unavailable')).toBe('1');expect(response.headers.get('cache-control')).toBe('private, no-store');
  });
- it('uses the previous locale policy only after a confirmed legacy read',async()=>{
-  read.mockResolvedValue({kind:'legacy'});const response=await proxy(new NextRequest('https://frontend.example.test/en/artworks'));expect(response.headers.get('x-middleware-request-x-site-locale')).toBe('en');expect(response.headers.get('x-middleware-request-x-site-language-mode')).toBe('legacy');
+ it('carries no legacy mode marker on managed navigation',async()=>{
+  read.mockResolvedValue({kind:'runtime',policy,remainingMs:10000});const response=await proxy(new NextRequest('https://frontend.example.test/it/artworks'));
+  expect(response.headers.get('x-middleware-request-x-site-language-mode')).toBeNull();expect(response.headers.get('x-middleware-request-x-site-language-context')).toBeTruthy();
  });
 });
 

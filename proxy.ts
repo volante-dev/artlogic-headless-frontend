@@ -9,7 +9,7 @@ import {validGaleristSlug,isReservedGaleristSlug} from "./lib/presentation/galer
 import{previewFramePolicy}from"./lib/presentation/preview-policy";
 import {NextResponse,type NextRequest} from "next/server";
 import {PublicApiError,privateHeaders} from "./lib/api/client";
-import {loadConfig,configuredLocalePolicy,listValue} from "./lib/config/env";
+import {loadConfig,listValue} from "./lib/config/env";
 import {classifyRoute,isTechnicalPath,localizedPath,preservedQuery} from "./lib/i18n/routes";
 
 export async function proxy(request:NextRequest){
@@ -30,18 +30,18 @@ export async function proxy(request:NextRequest){
 }
 async function resolveProxyLanguage(request:NextRequest,cleanContext:Headers,retried=false){
   const context=new Headers(cleanContext);
-  const read=await readRuntimeLanguagePolicy(retried),resolved=routingLanguagePolicy(read,()=>configuredLocalePolicy(loadConfig()));
+  const read=await readRuntimeLanguagePolicy(retried),resolved=routingLanguagePolicy(read);
   if(resolved.kind==='unavailable'){
     const main=String(loadConfig().SITE_DEFAULT_LOCALE);context.set('x-site-locale',main);context.set('x-site-path','/');context.set('x-site-section','');context.set('x-site-error','page');context.set('x-site-page-status','503');context.set('x-site-language-unavailable','1');
     return NextResponse.rewrite(new URL('/'+main,request.url),{status:request.headers.get('rsc')==='1'?200:503,headers:privateHeaders,request:{headers:context}});
   }
-  if(resolved.runtime)context.set(languageContextHeader,encodeLanguageRequest(resolved.runtime,resolved.remainingMs!));else context.set('x-site-language-mode','legacy');
+  context.set(languageContextHeader,encodeLanguageRequest(resolved.runtime,resolved.remainingMs));
   const first=request.nextUrl.pathname.split('/')[1];
   try{return await withRuntimeLanguageRequest(read,async()=>{
-    if(resolved.runtime&&first&&resolved.runtime.retiredCodes.includes(first)&&/^\/[^/]+\/artworks\/[^/]+$/.test(request.nextUrl.pathname)){
+    if(first&&resolved.runtime.retiredCodes.includes(first)&&/^\/[^/]+\/artworks\/[^/]+$/.test(request.nextUrl.pathname)){
       const {resolveArtworkAddress}=await import('./lib/artworks/server');let reference:string;try{reference=decodeURIComponent(request.nextUrl.pathname.split('/')[3]!);}catch{throw new PublicApiError(404,'not_found');}const address=await resolveArtworkAddress(reference,first,request.signal);if(address)return NextResponse.redirect(new URL(address.address.canonicalPath,request.url),{status:307,headers:privateHeaders});
     }
-    if(resolved.runtime&&first&&resolved.runtime.retiredCodes.includes(first)){const {resolveRetiredPath}=await import('./lib/i18n/retired-path'),query=new URLSearchParams(request.nextUrl.searchParams);query.delete('_rsc');const target=await resolveRetiredPath(request.nextUrl.pathname+(query.size?'?'+query.toString():''),resolved.runtime);return NextResponse.redirect(new URL(target,request.url),{status:307,headers:privateHeaders});}
+    if(first&&resolved.runtime.retiredCodes.includes(first)){const {resolveRetiredPath}=await import('./lib/i18n/retired-path'),query=new URLSearchParams(request.nextUrl.searchParams);query.delete('_rsc');const target=await resolveRetiredPath(request.nextUrl.pathname+(query.size?'?'+query.toString():''),resolved.runtime);return NextResponse.redirect(new URL(target,request.url),{status:307,headers:privateHeaders});}
     return routePublicRequest(request,context,resolved.policy);
   });}
   catch(error){if(isLanguagePolicyChanged(error)&&!retried)return resolveProxyLanguage(request,new Headers(cleanContext),true);context.set('x-site-language-unavailable','1');context.set('x-site-locale',resolved.policy.defaultLocale);context.set('x-site-path','/');context.set('x-site-error','page');context.set('x-site-page-status','503');return NextResponse.rewrite(new URL('/'+resolved.policy.defaultLocale,request.url),{status:request.headers.get('rsc')==='1'?200:503,headers:privateHeaders,request:{headers:context}});}

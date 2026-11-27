@@ -39,7 +39,6 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
       if(wrapper)wrapper.style.visibility="hidden";
       document.title=liveLocale.current.genericTitle;
       setReading({generation:current,data:null,status:null});
-      if(document.visibilityState==="hidden")return;
       try{
         const data=await readArtworkExperience(initial.artwork.id,liveLocale.current.locale,signal);
         if(!alive||current!==generation.current)return;
@@ -48,8 +47,8 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
         hasData=true;if(data.artwork.publicAddress)notePublicAddress?.(data.artwork.publicAddress);setReading({generation:current,data,status:null});
       }catch(error){if(!alive||request.signal.aborted||current!==generation.current)return;setReading({generation:current,data:null,status:error instanceof ArtworkReadError?error.status:503});}
     };
-    void validate();const visibility=()=>void validate();document.addEventListener("visibilitychange",visibility);window.addEventListener("artwork-revalidate",visibility);
-    return ()=>{const dialog=wrapper?.closest<HTMLElement>("[role=dialog]");if(hasData&&dialog)rememberVisual?.(dialog.scrollTop,visualToken);alive=false;request?.abort();epoch.current++;if(wrapper)wrapper.style.visibility="hidden";document.removeEventListener("visibilitychange",visibility);window.removeEventListener("artwork-revalidate",visibility);};
+    void validate();const revalidate=()=>void validate();window.addEventListener("artwork-revalidate",revalidate);
+    return ()=>{const dialog=wrapper?.closest<HTMLElement>("[role=dialog]");if(hasData&&dialog)rememberVisual?.(dialog.scrollTop,visualToken);alive=false;request?.abort();epoch.current++;if(wrapper)wrapper.style.visibility="hidden";window.removeEventListener("artwork-revalidate",revalidate);};
   },[initial.artwork.id,initial.artwork.slug,initial.locale,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation,notePublicAddress]);
   useLayoutEffect(()=>{
     if(!content.current)return;const valid=reading.data&&reading.generation===generation.current;content.current.style.visibility=valid?"visible":"hidden";

@@ -4,5 +4,5 @@ import {readRuntimeLanguagePolicy} from './runtime-policy';
 export async function admissionLanguageHeaders():Promise<Record<string,string>>{
  const read=await readRuntimeLanguagePolicy();
  if(read.kind==='unavailable')throw new Error('language_policy_unavailable');
- return read.kind==='runtime'?{'X-Site-Language-Contract':'1','X-Site-Language-Revision':read.policy.publicRevision}:{};
+ return {'X-Site-Language-Contract':'1','X-Site-Language-Revision':read.policy.publicRevision};
 }

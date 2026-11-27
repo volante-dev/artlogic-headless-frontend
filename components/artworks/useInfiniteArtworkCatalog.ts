@@ -37,8 +37,7 @@ export function useInfiniteArtworkCatalog(initial:GalleryCatalog|null,locale:str
   const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))void load();},{rootMargin:"1600px 0px"});observer.observe(node);
   const resume=()=>{observer.unobserve(node);observer.observe(node);};
   const background=node.closest("[data-artwork-background]"),mutation=new MutationObserver(resume);if(background)mutation.observe(background,{attributes:true,attributeFilter:["inert"]});
-  document.addEventListener("visibilitychange",resume);
-  return()=>{observer.disconnect();mutation.disconnect();document.removeEventListener("visibilitychange",resume);};
+  return()=>{observer.disconnect();mutation.disconnect();};
  },[active,hasMore,error,load,sentinelRef]);
  const items=useMemo(()=>pages.flatMap(page=>page.items),[pages]);
  return {active,items,eagerFrom:pages.length>1?pages.slice(0,-1).reduce((n,p)=>n+p.items.length,0):0,hasMore,loading,error,retryAt,load,nextPage:last?last.page+1:1};

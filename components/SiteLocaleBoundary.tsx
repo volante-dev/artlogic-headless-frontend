@@ -21,9 +21,9 @@ import {parseEditorialQuery,editorialQueryString} from "../lib/editorial/query";
 const Context=createContext<{changeLocale:(locale:string,restoring?:boolean)=>void;pending:boolean;error:boolean;translation:LocalePayload|null;articlePaths:Record<string,string>|null;pagePaths:Record<string,string>|null;policy:RoutingPolicy;retired:boolean}|null>(null);
 export function useSiteLocale(){return useContext(Context);}
 /** A locale change updates the mounted views atomically; normal visits stay fresh. */
-export function SiteLocaleBoundary({locale,messages,policy:initialPolicy,siteId,languagePolicy,runtimeRequired=false,profileId,siteName,children,article,pageIdentity,presentationReleaseId,contextIdentity,runtime}:{locale:string;messages:SiteMessages;policy:RoutingPolicy;siteId?:string;languagePolicy?:PublicLanguagePolicy;runtimeRequired?:boolean;profileId:string;siteName:string;children:ReactNode;article?:{id:string;alternatePaths:Record<string,string>};pageIdentity?:PublicPresentation["pageIdentity"];presentationReleaseId?:string;contextIdentity?:string;runtime?:RuntimeCatalogueContext}){
+export function SiteLocaleBoundary({locale,messages,policy:initialPolicy,siteId,languagePolicy,profileId,siteName,children,article,pageIdentity,presentationReleaseId,contextIdentity,runtime}:{locale:string;messages:SiteMessages;policy:RoutingPolicy;siteId?:string;languagePolicy?:PublicLanguagePolicy;runtimeRequired?:boolean;profileId:string;siteName:string;children:ReactNode;article?:{id:string;alternatePaths:Record<string,string>};pageIdentity?:PublicPresentation["pageIdentity"];presentationReleaseId?:string;contextIdentity?:string;runtime?:RuntimeCatalogueContext}){
  const [policy,setPolicy]=useState(initialPolicy),[retired,setRetired]=useState(false),policyReader=useRef<BrowserLanguagePolicy|null>(null);
- if(siteId&&!policyReader.current)policyReader.current=new BrowserLanguagePolicy({siteId,required:runtimeRequired,initial:languagePolicy,fetch:(...args)=>fetch(...args)});
+ if(siteId&&!policyReader.current)policyReader.current=new BrowserLanguagePolicy({siteId,initial:languagePolicy,fetch:(...args)=>fetch(...args)});
  if(languagePolicy)policyReader.current?.note(languagePolicy);
  const localeCodes=useMemo(()=>policy.locales.map(l=>l.code),[policy.locales]);
  const [translation,setTranslation]=useState<LocalePayload|null>(null),[pending,setPending]=useState(false),[error,setError]=useState(false),request=useRef<AbortController|null>(null);
@@ -31,11 +31,6 @@ export function SiteLocaleBoundary({locale,messages,policy:initialPolicy,siteId,
  if(previousContext!==contextIdentity){setPreviousContext(contextIdentity);setPolicy(initialPolicy);setRetired(false);setTranslation(null);setPending(false);setError(false);}
  useEffect(()=>{request.current?.abort();request.current=null;},[contextIdentity]);
  useEffect(()=>()=>request.current?.abort(),[]);
- const refreshPolicy=useEffectEvent(async()=>{
-  if(!policyReader.current||!languagePolicy)return;
-  const read=await policyReader.current.read();if(read.kind==='runtime'){setPolicy({defaultLocale:read.policy.defaultLocale,locales:read.policy.locales.map(({code,label})=>({code,label}))});setRetired(!read.policy.locales.some(value=>value.code===(translation?.locale??locale)));}else if(read.kind==='unavailable')setError(true);
- });
- useEffect(()=>{const focus=()=>{if(document.visibilityState==='visible')void refreshPolicy();};window.addEventListener('focus',focus);document.addEventListener('visibilitychange',focus);return()=>{window.removeEventListener('focus',focus);document.removeEventListener('visibilitychange',focus);};},[]);
  const restoreLocale=useEffectEvent(()=>{
   const route=classifyRoute(location.pathname,policy);
   if(route.locale===locale){request.current?.abort();request.current=null;setTranslation(null);setPending(false);setError(false);document.documentElement.lang=locale;}
@@ -63,7 +58,7 @@ export function SiteLocaleBoundary({locale,messages,policy:initialPolicy,siteId,
   void(async()=>{
    try{
     let admittedPolicy=policy;
-    if(policyReader.current&&languagePolicy){const read=await policyReader.current.read();if(read.kind==='unavailable'||read.kind==='legacy'&&runtimeRequired)throw new Error('language_policy_unavailable');admittedPolicy=read.kind==='runtime'?{defaultLocale:read.policy.defaultLocale,locales:read.policy.locales.map(({code,label})=>({code,label}))}:initialPolicy;setPolicy(admittedPolicy);setRetired(!admittedPolicy.locales.some(value=>value.code===(translation?.locale??locale)));if(!admittedPolicy.locales.some(value=>value.code===next))throw new Error('locale_retired');}
+    if(policyReader.current&&languagePolicy){const read=await policyReader.current.read();if(read.kind==='unavailable')throw new Error('language_policy_unavailable');admittedPolicy={defaultLocale:read.policy.defaultLocale,locales:read.policy.locales.map(({code,label})=>({code,label}))};setPolicy(admittedPolicy);setRetired(!admittedPolicy.locales.some(value=>value.code===(translation?.locale??locale)));if(!admittedPolicy.locales.some(value=>value.code===next))throw new Error('locale_retired');}
     if(controller.signal.aborted)return;
     const response=await fetch("/api/site-locale?"+query,{headers:{"X-Presentation-Team":"1","X-Artwork-Address-Contract":"1"},cache:"no-store",credentials:"omit",redirect:"error",signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)])});
     if(!response.ok){if(response.status===409&&policyReader.current){const fresh=await policyReader.current.read();if(fresh.kind==='runtime'){setPolicy({defaultLocale:fresh.policy.defaultLocale,locales:fresh.policy.locales.map(({code,label})=>({code,label}))});setRetired(!fresh.policy.locales.some(value=>value.code===(translation?.locale??locale)));}}if(response.status===404&&route.kind==="artwork")window.dispatchEvent(new Event("artwork-revalidate"));await response.body?.cancel();throw new Error("locale_unavailable");}

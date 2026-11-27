@@ -13,7 +13,7 @@ export async function GET(request:Request){
   const config=loadConfig(),query=new URL(request.url).searchParams;
   const challenge=authenticateConsumerProbe({key:request.headers.get('x-site-languages-probe-key'),challengeId:query.get('challengeId'),expiresAt:request.headers.get('x-site-languages-probe-expires-at')},typeof config.SITE_LANGUAGES_PROBE_KEY==='string'?config.SITE_LANGUAGES_PROBE_KEY:undefined,Date.now());
   if([...query.keys()].some(key=>key!=='challengeId')||query.getAll('challengeId').length!==1)throw new ConsumerProbeError('validation_failed',400);
-  const slotId=config.SITE_LANGUAGES_CONSUMER_SLOT_ID;if(config.SITE_LANGUAGES_RUNTIME_REQUIRED!=='true'||typeof slotId!=='string')throw new ConsumerProbeError('consumer_unavailable',503);
+  const slotId=config.SITE_LANGUAGES_CONSUMER_SLOT_ID;if(typeof slotId!=='string')throw new ConsumerProbeError('consumer_unavailable',503);
   const read=await readRuntimeLanguagePolicy(true);if(read.kind!=='runtime')throw new ConsumerProbeError('consumer_unavailable',503);
   const remaining=Date.parse(challenge.expiresAt)-Date.now();if(remaining<=0)throw new ConsumerProbeError('consumer_unavailable',503);
   const signal=AbortSignal.any([request.signal,AbortSignal.timeout(remaining)]);

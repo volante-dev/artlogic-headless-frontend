@@ -2,7 +2,7 @@ export type DocumentBootState='static'|'preparing'|'owned'|'cancelled';
 export type DocumentBootEvent='waiting'|'claim'|'script-failed'|'hidden';
 export function documentBootTransition(state:DocumentBootState,event:DocumentBootEvent):DocumentBootState{
  if(state!=='preparing')return state;
- if(event==='claim')return'owned';if(event==='script-failed')return'static';if(event==='hidden')return'cancelled';return state;
+ if(event==='claim')return'owned';if(event==='script-failed')return'static';return state;
 }
 export function claimArtworkDocument(){
  const boot=(window as Window&{__artworkDocumentBoot?:{claim:()=>boolean}}).__artworkDocumentBoot;

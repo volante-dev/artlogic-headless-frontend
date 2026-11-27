@@ -21,10 +21,10 @@ describe('US3 runtime language policy transport',()=>{
   let finishOld!:(response:Response)=>void;const fetcher=vi.fn<typeof fetch>().mockImplementationOnce(()=>new Promise<Response>(resolve=>{finishOld=resolve;})).mockImplementationOnce(async()=>response({...body,publicRevision:'2'}));
   const transport=new RuntimePolicyTransport({...options,fetch:fetcher});const old=transport.read();const fresh=await transport.read(true);expect(fresh.kind==='runtime'&&fresh.policy.publicRevision).toBe('2');finishOld(response());await old;const hit=await transport.read();expect(hit.kind==='runtime'&&hit.policy.publicRevision).toBe('2');expect(fetcher).toHaveBeenCalledTimes(2);
  });
- it('allows only confirmed absence before adoption to use legacy configuration',async()=>{
+ it('requires the managed policy even when the deprecated flag is false',async()=>{
   let clock=0;const fetcher=vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(null,{status:404})).mockImplementationOnce(async()=>response()).mockResolvedValueOnce(new Response(null,{status:404}));
   const transport=new RuntimePolicyTransport({...options,fetch:fetcher,monotonic:()=>clock});
-  expect(await transport.read()).toEqual({kind:'legacy'});expect((await transport.read()).kind).toBe('runtime');clock=6000;
+  expect(await transport.read()).toEqual({kind:'unavailable',reason:'unavailable'});expect((await transport.read()).kind).toBe('runtime');clock=6000;
   expect(await transport.read()).toEqual({kind:'unavailable',reason:'unavailable'});
   const required=new RuntimePolicyTransport({...options,required:true,fetch:async()=>new Response(null,{status:404})});expect((await required.read()).kind).toBe('unavailable');
  });
@@ -59,10 +59,10 @@ describe('US3 anonymous policy cache endpoint',()=>{
 describe('US3 runtime routing boundary',()=>{
  it('never resurrects environment secondaries on failure and preserves active order and labels',()=>{
   const legacy=vi.fn(()=>({defaultLocale:'fr',locales:[{code:'fr',label:'FR'},{code:'en',label:'EN'}]}));
-  expect(routingLanguagePolicy({kind:'unavailable',reason:'access_denied'},legacy)).toEqual({kind:'unavailable',reason:'access_denied'});expect(legacy).not.toHaveBeenCalled();
+  expect(routingLanguagePolicy({kind:'unavailable',reason:'access_denied'})).toEqual({kind:'unavailable',reason:'access_denied'});expect(legacy).not.toHaveBeenCalled();
   const policy=decodeLanguagePolicy({...body,locales:[...body.locales,{code:'it',intlLocale:'it',label:'Italiano',direction:'ltr'}]},siteId);
-  const runtime=routingLanguagePolicy({kind:'runtime',policy,remainingMs:10000},legacy);expect(runtime.kind).toBe('ready');if(runtime.kind==='ready')expect(runtime.policy.locales.map(value=>value.code)).toEqual(['fr','it']);expect(legacy).not.toHaveBeenCalled();
-  expect(routingLanguagePolicy({kind:'legacy'},legacy).kind).toBe('ready');expect(legacy).toHaveBeenCalledTimes(1);
+  const runtime=routingLanguagePolicy({kind:'runtime',policy,remainingMs:10000});expect(runtime.kind).toBe('ready');if(runtime.kind==='ready')expect(runtime.policy.locales.map(value=>value.code)).toEqual(['fr','it']);expect(legacy).not.toHaveBeenCalled();
+
  });
  it('carries a bounded request context without retired history and consumes its original lease',()=>{
   const policy=decodeLanguagePolicy({...body,retiredCodes:['en','pt-br']},siteId),encoded=encodeLanguageRequest(policy,7000,1000);

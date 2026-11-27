@@ -1,7 +1,7 @@
 import {beforeEach,it,expect,vi} from 'vitest';
 import {NextRequest} from 'next/server';
 vi.mock('server-only',()=>({}));
-vi.mock('../../lib/i18n/runtime-policy',()=>({readRuntimeLanguagePolicy:async()=>({kind:'legacy'})}));
+vi.mock('../../lib/i18n/runtime-policy',async()=>{const {managedLanguageRead}=await import('../fixtures/language-policy');return {readRuntimeLanguagePolicy:async()=>managedLanguageRead()};});
 vi.mock('../../lib/config/env',()=>({loadConfig:()=>({}),configuredLocalePolicy:()=>({defaultLocale:'fr',locales:[{code:'fr'},{code:'en'}]})}));
 const api=vi.hoisted(()=>({resolve:vi.fn()}));
 vi.mock('../../lib/artworks/server',()=>({resolveArtworkAddress:api.resolve}));

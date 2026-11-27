@@ -2,7 +2,7 @@ import 'server-only';
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {cache} from 'react';
 import {headers} from 'next/headers';
-import {loadConfig,stringValue,configuredLocalePolicy} from '../config/env';
+import {loadConfig,stringValue} from '../config/env';
 import {readRuntimeLanguagePolicy} from './runtime-policy';
 import type {RuntimePolicyRead} from './runtime-policy-transport';
 import {decodeLanguageRequest,languageContextHeader,routingLanguagePolicy} from './runtime-routing';
@@ -12,18 +12,17 @@ const fromRequest=cache(async():Promise<RuntimePolicyRead>=>{
  const context=await headers(),config=loadConfig(),value=context.get(languageContextHeader);
  if(context.get('x-site-language-unavailable')==='1')return {kind:'unavailable',reason:'unavailable'};
  if(value){try{const decoded=decodeLanguageRequest(value,stringValue(config,'SITE_ID'));return {kind:'runtime',...decoded};}catch{return {kind:'unavailable',reason:'expired'};}}
- if(context.get('x-site-language-mode')==='legacy')return {kind:'legacy'};
  return readRuntimeLanguagePolicy();
 });
 /** Proxy state is explicit; render state crosses runtimes through sanitized request headers. */
 export function requestLanguagePolicy():Promise<RuntimePolicyRead>{const current=scope.getStore();return current?Promise.resolve(current):fromRequest();}
 export async function requestRoutingPolicy(){
- const read=await requestLanguagePolicy(),resolved=routingLanguagePolicy(read,()=>configuredLocalePolicy(loadConfig()));
+ const read=await requestLanguagePolicy(),resolved=routingLanguagePolicy(read);
  if(resolved.kind==='unavailable')throw new Error('language_policy_unavailable');return resolved.policy;
 }
 export async function languageBusinessHeaders():Promise<Record<string,string>>{
  const read=await requestLanguagePolicy();if(read.kind==='unavailable')throw new Error('language_policy_unavailable');
- return read.kind==='runtime'?{'X-Site-Language-Contract':'1','X-Site-Language-Revision':read.policy.publicRevision}:{};
+ return {'X-Site-Language-Contract':'1','X-Site-Language-Revision':read.policy.publicRevision};
 }
 export function isLanguagePolicyChanged(error:unknown):boolean{return error instanceof Error&&'code'in error&&error.code==='language_policy_changed';}
 /** Restart a whole public projection once. Successful fragments from the first attempt are discarded. */

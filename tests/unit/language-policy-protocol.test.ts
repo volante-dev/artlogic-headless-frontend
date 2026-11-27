@@ -14,9 +14,9 @@ describe('public policy lease protocol',()=>{
   headers.set('age','-1');expect(()=>languageLeaseRemaining(policy,headers)).toThrow();
   expect(()=>languageLeaseRemaining(policy,new Headers())).toThrow();
  });
- it('does not rearm a lease on L1 hits and remembers managed adoption after expiry',()=>{
+ it('does not rearm a lease on L1 hits and expires entries without tracking an optional mode',()=>{
   let now=0;const cache=new LanguagePolicyLeaseCache(()=>now),policy=decodeLanguagePolicy(value,siteId);cache.set('site',policy,10000);
-  now=4900;expect(cache.get('site')?.remainingMs).toBe(5100);now=5001;expect(cache.get('site')).toBeNull();expect(cache.observedManaged('site')).toBe(true);
+  now=4900;expect(cache.get('site')?.remainingMs).toBe(5100);now=5001;expect(cache.get('site')).toBeNull();
   expect(Object.isFrozen(policy)).toBe(true);expect(Object.isFrozen(policy.locales)).toBe(true);
  });
 });

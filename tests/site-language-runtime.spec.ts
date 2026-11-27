@@ -21,12 +21,13 @@ test.describe('US2 runtime language foundation in real SSR',()=>{
 
 });
 test.describe('US3 browser policy refresh and bounded recovery',()=>{
- test('keeps an already admitted page readable when focus reports a retired language, without asset polling',async({page,context})=>{
-  const data=await fixture(context);await page.goto(data.siteOrigin+'/en/artworks');await expect(page.locator('html')).toHaveAttribute('lang','en');await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');
-  const baseline=await (await page.request.get(data.siteOrigin+'/api/languages/policy')).json();let reads=0;
-  await page.route('**/api/languages/policy',route=>{reads++;const at=new Date();return route.fulfill({headers:{'Content-Type':'application/json',Date:at.toUTCString(),Age:'0'},json:{...baseline,mode:'managed',publicRevision:'9',locales:baseline.locales.filter((locale:{code:string})=>locale.code==='fr'),retiredCodes:['en'],issuedAt:at.toISOString(),validUntil:new Date(at.getTime()+30000).toISOString()}});});
-  await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await expect(page.getByText('This language is no longer offered. You can continue reading this page.').first()).toBeVisible();await expect(page.locator('html')).toHaveAttribute('lang','en');await expect(page.getByRole('link',{name:'View the site in its main language'}).first()).toHaveAttribute('href','/');const observed=reads;
-  expect(await page.evaluate(async()=>{const script=document.querySelector<HTMLScriptElement>('script[src*="/_next/static/"]');if(!script)throw Error('local_asset_required');return (await fetch(script.src)).status;})).toBe(200);expect(reads).toBe(observed);await page.waitForTimeout(200);expect(reads).toBe(observed);await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');
+ test('preserves the page and scroll on focus and visibility changes without refetching language policy',async({page,context})=>{
+  const data=await fixture(context);await page.goto(data.siteOrigin+'/en/artworks');await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');
+  await page.evaluate(()=>window.scrollTo(0,100));const before=await page.evaluate(()=>({scroll:scrollY,lang:document.documentElement.lang,title:document.title}));
+  let reads=0,documents=0;await page.route('**/api/languages/policy',route=>{reads++;return route.fulfill({status:503,json:{error:{code:'unexpected_focus_read'}}});});
+  page.on('request',request=>{if(request.isNavigationRequest()&&request.resourceType()==='document')documents++;});
+  await page.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});document.dispatchEvent(new Event('visibilitychange'));Object.defineProperty(document,'visibilityState',{configurable:true,value:'visible'});document.dispatchEvent(new Event('visibilitychange'));window.dispatchEvent(new Event('focus'));});
+  await page.waitForTimeout(300);expect(reads).toBe(0);expect(documents).toBe(0);expect(await page.evaluate(()=>({scroll:scrollY,lang:document.documentElement.lang,title:document.title}))).toEqual(before);await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');
  });
  test('reclassifies a refused locale once and leaves the current document intact, without a reload loop',async({page,context})=>{
   const data=await fixture(context);await page.goto(data.siteOrigin+'/artworks');await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');const baseline=await (await page.request.get(data.siteOrigin+'/api/languages/policy')).json();let refused=false,reads=0,business=0,documents=0;
