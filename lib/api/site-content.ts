@@ -17,13 +17,14 @@ function object(value:unknown):Record<string,unknown>{if(!value||typeof value!==
 export async function getSiteContent(locale:string,signal?:AbortSignal):Promise<SiteContent>{
   const readJson=(path:string)=>signal?publicJson(path,{signal}):publicJson(path);
   const runtime=await requestLanguagePolicy();if(runtime.kind==='unavailable')throw new PublicApiError(503,'language_policy_unavailable');
+  let observedPolicy=runtime.policy;
   let raw:Record<string,unknown>,runtimeMessages:SiteMessages|undefined,runtimeCatalogue:RuntimeCatalogueContext|undefined;
   {
     const previousCatalogue='legacy-002-'+createHash('sha256').update(canonicalJson(messageRegistry),'utf8').digest('hex'),candidates=[...new Set([runtimeMessageCatalogueId,...archivedRuntimeMessageCatalogues.map(catalogue=>catalogue.id),previousCatalogue])];let catalogue:string=runtimeMessageCatalogueId,response:Record<string,unknown>|undefined;
     for(const candidate of candidates){catalogue=candidate;try{response=object(await readJson('/v1/public/languages/content?'+new URLSearchParams({locale,revision:runtime.policy.publicRevision,catalogue})));break;}catch(error){if(candidate===candidates.at(-1)||!(error instanceof PublicApiError)||error.code!=='capability_unavailable'||!error.details.some(detail=>detail.field==='catalogue'&&detail.reason==='unsupported_catalogue'))throw error;}}
     if(!response)throw new PublicApiError(503,'language_content_unavailable');
-    const policy=decodeLanguagePolicy(response.policy,stringValue(loadConfig(),'SITE_ID'));
-    if(typeof response.contentRevision!=='string'||!(/^[1-9][0-9]{0,18}$/).test(response.contentRevision)||BigInt(response.contentRevision)>BigInt('9223372036854775807')||response.contractVersion!==1||response.selectedCatalogueId!==catalogue||response.locale!==locale||policy.publicRevision!==runtime.policy.publicRevision||policy.defaultLocale!==runtime.policy.defaultLocale||canonicalJson(policy.locales)!==canonicalJson(runtime.policy.locales))throw new PublicApiError(503,'invalid_response');
+    const policy=decodeLanguagePolicy(response.policy,stringValue(loadConfig(),'SITE_ID'));observedPolicy=policy;
+    if(typeof response.contentRevision!=='string'||!(/^[1-9][0-9]{0,18}$/).test(response.contentRevision)||BigInt(response.contentRevision)>BigInt('9223372036854775807')||response.contractVersion!==1||response.selectedCatalogueId!==catalogue||response.locale!==locale||policy.defaultLocale!==runtime.policy.defaultLocale)throw new PublicApiError(503,'invalid_response');
     const selectedDefinitions=catalogue===runtimeMessageCatalogueId?runtimeMessageDefinitions:archivedRuntimeMessageCatalogues.find(archive=>archive.id===catalogue)?.definitions;
     if(selectedDefinitions){const decoded=decodeRuntimeMessages(response.messages,locale,selectedDefinitions);runtimeMessages=decoded.messages as SiteMessages;runtimeCatalogue={catalogueId:catalogue,contentRevision:response.contentRevision,publicRevision:policy.publicRevision,modules:decoded.modules};}
     const fingerprint=createHash('sha256').update(canonicalJson({siteId:policy.siteId,publicRevision:policy.publicRevision,catalogueId:catalogue,defaultLocale:policy.defaultLocale,locales:policy.locales}),'utf8').digest('hex');
@@ -39,5 +40,5 @@ export async function getSiteContent(locale:string,signal?:AbortSignal):Promise<
   let whiteLogo:SiteContent["whiteLogo"]=null;
   if(raw.whiteLogo!=null){const l=object(raw.whiteLogo);if(typeof l.id!=="string"||!uuidPattern.test(l.id)||l.mimeType!=="image/webp"||![l.width,l.height,l.byteSize].every(Number.isSafeInteger)||Number(l.width)<1||Number(l.width)>1024||Number(l.height)<1||Number(l.height)>1024||Number(l.byteSize)<1||Number(l.byteSize)>2097152)throw new PublicApiError(503,"invalid_response");whiteLogo={id:l.id,width:Number(l.width),height:Number(l.height),byteSize:Number(l.byteSize),mimeType:"image/webp"};}
   const legalPage=parseLegalPage(raw.legalPage);if(legalPage&&!locales.some(l=>l.code===legalPage.locale))throw new PublicApiError(503,"invalid_response");
-  return {revision:raw.revision as number|string,...(runtimeCatalogue?{runtime:runtimeCatalogue}:{}),languagePolicy:runtime.policy,locale,policy:{defaultLocale:policy.defaultLocale,locales,fingerprint:policy.fingerprint},messages:resolved,logo,whiteLogo,legalPage};
+  return {revision:raw.revision as number|string,...(runtimeCatalogue?{runtime:runtimeCatalogue}:{}),languagePolicy:observedPolicy,locale,policy:{defaultLocale:policy.defaultLocale,locales,fingerprint:policy.fingerprint},messages:resolved,logo,whiteLogo,legalPage};
 }

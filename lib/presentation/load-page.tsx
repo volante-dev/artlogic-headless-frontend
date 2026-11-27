@@ -1,3 +1,5 @@
+import {headers} from 'next/headers';
+import {requestRoutingPolicy} from '../i18n/request-language';
 import {loadHeaderRouteContext} from "../header/load-route-context";
 import {HeaderRouteCommit} from "../../components/header/HeaderRouteCommit";
 import "server-only";
@@ -16,13 +18,24 @@ import {randomUUID} from "node:crypto";
 import {OriginFreshnessBeacon} from "../../components/artworks/OriginFreshnessBeacon";
 /** All I/O and current publication checks finish before data reaches replaceable views. */
 export async function PublicPage({searchParams,artworkId}:{searchParams?:Promise<CatalogParams>;artworkId?:string}={}){
-  const routeContext=loadHeaderRouteContext();
-  const [presentation,site]=await Promise.all([loadPublicPresentation(),loadSiteContent()]),data:PageData={},locale=presentation.locale;
-  if(presentation.pageKey==="artworks"){
+  const context=await headers(),routeContext=loadHeaderRouteContext();
+  const catalog=context.get('x-site-path')==='/artworks'&&!context.get('x-site-error')?requestRoutingPolicy().then(policy=>readPageCatalog(searchParams,context.get('x-site-locale')??policy.defaultLocale,policy.defaultLocale)):Promise.resolve(undefined);
+  const [presentation,site,earlyCatalog]=await Promise.all([loadPublicPresentation(),loadSiteContent(),catalog]),data:PageData={},locale=presentation.locale;
+  if(presentation.pageKey==='artworks')data.catalog=earlyCatalog??await readPageCatalog(searchParams,locale,site.policy.defaultLocale);
+  if(presentation.pageKey==="artworkDetail"){
+    if(!artworkId)notFound();try{data.artwork=await getArtwork(artworkId,locale);}catch(error){if(error instanceof PublicApiError&&error.status===404)notFound();throw error;}
+  }
+  const content=<PageRenderer presentation={presentation} siteName={site.siteName} contactMode={loadConfig().DATA_MODE==="mock"?"captured":"live"} demonstration={loadConfig().DATA_MODE==="mock"} data={data}/>;
+  return <>{presentation.pageKey==="artworks"?<div data-native-catalog-page>{content}<noscript><style>{`body:has([data-native-catalog-page]){display:flex;flex-direction:column}body:has([data-native-catalog-page]) div:has(footer),body:has([data-native-catalog-page]) div[hidden]:has([data-native-catalog-page]){display:contents!important}body:has([data-native-catalog-page]) main:has([data-testid="catalog-loading"]){display:contents}body:has([data-native-catalog-page]) [data-testid="catalog-loading"]{display:none}body:has([data-native-catalog-page]) [data-native-catalog-page]{order:1;width:100%}body:has([data-native-catalog-page]) footer{order:2}`}</style></noscript></div>:content}<OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await routeContext}/></>;
+}
+
+async function readPageCatalog(searchParams:Promise<CatalogParams>|undefined,locale:string,defaultLocale:string):Promise<PageData['catalog']>{
+ const data:PageData={};
+
     const params:CatalogParams=await(searchParams??Promise.resolve({}));
     let query:ReturnType<typeof parseCatalogQuery>;
     try{query=parseCatalogQuery(params);}catch{data.catalog={kind:"error",code:"invalid_request",q:"",pageSize:20};}
-    if(!data.catalog&&query!.kind==="numbered"&&params.types!==undefined){const canonical=query!.query.types?.join(",")??"";if(Array.isArray(params.types)||params.types!==canonical)redirect(localizedPath("/artworks",locale,site.policy.defaultLocale)+catalogQueryString(query!.query));}
+    if(!data.catalog&&query!.kind==="numbered"&&params.types!==undefined){const canonical=query!.query.types?.join(",")??"";if(Array.isArray(params.types)||params.types!==canonical)redirect(localizedPath("/artworks",locale,defaultLocale)+catalogQueryString(query!.query));}
     if(!data.catalog){
       try{if(query!.kind==="legacy"){const page=await listArtworks(query!.cursor,{restartOnChange:false,display:"plp",locale}),current=await getGalleryCatalog({locale,pageSize:1,catalogRevision:page.catalogRevision});data.catalog={kind:"legacy",page,typeFilters:current.typeFilters};}else data.catalog={kind:"numbered",page:await getGalleryCatalog({...query!.query,locale},true)};}
       catch(error){
@@ -31,10 +44,5 @@ export async function PublicPage({searchParams,artworkId}:{searchParams?:Promise
         data.catalog={kind:"error",types:query!.kind==="numbered"?query!.query.types:undefined,code:code==="type_filters_unavailable"||code==="catalog_changed"||code==="page_out_of_range"||code==="rate_limited"||code==="invalid_request"?code:"service_unavailable",q:query!.kind==="numbered"?query!.query.q??"":"",pageSize:query!.kind==="numbered"?query!.query.pageSize??20:20};
       }
     }
-  }
-  if(presentation.pageKey==="artworkDetail"){
-    if(!artworkId)notFound();try{data.artwork=await getArtwork(artworkId,locale);}catch(error){if(error instanceof PublicApiError&&error.status===404)notFound();throw error;}
-  }
-  const content=<PageRenderer presentation={presentation} siteName={site.siteName} contactMode={loadConfig().DATA_MODE==="mock"?"captured":"live"} demonstration={loadConfig().DATA_MODE==="mock"} data={data}/>;
-  return <>{presentation.pageKey==="artworks"?<div data-native-catalog-page>{content}<noscript><style>{`body:has([data-native-catalog-page]){display:flex;flex-direction:column}body:has([data-native-catalog-page]) div:has(footer),body:has([data-native-catalog-page]) div[hidden]:has([data-native-catalog-page]){display:contents!important}body:has([data-native-catalog-page]) main:has([data-testid="catalog-loading"]){display:contents}body:has([data-native-catalog-page]) [data-testid="catalog-loading"]{display:none}body:has([data-native-catalog-page]) [data-native-catalog-page]{order:1;width:100%}body:has([data-native-catalog-page]) footer{order:2}`}</style></noscript></div>:content}<OriginFreshnessBeacon nonce={randomUUID()}/><HeaderRouteCommit snapshot={await routeContext}/></>;
+ return data.catalog;
 }

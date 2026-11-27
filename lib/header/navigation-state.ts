@@ -31,9 +31,9 @@ export function readHistory(state:unknown):HeaderHistoryEntry|null {
  const value=(state as Record<string,unknown>)[HEADER_HISTORY_KEY] as HeaderHistoryEntry|undefined;
  return value?.version===1&&typeof value.entryId==='string'&&typeof value.hrefKey==='string'&&value.hrefKey.startsWith('/')&&(!value.lastRequestId||typeof value.lastRequestId==='string')?value:null;
 }
-export function commitDecision(intent:HeaderNavigationIntent,proof:Pick<HeaderRouteSnapshot,'hrefKey'|'requestId'>,activeHref:string,generation:number,seen:ReadonlySet<string>){
+export function commitDecision(intent:HeaderNavigationIntent,proof:Pick<HeaderRouteSnapshot,'hrefKey'|'requestId'>,activeHref:string,generation:number){
  if(generation!==intent.generation||proof.hrefKey!==activeHref||activeHref!==intent.target)return 'ignore';
- return intent.source==='history'&&!intent.baselineRequestId&&!intent.refreshRequested||proof.requestId===intent.baselineRequestId||seen.has(proof.requestId)?'refresh':'accept';
+ return 'accept';
 }
 export function requestRefresh(intent:HeaderNavigationIntent):HeaderNavigationIntent|null{return intent.refreshRequested?null:{...intent,refreshRequested:true};}
 export function historyDecision(state:unknown,activeHref:string,activeEntryId:string|null):{kind:'ignore'}|{kind:'fresh'}|{kind:'restore';entry:HeaderHistoryEntry}{

@@ -35,7 +35,6 @@ export async function getGalleryCatalog(input:GallerySearch={},plp=false,signal?
 }
 export async function getGalleryExperience(reference:string,locale:string,signal?:AbortSignal,addresses=true){
  if(!/^[a-z0-9-]{1,113}$/i.test(reference)||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(locale))throw new PublicApiError(404,"not_found");
- const resolution=addresses?await resolveArtworkAddress(reference,locale,signal):null;
  const negotiated=addresses&&await addressCapability();
- const result=await json("/v1/public/artwork-experiences/"+encodeURIComponent(artworkApiReference(resolution?.address.artworkId??reference))+"?locale="+encodeURIComponent(locale),signal,false,true,negotiated);try{const d=addresses?parseAddressedExperience(result,negotiated):parseGalleryExperience(result);if(d.locale!==locale)throw new Error();return d;}catch{throw new PublicApiError(503,"invalid_response");}
+ const result=await json("/v1/public/artwork-experiences/"+encodeURIComponent(artworkApiReference(reference))+"?locale="+encodeURIComponent(locale),signal,false,true,negotiated);try{const d=addresses?parseAddressedExperience(result,negotiated):parseGalleryExperience(result);if(d.locale!==locale)throw new Error();return d;}catch{throw new PublicApiError(503,"invalid_response");}
 }

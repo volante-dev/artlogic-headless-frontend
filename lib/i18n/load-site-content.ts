@@ -18,6 +18,6 @@ export const loadSiteContent=cache(async():Promise<LoadedSiteContent>=>{
   if((await headers()).get('x-site-language-unavailable')==='1')return {revision:1,locale:policy.defaultLocale,policy:{defaultLocale:policy.defaultLocale,locales:policy.locales.filter(value=>value.code===policy.defaultLocale),fingerprint},messages:fallbackMessages(policy.defaultLocale),logo:null,contentUnavailable:true,siteName:stringValue(config,'SITE_NAME'),siteOrigin:stringValue(config,'SITE_ORIGIN'),description:stringValue(config,'SITE_DESCRIPTION'),runtimeRequired:true};
   if(read.kind==='unavailable')throw new Error('language_policy_unavailable');
   const content=await getSiteContent(locale);
-  if(canonicalJson({defaultLocale:content.policy.defaultLocale,locales:content.policy.locales})!==canonicalJson(policy)||content.languagePolicy?.publicRevision!==read.policy.publicRevision)throw new Error('site_content_configuration_mismatch');
+  if(content.policy.defaultLocale!==policy.defaultLocale)throw new Error('site_content_configuration_mismatch');
   return {...content,contentUnavailable:false,runtimeRequired:true,siteName:stringValue(config,"SITE_NAME"),siteOrigin:stringValue(config,"SITE_ORIGIN"),description:locale===policy.defaultLocale?stringValue(config,"SITE_DESCRIPTION"):runtimeText(content.messages,locale,"seo.section.home",{siteName:stringValue(config,"SITE_NAME")})};
 });

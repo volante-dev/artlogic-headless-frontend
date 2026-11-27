@@ -21,6 +21,11 @@ test.describe('US2 runtime language foundation in real SSR',()=>{
 
 });
 test.describe('US3 browser policy refresh and bounded recovery',()=>{
+ test('a slow header navigation issues one RSC request without a timer refresh',async({page,context})=>{
+  const data=await fixture(context);await page.goto(data.siteOrigin+'/artworks');await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');let requests=0;
+  await page.route('**/contact?*',async route=>{if(new URL(route.request().url()).searchParams.has('_rsc')){requests++;await new Promise(resolve=>setTimeout(resolve,750));}await route.continue();});
+  await page.locator('header a[href="/contact"]').first().click();await expect(page).toHaveURL(/\/contact$/);await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');await page.waitForTimeout(300);expect(requests).toBe(1);await expect(page.locator('header a[href="/contact"]').first()).toHaveAttribute('aria-current','page');
+ });
  test('preserves the page and scroll on focus and visibility changes without refetching language policy',async({page,context})=>{
   const data=await fixture(context);await page.goto(data.siteOrigin+'/en/artworks');await expect(page.getByRole('main')).toHaveAttribute('data-header-state','ready');
   await page.evaluate(()=>window.scrollTo(0,100));const before=await page.evaluate(()=>({scroll:scrollY,lang:document.documentElement.lang,title:document.title}));

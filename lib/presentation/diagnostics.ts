@@ -6,7 +6,7 @@ export function failureKind(error:unknown){
  const e=error as {name?:string;cause?:{code?:string}}|null;
  return {errorType:failureNames.has(e?.name??'')?e!.name:'Error',...(failureCodes.has(e?.cause?.code??'')?{networkCode:e!.cause!.code}:{})};
 }
-export type PresentationReadEvent={readId:string;operation:'presentation'|'page-address';phase:'start'|'complete'|'fetch'|'http'|'body'|'json'|'validation';durationMs:number;timeoutMs:number;pageKey?:string;locale:string;renderId?:string;status?:number;apiRequestId?:string;apiEdgeId?:string;apiInstanceId?:string;apiInitializationId?:string;headersMs?:number;bodyMs?:number;jsonMs?:number;validationMs?:number;bytes?:number;errorType?:string;networkCode?:string};
+export type PresentationReadEvent={readId:string;operation:'presentation'|'page-address';phase:'start'|'complete'|'fetch'|'http'|'body'|'json'|'validation';durationMs:number;timeoutMs:number;pageKey?:string;locale:string;renderId?:string;status?:number;apiRequestId?:string;apiEdgeId?:string;apiInstanceId?:string;apiInitializationId?:string;apiDataCache?:string;headersMs?:number;bodyMs?:number;jsonMs?:number;validationMs?:number;bytes?:number;errorType?:string;networkCode?:string};
 export function presentationReadLog(event:PresentationReadEvent){
  const data={event:'public_presentation_read',...event,durationMs:Math.max(0,Math.round(event.durationMs))};
  if(['start','complete'].includes(event.phase))console.info(JSON.stringify(data));else console.error(JSON.stringify(data));
