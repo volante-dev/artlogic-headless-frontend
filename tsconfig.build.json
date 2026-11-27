@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "next-env.d.ts",
+    "next.config.ts",
+    "proxy.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "clients/**/*.ts",
+    "clients/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "page-composer/**/*.ts",
+    "page-composer/**/*.tsx",
+    "sections/**/*.ts",
+    "sections/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["node_modules", ".runtime", "tests", ".impeccable"]
+}

@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   // Lighthouse in DevTools uses the browser UA; keep metadata in the initial head for every client.
   htmlLimitedBots: /.*/,
-  typescript:{tsconfigPath:languagesBuild?"tsconfig.languages.json":process.env.E2E_GALLERY_BUILD==="1"?"tsconfig.gallery.json":"tsconfig.json"},
+  typescript:{tsconfigPath:languagesBuild?"tsconfig.languages.json":process.env.E2E_GALLERY_BUILD==="1"?"tsconfig.gallery.json":"tsconfig.build.json"},
   experimental: {globalNotFound:true},
   partialPrefetching: true,
   async redirects(){return staticLegacyRedirects;},
