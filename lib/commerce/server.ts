@@ -1,4 +1,5 @@
 import "server-only";
+import {admissionLanguageHeaders} from '../i18n/admission-language';
 import {commerceOperationAllowed} from "./admission";
 import {visitorIp} from "../contact/network-context";
 import {randomUUID} from "node:crypto";
@@ -38,12 +39,14 @@ export async function relayCommerce(request:NextRequest,segments:readonly string
  }
  if(!commerceOperationAllowed(config.COMMERCE_ENABLED==='true',op.id,body))return failure(503,'checkout_unavailable');
  try{
+  if(/^\/v1\/internal\/store\/(?:guest-sessions|cart\/validate|quotes|delivery-plan|delivery-quotes|consent-receipts)$/.test(op.resolvedPath))for(const [name,value]of Object.entries(await admissionLanguageHeaders()))headers.set(name,value);
   const response=await fetch(stringValue(config,'BACKEND_URL').replace(/\/$/,'')+op.resolvedPath,{method:op.method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',redirect:'error',signal:AbortSignal.timeout(['commerceStartAttempt','commerceCancelAttempt'].includes(op.id)?Math.max(45000,numberValue(config,'REQUEST_TIMEOUT_MS')):numberValue(config,'REQUEST_TIMEOUT_MS'))});
   if(op.id==='commerceInternalDeliveryCapabilities'&&response.status===404)return failure(404,'not_found');
   if(!(op.statuses as readonly number[]).includes(response.status))throw new Error('status');
   if(op.id==='commerceReadOrderDocument'&&response.ok){if(response.headers.get('content-type')?.split(';')[0]!=='text/html')throw new Error('format');return new NextResponse(new Uint8Array(await bytes(response.body,5_000_000)).buffer,{headers:{...privateHeaders,'Content-Type':'text/html; charset=utf-8','Content-Disposition':'attachment; filename="document.html"'}});}
   if(response.headers.get('content-type')?.split(';')[0]!=='application/json')throw new Error('format');
   const result=JSON.parse((await bytes(response.body,1_000_000)).toString());
+  if(response.status===409&&result?.error?.code==='language_policy_changed')return failure(409,'language_policy_changed');
   if(!response.ok&&!validCommerceContract('CommerceError',result))throw new Error('invalid_error');
   const responseSchema=(op.responseSchemas as Readonly<Record<string,string|null>>)[String(response.status)];
   if(response.ok&&responseSchema&&!validCommerceContract(responseSchema,result))throw new Error('invalid_response');

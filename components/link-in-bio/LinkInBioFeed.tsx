@@ -1,4 +1,5 @@
 'use client';
+import {hasRuntimeModule} from '../../lib/i18n/site-messages';
 import {linkInBioMessages} from '@/lib/link-in-bio/messages';
 import {useEffect,useLayoutEffect,useRef,useState,useSyncExternalStore} from 'react';
 import type {Schemas} from '@/lib/link-in-bio/contracts';
@@ -11,10 +12,10 @@ import {useSiteContent} from '../SiteContentProvider';
 import styles from './LinkInBio.module.css';
 interface Saved {feed:Schemas['LibPublicFeed'];scroll:number;focus:string|null;at:number;pages:[string,string|null][]}
 const saved=new Map<string,Saved>();
-export function LinkInBioFeed({initial,cursor=null}:{initial:Schemas['LibPublicFeed'];cursor?:string|null}){
- const {defaultLocale}=useSiteContent();
+function ReadyLinkInBioFeed({initial,cursor=null}:{initial:Schemas['LibPublicFeed'];cursor?:string|null}){
+ const {defaultLocale,messages:siteMessages}=useSiteContent();
  const [state]=useState(()=>createLinkInBioFeedState(initial));const initialSnapshot=useRef(state.read());
- const snapshot=useSyncExternalStore(state.subscribe,state.read,()=>initialSnapshot.current),feed=snapshot.feed,messages=linkInBioMessages(feed.locale);
+ const snapshot=useSyncExternalStore(state.subscribe,state.read,()=>initialSnapshot.current),feed=snapshot.feed,messages=linkInBioMessages(feed.locale,siteMessages);
  const active=useRef(true),controller=useRef<AbortController|null>(null),repairController=useRef<AbortController|null>(null),busy=useRef(false),entry=useRef<string|null>(null),pages=useRef(new Map(initial.items.map(item=>[item.id,cursor]))),repairs=useRef(new Map<string,Promise<Schemas['LibPublicFeed']>>());
  function remember(){if(!entry.current)return;const focus=document.activeElement?.closest('[data-link-bio-post]')?.getAttribute('data-link-bio-post')??null;saved.delete(entry.current);saved.set(entry.current,{feed:state.read().feed,scroll:window.scrollY,focus,at:Date.now(),pages:[...pages.current]});if(saved.size>4)saved.delete(saved.keys().next().value!);}
  useLayoutEffect(()=>{
@@ -53,3 +54,5 @@ export function LinkInBioFeed({initial,cursor=null}:{initial:Schemas['LibPublicF
   </div>
  </section>;
 }
+
+export function LinkInBioFeed(props:Parameters<typeof ReadyLinkInBioFeed>[0]){const site=useSiteContent();return hasRuntimeModule(site.messages,site.locale,'link_in_bio')?<ReadyLinkInBioFeed {...props}/>:<p role="status">{site.messages['error.presentationMessage']}</p>;}

@@ -26,7 +26,7 @@ async function loadRender({params,searchParams}:{params:Promise<{locale:string;p
   const [presentation,site]=await Promise.all([readPreviewPresentation(pageKey,locale),loadSiteContent()]),data:PageData={},query=await searchParams;
   if(Array.isArray(query.cursor))throw new Error();
   if(pageKey==="artworks"){
-   const catalog=await listArtworks(query.cursor,{display:"plp",locale}),titles=await readPreviewArtworkTitles(catalog.items.map(a=>a.id),locale),byId=new Map(titles.map(a=>[a.id,a.title]));
+   const catalog=await listArtworks(query.cursor,{display:"plp",locale,addresses:false}),titles=await readPreviewArtworkTitles(catalog.items.map(a=>a.id),locale),byId=new Map(titles.map(a=>[a.id,a.title]));
    data.catalog={kind:"legacy",page:{...catalog,items:catalog.items.filter(a=>byId.has(a.id)).map(a=>({...a,title:byId.get(a.id)!,media:a.media.map(m=>({...m,alt:m.alt===a.title?byId.get(a.id)!:m.alt}))}))}};
   }
   if(pageKey==="artworkDetail"){

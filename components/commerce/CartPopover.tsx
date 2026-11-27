@@ -1,4 +1,5 @@
 'use client';
+import {useRuntimeText} from "@/lib/i18n/use-runtime-text";
 import {useLayoutEffect,useRef,useState,useSyncExternalStore,type RefObject} from 'react';
 import {Fade,Modal,useMediaQuery} from '@mui/material';
 import gsap from 'gsap';
@@ -13,6 +14,7 @@ gsap.registerPlugin(useGSAP);
 const currency=(value:number,locale:string)=>new Intl.NumberFormat(locale,{style:'currency',currency:'EUR'}).format(value/100);
 const subscribe=()=>()=>{},clientSnapshot=()=>true,serverSnapshot=()=>false;
 export function CartPopover({anchorRef}:{anchorRef:RefObject<HTMLButtonElement|null>}){
+ const text=useRuntimeText();
  const reducedMotion=useMediaQuery('(prefers-reduced-motion: reduce)'),cart=useCart(),{open,setOpen}=cart,{messages,locale,defaultLocale}=useSiteContent(),panel=useRef<HTMLDivElement>(null),openedOnce=useRef(false),backdrop=useRef<HTMLDivElement>(null),mounted=useSyncExternalStore(subscribe,clientSnapshot,serverSnapshot),[position,setPosition]=useState({top:0,right:20});
  useLayoutEffect(()=>{
   if(!open)return;
@@ -32,7 +34,7 @@ export function CartPopover({anchorRef}:{anchorRef:RefObject<HTMLButtonElement|n
     </div></div></li>;
    })}</ul>}
   </div>
-  {cart.paymentLocked&&<p className={styles.cartLocked}>{locale==='fr'?'Revenez à la modification de votre commande pour changer le panier.':'Return to editing your order to change your bag.'}</p>}
+  {cart.paymentLocked&&<p className={styles.cartLocked}>{text("ui.c8d9d3ff4cbe994e")}</p>}
   {cart.error&&<p className={styles.error} role='alert'>{cart.error}</p>}
   {cart.items.length>0&&<div className={styles.cartBottom}><p><span>{messages['commerce.subtotal']}</span><strong>{currency(cart.subtotal,locale)}</strong></p>{cart.checkoutReady&&!cart.error&&!cart.pending?<HeaderLink className='button' href={localizedPath('/store/checkout',locale,defaultLocale)} onAccepted={()=>cart.setOpen(false)}>{messages['commerce.checkout']}</HeaderLink>:<button type='button' disabled>{messages['commerce.checkout']}</button>}</div>}
  </div></Fade></Modal>;

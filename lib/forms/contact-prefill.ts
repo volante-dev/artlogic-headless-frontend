@@ -1,3 +1,4 @@
+import {runtimeText} from "../i18n/site-messages";
 import type {FormDocument,FormField} from './model.generated';
 import type {FormRuntimeValues} from './resolver';
 import {visibleFormFields} from './conditions.generated';
@@ -34,12 +35,12 @@ export function formContactIdentity(document:FormDocument,answers:Record<string,
  const identity:ContactIdentity={};for(const [role,field]of bindings(document))if(['name','firstName','lastName','email'].includes(role)&&typeof answers[field.id]==='string')identity[role as keyof ContactIdentity]=answers[field.id] as string;
  if(!identity.name&&(identity.firstName||identity.lastName))identity.name=[identity.firstName,identity.lastName].filter(Boolean).join(' ');return identity;
 }
-export function artworkInquiryCopy(artwork:Pick<PublicContactArtwork,'title'|'artist'>|null|undefined,locale:string,subjectLabel:string){
+export function artworkInquiryCopy(artwork:Pick<PublicContactArtwork,'title'|'artist'>|null|undefined,locale:string,subjectLabel:string,messages:Readonly<Record<string,string|undefined>>){
  if(!artwork)return {subject:'',message:''};const title=artwork.title.trim(),identity=title+(artwork.artist?.trim()?` (${artwork.artist.trim()})`:'');
- return {subject:Array.from(`${subjectLabel} : ${title}`).slice(0,160).join(''),message:locale.startsWith('fr')?`Bonjour,\n\nJe souhaiterais obtenir davantage d’informations concernant l’œuvre « ${identity} ».\n\nMerci.`:`Hello,\n\nI would like more information about the artwork “${identity}”.\n\nThank you.`};
+ return {subject:Array.from(`${subjectLabel} : ${title}`).slice(0,160).join(''),message:runtimeText(messages,locale,'ui.660d2ed8f57ddfb4',{identity})};
 }
-export function prefillContactAnswers(document:FormDocument,answers:FormRuntimeValues['answers'],identity:ContactIdentity|null,artwork:Pick<PublicContactArtwork,'title'|'artist'>|null|undefined,locale:string,subjectLabel:string){
- const result={...answers},defaults={...identity,...artworkInquiryCopy(artwork,locale,subjectLabel)},visible=new Set(visibleFormFields(document,answers));
+export function prefillContactAnswers(document:FormDocument,answers:FormRuntimeValues['answers'],identity:ContactIdentity|null,artwork:Pick<PublicContactArtwork,'title'|'artist'>|null|undefined,locale:string,subjectLabel:string,messages:Readonly<Record<string,string|undefined>>){
+ const result={...answers},defaults={...identity,...artworkInquiryCopy(artwork,locale,subjectLabel,messages)},visible=new Set(visibleFormFields(document,answers));
  for(const [role,field]of bindings(document)){const value=defaults[role];if(!visible.has(field.id)||typeof value!=='string'||!value||result[field.id]!==undefined&&result[field.id]!=='')continue;result[field.id]=Array.from(value).slice(0,field.constraints.maxLength??(role==='message'?20000:256)).join('');}
  return result;
 }

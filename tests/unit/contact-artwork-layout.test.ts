@@ -17,9 +17,9 @@ const experience={scope:"public",locale:"fr",artwork:{id,slug:"synthetic",title:
 const artwork=contactArtworkFromExperience(experience,"Sans titre","fr");
 function presentation(section:PresentationSection):PublicPresentation{return {releaseId:id,schemaVersion:1,profileId:"default",manifestFingerprint:manifestFingerprints.default,locale:"fr",pageKey:"contact",theme:projection as PublicPresentation["theme"],fontFiles:[],sections:[section]};}
 it("projects only public summary fields, preserves hidden year and uses a same-origin media reference",()=>{
- expect(artwork).toMatchObject({id,title:"Œuvre publique",year:null,photo:{id:formId},focalPoint:{x:.4,y:.2},url:"/artworks/"+id});
+ expect(artwork).toMatchObject({id,title:"Œuvre publique",year:null,photo:{id:formId},focalPoint:{x:.4,y:.2},url:"/artworks/synthetic"});
  const html=renderToStaticMarkup(createElement(ContactArtworkCard,{artwork}));expect(html).toMatch(new RegExp('src="/media/'+formId+'\\?displayId=[A-Za-z0-9_%:.\\-]+"'));expect(html).not.toContain('X-Amz-');expect(html).toContain('object-position:40% 20%');expect(html).not.toContain("Année");expect(html).not.toContain("storageObjectKey");
- expect(contactArtworkFromExperience({...experience,locale:"en"},"Untitled","fr").url).toBe("/en/artworks/"+id);
+ expect(contactArtworkFromExperience({...experience,locale:"en"},"Untitled","fr").url).toBe("/en/artworks/synthetic");
  for(const value of [null,"https://evil.test/image","not-an-id",id+"?x=1"])expect(isContactArtworkId(value)).toBe(false);expect(isContactArtworkId(id)).toBe(true);
 });
 it.each(["form","formImage"] as const)("renders the existing %s placement once with its original form, block, title policy and artwork context",type=>{

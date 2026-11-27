@@ -24,7 +24,7 @@ function GenericArtworkInitialDocument({content}:{content:ArtworkContent}){
   {text.details.length>0&&<dl>{text.details.map(([key,value])=><div key={key}><dt>{site.messages[key]}</dt><dd>{value}</dd></div>)}</dl>}
   {art.media.map((media,index)=>{const attributes=artworkDocumentImage(media,mediaContext?.responsive);return <figure key={media.id}><img {...attributes} src={attributes.src} width={media.width} height={media.height} alt={media.alt??text.title??site.messages['artwork.imageAlt']} loading="lazy" fetchPriority={index===0?'high':undefined}/></figure>;})}
   {rich.description&&<section data-document-description>{rich.description}</section>}
-  {rich.provenance&&<section data-document-provenance><h2>Provenance</h2>{rich.provenance}</section>}
+  {rich.provenance&&<section data-document-provenance><h2>{site.messages["artwork.provenance"]}</h2>{rich.provenance}</section>}
   <a href={localizedPath('/contact',content.locale,site.defaultLocale)+'?artwork='+art.id}>{site.messages['contact.artworkCta']}</a>
   <ArtworkAvailability availableForSale={content.availableForSale} locale={content.locale}/>
  </article>;

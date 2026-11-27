@@ -1,37 +1,42 @@
+import {addressCapability} from '../artworks/server';
+import {splitArtworkAddresses,attachArtworkAddresses} from '../artworks/addresses';
+import {languageBusinessHeaders} from '../i18n/request-language';
 import {withPublicTeam} from "./team-client";
 import "server-only";
 import {diagnosticId,failureKind,presentationReadLog,type PresentationReadEvent} from "./diagnostics";
 import {loadConfig,stringValue,numberValue} from "../config/env";
-import {PublicApiError} from "../api/client";
+import {PublicApiError,responseLanguagePolicyChanged} from "../api/client";
 import {pageKeys,type PageKey} from "./types";
 import {validatePresentationAddress,validatePublicPresentation} from "./validate-response";
 
-async function getPublicBasePresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string){
+async function getPublicBasePresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string,addresses=true){
   const config=loadConfig();
   if(!pageKeys.includes(pageKey)||!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/.test(locale)||locale.length>35)throw new PublicApiError(400,"invalid_request");
   const query=new URLSearchParams({pageKey,locale});if(expectedReleaseId)query.set("expectedReleaseId",expectedReleaseId);
-  return presentationJson("presentation",query,locale,raw=>validatePublicPresentation(raw,{profileId:stringValue(config,"SITE_PROFILE"),pageKey,locale}),pageKey,renderId);
+  return presentationJson("presentation",query,locale,raw=>validatePublicPresentation(raw,{profileId:stringValue(config,"SITE_PROFILE"),pageKey,locale}),pageKey,renderId,addresses);
 }
 
-export async function getPublicPresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string){const load=()=>getPublicBasePresentation(pageKey,locale,expectedReleaseId,renderId);return withPublicTeam(await load(),load);}
+export async function getPublicPresentation(pageKey:PageKey,locale:string,expectedReleaseId?:string,renderId?:string,addresses=true){const load=()=>getPublicBasePresentation(pageKey,locale,expectedReleaseId,renderId,addresses);return withPublicTeam(await load(),load);}
 
-async function presentationJson<T>(operation:'presentation'|'page-address',query:URLSearchParams,locale:string,validate:(raw:unknown)=>T,pageKey?:string,renderId?:string):Promise<T>{
+async function presentationJson<T>(operation:'presentation'|'page-address',query:URLSearchParams,locale:string,validate:(raw:unknown)=>T,pageKey?:string,renderId?:string,addresses=true):Promise<T>{
  const config=loadConfig(),readId=crypto.randomUUID(),timeoutMs=numberValue(config,"PUBLIC_PAGE_REQUEST_TIMEOUT_MS"),started=performance.now();
  const base={readId,operation,timeoutMs,pageKey,locale,renderId:diagnosticId(renderId)};
  const log=(phase:PresentationReadEvent['phase'],extra:Partial<PresentationReadEvent>={})=>presentationReadLog({...base,phase,durationMs:performance.now()-started,...extra});
+ const artworkAddresses=addresses&&await addressCapability();
+ const languageHeaders=await languageBusinessHeaders().catch(()=>{throw new PublicApiError(503,'language_policy_unavailable');});
  log('start');
  let response:Response;
- try{response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+"/v1/public/presentation"+(operation==='page-address'?"/page-address":"")+"?"+query,{headers:{Accept:"application/json","X-Presentation-Read-Id":readId,"X-Presentation-Animated-Webp":"1"},cache:"no-store",redirect:"error",signal:AbortSignal.timeout(timeoutMs)});}
+ try{response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+"/v1/public/presentation"+(operation==='page-address'?"/page-address":"")+"?"+query,{headers:{...languageHeaders,...(artworkAddresses?{"X-Artwork-Address-Contract":"1"}:{}),Accept:"application/json","X-Presentation-Read-Id":readId,"X-Presentation-Animated-Webp":"1"},cache:"no-store",redirect:"error",signal:AbortSignal.timeout(timeoutMs)});}
  catch(error){log('fetch',failureKind(error));throw new PublicApiError(503,"presentation_unavailable");}
  const headersMs=performance.now()-started;
  const upstream={headersMs,apiInstanceId:diagnosticId(response.headers.get('x-api-instance-id')),apiInitializationId:diagnosticId(response.headers.get('x-api-initialization-id')),status:response.status,apiRequestId:diagnosticId(response.headers.get('x-request-id')),apiEdgeId:diagnosticId(response.headers.get('x-vercel-id'))};
- if(operation==='presentation'?response.status!==200:!response.ok){log('http',upstream);await response.body?.cancel();throw new PublicApiError([400,404,409,429].includes(response.status)?response.status:503,response.status===404?"not_found":"presentation_unavailable");}
+ if(operation==='presentation'?response.status!==200:!response.ok){log('http',upstream);const changed=await responseLanguagePolicyChanged(response);await response.body?.cancel();throw new PublicApiError([400,404,409,429].includes(response.status)?response.status:503,changed?'language_policy_changed':response.status===404?"not_found":"presentation_unavailable");}
  const reader=response.body?.getReader();if(!reader){log('body',upstream);throw new PublicApiError(503,"invalid_response");}
  let phase:PresentationReadEvent['phase']='body',bytes=0;
  try{
   const bodyStarted=performance.now();const chunks:Uint8Array[]=[];for(;;){const part=await reader.read();if(part.done)break;bytes+=part.value.byteLength;if(bytes>10485760)throw new Error();chunks.push(part.value);}
   const bodyMs=performance.now()-bodyStarted;phase='json';const jsonStarted=performance.now(),raw:unknown=JSON.parse(Buffer.concat(chunks).toString('utf8')),jsonMs=performance.now()-jsonStarted;
-  phase='validation';const validationStarted=performance.now(),result=validate(raw);log('complete',{...upstream,bytes,bodyMs,jsonMs,validationMs:performance.now()-validationStarted});return result;
+  phase='validation';const validationStarted=performance.now(),parts=splitArtworkAddresses(raw,artworkAddresses),result=attachArtworkAddresses(validate(parts.body),parts.addresses);log('complete',{...upstream,bytes,bodyMs,jsonMs,validationMs:performance.now()-validationStarted});return result;
  }catch(error){log(phase,{...upstream,bytes,...failureKind(error)});throw new PublicApiError(503,operation==='presentation'?"presentation_configuration_mismatch":"invalid_response");}
  finally{await reader.cancel().catch(()=>undefined);reader.releaseLock();}
 }

@@ -1,3 +1,4 @@
+vi.mock('@/lib/i18n/runtime-policy',()=>({readRuntimeLanguagePolicy:async()=>({kind:'legacy'})}));
 import {beforeEach,expect,it,vi} from "vitest";
 vi.mock("server-only",()=>({}));
 const api=vi.hoisted(()=>({fetch:vi.fn()}));
@@ -13,9 +14,9 @@ it("negotiates card focus only for new browser requests",async()=>{
  api.fetch.mockResolvedValue(Response.json(infiniteCatalogPage(2)));
  const old=await GET(new Request("http://gallery.test/api/artwork-catalog?locale=fr&page=2"));
  expect((await old.json()).items[0]).not.toHaveProperty("heroFocus");
- expect(api.fetch.mock.calls[0]?.[2]).toEqual({cardFocus:false});
+ expect(api.fetch.mock.calls[0]?.[2]).toEqual({cardFocus:false,artworkAddresses:false});
  await GET(new Request("http://gallery.test/api/artwork-catalog?locale=fr&page=2",{headers:{"X-Artwork-Card-Focus":"1"}}));
- expect(api.fetch.mock.calls[1]?.[2]).toEqual({cardFocus:true});
+ expect(api.fetch.mock.calls[1]?.[2]).toEqual({cardFocus:true,artworkAddresses:false});
 });
 const call=(query:string)=>GET(new Request("http://gallery.test/api/artwork-catalog?"+query,{headers:{cookie:"admin=PRIVATE","X-BFF-Key":"FORGED"}}));
 it("uses the fixed public projection, query, types, revision and request cancellation",async()=>{

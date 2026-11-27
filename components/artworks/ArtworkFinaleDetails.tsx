@@ -1,4 +1,5 @@
 "use client";
+import {useSiteContent} from "../SiteContentProvider";
 import {useLayoutEffect,useRef,type ReactNode,type RefObject} from "react";
 import styles from "./ArtworkFinale.module.css";
 function updateDescriptionOverflow(node:HTMLDivElement){
@@ -15,6 +16,7 @@ function updateDescriptionOverflow(node:HTMLDivElement){
  }
 }
 export function ArtworkFinaleDetails({children,provenance,provenanceLabel,active,readingRef,persistent=false}:{children?:ReactNode;provenance?:ReactNode;provenanceLabel:string;active:boolean;persistent?:boolean;readingRef?:RefObject<HTMLDivElement|null>}){
+ const {messages}=useSiteContent();
  const description=useRef<HTMLDivElement>(null),text=useRef<HTMLDivElement>(null),scrollTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useLayoutEffect(()=>{
   const node=description.current;if(!node||!active)return;
@@ -26,7 +28,7 @@ export function ArtworkFinaleDetails({children,provenance,provenanceLabel,active
   return ()=>{cancelAnimationFrame(frame);observer.disconnect();node.removeEventListener("wheel",wheel);if(scrollTimer.current)clearTimeout(scrollTimer.current);if(node.parentElement)node.parentElement.dataset.scrolling="false";};
  },[children,provenance,active]);
  return <div className={styles.details} data-finale-details data-finale-persistent={persistent||undefined} inert={!active||undefined} aria-hidden={!active}>
-   {(children||provenance)&&<div className={styles.descriptionArea} data-finale-description-area data-scrollable="false"><div className={styles.description} data-finale-description aria-label="Description" tabIndex={-1} data-reading-active={active} ref={node=>{description.current=node;if(readingRef)readingRef.current=node;}} onScroll={event=>{
+   {(children||provenance)&&<div className={styles.descriptionArea} data-finale-description-area data-scrollable="false"><div className={styles.description} data-finale-description aria-label={messages["gallery.description"]} tabIndex={-1} data-reading-active={active} ref={node=>{description.current=node;if(readingRef)readingRef.current=node;}} onScroll={event=>{
     const node=event.currentTarget;updateDescriptionOverflow(node);if(node.dataset.scrollable!=="true")return;const area=node.parentElement;if(area)area.dataset.scrolling="true";
     if(scrollTimer.current)clearTimeout(scrollTimer.current);scrollTimer.current=setTimeout(()=>{if(area?.isConnected)area.dataset.scrolling="false";},900);
    }} onKeyDown={event=>{if(event.currentTarget.dataset.scrollable==="true"&&["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","PageUp","PageDown","Home","End"," "].includes(event.key))event.stopPropagation();}}

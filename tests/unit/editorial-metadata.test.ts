@@ -1,3 +1,4 @@
+import {initialMessages,legacyRuntimeMessages} from '../../lib/i18n/site-messages';
 import {expect,it} from 'vitest';
 import {articleMetaDescription} from '../../lib/editorial/metadata';
 import {renderNativeEditorialArticle} from '../../lib/editorial/native-reader';
@@ -15,6 +16,6 @@ it('bounds generated body excerpts and preserves Unicode',()=>{
  expect(Array.from(value).length).toBeLessThanOrEqual(160);expect(value.endsWith('…')).toBe(true);
 });
 it('includes an escaped description in the native document head',()=>{
- const html=renderNativeEditorialArticle({...article,summary:'Un "regard" <singulier>'},'fr');
+ const html=renderNativeEditorialArticle({...article,summary:'Un "regard" <singulier>'},'fr',legacyRuntimeMessages(initialMessages('fr'),'fr'));
  expect(html.slice(0,html.indexOf('</head>'))).toContain('<meta name="description" content="Un &quot;regard&quot; &lt;singulier&gt;">');
 });

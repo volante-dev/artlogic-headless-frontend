@@ -1,9 +1,11 @@
+vi.mock('@/lib/i18n/runtime-policy',()=>({readRuntimeLanguagePolicy:async()=>({kind:'legacy'})}));
 import {beforeEach,expect,it,vi} from "vitest";
 import {getRedirectUrl,unstable_getResponseFromNextConfig} from "next/experimental/testing/server";
 import redirects from "../../lib/seo/legacy-redirects.json";
 import {classifyRoute} from "../../lib/i18n/routes";
 import {pageAlternates} from "../../lib/seo/metadata";
 import nextConfig from "../../next.config";
+import {artworkHistoryFallback} from "../../lib/seo/artwork-legacy-routing";
 
 const state=vi.hoisted(()=>({gallery:vi.fn(),editorial:vi.fn(),presentation:vi.fn(),linkInBio:vi.fn(),config:{SITE_ORIGIN:"https://canonical.example",EDITORIAL_ENABLED:"true",LINK_IN_BIO_ENABLED:"false"}}));
 const policy={defaultLocale:"fr",locales:[{code:"fr",label:"Français"},{code:"en",label:"English"}]};
@@ -33,10 +35,12 @@ it("uses the configured origin and locale policy for canonical URLs",()=>{
 });
 
 it("redirects old artwork and exhibition URLs permanently, retaining campaign queries",async()=>{
- for(const [path,target] of [["/masquescollection/masque-ubi?utm_source=archive","/artworks?utm_source=archive"],["/statuaires","/artworks"],["/actualit","/exhibitions"],["/edo","/exhibitions/edo-sandra-benhamou-exposition"]]){
+ for(const [path,target] of [["/actualit","/exhibitions"],["/edo","/exhibitions/edo-sandra-benhamou-exposition"]]){
   const r=await unstable_getResponseFromNextConfig({url:"https://site.example"+path,nextConfig});
   expect(r.status).toBe(301);expect(getRedirectUrl(r)).toBe("https://site.example"+target);
  }
+ expect(artworkHistoryFallback("/masquescollection/masque-ubi")).toBe("/artworks");
+ expect(artworkHistoryFallback("/statuaires")).toBe("/artworks");
  expect(redirects).not.toHaveProperty("/contact");expect(redirects).not.toHaveProperty("/legal");
  for(const [source,target] of Object.entries(redirects)){expect(target).toMatch(/^\/(?!\/)/);expect(source).not.toBe(target);expect(Object.keys(redirects)).not.toContain(target);}
 });

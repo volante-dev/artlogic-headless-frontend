@@ -1,4 +1,5 @@
 "use client";
+import {artworkHref} from '../../lib/artworks/artwork-href';
 import{useEditorialSurface}from"../editorial/immersive/EditorialInteractionProvider";
 import {useRef,useState,useEffect,useLayoutEffect,useCallback,useMemo,type ReactNode} from "react";
 import {useRouter,usePathname,useSelectedLayoutSegments} from "next/navigation";
@@ -25,6 +26,8 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const visits=useRef<ArtworkVisits|null>(null);if(visits.current===null){visits.current=new ArtworkVisits();}
   const background=useRef<HTMLDivElement>(null),container=useRef<HTMLDivElement>(null),committing=useRef<{href:string;token:string;cancelled?:boolean;refresh?:boolean}|null>(null);
   const [pending,setPending]=useState<Pending|null>(null),[restoring,setRestoring]=useState<Restore|null>(null),[activation,setActivation]=useState(0);
+  const [publicAddress,setPublicAddress]=useState<import("../../lib/artworks/addresses").ArtworkAddress>();
+  const notePublicAddress=useCallback((address:import("../../lib/artworks/addresses").ArtworkAddress)=>setPublicAddress(address),[]);
   const nonces=useRef(new Map<string,string>()),closingRequest=useRef(false),completingRestore=useRef<Restore|null>(null),restoringRef=useRef(restoring),pendingRef=useRef(pending);
   useLayoutEffect(()=>{restoringRef.current=restoring;pendingRef.current=pending;},[restoring,pending]);
   const visitToken=useCallback(()=>visits.current!.token,[]);
@@ -37,8 +40,8 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const resolve=useCallback(async(request:ArtworkActivation)=>{
     setPending({reference:request.reference,locale:request.locale,status:null});
     try{
-      const data=await readArtworkExperience(request.reference,request.locale,request.signal);
-      const href=localizedPath("/artworks/"+data.artwork.slug,request.locale,site.defaultLocale),commit=visits.current!.complete(request.id,href);
+      const data=await readArtworkExperience(request.reference,request.locale,request.signal);if(data.artwork.publicAddress)notePublicAddress(data.artwork.publicAddress);
+      const href=artworkHref(data.artwork,request.locale,site.defaultLocale),commit=visits.current!.complete(request.id,href);
       if(!commit)return;
       if(commit.action!=="none"){
         setPending({reference:request.reference,locale:request.locale,status:null,href});
@@ -46,7 +49,7 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
         if(commit.action==="push")router.push(href,{scroll:false});else router.replace(href,{scroll:false});
       }else setPending(null);
     }catch(error){if(request.signal.aborted||!visits.current!.fail(request.id))return;setPending({reference:request.reference,locale:request.locale,status:error instanceof ArtworkReadError?error.status:503});}
-  },[router,site.defaultLocale,setPending]);
+  },[router,site.defaultLocale,setPending,notePublicAddress]);
   const completeRestore=useCallback((restore:Restore)=>{
     if(restoringRef.current!==restore||completingRestore.current===restore)return;
     completingRestore.current=restore;
@@ -162,7 +165,7 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const frameReady=useCallback(()=>{if(opening?.strategy==="simple"){setPending(null);}},[opening]);
   const handoff=opening?.strategy==="simple"&&pending?.href===pathname;
   const pendingShell=Boolean(pending&&(!isArtwork||pending.locale!==route.locale||pending.reference!==route.artworkId||pending.status));
-  return <ArtworkNavigationContext value={{leaveForHeader,close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),frameReady,activeReference:pending?.reference??(isArtwork?route.artworkId:undefined),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
+  return <ArtworkNavigationContext value={{publicAddress,notePublicAddress,leaveForHeader,close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),frameReady,activeReference:pending?.reference??(isArtwork?route.artworkId:undefined),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
     <div ref={background} className={styles.origin} data-editorial-layout data-artwork-background inert={active||undefined} aria-hidden={active||undefined}>{!(isArtwork&&!intercepted)&&children}</div>
     {(!pendingShell||handoff)&&isArtwork&&(!intercepted?canonical:artwork)}
     {pendingShell&&!restoring&&<ArtworkDialogShell transient artworkRef={pending?.reference} locale={pending?.locale}>

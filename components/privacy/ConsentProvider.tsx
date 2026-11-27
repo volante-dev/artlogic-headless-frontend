@@ -3,6 +3,7 @@ import {createContext,useContext,useEffect,useRef,useState,useCallback,type Reac
 import type {components} from '@/lib/commerce/contract-types.generated';
 import {validConsentPolicy} from '@/lib/privacy/policy';
 import {storeRequest} from '@/lib/commerce/client';
+import {useSiteContent} from '../SiteContentProvider';
 import {ConsentBanner} from './ConsentBanner';
 import {ConsentPreferences} from './ConsentPreferences';
 type Policy=components['schemas']['CommerceConsentPolicy'];
@@ -12,7 +13,8 @@ interface ConsentContext {policy:Policy|null;locale:string;allowed:(category:str
 const Context=createContext<ConsentContext>({policy:null,locale:'fr',allowed:()=>false,openPreferences:()=>{}});
 export const useConsent=()=>useContext(Context);
 function current(value:Choice|null,policy:Policy|null){return !!value&&!!policy&&value.version===policy.version&&value.expiresAt>Date.now()&&value.categories.every(id=>policy.categories.some(c=>c.id===id));}
-export function ConsentProvider({children,locale,siteId}:{children:ReactNode;locale:string;siteId:string}){
+export function ConsentProvider({children,locale:requestedLocale,siteId}:{children:ReactNode;locale?:string;siteId:string}){
+ const site=useSiteContent(),locale=requestedLocale??site.locale;
  const [policy,setPolicy]=useState<Policy|null>(null),[choice,setChoice]=useState<Choice|null>(null),[preferences,setPreferences]=useState(false),[informed,setInformed]=useState(false),[receiptError,setReceiptError]=useState(false),pending=useRef<Pending|null>(null),sending=useRef(false),generation=useRef(0),key='site-privacy:'+siteId,seen=useRef(0);
  const load=useCallback(async(signal?:AbortSignal)=>{const serial=++generation.current;try{const response=await fetch('/api/privacy/policy?'+new URLSearchParams({locale}),{cache:'no-store',signal:signal??AbortSignal.timeout(10000)}),value=await response.json();if(!response.ok||!validConsentPolicy(value))throw new Error('invalid_policy');if(signal?.aborted||serial!==generation.current)return;setPolicy(value);seen.current=Date.now();try{const stored=JSON.parse(localStorage.getItem(key)??'null');if(stored&&typeof stored.version==='string'&&Array.isArray(stored.categories)&&stored.categories.every((c:unknown)=>typeof c==='string')&&typeof stored.expiresAt==='number'&&stored.expiresAt<=Date.now()+15552000000&&/^[a-f0-9-]{36}$/.test(stored.pseudonymousId)&&['accept','reject','customize'].includes(stored.choice)&&current(stored,value))setChoice(stored);else{setChoice(null);localStorage.removeItem(key);}}catch{setChoice(null);}try{const info=JSON.parse(localStorage.getItem(key+':info')??'null');setInformed(info?.version===value.version&&info?.expiresAt>Date.now());}catch{setInformed(false);}}catch{if(!signal?.aborted&&serial===generation.current)setPolicy(null);}},[locale,key]);
  useEffect(()=>{const controller=new AbortController();queueMicrotask(()=>{if(!controller.signal.aborted)void load(controller.signal);});const visible=()=>{if(!document.hidden&&Date.now()-seen.current>300000)void load(controller.signal);};document.addEventListener('visibilitychange',visible);return()=>{controller.abort();document.removeEventListener('visibilitychange',visible);};},[load]);

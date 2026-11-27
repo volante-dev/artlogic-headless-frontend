@@ -1,4 +1,5 @@
 import "server-only";
+import {admissionLanguageHeaders} from '../i18n/admission-language';
 import {randomUUID} from "node:crypto";
 import {validFormContract as valid} from "./contracts";
 import {publicFormOperation} from "./operations";
@@ -19,10 +20,12 @@ export async function relayForms(request:Request,segments:readonly string[]){
  if(operation.proof){const value=request.headers.get("idempotency-key")??"";if(!/^[0-9a-f]{64}$/.test(value))return failure(400,"invalid_request");headers.set("Idempotency-Key",value);}
  let body:unknown;if(operation.bodySchema||operation.emptyBody){if(request.headers.get("content-type")?.split(";")[0]!=="application/json")return failure(415,"unsupported_media_type");try{body=await read(request.body,1_000_000);}catch(error){return failure(error instanceof Error&&error.message==="limit"?413:400,error instanceof Error&&error.message==="limit"?"payload_too_large":"invalid_request");}if(operation.emptyBody?(!body||typeof body!=="object"||Array.isArray(body)||Object.keys(body).length!==0):!valid(operation.bodySchema!,body))return failure(400,"validation_error");}
  try{
+  if(!operation.capability&&segments[0]!=='receipts')for(const [name,value]of Object.entries(await admissionLanguageHeaders()))headers.set(name,value);
   if(operation.bodySchema||operation.emptyBody)headers.set("Content-Type","application/json");
   const response=await fetch(stringValue(config,"BACKEND_URL").replace(/\/$/,"")+"/v1/internal/forms"+operation.path+(query.size?"?"+query.toString():""),{method:operation.method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:"no-store",redirect:"error",signal:AbortSignal.timeout(numberValue(config,"REQUEST_TIMEOUT_MS"))});
   if(response.status===204&&operation.method==="DELETE"){await response.body?.cancel();return new Response(null,{status:204,headers:privateHeaders});}
   if(response.headers.get("content-type")?.split(";")[0]!=="application/json")throw new Error();const output=await read(response.body,response.ok?2_000_000:262144);
+  if(response.status===409&&(output as {error?:{code?:string}})?.error?.code==='language_policy_changed')return failure(409,'language_policy_changed');
   if(!valid(response.ok?operation.responseSchema:"FormsError",output)||![200,201,202,400,401,403,404,409,410,412,413,415,422,428,429,503].includes(response.status))throw new Error();
   const outHeaders=new Headers(privateHeaders),retry=response.headers.get("retry-after");if(retry&&/^[1-9][0-9]{0,5}$/.test(retry))outHeaders.set("Retry-After",retry);
   return Response.json(output,{status:response.status,headers:outHeaders});

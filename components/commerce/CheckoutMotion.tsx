@@ -1,4 +1,5 @@
 'use client';
+import {useRuntimeText} from "@/lib/i18n/use-runtime-text";
 import {useRef,useState,type ReactNode} from 'react';
 import gsap from 'gsap';
 import {useGSAP} from '@gsap/react';
@@ -7,9 +8,10 @@ gsap.registerPlugin(useGSAP);
 const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function CheckoutArrow(){return <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.25' aria-hidden='true'><path d='M3 12h18m-7-7 7 7-7 7'/></svg>;}
 export function CheckoutProgress({active,locale,onChange,disabled=false,complete=false}:{active:number;locale:string;onChange?:(index:number)=>void;disabled?:boolean;complete?:boolean}){
- const root=useRef<HTMLElement>(null),fr=locale==='fr',labels=fr?['Coordonnées','Livraison','Paiement']:['Your details','Delivery','Payment'];
+ const text=useRuntimeText(locale);
+ const root=useRef<HTMLElement>(null),labels=[text("store.checkout.details"),text("store.checkout.delivery"),text("store.checkout.payment")];
  useGSAP(()=>{gsap.to('[data-progress-ink]',{scaleX:complete?1:active/2,duration:reduced()?0:.75,ease:'power3.inOut',overwrite:true});},{scope:root,dependencies:[active,complete]});
- return <nav ref={root} className={styles.progress} aria-label={fr?'Étapes de votre commande':'Checkout progress'}><div className={styles.progressTrack} aria-hidden='true'><span data-progress-ink/></div><ol>{labels.map((label,i)=><li key={label} data-complete={complete||i<active||undefined}><button type='button' onClick={()=>onChange?.(i)} disabled={disabled||complete||!onChange||i>=active} aria-current={!complete&&active===i?'step':undefined}><span className={styles.marker}>{complete||i<active?<svg viewBox='0 0 24 24' aria-hidden='true'><path d='m5 12 4 4 10-10'/></svg>:i+1}</span><span>{label}</span></button></li>)}</ol></nav>;
+ return <nav ref={root} className={styles.progress} aria-label={text("ui.7894113117e73909")}><div className={styles.progressTrack} aria-hidden='true'><span data-progress-ink/></div><ol>{labels.map((label,i)=><li key={label} data-complete={complete||i<active||undefined}><button type='button' onClick={()=>onChange?.(i)} disabled={disabled||complete||!onChange||i>=active} aria-current={!complete&&active===i?'step':undefined}><span className={styles.marker}>{complete||i<active?<svg viewBox='0 0 24 24' aria-hidden='true'><path d='m5 12 4 4 10-10'/></svg>:i+1}</span><span>{label}</span></button></li>)}</ol></nav>;
 }
 export function useCheckoutMotion(phase:number,ready:boolean){
  const stage=useRef<HTMLDivElement>(null),transitioning=useRef(false),focusNext=useRef(false),previousHeight=useRef<number|null>(null),[moving,setMoving]=useState(false);

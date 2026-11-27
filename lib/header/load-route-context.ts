@@ -1,3 +1,4 @@
+import {hasRuntimeModule} from '../i18n/site-messages';
 import 'server-only';
 import {cache} from 'react';
 import {randomUUID} from 'node:crypto';
@@ -19,7 +20,8 @@ export const loadHeaderRouteContext=cache(async():Promise<HeaderRouteSnapshot>=>
  const context=await headers(),path=context.get('x-site-path')??'/',section=context.get('x-site-section');
  const [site,presentationRead]=await Promise.all([loadSiteContent(),context.get('x-site-error')==='page'?Promise.resolve(null):loadPublicPresentation().catch(()=>null)]);
  const result:HeaderRouteSnapshot={version:1,requestId:randomUUID(),scope:'public',site,locale:site.locale,hrefKey:localizedPath(path,site.locale,site.policy.defaultLocale)+(context.get('x-site-query')??''),pageKey:'unknown',section:sections.includes(section as Section)?section as Section:null,immersive:false,status:'ready'};
- const config=loadConfig();if(config.COMMERCE_ENABLED==='true'||config.COMMERCE_SERVICE_KEY)result.commerce=loadHeaderCommerce(site.locale);
+ if(site.contentUnavailable){result.status='unavailable';return result;}
+ const config=loadConfig();if(hasRuntimeModule(site.messages,site.locale,'store')&&context.get('x-site-language-unavailable')!=='1'&&(config.COMMERCE_ENABLED==='true'||config.COMMERCE_SERVICE_KEY))result.commerce=loadHeaderCommerce(site.locale);
  if(context.get('x-site-error')==='page'){result.status=context.get('x-site-page-status')==='404'?'not-found':'unavailable';return result;}
  try{
   const presentation=presentationRead;if(!presentation)throw new Error('presentation_unavailable');result.presentation=presentation;result.pageKey=presentation.pageKey;result.pageIdentity=presentation.pageIdentity;

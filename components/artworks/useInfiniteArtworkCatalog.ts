@@ -1,7 +1,7 @@
 "use client";
 import {useCallback,useEffect,useRef,useState,useMemo,useSyncExternalStore,type RefObject} from "react";
 import {catalogQueryString} from "@/lib/artworks/catalog-query";
-import {parseGalleryCatalog} from "@/lib/artworks/validate";
+import {parseAddressedCatalog} from "@/lib/artworks/addresses";
 import type {GalleryCatalog} from "@/lib/artworks/types";
 const subscribe=()=>()=>{};
 
@@ -16,9 +16,9 @@ export function useInfiniteArtworkCatalog(initial:GalleryCatalog|null,locale:str
   const controller=new AbortController();request.current=controller;setLoading(true);setError(null);
   try{
    const query=catalogQueryString({q:initial?.query||undefined,types:initial?.typeFilters?.selectedIds,page:last.page+1,pageSize:last.pageSize,catalogRevision:last.catalogRevision});
-   const response=await fetch("/api/artwork-catalog"+query+"&locale="+encodeURIComponent(locale),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(45000)]),headers:{Accept:"application/json","X-Artwork-Card-Focus":"1"}});
+   const response=await fetch("/api/artwork-catalog"+query+"&locale="+encodeURIComponent(locale),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(45000)]),headers:{Accept:"application/json","X-Artwork-Card-Focus":"1","X-Artwork-Address-Contract":"1"}});
    if(!response.ok){if(response.status===429){const delay=Number(response.headers.get("retry-after"));setRetryAt(Date.now()+(Number.isFinite(delay)&&delay>0?Math.min(delay,3600):60)*1000);}throw new Error(response.status===409?"catalog_changed":response.status===429?"rate_limited":"service_unavailable");}
-   const page=parseGalleryCatalog(await response.json(),true);
+   const contract=response.headers.get("x-artwork-address-contract");if(contract!=="1"&&contract!=="0")throw new Error("service_unavailable");const page=parseAddressedCatalog(await response.json(),true,contract==="1");
    const ids=new Set(pages.flatMap(page=>page.items.map(item=>item.id)));
    if(page.page!==last.page+1||page.pageSize!==last.pageSize||page.catalogRevision!==last.catalogRevision||page.query!==last.query||page.totalItems!==last.totalItems||new Set(page.items.map(item=>item.id)).size!==page.items.length||page.items.some(item=>ids.has(item.id))||JSON.stringify(page.typeFilters?.selectedIds??[])!==JSON.stringify(last.typeFilters?.selectedIds??[]))throw new Error("catalog_changed");
    if(!controller.signal.aborted){

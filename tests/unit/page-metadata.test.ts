@@ -1,10 +1,11 @@
+import {runtimeMessageInitialValues} from '../../lib/i18n/runtime-initials.generated';
 import {expect,it,vi,beforeEach} from 'vitest';
-const state=vi.hoisted(()=>({site:{siteName:'Galerie',description:'',locale:'fr',siteOrigin:'https://site.example',policy:{defaultLocale:'fr',locales:[{code:'fr',label:'Français'},{code:'en',label:'English'}]},messages:{'page.publications.title':'Publications'}},presentation:null as null|{metaDescription:string}}));
+const state=vi.hoisted(()=>({site:{siteName:'Galerie',description:'',locale:'fr',siteOrigin:'https://site.example',policy:{defaultLocale:'fr',locales:[{code:'fr',label:'Français'},{code:'en',label:'English'}]},messages:{'page.publications.title':'Publications'} as Record<string,string>},presentation:null as null|{metaDescription:string}}));
 vi.mock('../../lib/i18n/load-site-content',()=>({loadSiteContent:async()=>state.site}));
 vi.mock('../../lib/presentation/load-public',()=>({loadPublicPresentation:async()=>state.presentation}));
 vi.mock('../../lib/presentation/load-page',()=>({PublicPage:()=>null}));
 import {sectionMetadata} from '../../components/PageShell';
-beforeEach(()=>{state.site.description='';state.presentation=null;});
+beforeEach(()=>{state.site.messages={...runtimeMessageInitialValues.fr};state.site.description='';state.presentation=null;});
 it('provides a meaningful description, canonical and language alternates without configured copy',async()=>{expect(await sectionMetadata('publications')).toMatchObject({description:'Découvrez les livres et les publications de la Galerie.',alternates:{canonical:'https://site.example/publications',languages:{fr:'https://site.example/publications',en:'https://site.example/en/publications','x-default':'https://site.example/publications'}}});});
 it('keeps the configured page description ahead of the site description',async()=>{state.site.description='Site';state.presentation={metaDescription:' Description éditoriale '};expect((await sectionMetadata('publications')).description).toBe('Description éditoriale');});
 it('falls back past whitespace-only page descriptions',async()=>{state.site.description='Site';state.presentation={metaDescription:'  '};expect((await sectionMetadata('publications')).description).toBe('Site');});

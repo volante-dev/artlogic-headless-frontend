@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "next-env.d.ts",
+    "*.ts",
+    "*.tsx",
+    "*.mts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.mts",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "components/**/*.mts",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "lib/**/*.mts",
+    "branding/**/*.ts",
+    "branding/**/*.tsx",
+    "branding/**/*.mts",
+    "clients/**/*.ts",
+    "clients/**/*.tsx",
+    "clients/**/*.mts",
+    "page-composer/**/*.ts",
+    "page-composer/**/*.tsx",
+    "page-composer/**/*.mts",
+    "sections/**/*.ts",
+    "sections/**/*.tsx",
+    "sections/**/*.mts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "tests"
+  ]
+}

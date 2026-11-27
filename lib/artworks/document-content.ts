@@ -1,5 +1,5 @@
 import type {GalleryExperience} from './types';
-import type {SiteMessages} from '../i18n/messages.generated';
+import type {SiteMessages} from '../i18n/site-messages';
 export type ArtworkDocumentSnapshot=Pick<GalleryExperience,'availableForSale'|'artwork'|'locale'|'description'|'descriptionLocale'|'heroFocus'|'importedDescription'|'importedDescriptionLocale'|'importedProvenance'|'importedProvenanceLocale'>;
 /** Only the already-filtered public projection enters this view model. */
 export function artworkDocumentContent(content:ArtworkDocumentSnapshot){

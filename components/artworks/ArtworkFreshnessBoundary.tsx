@@ -19,6 +19,7 @@ type Reading={generation:number;data:GalleryExperience|null;status:number|null};
 /** No retained public projection is revealed until the current visibility and release agree. */
 function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{initial:GalleryExperience;presentation:PublicPresentation;siteName:string;demonstration?:boolean}){
   const router=useRouter(),navigation=useArtworkNavigation(),generation=useRef(0),content=useRef<HTMLDivElement>(null),restored=useRef(0),[attempt,retry]=useState(0);
+  const notePublicAddress=navigation?.notePublicAddress;
   const rememberVisual=navigation?.rememberVisual,readVisual=navigation?.readVisual,visitToken=navigation?.visitToken,activation=navigation?.activation??0;
   const readingToken=useRef<string|null>(null);
   const {messages}=useSiteContent(),genericTitle=messages["gallery.presentation"]+" — "+siteName,untitled=messages["artwork.untitled"];
@@ -40,16 +41,16 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
       setReading({generation:current,data:null,status:null});
       if(document.visibilityState==="hidden")return;
       try{
-        const data=await readArtworkExperience(initial.artwork.slug,liveLocale.current.locale,signal);
+        const data=await readArtworkExperience(initial.artwork.id,liveLocale.current.locale,signal);
         if(!alive||current!==generation.current)return;
         if(data.artwork.id!==initial.artwork.id)throw new ArtworkReadError(503);
         if(data.presentationReleaseId!==presentation.releaseId){router.refresh();setReading({generation:current,data:null,status:503});return;}
-        hasData=true;setReading({generation:current,data,status:null});
+        hasData=true;if(data.artwork.publicAddress)notePublicAddress?.(data.artwork.publicAddress);setReading({generation:current,data,status:null});
       }catch(error){if(!alive||request.signal.aborted||current!==generation.current)return;setReading({generation:current,data:null,status:error instanceof ArtworkReadError?error.status:503});}
     };
     void validate();const visibility=()=>void validate();document.addEventListener("visibilitychange",visibility);window.addEventListener("artwork-revalidate",visibility);
     return ()=>{const dialog=wrapper?.closest<HTMLElement>("[role=dialog]");if(hasData&&dialog)rememberVisual?.(dialog.scrollTop,visualToken);alive=false;request?.abort();epoch.current++;if(wrapper)wrapper.style.visibility="hidden";document.removeEventListener("visibilitychange",visibility);window.removeEventListener("artwork-revalidate",visibility);};
-  },[initial.artwork.id,initial.artwork.slug,initial.locale,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation]);
+  },[initial.artwork.id,initial.artwork.slug,initial.locale,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation,notePublicAddress]);
   useLayoutEffect(()=>{
     if(!content.current)return;const valid=reading.data&&reading.generation===generation.current;content.current.style.visibility=valid?"visible":"hidden";
     document.title=valid?(visibleData!.artwork.title??untitled)+" — "+siteName:genericTitle;

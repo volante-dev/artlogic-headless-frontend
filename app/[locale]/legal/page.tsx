@@ -1,3 +1,4 @@
+import {runtimeText} from '@/lib/i18n/site-messages';
 import {Suspense} from "react";
 import {notFound} from "next/navigation";
 import {HeaderRouteCommit} from "@/components/header/HeaderRouteCommit";
@@ -26,16 +27,14 @@ async function legalContent() {
 export async function generateMetadata() {
   const site = await legalContent();
   const title = (site.document?.title ?? site.legalPage!.title) + " | " + site.siteName;
-  const description = site.locale.startsWith("en")
-    ? `Legal information, hosting and privacy information for ${site.siteName}.`
-    : `Informations légales, hébergement et protection des données de la ${site.siteName}.`;
+  const description = runtimeText(site.messages,site.locale,'seo.legalDescription',{siteName:site.siteName});
   return {title, description, alternates: pageAlternates("/legal", site.locale, site.policy, site.siteOrigin), openGraph: {title, description}};
 }
 
 async function LegalContent() {
   const site = await legalContent();
   return <>
-    {site.document ? <LegalDocument document={site.document}/> : <article className={styles.page} lang={site.legalPage!.locale}>
+    {site.document ? <LegalDocument document={site.document} messages={site.messages}/> : <article className={styles.page} lang={site.legalPage!.locale}>
       <h1>{site.legalPage!.title}</h1>
       <RichText document={site.legalPage!.body} className={styles.body}/>
     </article>}

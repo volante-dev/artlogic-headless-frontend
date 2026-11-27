@@ -11,7 +11,7 @@ export function RattonArtworkInformation({content,supplementalContent}:{content:
   {text.details.length>0&&<dl>{text.details.map(([key,value])=><div key={key}><dt>{messages[key]}</dt><dd>{value}</dd></div>)}</dl>}
   {content.description&&<div className={styles.description} lang={content.descriptionLocale??content.locale} style={{whiteSpace:"pre-wrap"}}>{content.description}</div>}
   {rich.description&&<section aria-label={messages["gallery.description"]} data-document-description>{rich.description}</section>}
-  {rich.provenance&&<section data-document-provenance><h2>Provenance</h2>{rich.provenance}</section>}
+  {rich.provenance&&<section data-document-provenance><h2>{messages["artwork.provenance"]}</h2>{rich.provenance}</section>}
   {supplementalContent}
  </div>;
 }

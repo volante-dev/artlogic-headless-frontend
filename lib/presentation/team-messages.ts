@@ -1,3 +1,2 @@
-const fr={founders:'Fondateurs',members:'Membres',empty:'Aucune personne complète et visible n’est disponible dans cet aperçu.',email:(name:string)=>`Écrire à ${name}`,phone:(name:string)=>`Appeler ${name}`};
-const en={founders:'Founders',members:'Gallery team',empty:'No complete, visible team member is available in this preview.',email:(name:string)=>`Email ${name}`,phone:(name:string)=>`Call ${name}`};
-export const teamMessages=(locale:string,defaultLocale='en')=>locale.split('-')[0]==='fr'?fr:locale.split('-')[0]==='en'?en:defaultLocale.split('-')[0]==='fr'?fr:en;
+import {runtimeText,type SiteMessages} from '../i18n/site-messages';
+export function teamMessages(locale:string,messages:SiteMessages){return {email:(name:string)=>runtimeText(messages,locale,'ui.0e95078bbc377004',{name}),empty:runtimeText(messages,locale,'ui.4f7e6e09abbd29e1'),members:runtimeText(messages,locale,'ui.6467b72302931593'),phone:(name:string)=>runtimeText(messages,locale,'ui.83098ce596330d98',{name}),founders:runtimeText(messages,locale,'ui.b0691557a5c9b1d9')};}

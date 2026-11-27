@@ -1,5 +1,7 @@
 'use client';
+import {useRuntimeText} from "@/lib/i18n/use-runtime-text";
 import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from 'react';
+import {hasRuntimeModule,requireCommerceMessages} from '../../lib/i18n/site-messages';
 import {useSiteContent} from '../SiteContentProvider';
 import {cartCount,changeCartQuantity,parseStoredCart,consumePaidCart,parseCartConfirmations,CART_TTL_MS,CartValidationSequence,type CartItem} from '../../lib/commerce/cart';
 import type {components} from '../../lib/commerce/contract-types.generated';
@@ -7,8 +9,9 @@ type Product=components['schemas']['CommerceProductPublic'];type Validation=comp
 interface CartContext {salesEnabled:boolean;items:readonly CartItem[];products:ReadonlyMap<string,Product>;count:number;subtotal:number;ready:boolean;pending:boolean;error:string|null;open:boolean;checkoutReady:boolean;paymentLocked:boolean;setPaymentLocked:(value:boolean)=>void;clearPurchased:(attemptId:string,lines:readonly CartItem[])=>void;setOpen:(value:boolean)=>void;change:(id:string,quantity:number,show?:boolean)=>Promise<boolean>;add:(product:Product,show?:boolean)=>Promise<boolean>;dismissError:()=>void}
 const Context=createContext<CartContext|null>(null);
 export function useCart(){const c=useContext(Context);if(!c)throw new Error('store_cart_provider_required');return c;}
-export function CartProvider({siteId,initialProducts,checkoutReady,children,salesEnabled=true}:{salesEnabled?:boolean;siteId:string;initialProducts:Product[];checkoutReady:boolean;children:ReactNode}){
- const {locale,messages}=useSiteContent(),[items,setItems]=useState<CartItem[]>([]),[products,setProducts]=useState(()=>new Map(initialProducts.map(p=>[p.id,p]))),[ready,setReady]=useState(false),[pending,setPending]=useState(false),[error,setError]=useState<string|null>(null),[open,setOpen]=useState(false),[paymentLocked,setPaymentLocked]=useState(false);
+function ReadyCartProvider({siteId,initialProducts,checkoutReady,children,salesEnabled=true}:{salesEnabled?:boolean;siteId:string;initialProducts:Product[];checkoutReady:boolean;children:ReactNode}){
+ const text=useRuntimeText();
+ const site=useSiteContent(),locale=site.locale,messages=requireCommerceMessages(site.messages,locale),[items,setItems]=useState<CartItem[]>([]),[products,setProducts]=useState(()=>new Map(initialProducts.map(p=>[p.id,p]))),[ready,setReady]=useState(false),[pending,setPending]=useState(false),[error,setError]=useState<string|null>(null),[open,setOpen]=useState(false),[paymentLocked,setPaymentLocked]=useState(false);
  const confirmed=useRef<CartItem[]>([]),desired=useRef<CartItem[]>([]),sequence=useRef(new CartValidationSequence()),key='commerce:cart:'+siteId,productsRef=useRef(products);
  const save=useCallback((value:CartItem[])=>{confirmed.current=value;desired.current=value;setItems(value);try{localStorage.setItem(key,JSON.stringify({version:1,items:value,expiresAt:Date.now()+CART_TTL_MS}));}catch{/* The in-memory cart remains usable if storage is unavailable. */}},[key]);
  const completed=useRef(new Set<string>());
@@ -36,9 +39,9 @@ export function CartProvider({siteId,initialProducts,checkoutReady,children,sale
    if(result.cartRevision!==cartRevision||!Array.isArray(result.lines)||result.lines.length!==candidate.length||result.lines.some((l,i)=>l.productId!==candidate[i]?.productId||l.requestedQuantity!==candidate[i]?.quantity||l.status!=='valid'))throw new Error('stock');
    const next=new Map(productsRef.current);for(const line of result.lines){const p=next.get(line.productId);if(p&&line.grossUnitAmount!==undefined)next.set(line.productId,{...p,grossUnitAmount:line.grossUnitAmount,maxPurchasableQuantity:line.maxPurchasableQuantity});}productsRef.current=next;setProducts(next);
    save(candidate);if(show)setOpen(true);return true;
-  }catch(e){if(sequence.current.current(generation)){desired.current=confirmed.current;setError(e instanceof Error&&e.message==='stock'?messages['commerce.unavailable']:locale==='fr'?'La vérification a échoué. Votre panier est conservé. Réessayez.':'Availability could not be checked. Your bag is preserved. Try again.');}return false;}
+  }catch(e){if(sequence.current.current(generation)){desired.current=confirmed.current;setError(e instanceof Error&&e.message==='stock'?messages['commerce.unavailable']:text("ui.4ea36a40effc8280"));}return false;}
   finally{if(sequence.current.current(generation))setPending(false);}
- },[locale,messages,save,salesEnabled]);
+ },[locale,messages,save,salesEnabled,text]);
  useEffect(()=>{
   let alive=true;const validationSequence=sequence.current;
   queueMicrotask(()=>{
@@ -51,8 +54,10 @@ export function CartProvider({siteId,initialProducts,checkoutReady,children,sale
   });
   return()=>{alive=false;validationSequence.invalidate();};
  },[key,hydrateProducts,validate,initialProducts,salesEnabled]);
- const change=useCallback(async(id:string,quantity:number,show=false)=>{if(paymentLocked){setError(locale==='fr'?'Modifiez la commande depuis le paiement pour clôturer la tentative en cours.':'Edit the order from payment to close the current attempt.');return false;}try{return await validate(changeCartQuantity(desired.current,id,quantity),show);}catch{setError(messages['commerce.unavailable']);return false;}},[messages,validate,paymentLocked,locale]);
+ const change=useCallback(async(id:string,quantity:number,show=false)=>{if(paymentLocked){setError(text("ui.f27ebfd47136b382"));return false;}try{return await validate(changeCartQuantity(desired.current,id,quantity),show);}catch{setError(messages['commerce.unavailable']);return false;}},[messages,validate,paymentLocked,text]);
  const add=useCallback(async(product:Product,show=true)=>{const next=new Map(productsRef.current);next.set(product.id,product);productsRef.current=next;setProducts(next);return change(product.id,(desired.current.find(i=>i.productId===product.id)?.quantity??0)+1,show);},[change]);
  const subtotal=items.reduce((n,i)=>n+(products.get(i.productId)?.grossUnitAmount??0)*i.quantity,0);
  return <Context value={{salesEnabled,items,products,count:cartCount(items),subtotal,ready,pending,error,open,checkoutReady,paymentLocked,setPaymentLocked,clearPurchased,setOpen,change,add,dismissError:()=>setError(null)}}>{children}</Context>;
 }
+
+export function CartProvider(props:Parameters<typeof ReadyCartProvider>[0]){const site=useSiteContent();return hasRuntimeModule(site.messages,site.locale,'store')?<ReadyCartProvider {...props}/>:<p role="status">{site.messages['error.presentationMessage']}</p>;}

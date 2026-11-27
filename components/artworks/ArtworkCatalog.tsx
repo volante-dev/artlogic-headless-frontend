@@ -1,4 +1,5 @@
 "use client";
+import {useRuntimeText} from "@/lib/i18n/use-runtime-text";
 import {ArtworkTypeFilters} from "./ArtworkTypeFilters";
 import {useArtworkTypeFilters} from "./useArtworkTypeFilters";
 import {squareImageSizes} from "@/lib/media/public-image-sizes";
@@ -30,6 +31,7 @@ export function ArtworkCatalog(props:ArtworkCatalogProps){
  return <ArtworkCatalogView key={key} {...props}/>;
 }
 function ArtworkCatalogView({catalog,columns=3,id,CardView=ArtworkCard,ListView=CatalogList,emptyMessage,emptyLinkLabel,emptyLink,infiniteScroll=true}:ArtworkCatalogProps){
+ const text=useRuntimeText();
   const {messages:m,locale,defaultLocale,scope}=useSiteContent(),path=localizedPath("/artworks",locale,defaultLocale);
   const numbered=catalog.kind==="numbered"?catalog.page:null,legacy=catalog.kind==="legacy"?catalog.page:null;
   const q=numbered?.query??(catalog.kind==="error"?catalog.q:"");
@@ -63,13 +65,13 @@ function ArtworkCatalogView({catalog,columns=3,id,CardView=ArtworkCard,ListView=
       {(legacy||infinite.active&&numbered&&numbered.page>1)&&<FreshLink className={styles.clear} href={first}>{m["gallery.restart"]}</FreshLink>}
       {items.length?<ListView items={items} columns={columns} CardView={CardView} eagerFrom={infinite.eagerFrom}/>:q||filters.selected.length?<div className={styles.emptyState}>
         <Typography className={styles.emptyLead} role="status">{m["gallery.noResults"]}</Typography>
-        <Typography variant="h2" className={styles.emptyMessage}>{emptyMessage?.trim()||(locale.startsWith("fr")?"Vous cherchez un objet en particulier ? Nous pouvons le chercher pour vous.":"Looking for a particular object? We can find it for you.")}</Typography>
-        <FreshLink className={styles.emptyAction} href={presentationHref(emptyLink??{kind:"page",pageKey:"contact"},locale,defaultLocale)}>{emptyLinkLabel?.trim()||(locale.startsWith("fr")?"Contactez-nous":"Contact us")}<Arrow/></FreshLink>
+        <Typography variant="h2" className={styles.emptyMessage}>{emptyMessage?.trim()||(text("ui.8269e1ec6a6db000"))}</Typography>
+        <FreshLink className={styles.emptyAction} href={presentationHref(emptyLink??{kind:"page",pageKey:"contact"},locale,defaultLocale)}>{emptyLinkLabel?.trim()||(text("ui.f934417f42d5c894"))}<Arrow/></FreshLink>
       </div>:<Typography role="status" className={styles.state}>{m["catalog.empty"]}</Typography>}
       {infinite.active&&infinite.hasMore&&<div ref={continuationRef} className={styles.continuation} data-catalog-continuation aria-busy={infinite.loading}>
         <span className={styles.resultStatus} role="status">{infinite.loading?m["catalog.loading"]:""}</span>
         {infinite.loading&&<LoadingIndicator decorative/>}{infinite.error==="catalog_changed"?<><Typography role="status">{m["catalog.unavailableTitle"]}</Typography><FreshLink className={styles.action} href={first}>{m["gallery.restart"]}</FreshLink></>:<>
-          {infinite.error&&<Typography role="status">{infinite.error==="rate_limited"?(locale.startsWith("fr")?"Réessayez dans quelques instants.":"Please try again shortly."):m["catalog.errorMessage"]}</Typography>}
+          {infinite.error&&<Typography role="status">{infinite.error==="rate_limited"?(text("ui.77a54101ef1071e0")):m["catalog.errorMessage"]}</Typography>}
           <a className={styles.loadMore} href={link(infinite.nextPage)} aria-disabled={infinite.loading||infinite.retryAt>0||undefined} onClick={event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();void infinite.load(true);}}>{infinite.error?m["catalog.retry"]:m["catalog.next"]}<Arrow/></a>
         </>}
       </div>}

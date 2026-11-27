@@ -1,0 +1,4 @@
+.frame { display:grid; align-content:center; justify-items:start; gap:1.5rem; min-height:50svh; max-width:70ch; margin-inline:auto; padding:clamp(1.5rem,5vw,4rem); }
+.frame h1 { margin:0; font-variant-numeric:tabular-nums; }
+.frame a { color:inherit; text-underline-offset:.25em; text-decoration-thickness:1px; }
+.frame a:focus-visible { outline:2px solid currentColor; outline-offset:6px; }

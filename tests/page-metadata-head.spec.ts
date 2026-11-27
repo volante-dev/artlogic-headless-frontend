@@ -8,6 +8,10 @@ const agents={
  mobile:'Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 Chrome/131.0.0.0 Mobile Safari/537.36',
  lighthouse:'Mozilla/5.0 Chrome/131.0.0.0 Safari/537.36 Chrome-Lighthouse',
 };
+test('active artwork metadata uses its effective canonical and localized paths in the initial head',async({request})=>{
+ const id='03900000-0000-4000-8000-000000000001',dataResponse=await request.get(siteOrigin()+'/api/artwork-experiences/'+id+'?locale=fr',{headers:{'X-Artwork-Address-Contract':'1'}});test.skip(!dataResponse.ok(),'Requires the isolated active address fixture');const data=await dataResponse.json();test.skip(data.artworkAddresses?.mode!=='active','Requires an active address fixture');const address=data.artworkAddresses.items[0],response=await request.get(siteOrigin()+address.canonicalPath),html=await response.text(),head=html.slice(0,html.indexOf('</head>'));
+ expect(response.status()).toBe(200);expect(head).toContain('property="og:url" content="'+siteOrigin()+address.canonicalPath+'"');expect(head).toContain('rel="canonical" href="'+siteOrigin()+address.canonicalPath+'"');for(const alternate of address.alternates)expect(head).toContain('href="'+siteOrigin()+alternate.path+'"');expect(head).not.toContain(data.artwork.slug);
+});
 
 for(const path of ['/','/en','/publications','/en/publications']){
  for(const [client,userAgent] of Object.entries(agents)){

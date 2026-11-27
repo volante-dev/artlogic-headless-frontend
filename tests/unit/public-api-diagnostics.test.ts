@@ -1,3 +1,5 @@
+// Exercise the existing V0 diagnostic/timeout path with an explicitly admitted legacy request.
+vi.mock('../../lib/i18n/request-language',()=>({languageBusinessHeaders:async()=>({})}));
 import {afterEach,expect,it,vi} from 'vitest';
 vi.mock('server-only',()=>({}));
 vi.mock('../../lib/config/env',()=>({loadConfig:()=>({BACKEND_URL:'https://private-api.test',PUBLIC_PAGE_REQUEST_TIMEOUT_MS:45000}),stringValue:(c:Record<string,string>,key:string)=>c[key],numberValue:(c:Record<string,number>,key:string)=>c[key]}));

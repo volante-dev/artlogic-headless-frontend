@@ -1,3 +1,4 @@
+import {initialMessages,legacyRuntimeMessages} from '../../lib/i18n/site-messages';
 import {beforeEach,expect,it,vi} from 'vitest';
 const mocks=vi.hoisted(()=>({store:vi.fn(),navigation:vi.fn(),site:vi.fn(),presentation:vi.fn(),config:{COMMERCE_ENABLED:'true',COMMERCE_SERVICE_KEY:'test'}}));
 vi.mock('server-only',()=>({}));
@@ -10,7 +11,7 @@ vi.mock('../../lib/presentation/load-public',()=>({loadPublicPresentation:mocks.
 vi.mock('../../lib/editorial/load-article',()=>({loadPublicArticle:vi.fn()}));
 import {loadHeaderRouteContext} from '../../lib/header/load-route-context';
 beforeEach(()=>{
- mocks.site.mockResolvedValue({locale:'fr',policy:{defaultLocale:'fr',locales:[{code:'fr',label:'Français'}]}});
+ mocks.site.mockResolvedValue({locale:'fr',messages:legacyRuntimeMessages(initialMessages('fr'),'fr'),policy:{defaultLocale:'fr',locales:[{code:'fr',label:'Français'}]}});
  mocks.presentation.mockResolvedValue({pageKey:'exhibitions',releaseId:'release',sections:[]});
  mocks.navigation.mockResolvedValue({items:[]});mocks.config.COMMERCE_ENABLED='true';
 });

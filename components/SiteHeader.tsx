@@ -1,4 +1,5 @@
 "use client";
+import {hasRuntimeModule} from "@/lib/i18n/site-messages";
 import {useHeaderMenuMotion} from "./header/useHeaderMenuMotion";
 import type {NavigationProjection} from "../lib/navigation/types";
 import type {PublicPresentation} from "../lib/presentation/types";
@@ -7,7 +8,7 @@ import {Suspense,useEffect,useLayoutEffect,useRef,useState,useSyncExternalStore,
 import {HeaderCommerceBoundary} from "./header/HeaderCommerceBoundary";
 import type {HeaderCommerceAvailability} from "../lib/header/navigation-state";
 import {HeaderLink} from "./header/HeaderLink";
-import type {SiteMessages} from "@/lib/i18n/messages.generated";
+import type {SiteMessages} from "@/lib/i18n/site-messages";
 import {localizedPath,type Section} from "@/lib/i18n/routes";
 import styles from "./SiteHeader.module.css";
 import {useSiteContent} from "./SiteContentProvider";
@@ -65,7 +66,7 @@ export function SiteHeader({commerce,storeHref,storeActive=false,navigation,lang
     root.style.overflow="hidden";body.style.overflow="hidden";for(const {node}of background)node.inert=true;
     return ()=>{root.style.overflow=overflow;body.style.overflow=bodyOverflow;for(const {node,inert}of background)node.inert=node.id==="contenu"&&node.hasAttribute("data-header-state")?node.getAttribute("data-header-state")!=="ready":inert;};
   },[active]);
-  const storeEntry=<li data-menu-content style={{'--menu-item':links.length} as CSSProperties}><HeaderLink href={storeHref??localizedPath('/store',locale,defaultLocale)} onAccepted={navigate} aria-current={storeActive?'page':undefined}>{messages['commerce.store']}</HeaderLink></li>;
+  const storeEntry=hasRuntimeModule(messages,locale,'store')?<li data-menu-content style={{'--menu-item':links.length} as CSSProperties}><HeaderLink href={storeHref??localizedPath('/store',locale,defaultLocale)} onAccepted={navigate} aria-current={storeActive?'page':undefined}>{messages['commerce.store']}</HeaderLink></li>:null;
   return <><a className="skip" href="#contenu">{messages["header.skipToContent"]}</a><header ref={header} className={`${styles.header} ${immersive?styles.immersive:""}`} data-menu-state={compact?phase:"closed"} data-header-appearance={immersive?"immersive":"standard"} onKeyDown={event=>{
     if(!active)return;
     if(event.key==="Escape"){event.preventDefault();close();}

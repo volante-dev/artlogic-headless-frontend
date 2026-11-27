@@ -1,12 +1,13 @@
+import {runtimeText} from "../i18n/site-messages";
 import type {Resolver,FieldErrors} from 'react-hook-form';
 import type {components} from './contract-types.generated';
 import {validateAddress,normalizeCommerceEmail} from './address.generated';
 import {DomainError} from './rule-error.generated';
 type S=components['schemas'];
 export interface CheckoutValues {email:string;shippingAddress:S['CommerceAddress'];billingSameAsShipping:boolean;billingAddress:S['CommerceAddress'];acceptTerms:boolean}
-export function checkoutResolver(options:S['CommerceCheckoutOptions'],locale:string,step:number):Resolver<CheckoutValues>{
+export function checkoutResolver(options:S['CommerceCheckoutOptions'],locale:string,step:number,messages:Readonly<Record<string,string|undefined>>):Resolver<CheckoutValues>{
  return async values=>{
-  const issues:{path:string;code:string}[]=[],errors:FieldErrors<CheckoutValues>={},fr=locale==='fr';
+  const issues:{path:string;code:string}[]=[],errors:FieldErrors<CheckoutValues>={};
   const capture=(work:()=>void,fallback:string)=>{try{work();}catch(e){if(e instanceof DomainError&&e.context.issues)issues.push(...e.context.issues);else issues.push({path:fallback,code:'invalid'});}};
   capture(()=>{normalizeCommerceEmail(values.email);},'email');
   if(step>=1){
@@ -18,7 +19,7 @@ export function checkoutResolver(options:S['CommerceCheckoutOptions'],locale:str
   for(const issue of issues){
    const path=issue.path.split('.');let target=errors as Record<string,unknown>;
    for(const part of path.slice(0,-1)){target[part]??={};target=target[part] as Record<string,unknown>;}
-   target[path.at(-1)!]={type:issue.code,message:issue.code==='required'?(fr?'Complétez ce champ.':'Complete this field.'):(fr?'Vérifiez cette valeur.':'Check this value.')};
+   target[path.at(-1)!]={type:issue.code,message:runtimeText(messages,locale,issue.code==='required'?'store.validation.required':'store.validation.invalid')};
   }
   return issues.length?{values:{},errors}:{values,errors:{}};
  };

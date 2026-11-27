@@ -1,4 +1,5 @@
 "use client";
+import {hasRuntimeModule} from "../lib/i18n/site-messages";
 import {Fragment} from "react";
 import {OurTeam} from "../sections/OurTeam";
 import {teamInsertionIndex} from "../lib/presentation/team-placement";
@@ -31,11 +32,11 @@ export function PageRenderer({presentation,siteName,demonstration=false,data,con
   return <FormOwnerProvider owner={presentation.pageKey==="artworkDetail"&&data?.artwork?{ownerType:"artwork",ownerId:data.artwork.id}:{ownerType:"page",ownerId:presentation.pageKey,...(presentation.pageKey==="contact"&&formArtworkId?{artworkId:formArtworkId,...(data?.contactArtwork?{inquiryArtwork:data.contactArtwork}:{})}:{})}}><ContactExecutionProvider mode={contactMode}><ClientComponentsProvider profileId={presentation.profileId}>{presentation.pageKey==="artworkDetail"&&data?.artworkContent?<ArtworkDocumentRenderer presentation={presentation} content={data.artworkContent} siteName={siteName} demonstration={demonstration}/>:<PageContents presentation={presentation} siteName={siteName} demonstration={demonstration} data={data} contactMode={contactMode} contactConfiguration={contactConfiguration} includeContactForm={includeContactForm} includePageTitle={includePageTitle} contactStrategy={contactStrategy}/>}</ClientComponentsProvider></ContactExecutionProvider></FormOwnerProvider>;
 }
 function PageContents({presentation,siteName,demonstration=false,data,contactMode="live",contactConfiguration=null,includeContactForm=true,includePageTitle=true,contactStrategy}:PageRendererProps){
-  const {messages,scope,locale,defaultLocale}=useSiteContent(),{pageKey,sections}=presentation;
+  const {messages,scope,locale}=useSiteContent(),{pageKey,sections}=presentation;
   const extension=presentation.teamExtension?.pageKey===pageKey&&presentation.teamExtension.locale===presentation.locale?presentation.teamExtension:null;
   const diagnostic=scope==="preview"&&extension&&"diagnostic" in extension?extension.diagnostic:null;
   const placement=extension?.section??diagnostic;const insertion=placement?teamInsertionIndex(sections,placement):-1;
-  const teamNode=extension?.section?<OurTeam section={extension.section}/>:diagnostic?<section className={styles.section} data-team-diagnostic="team_empty"><p role="status">{teamMessages(locale,defaultLocale).empty}</p></section>:null;
+  const teamNode=extension?.section?<OurTeam section={extension.section}/>:diagnostic&&hasRuntimeModule(messages,locale,'team')?<section className={styles.section} data-team-diagnostic="team_empty"><p role="status">{teamMessages(locale,messages).empty}</p></section>:null;
   let contactReference:ReturnType<typeof contactFormReference>|undefined;
   if(pageKey==="contact"&&contactStrategy==="forms")try{contactReference=contactFormReference(sections);}catch{return <section className={styles.section}><p role="alert">{messages["contact.disabled"]}</p></section>;}
   if(presentation.schemaVersion!==1||presentation.manifestFingerprint!==manifestFingerprints[presentation.profileId as keyof typeof manifestFingerprints])throw new Error("unsupported_presentation_profile");

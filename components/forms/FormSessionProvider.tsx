@@ -1,4 +1,5 @@
 "use client";
+import {useRuntimeText} from "@/lib/i18n/use-runtime-text";
 import {createContext,useContext,useEffect,useState,useSyncExternalStore,useCallback,useRef,type ReactNode} from "react";
 import {FormProvider,useForm} from "react-hook-form";
 import type {components} from "@/lib/forms/contract-types.generated";
@@ -10,6 +11,7 @@ import {useFormExecutionMode,type FormExecutionMode} from "@/lib/forms/execution
 import {visibleFormFields} from "@/lib/forms/conditions.generated";
 import type {FormUploadStore} from "@/lib/forms/upload-store";
 import {prefillContactAnswers,readContactIdentity,saveContactIdentity,formContactIdentity} from "@/lib/forms/contact-prefill";
+import {hasRuntimeModule} from "@/lib/i18n/site-messages";
 import {useSiteContent} from "../SiteContentProvider";
 import type {PublicContactArtwork} from "@/lib/contact/types";
 type Store=ReturnType<typeof createFormSessionStore>;
@@ -19,16 +21,17 @@ interface Runtime{updateExpertise:(change:Partial<ExpertiseTabDraft>)=>void;uplo
 const Context=createContext<Runtime|null>(null);
 export function useFormSession(){const value=useContext(Context);if(!value)throw new Error("form_session_provider_missing");return value;}
 export function FormSessionProvider({formId,placement,locale,mode="live",inquiryArtwork,children}:{formId:string;placement:components["schemas"]["FormsPlacement"];locale:string;mode?:FormExecutionMode;inquiryArtwork?:Pick<PublicContactArtwork,'title'|'artist'>;children:ReactNode}){
- const {messages}=useSiteContent(),contact=placement.ownerType==='artwork'||placement.ownerType==='page'&&placement.ownerId==='contact';
+ const text=useRuntimeText();
+ const {messages}=useSiteContent(),available=hasRuntimeModule(messages,locale,'forms'),contact=placement.ownerType==='artwork'||placement.ownerType==='page'&&placement.ownerId==='contact';
  const inherited=useContext(StoreContext),[local]=useState(createFormSessionStore),store=inherited??local,key=formTabKey(formId,placement),inert=useFormExecutionMode(mode)==="inert",entry=useSyncExternalStore(store.subscribe,()=>store.get(key),store.server);
  const[restartNotice,setRestartNotice]=useState<string|null>(null);
- const initialize=async(fresh=false)=>{const stored=fresh?null:loadResumableFormTabState(sessionStorage,key);if(stored){store.uploads(stored.session);return stored;}const query=new URLSearchParams({locale,ownerType:placement.ownerType,ownerId:placement.ownerId,...(placement.blockId?{blockId:placement.blockId}:{}),...(placement.artworkId?{artworkId:placement.artworkId}:{})}),published=await formRequest<components["schemas"]["FormsPublic"]>(formId+"?"+query);if(published.availability==="closed")throw new ClosedForm(published.closedMessage??(locale.startsWith("fr")?"Ce formulaire est fermé.":"This form is closed."));if(published.availability!=="open")throw new PublicFormError("form_unavailable");const session=await formRequest<components["schemas"]["FormsSessionCreated"]>(formId+"/sessions",{body:{locale,placement}}),state=createFormTabState(session,locale);if(contact)state.answers=prefillContactAnswers(session.document,state.answers,readContactIdentity(),inquiryArtwork,locale,messages['contact.artworkSubject']) as FormTabState['answers'];store.uploads(state.session);saveFormTabState(sessionStorage,key,state);return state;};
+ const initialize=async(fresh=false)=>{const stored=fresh?null:loadResumableFormTabState(sessionStorage,key);if(stored){store.uploads(stored.session);return stored;}const query=new URLSearchParams({locale,ownerType:placement.ownerType,ownerId:placement.ownerId,...(placement.blockId?{blockId:placement.blockId}:{}),...(placement.artworkId?{artworkId:placement.artworkId}:{})}),published=await formRequest<components["schemas"]["FormsPublic"]>(formId+"?"+query);if(published.availability==="closed")throw new ClosedForm(published.closedMessage??(text("ui.164d0a732a2ea204")));if(published.availability!=="open")throw new PublicFormError("form_unavailable");const session=await formRequest<components["schemas"]["FormsSessionCreated"]>(formId+"/sessions",{body:{locale,placement}}),state=createFormTabState(session,locale);if(contact)state.answers=prefillContactAnswers(session.document,state.answers,readContactIdentity(),inquiryArtwork,locale,messages['contact.artworkSubject'],messages) as FormTabState['answers'];store.uploads(state.session);saveFormTabState(sessionStorage,key,state);return state;};
  const initializeRef=useRef(initialize);useEffect(()=>{initializeRef.current=initialize;},[initialize]);
- useEffect(()=>{if(inert)return;
+ useEffect(()=>{if(inert||!available)return;
   try{const previous=store.get(key);if(previous.status==="ready"&&previous.state.phase==="accepted"){archiveAcceptedFormState(sessionStorage,key,previous.state);store.reset(key);}
    void store.ensure(key,()=>initializeRef.current());
   }catch{store.set(key,{status:"error",code:"form_tab_storage_unavailable"});}
- },[key,inert,store]);
+ },[key,inert,store,available]);
  if(inert||entry.status!=="ready")return <Context value={{updateExpertise(){},uploads:null,entry,inert,locale,notice:entry.status==="error"?entry.code:null,submit(){},recover(){},restart(){},step(){}}}>{children}</Context>;
  function restart(){
   if(entry.status!=="ready"||!["accepted","expired"].includes(entry.state.phase))return;
@@ -42,7 +45,9 @@ export function FormSessionProvider({formId,placement,locale,mode="live",inquiry
  return <BoundSession key={entry.state.session.sessionId} entry={entry} store={store} storageKey={key} locale={locale} blockId={placement.blockId} rememberContact={contact} restartNotice={restartNotice} restart={restart}>{children}</BoundSession>;
 }
 function BoundSession({entry,store,storageKey,locale,children,restart,blockId,restartNotice,rememberContact}:{entry:Extract<FormSessionEntry,{status:"ready"}>;store:Store;storageKey:string;locale:string;children:ReactNode;restart:()=>void;blockId?:string;restartNotice:string|null;rememberContact:boolean}){
- const state=entry.state,uploads=store.uploads(state.session),[notice,setNotice]=useState<string|null>(null),methods=useForm<FormRuntimeValues>({defaultValues:{answers:state.answers,objects:state.expertise?.objects??[]},resolver:formAnswersResolver(state.session.document,locale),shouldUnregister:false,mode:"onSubmit"});
+ const text=useRuntimeText();
+ const {messages}=useSiteContent();
+ const state=entry.state,uploads=store.uploads(state.session),[notice,setNotice]=useState<string|null>(null),methods=useForm<FormRuntimeValues>({defaultValues:{answers:state.answers,objects:state.expertise?.objects??[]},resolver:formAnswersResolver(state.session.document,locale,messages),shouldUnregister:false,mode:"onSubmit"});
  const uploadItems=useSyncExternalStore(uploads.subscribe,uploads.get,uploads.server);
  const fallback=useRef(state);fallback.current=state;
  const current=useCallback(()=>{const value=store.get(storageKey);return value.status==="ready"?value.state:fallback.current;},[store,storageKey]);
@@ -54,7 +59,7 @@ function BoundSession({entry,store,storageKey,locale,children,restart,blockId,re
   if(!pending.attempt)return;setNotice(null);
   try{const receipt=await formRequest<components["schemas"]["FormsReceipt"]>("sessions/"+pending.session.sessionId+"/submit",{body:pending.attempt.payload,capability:pending.session.capability,proof:pending.attempt.proof});commit(updateFormTabState(current(),{phase:"accepted",receipt}));if(rememberContact)saveContactIdentity(formContactIdentity(pending.session.document,pending.attempt.payload.answers));}
   catch(error){
-   if(error instanceof PublicFormError&&error.status<500){const next=updateFormTabState(current(),{phase:error.status===410?"expired":"editing"});commit({...next,attempt:null});for(const issue of error.issues){if(issue.fieldId)methods.setError(`answers.${issue.fieldId}`,{type:issue.code,message:locale.startsWith("fr")?"Vérifiez ce champ.":"Check this field."},{shouldFocus:true});else if(issue.objectId){const path=formAnswerIssuePath(issue,current().expertise?.objects??[]);if(path.startsWith("objects."))methods.setError(path as `objects.${number}.designation`,{type:issue.code,message:locale.startsWith("fr")?"Vérifiez cet objet.":"Check this object."},{shouldFocus:true});}}setNotice(error.code);}
+   if(error instanceof PublicFormError&&error.status<500){const next=updateFormTabState(current(),{phase:error.status===410?"expired":"editing"});commit({...next,attempt:null});for(const issue of error.issues){if(issue.fieldId)methods.setError(`answers.${issue.fieldId}`,{type:issue.code,message:text("ui.4bb80ba23883c72f")},{shouldFocus:true});else if(issue.objectId){const path=formAnswerIssuePath(issue,current().expertise?.objects??[]);if(path.startsWith("objects."))methods.setError(path as `objects.${number}.designation`,{type:issue.code,message:text("ui.3863f1609ee15be1")},{shouldFocus:true});}}setNotice(error.code);}
    else{commit(updateFormTabState(current(),{phase:"uncertain"}));setNotice("form_confirmation_unknown");}
   }
  }
