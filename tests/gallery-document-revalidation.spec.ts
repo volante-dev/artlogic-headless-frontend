@@ -6,8 +6,8 @@ test('masked fields are absent from the native document and its interactive conc
  await control({action:'visibility',artworkId:site.finaleArtworkIds[3],decision:'hidden'});await page.evaluate(()=>window.dispatchEvent(new Event('artwork-revalidate')));await expect(page.locator('[data-artwork-route-state="unavailable"]')).toBeVisible();await expect(page.locator('[data-artwork-readable]')).toHaveCount(0);await expect(page.getByTestId('artwork-experience')).toHaveCount(0);
  }finally{await control({action:'restore'});}
 });
-for(const defect of ['locale','identity','release'])test(`a mismatched ${defect} cannot adopt an initial public document`,async({page})=>{
+for(const defect of ['locale','identity','release'])test(`a mismatched ${defect} is rejected during an explicit revalidation`,async({page})=>{
  const site=JSON.parse(readFileSync(process.env.E2E_GALLERY_FIXTURE!,'utf8')).sites[0];
  await page.route('**/api/artwork-experiences/**',async route=>{const response=await route.fetch(),data=await response.json();if(defect==='locale')data.locale='en';if(defect==='release')data.presentationReleaseId='99999999-9999-4999-8999-999999999999';if(defect==='identity'){data.artwork.id='99999999-9999-4999-8999-999999999999';data.artwork.slug='other-99999999999949998999999999999999';}await route.fulfill({response,json:data});});
- await page.goto('/artworks/'+site.finaleArtworkIds[3]);await expect(page.locator('[data-artwork-route-state="error"]')).toBeVisible();await expect(page.locator('[data-artwork-readable]')).toHaveCount(0);await expect(page.getByTestId('artwork-experience')).toHaveCount(0);
+ await page.goto('/artworks/'+site.finaleArtworkIds[3]);await expect(page.getByTestId('artwork-experience')).toBeVisible();await page.evaluate(()=>window.dispatchEvent(new Event('artwork-revalidate')));await expect(page.locator('[data-artwork-route-state="error"]')).toBeVisible();await expect(page.locator('[data-artwork-readable]')).toHaveCount(0);await expect(page.getByTestId('artwork-experience')).toHaveCount(0);
 });

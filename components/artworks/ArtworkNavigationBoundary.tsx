@@ -4,7 +4,6 @@ import{useEditorialSurface}from"../editorial/immersive/EditorialInteractionProvi
 import {useRef,useState,useEffect,useLayoutEffect,useCallback,useMemo,type ReactNode} from "react";
 import {useRouter,usePathname,useSelectedLayoutSegments} from "next/navigation";
 import {ArtworkVisits,type ArtworkOrigin,type ArtworkActivation} from "../../lib/artworks/navigation";
-import {readArtworkExperience,ArtworkReadError} from "../../lib/artworks/browser";
 import {classifyRoute,localizedPath} from "../../lib/i18n/routes";
 import {useSiteContent} from "../SiteContentProvider";
 import {ArtworkNavigationContext} from "./ArtworkNavigationContext";
@@ -17,19 +16,20 @@ import {useArtworkOpening} from "./ArtworkOpeningBoundary";
 import {useSiteLocale} from "../SiteLocaleBoundary";
 
 const stateKey="artlogicArtworkVisit";
-type Pending={reference:string;locale:string;status:number|null;href?:string};
+type Pending={reference:string;locale:string;href:string};
 type Restore={origin:ArtworkOrigin};
 export function ArtworkNavigationBoundary({children,artwork,canonical}:{children:ReactNode;artwork:ReactNode;canonical:ReactNode}){
   const opening=useArtworkOpening(),site=useSiteContent(),dynamic=useSiteLocale(),router=useRouter(),pathname=usePathname(),segments=useSelectedLayoutSegments("artwork"),slot=segments.join("|");
   const policy=useMemo(()=>({defaultLocale:site.defaultLocale,locales:site.locales.map(code=>({code,label:code}))}),[site.defaultLocale,site.locales]);
   const route=classifyRoute(pathname,policy),isArtwork=route.kind==="artwork",intercepted=segments.some(segment=>segment==="(.)artworks"||segment==="artworks");
   const visits=useRef<ArtworkVisits|null>(null);if(visits.current===null){visits.current=new ArtworkVisits();}
-  const background=useRef<HTMLDivElement>(null),container=useRef<HTMLDivElement>(null),committing=useRef<{href:string;token:string;cancelled?:boolean;refresh?:boolean}|null>(null);
+  const background=useRef<HTMLDivElement>(null),container=useRef<HTMLDivElement>(null),committing=useRef<{href:string;from:string;token:string}|null>(null);
   const [pending,setPending]=useState<Pending|null>(null),[restoring,setRestoring]=useState<Restore|null>(null),[activation,setActivation]=useState(0);
   const [publicAddress,setPublicAddress]=useState<import("../../lib/artworks/addresses").ArtworkAddress>();
   const notePublicAddress=useCallback((address:import("../../lib/artworks/addresses").ArtworkAddress)=>setPublicAddress(address),[]);
   const nonces=useRef(new Map<string,string>()),closingRequest=useRef(false),completingRestore=useRef<Restore|null>(null),restoringRef=useRef(restoring),pendingRef=useRef(pending);
-  useLayoutEffect(()=>{restoringRef.current=restoring;pendingRef.current=pending;},[restoring,pending]);
+  // Restoration is owned by restoreOrigin/completeRestore; an older transition render must not overwrite it.
+  useLayoutEffect(()=>{pendingRef.current=pending;},[pending]);
   const visitToken=useCallback(()=>visits.current!.token,[]);
   const rememberVisual=useCallback((scrollTop:number,provided?:string|null)=>{const token=provided===undefined?visits.current!.token:provided;if(token)visits.current!.rememberVisual(token,{scrollTop});},[]);
   const readVisual=useCallback((provided?:string|null)=>{const token=provided===undefined?visits.current!.token:provided;return token?visits.current!.visual(token)?.scrollTop:undefined;},[]);
@@ -37,21 +37,17 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const readMobileVisual=useCallback((provided?:string|null)=>{const token=provided===undefined?visits.current!.token:provided;return token?visits.current!.visual(token)?.mobile:undefined;},[]);
   const saveCurrentVisual=useCallback(()=>{const dialog=[...container.current?.querySelectorAll<HTMLElement>("[role=dialog]")??[]].find(node=>node.checkVisibility());if(dialog)rememberVisual(dialog.scrollTop);},[rememberVisual]);
   const fallback=localizedPath("/artworks",pending?.locale??(dynamic?site.locale:route.locale),site.defaultLocale);
-  const resolve=useCallback(async(request:ArtworkActivation)=>{
-    setPending({reference:request.reference,locale:request.locale,status:null});
-    try{
-      const data=await readArtworkExperience(request.reference,request.locale,request.signal);if(data.artwork.publicAddress)notePublicAddress(data.artwork.publicAddress);
-      const href=artworkHref(data.artwork,request.locale,site.defaultLocale),commit=visits.current!.complete(request.id,href);
-      if(!commit)return;
-      if(commit.action!=="none"){
-        setPending({reference:request.reference,locale:request.locale,status:null,href});
-        committing.current={href,token:commit.token,refresh:commit.action==="replace"};
-        if(commit.action==="push")router.push(href,{scroll:false});else router.replace(href,{scroll:false});
-      }else setPending(null);
-    }catch(error){if(request.signal.aborted||!visits.current!.fail(request.id))return;setPending({reference:request.reference,locale:request.locale,status:error instanceof ArtworkReadError?error.status:503});}
-  },[router,site.defaultLocale,setPending,notePublicAddress]);
+  const navigate=useCallback((request:ArtworkActivation,href:string)=>{
+    // The route already resolves canonical addresses and checks public visibility.
+    const commit=visits.current!.complete(request.id,href);if(!commit)return;
+    if(commit.action!=="none"){
+      setPending({reference:request.reference,locale:request.locale,href});
+      committing.current={href,from:location.pathname,token:commit.token};
+      if(commit.action==="push")router.push(href,{scroll:false});else router.replace(href,{scroll:false});
+    }else setPending(null);
+  },[router]);
   const completeRestore=useCallback((restore:Restore)=>{
-    if(restoringRef.current!==restore||completingRestore.current===restore)return;
+    if(committing.current||restoringRef.current!==restore||completingRestore.current===restore)return;
     completingRestore.current=restore;
     requestAnimationFrame(()=>{void(async()=>{
       if(restoringRef.current!==restore)return;
@@ -78,7 +74,13 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       setPending(null);
       const target=origin??{href:isArtwork?fallback:location.pathname+location.search,locale:route.locale,scrollX:isArtwork?0:scrollX,scrollY:isArtwork?0:scrollY,focus:null};
       const restore=restoreOrigin(result.action==="back"?result.origin:target),commit=committing.current;
-      if(commit&&commit.href!==location.pathname){commit.cancelled=true;return;}
+      if(commit&&commit.href!==location.pathname){
+        committing.current=null;
+        // Supersede a push that has not entered browser history yet; Back would leave the origin.
+        if(location.pathname===commit.from){router.replace(restore.origin.href,{scroll:false});completeRestore(restore);}
+        else router.back();
+        return;
+      }
       committing.current=null;
       if(result.action==="back")router.back();
       else if(result.action==="dismiss"){
@@ -87,23 +89,25 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       }else router.replace(fallback,{scroll:false});
     })();
   },[fallback,isArtwork,route.artworkId,route.locale,router,saveCurrentVisual,opening,restoreOrigin,completeRestore]);
-  const changeLocale=useCallback((locale:string)=>{if(!site.locales.includes(locale))return;saveCurrentVisual();if(dynamic)dynamic.changeLocale(locale);else void resolve(visits.current!.changeLocale(locale));},[resolve,site.locales,saveCurrentVisual,dynamic]);
+  const changeLocale=useCallback((locale:string)=>{if(!site.locales.includes(locale))return;saveCurrentVisual();if(dynamic)dynamic.changeLocale(locale);else{const request=visits.current!.changeLocale(locale),href=publicAddress?artworkHref({id:publicAddress.artworkId,publicAddress},locale,site.defaultLocale):localizedPath("/artworks/"+request.reference,locale,site.defaultLocale);navigate(request,href);}},[navigate,site.locales,site.defaultLocale,publicAddress,saveCurrentVisual,dynamic]);
 
   useLayoutEffect(()=>{
     if(isArtwork){
       const commit=committing.current;
-      if(commit&&commit.href===location.pathname){
-        if(commit.cancelled){committing.current=null;router.back();return;}
+      if(commit&&(commit.href===location.pathname||commit.from!==location.pathname)){
         history.replaceState({...history.state,[stateKey]:commit.token},"",location.href);committing.current=null;
+        // A legacy URL may have redirected; retain the trusted origin under its canonical reference.
+        if(!closingRequest.current&&commit.href!==location.pathname)visits.current!.resume(commit.token,route.artworkId!,route.locale);
         // Retain the pending surface until the streamed route has mounted its frame.
-        if(opening?.strategy!=="simple")queueMicrotask(()=>setPending(null));if(commit.refresh)router.refresh();
-      }else visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,route.artworkId!,route.locale);
+        if(opening?.strategy!=="simple")queueMicrotask(()=>setPending(null));
+        else if(commit.href!==location.pathname){const target={reference:route.artworkId!,locale:route.locale,href:location.pathname};queueMicrotask(()=>setPending(current=>current?.href===commit.href?target:current));}
+      }else if(!closingRequest.current)visits.current!.resume(typeof history.state?.[stateKey]==="string"?history.state[stateKey]:null,route.artworkId!,route.locale);
     }else if(restoringRef.current){
       const restore=restoringRef.current,url=new URL(restore.origin.href,location.origin);
       if(nonces.current.has(url.pathname+url.search)&&location.pathname===url.pathname)completeRestore(restore);
     }
     else if(visits.current!.state.kind!=="closed"){
-      opening?.close();visits.current!.dispose();setPending(null);if(committing.current)committing.current.cancelled=true;
+      opening?.close();visits.current!.dispose();setPending(null);committing.current=null;
       const origin:ArtworkOrigin={href:location.pathname+location.search+location.hash,locale:route.locale,scrollX:0,scrollY:0,focus:null};
       const restore=restoreOrigin(origin);if(nonces.current.has(location.pathname+location.search))completeRestore(restore);
     }
@@ -123,14 +127,17 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       event.preventDefault();event.stopPropagation();
       const language=target.dataset.artworkLocale;
       if(language){if(language!==(pending?.locale??(dynamic?site.locale:route.locale)))changeLocale(language);return;}
+      if(url.pathname===location.pathname)return;
       const anchors=[...document.querySelectorAll<HTMLAnchorElement>("a[href]")].filter(a=>a.href===target.href&&a.checkVisibility()&&!a.closest("[inert]"));
       const origin:ArtworkOrigin={href:location.pathname+location.search+location.hash,locale:route.locale,scrollX:scrollX,scrollY:scrollY,focus:{href:target.getAttribute("href")!,index:Math.max(0,anchors.indexOf(target))},...(isArtwork?{artworkScrollTop:target.closest<HTMLElement>("[role=dialog]")?.scrollTop??0}:{})};
+      // A clickable mounted origin is already usable, even if its streamed beacon has not hydrated yet.
+      nonces.current.set(location.pathname+location.search,crypto.randomUUID());
       target.focus({preventScroll:true});
-      opening?.begin();void resolve(visits.current!.start(next.artworkId!,next.locale,origin));
+      opening?.begin();navigate(visits.current!.start(next.artworkId!,next.locale,origin),url.pathname);
     };
     document.addEventListener("click",capture,true);
     return ()=>document.removeEventListener("click",capture,true);
-  },[resolve,changeLocale,policy,route.locale,site.locale,isArtwork,pending?.locale,dynamic,opening]);
+  },[navigate,changeLocale,policy,route.locale,site.locale,isArtwork,pending?.locale,dynamic,opening]);
 
   useLayoutEffect(()=>{
     const ready=(event:Event)=>{
@@ -164,12 +171,12 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   useLayoutEffect(()=>{if(active&&background.current)return opening?.register("background",background.current);},[active,opening]);
   const frameReady=useCallback(()=>{if(opening?.strategy==="simple"){setPending(null);}},[opening]);
   const handoff=opening?.strategy==="simple"&&pending?.href===pathname;
-  const pendingShell=Boolean(pending&&(!isArtwork||pending.locale!==route.locale||pending.reference!==route.artworkId||pending.status));
+  const pendingShell=Boolean(pending&&(!isArtwork||pending.locale!==route.locale||pending.reference!==route.artworkId));
   return <ArtworkNavigationContext value={{publicAddress,notePublicAddress,leaveForHeader,close,changeLocale,container,rememberVisual,readVisual,rememberMobileVisual,readMobileVisual,visitToken,activation,restoring:Boolean(restoring),frameReady,activeReference:pending?.reference??(isArtwork?route.artworkId:undefined),activeLocale:pending?.locale??(dynamic?site.locale:route.locale)}}><div ref={container} data-artwork-slot={slot??"none"} data-artwork-route={pathname}>
     <div ref={background} className={styles.origin} data-editorial-layout data-artwork-background inert={active||undefined} aria-hidden={active||undefined}>{!(isArtwork&&!intercepted)&&children}</div>
     {(!pendingShell||handoff)&&isArtwork&&(!intercepted?canonical:artwork)}
     {pendingShell&&!restoring&&<ArtworkDialogShell transient artworkRef={pending?.reference} locale={pending?.locale}>
-      <ArtworkRouteState status={pending?.status===404?"unavailable":pending?.status?"error":"loading"} retry={()=>{const request=visits.current!.retry();if(request)void resolve(request);}}/>
+      <ArtworkRouteState/>
     </ArtworkDialogShell>}
     <ArtworkReturnOverlay/>
   </div></ArtworkNavigationContext>;

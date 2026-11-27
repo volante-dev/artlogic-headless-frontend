@@ -46,11 +46,11 @@ test("language replaces the current work, retains the actual origin and Forward 
   await page.goForward();await expect(page).toHaveURL(/\/en\/artworks\/[^/?]+$/);await expect(page.getByRole("dialog").getByTestId("artwork-experience")).toBeVisible();await expect(page.getByRole("button",{name:"Close artwork",exact:true})).toBeVisible();
   await page.keyboard.press("Escape");await expect(page.getByRole("dialog")).toHaveCount(0);
 });
-test("pending 404 is closable without an artwork history entry or induced back",async({page})=>{
+test("a route 404 is closable back to its real origin",async({page})=>{
   await page.goto("/");await expect(page.getByTestId("artwork-card").first()).toBeVisible();
   await page.evaluate(()=>{const a=document.createElement("a");a.href="/artworks/50000000-0000-4000-8000-000000000046?returnTo=https://example.test";a.textContent="Synthetic unavailable work";document.querySelector("main")!.append(a);});
   await page.getByRole("link",{name:"Synthetic unavailable work",exact:true}).click();
-  await expect(page.getByText("Cette œuvre n’est plus disponible.",{exact:true})).toBeVisible();await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByText("Cette œuvre n’est plus disponible.",{exact:true})).toBeVisible();await expect(page).toHaveURL(/\/artworks\/50000000-0000-4000-8000-000000000046$/);
   await page.keyboard.press("Escape");await expect(page.getByRole("dialog")).toHaveCount(0);await expect(page).toHaveURL(/\/$/);
 });
 test("33 real reachable visits keep their origin after the first visual state is evicted",async({page})=>{

@@ -16,12 +16,13 @@ import {SiteThemeProvider} from "../../branding/SiteThemeProvider";
 import {useSiteLocale} from "../SiteLocaleBoundary";
 import {ArtworkInteractionBoundary} from "./ArtworkInteractionBoundary";
 type Reading={generation:number;data:GalleryExperience|null;status:number|null};
-/** No retained public projection is revealed until the current visibility and release agree. */
+/** Adopt the server-validated document; only history reactivation or an explicit retry rereads it. */
 function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{initial:GalleryExperience;presentation:PublicPresentation;siteName:string;demonstration?:boolean}){
   const router=useRouter(),navigation=useArtworkNavigation(),generation=useRef(0),content=useRef<HTMLDivElement>(null),restored=useRef(0),[attempt,retry]=useState(0);
   const notePublicAddress=navigation?.notePublicAddress;
   const rememberVisual=navigation?.rememberVisual,readVisual=navigation?.readVisual,visitToken=navigation?.visitToken,activation=navigation?.activation??0;
   const readingToken=useRef<string|null>(null);
+  const lastActivation=useRef(activation),lastAttempt=useRef(attempt);
   const {messages}=useSiteContent(),genericTitle=messages["gallery.presentation"]+" — "+siteName,untitled=messages["artwork.untitled"];
   const translation=useSiteLocale()?.translation,translated=translation?.artwork?.artwork.id===initial.artwork.id&&translation.presentation.releaseId===presentation.releaseId?translation:null;
   const liveLocale=useRef({genericTitle,locale:initial.locale});
@@ -33,6 +34,10 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
     const wrapper=content.current,epoch=generation,visualToken=visitToken?.()??null;
     readingToken.current=visualToken;
     let request:AbortController|null=null,alive=true,hasData=false;
+    const adopt=(data:GalleryExperience)=>{
+      hasData=true;if(data.artwork.publicAddress)notePublicAddress?.(data.artwork.publicAddress);
+      setReading({generation:++generation.current,data,status:null});
+    };
     const validate=async()=>{
       const dialog=wrapper?.closest<HTMLElement>("[role=dialog]");if(hasData&&dialog)rememberVisual?.(dialog.scrollTop,visualToken);hasData=false;
       request?.abort();request=new AbortController();const current=++generation.current,signal=AbortSignal.any([request.signal,AbortSignal.timeout(10000)]);
@@ -47,9 +52,12 @@ function ArtworkFreshnessContent({initial,presentation,siteName,demonstration}:{
         hasData=true;if(data.artwork.publicAddress)notePublicAddress?.(data.artwork.publicAddress);setReading({generation:current,data,status:null});
       }catch(error){if(!alive||request.signal.aborted||current!==generation.current)return;setReading({generation:current,data:null,status:error instanceof ArtworkReadError?error.status:503});}
     };
-    void validate();const revalidate=()=>void validate();window.addEventListener("artwork-revalidate",revalidate);
+    const reactivated=lastActivation.current!==activation,requested=lastAttempt.current!==attempt;
+    lastActivation.current=activation;lastAttempt.current=attempt;
+    if(reactivated||requested)void validate();else adopt(initial);
+    const revalidate=()=>void validate();window.addEventListener("artwork-revalidate",revalidate);
     return ()=>{const dialog=wrapper?.closest<HTMLElement>("[role=dialog]");if(hasData&&dialog)rememberVisual?.(dialog.scrollTop,visualToken);alive=false;request?.abort();epoch.current++;if(wrapper)wrapper.style.visibility="hidden";window.removeEventListener("artwork-revalidate",revalidate);};
-  },[initial.artwork.id,initial.artwork.slug,initial.locale,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation,notePublicAddress]);
+  },[initial,presentation.releaseId,attempt,router,rememberVisual,visitToken,activation,notePublicAddress]);
   useLayoutEffect(()=>{
     if(!content.current)return;const valid=reading.data&&reading.generation===generation.current;content.current.style.visibility=valid?"visible":"hidden";
     document.title=valid?(visibleData!.artwork.title??untitled)+" — "+siteName:genericTitle;

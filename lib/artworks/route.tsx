@@ -13,7 +13,10 @@ import {ArtworkRouteState} from "../../components/artworks/ArtworkRouteState";
 import {ArtworkFreshnessBoundary} from "../../components/artworks/ArtworkFreshnessBoundary";
 export type ArtworkRouteProps={params:Promise<{locale:string;artworkRef:string}>};
 async function Frame({params,children}:ArtworkRouteProps&{children:React.ReactNode}){
-  const {artworkRef}=await params,site=await loadSiteContent();let publicAddress;try{publicAddress=(await resolveArtworkDocument(artworkRef,site.locale)).experience.artwork.publicAddress;}catch(error){if(!(error instanceof PublicApiError)||error.status!==404)throw error;}return <ArtworkRouteFrame publicAddress={publicAddress} reference={artworkRef} locale={site.locale} messages={site.messages}>{children}</ArtworkRouteFrame>;
+  const {artworkRef}=await params,site=await loadSiteContent();let publicAddress;try{publicAddress=(await resolveArtworkDocument(artworkRef,site.locale)).experience.artwork.publicAddress;}catch(error){
+    // Let the document's error boundary show its closable retry state inside this frame.
+    if(!(error instanceof PublicApiError)||![404,503].includes(error.status))throw error;
+  }return <ArtworkRouteFrame publicAddress={publicAddress} reference={artworkRef} locale={site.locale} messages={site.messages}>{children}</ArtworkRouteFrame>;
 }
 export function ArtworkLayout(props:ArtworkRouteProps&{children:React.ReactNode}){return <Suspense fallback={<ArtworkRouteFrame><ArtworkRouteState/></ArtworkRouteFrame>}><Frame {...props}/></Suspense>;}
 export async function generateArtworkMetadata({params}:ArtworkRouteProps){const {artworkRef}=await params,site=await loadSiteContent();return artworkMetadata(artworkRef,site.locale);}
