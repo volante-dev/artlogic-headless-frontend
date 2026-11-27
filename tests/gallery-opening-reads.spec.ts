@@ -42,3 +42,18 @@ test('Escape before the route completes returns once to the retained catalogue',
  await link.click();await observed;await page.keyboard.press('Escape');release();
  await expect(page.locator('[data-artwork-return-phase]')).toHaveCount(0);await expect(page).toHaveURL(/\/artworks$/);await expect(page.getByRole('dialog')).toHaveCount(0);await expect(link).toBeFocused();
 });
+
+for(const close of ['button','back'] as const)test(`closing after a reload restores the mounted catalogue without header loading (${close})`,async({page})=>{
+ await page.goto('/');await dismissNotice(page);await page.locator('header a[href="/artworks"]').first().click();await expect(page.locator('main')).toHaveAttribute('data-header-state','ready');
+ expect(await page.evaluate(()=>Boolean(history.state?.__siteHeaderNavigation))).toBe(true);
+ await page.reload();await expect(page.locator('main')).toHaveAttribute('data-header-state','ready');await dismissNotice(page);
+ const link=page.locator('[data-artwork-card] a').first();await expect(link).toBeVisible();await link.evaluate(node=>Reflect.set(window,'reloadedOriginCard',node));
+ for(let visit=0;visit<2;visit++){
+  await link.click();await expect(page.getByRole('dialog').getByTestId('artwork-experience')).toBeVisible();
+  const requests:string[]=[];const record=(r:import('@playwright/test').Request)=>{const url=new URL(r.url());if(r.isNavigationRequest()||url.searchParams.has('_rsc')||url.pathname==='/api/artwork-catalog')requests.push(url.pathname);};page.on('request',record);
+  if(close==='back')await page.goBack();else await page.getByRole('button',{name:'Fermer la fiche de l’œuvre',exact:true}).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);await expect(page.locator('[data-artwork-return-phase]')).toHaveCount(0);
+  await expect(page.locator('main')).toHaveAttribute('data-header-state','ready');await expect(page.locator('main')).toBeVisible();await expect(page.locator('[data-header-status]')).toHaveCount(0);
+  expect(requests).toEqual([]);expect(await link.evaluate(node=>node===Reflect.get(window,'reloadedOriginCard'))).toBe(true);await expect(link).toBeFocused();page.off('request',record);
+ }
+});

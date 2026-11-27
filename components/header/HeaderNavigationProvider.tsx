@@ -17,6 +17,17 @@ export function HeaderNavigationProvider({initial,children}:{initial:HeaderRoute
  const current=useRef(state),lastByHref=useRef(new Map([[initial.hrefKey,initial.requestId]]));
  const currentKey=useCallback(()=>navigationHrefKey(location.href,location.href,current.current.snapshot.site.policy),[]);
  const update=useCallback((next:HeaderNavigationState)=>{current.current=next;setState(next);},[]);
+ const restoreRetained=useCallback((target:string)=>{
+  const value=current.current,snapshot=value.snapshot,main=mainRef.current;
+  if(snapshot.hrefKey!==target||snapshot.status!=='ready'||!main?.isConnected)return false;
+  const marker=[...main.querySelectorAll<HTMLElement>('[data-header-route]')].find(node=>node.dataset.headerHref===target&&node.dataset.headerRoute===snapshot.requestId);
+  if(!marker)return false;
+  // Modal inertness and our own loading veil do not invalidate the mounted page.
+  for(let node:HTMLElement|null=marker.parentElement;node;node=node.parentElement){if(node.hidden||node.style.display==='none')return false;if(node===main)break;}
+  const old=readHistory(history.state);if(old?.hrefKey===target)activeEntry.current=old.entryId;
+  if(value.intent||value.status!=='ready')update({...value,intent:null,status:'ready'});
+  return true;
+ },[update]);
  const start=useCallback((target:string,source:'header'|'history',entryId:string,baselineRequestId?:string)=>{
   protect(mainRef.current);const generation=current.current.generation+1;setEntry({target,source,generation});
   update({...current.current,generation,status:'navigating',intent:{generation,entryId,target,source,baselineRequestId,refreshRequested:false,deadline:Date.now()+10000}});
@@ -76,14 +87,18 @@ export function HeaderNavigationProvider({initial,children}:{initial:HeaderRoute
  useLayoutEffect(()=>{
   const pop=()=>{
    if(classifyRoute(location.pathname,current.current.snapshot.site.policy).kind==='artwork')return;
-   const target=currentKey(),decision=historyDecision(history.state,target,current.current.intent?null:activeEntry.current);if(decision.kind==='ignore')return;
+   const target=currentKey();if(restoreRetained(target))return;
+   const decision=historyDecision(history.state,target,current.current.intent?null:activeEntry.current);if(decision.kind==='ignore')return;
    const entryId=decision.kind==='restore'?decision.entry.entryId:crypto.randomUUID();activeEntry.current=entryId;start(target,'history',entryId,decision.kind==='restore'?decision.entry.lastRequestId:undefined);
   };
   window.addEventListener('popstate',pop,true);
   // Activity tears effects down: work pending in a previous locale layout cannot resume as proof.
-  const target=currentKey();if(current.current.intent||current.current.snapshot.hrefKey!==target){const entry=readHistory(history.state);start(target,'history',entry?.hrefKey===target?entry.entryId:crypto.randomUUID(),lastByHref.current.get(target));}
+  const target=currentKey();if(classifyRoute(location.pathname,current.current.snapshot.site.policy).kind!=='artwork'){
+   if(!current.current.intent)restoreRetained(target);
+   if(current.current.intent||current.current.snapshot.hrefKey!==target){const entry=readHistory(history.state);start(target,'history',entry?.hrefKey===target?entry.entryId:crypto.randomUUID(),lastByHref.current.get(target));}
+  }
   return()=>window.removeEventListener('popstate',pop,true);
- },[start,currentKey]);
+ },[start,currentKey,restoreRetained]);
  useLayoutEffect(()=>{if(state.status!=='ready')return;const main=mainRef.current;if(main){main.style.visibility='';main.inert=Boolean(main.closest('[data-artwork-route]')?.querySelector('header[data-menu-state="open"],header[data-menu-state="closing"]'));main.removeAttribute('aria-busy');}},[state]);
  useEffect(()=>{const intent=state.intent;if(!intent)return;const timer=setTimeout(()=>{if(current.current.intent?.generation===intent.generation)fail();},Math.max(0,intent.deadline-Date.now()));return()=>clearTimeout(timer);},[state.intent,fail]);
  const value=useMemo(()=>({exitVeilRef,showExitFeedback,entry,registerRecovery,mainRef,snapshot:state.snapshot,status:state.status,begin,isCurrent,commit,retry,fail}),[showExitFeedback,entry,state.snapshot,state.status,begin,isCurrent,commit,retry,fail,registerRecovery]);

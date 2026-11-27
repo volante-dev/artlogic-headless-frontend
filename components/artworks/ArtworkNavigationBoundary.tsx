@@ -27,7 +27,7 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
   const [pending,setPending]=useState<Pending|null>(null),[restoring,setRestoring]=useState<Restore|null>(null),[activation,setActivation]=useState(0);
   const [publicAddress,setPublicAddress]=useState<import("../../lib/artworks/addresses").ArtworkAddress>();
   const notePublicAddress=useCallback((address:import("../../lib/artworks/addresses").ArtworkAddress)=>setPublicAddress(address),[]);
-  const nonces=useRef(new Map<string,string>()),closingRequest=useRef(false),completingRestore=useRef<Restore|null>(null),restoringRef=useRef(restoring),pendingRef=useRef(pending);
+  const nonces=useRef(new Map<string,string>()),closingRequest=useRef(false),completingRestore=useRef<Restore|null>(null),restoringRef=useRef(restoring),pendingRef=useRef(pending),focusRestore=useRef<Restore|null>(null);
   // Restoration is owned by restoreOrigin/completeRestore; an older transition render must not overwrite it.
   useLayoutEffect(()=>{pendingRef.current=pending;},[pending]);
   const visitToken=useCallback(()=>visits.current!.token,[]);
@@ -54,15 +54,17 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       window.scrollTo(restore.origin.scrollX,restore.origin.scrollY);
       const completed=opening?await opening.revealOrigin():true;
       if(!completed||restoringRef.current!==restore)return;
-      restoringRef.current=null;setRestoring(null);closingRequest.current=false;
-      requestAnimationFrame(()=>{
-        const dialog=[...container.current?.querySelectorAll<HTMLElement>("[role=dialog]")??[]].find(node=>node.checkVisibility());
-        if(dialog&&restore.origin.artworkScrollTop!==undefined)dialog.scrollTop=restore.origin.artworkScrollTop;
-        const focus=restore.origin.focus,anchors=focus?[...document.querySelectorAll<HTMLAnchorElement>("a[href]")].filter(a=>a.getAttribute("href")===focus.href&&a.checkVisibility()&&!a.closest("[inert]")):[];
-        (anchors[focus?.index??0]??dialog?.querySelector<HTMLElement>('[role="button"]')??document.querySelector<HTMLElement>("#contenu"))?.focus({preventScroll:true});
-      });
+      focusRestore.current=restore;restoringRef.current=null;setRestoring(null);closingRequest.current=false;
     })();});
   },[opening]);
+  useLayoutEffect(()=>{
+    const restore=focusRestore.current;if(restoring||!restore)return;focusRestore.current=null;
+    // React must remove the origin's inert state before focus can be restored.
+    const dialog=[...container.current?.querySelectorAll<HTMLElement>("[role=dialog]")??[]].find(node=>node.checkVisibility());
+    if(dialog&&restore.origin.artworkScrollTop!==undefined)dialog.scrollTop=restore.origin.artworkScrollTop;
+    const focus=restore.origin.focus,anchors=focus?[...document.querySelectorAll<HTMLAnchorElement>("a[href]")].filter(a=>a.getAttribute("href")===focus.href&&a.checkVisibility()&&!a.closest("[inert]")):[];
+    (anchors[focus?.index??0]??dialog?.querySelector<HTMLElement>('[role="button"]')??document.querySelector<HTMLElement>("#contenu"))?.focus({preventScroll:true});
+  },[restoring]);
   const restoreOrigin=useCallback((origin:ArtworkOrigin)=>{const restore={origin};restoringRef.current=restore;setRestoring(restore);return restore;},[]);
   const close=useCallback(()=>{
     if(closingRequest.current||restoringRef.current)return;
@@ -107,8 +109,10 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
       if(nonces.current.has(url.pathname+url.search)&&location.pathname===url.pathname)completeRestore(restore);
     }
     else if(visits.current!.state.kind!=="closed"){
-      opening?.close();visits.current!.dispose();setPending(null);committing.current=null;
-      const origin:ArtworkOrigin={href:location.pathname+location.search+location.hash,locale:route.locale,scrollX:0,scrollY:0,focus:null};
+      const result=visits.current!.close(location.pathname+location.search),returned=result.action==="back"?new URL(result.origin.href,location.origin):null;
+      opening?.close();setPending(null);committing.current=null;
+      // Next can restore its tree before our pop listener. Keep the real origin in that order too.
+      const origin:ArtworkOrigin=result.action==="back"&&returned?.pathname===location.pathname&&returned.search===location.search?result.origin:{href:location.pathname+location.search+location.hash,locale:route.locale,scrollX:0,scrollY:0,focus:null};
       const restore=restoreOrigin(origin);if(nonces.current.has(location.pathname+location.search))completeRestore(restore);
     }
   },[pathname,isArtwork,route.artworkId,route.locale,router,opening,restoreOrigin,completeRestore]);
@@ -160,11 +164,12 @@ export function ArtworkNavigationBoundary({children,artwork,canonical}:{children
         }
       }
     };
-    window.addEventListener("artwork-origin-ready",ready);window.addEventListener("popstate",pop);
-    return ()=>{window.removeEventListener("artwork-origin-ready",ready);window.removeEventListener("popstate",pop);};
+    // Capture the visit before Next removes the intercepted route during browser Back.
+    window.addEventListener("artwork-origin-ready",ready);window.addEventListener("popstate",pop,true);
+    return ()=>{window.removeEventListener("artwork-origin-ready",ready);window.removeEventListener("popstate",pop,true);};
   },[policy,site.defaultLocale,saveCurrentVisual,opening,restoreOrigin,completeRestore]);
   useEffect(()=>{if(!restoring)return;const timer=setTimeout(()=>window.location.replace(fallback),10000);return ()=>clearTimeout(timer);},[restoring,fallback]);
-  const leaveForHeader=useCallback(()=>{opening?.close();visits.current!.dispose();committing.current=null;setPending(null);setRestoring(null);restoringRef.current=null;pendingRef.current=null;closingRequest.current=false;},[opening]);
+  const leaveForHeader=useCallback(()=>{opening?.close();visits.current!.dispose();committing.current=null;setPending(null);setRestoring(null);restoringRef.current=null;pendingRef.current=null;focusRestore.current=null;closingRequest.current=false;},[opening]);
   useEffect(()=>()=>visits.current!.dispose(),[]);
   const active=isArtwork||pending!==null||restoring!==null;
  useEditorialSurface(active);

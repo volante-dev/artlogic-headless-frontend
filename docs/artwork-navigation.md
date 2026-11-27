@@ -27,3 +27,10 @@ Cette évolution ne modifie aucun contrat API et reste compatible avec la versio
 précédente du backend, avec les adresses historiques et les deux variantes de
 modale. Les contrôles de disponibilité serveur restent en place. Les achats,
 les écritures administratives et leurs préconditions ne sont pas concernés.
+
+Après un rechargement, les identifiants stockés dans l’historique peuvent provenir
+du document précédent. Le header reconnaît le rendu déjà monté par son adresse
+et son marqueur de requête serveur. Revenir à cette même page ne doit ni la
+masquer, ni attendre une nouvelle émission du marqueur, ni déclencher son délai
+d’erreur de navigation. Les pages cachées par une autre route ne constituent
+pas une preuve de rendu actif.
